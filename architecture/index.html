@@ -50,6 +50,62 @@
     }
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Это правда бесплатно?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Да, гайд полностью бесплатный. Никаких скрытых платежей."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Нужен ли опыт в Go?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Базовый синтаксис Go желателен. Гайд про архитектуру, а не про основы языка."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Сколько времени займёт прохождение?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Около 3 часов на просмотр. Рекомендуем параллельно писать код — тогда до 6-10 часов."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "В каком формате гайд?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Видеогайд с подробным разбором кода на растущем проекте."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Получу ли я исходный код?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Да, весь код из гайда доступен в репозитории, ссылка внутри."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Подойдёт ли, если я пишу на другом языке?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Принципы архитектуры универсальны. Конкретные примеры на Go, но DDD, CQRS, ACL применимы к любому языку."
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     /* ===== RESET & BASE ===== */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -453,7 +509,7 @@
 
     .experience__item {
       display: grid;
-      grid-template-columns: 200px 1fr;
+      grid-template-columns: 260px 1fr;
       gap: 16px;
       padding: 24px 0;
       border-top: 1px solid rgba(255,255,255,0.08);
@@ -467,7 +523,6 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      flex-wrap: wrap;
     }
 
     .experience__company-name {
@@ -539,6 +594,151 @@
     }
     .stat-card:first-child .stat-card__desc {
       color: #182023;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: #dfdf41;
+      z-index: 1001;
+      transition: width 0.1s linear;
+      width: 0%;
+    }
+
+    /* ===== PROGRAM (TIMELINE) ===== */
+    .program {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .program__item {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .program__time {
+      font-size: 14px;
+      font-weight: 600;
+      color: #dfdf41;
+      font-variant-numeric: tabular-nums;
+      padding-top: 2px;
+    }
+
+    .program__content { min-width: 0; }
+
+    .program__name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .program__desc {
+      font-size: 14px;
+      font-weight: 500;
+      color: #8a8c8e;
+      line-height: 1.5;
+    }
+
+    /* ===== REVIEWS ===== */
+    .reviews {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .review {
+      background: #31383f;
+      border-radius: 20px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .review__text {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #c8cacc;
+      flex: 1;
+    }
+
+    .review__author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .review__avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(223,223,65,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #dfdf41;
+      flex-shrink: 0;
+    }
+
+    .review__meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .review__name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .review__source {
+      font-size: 12px;
+      color: #707070;
+    }
+
+    .reviews__hidden {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .reviews__hidden.open {
+      display: grid;
+    }
+
+    .reviews__more {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .reviews__more-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      color: #c8cacc;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .reviews__more-btn:hover {
+      border-color: #dfdf41;
+      color: #dfdf41;
     }
 
     /* ===== FAQ ===== */
@@ -723,6 +923,8 @@
       .teacher__photo { order: -1; max-width: 320px; position: static; }
       .experience__item { grid-template-columns: 1fr; gap: 8px; }
       .stats-row { grid-template-columns: repeat(3, 1fr); }
+      .reviews { grid-template-columns: repeat(2, 1fr); }
+      .reviews__hidden.open { grid-template-columns: repeat(2, 1fr); }
       .section { padding: 60px 0 40px; }
       .final-cta__card { padding: 48px 32px; }
       .final-cta__title { font-size: 28px; }
@@ -774,6 +976,14 @@
 
 
 
+      .reviews { grid-template-columns: 1fr; }
+      .reviews__hidden.open { grid-template-columns: 1fr; }
+      .program__item { grid-template-columns: 60px 1fr; gap: 12px; }
+      .program__name { font-size: 15px; }
+      .program__desc { font-size: 13px; }
+      .reviews__stats { flex-direction: column; gap: 8px; padding: 16px 24px; }
+      .reviews__stats-divider { display: none; }
+
       .faq__item summary { padding: 20px 20px; font-size: 15px; }
       .faq__answer { padding: 0 20px 20px; font-size: 14px; }
 
@@ -791,14 +1001,16 @@
 </head>
 <body>
 
+  <div class="progress-bar" id="progress-bar"></div>
+
   <!-- HEADER -->
   <header class="header">
     <div class="container header__inner">
       <a href="/" class="logo">{ Олег Козырев }</a>
       <nav class="nav">
         <a href="#about" class="nav__link">Что внутри</a>
-        <a href="#for-who" class="nav__link">Для кого</a>
-        <a href="#teacher" class="nav__link">Преподаватель</a>
+        <a href="#program" class="nav__link">Программа</a>
+        <a href="#reviews" class="nav__link">Отзывы</a>
         <a href="#faq" class="nav__link">FAQ</a>
       </nav>
       <a href="#cta" class="btn btn--primary btn--header nav__cta">Забрать гайд</a>
@@ -807,8 +1019,8 @@
       </button>
       <div class="nav__links-mobile">
         <a href="#about" class="nav__link" onclick="this.parentElement.classList.remove('open')">Что внутри</a>
-        <a href="#for-who" class="nav__link" onclick="this.parentElement.classList.remove('open')">Для кого</a>
-        <a href="#teacher" class="nav__link" onclick="this.parentElement.classList.remove('open')">Преподаватель</a>
+        <a href="#program" class="nav__link" onclick="this.parentElement.classList.remove('open')">Программа</a>
+        <a href="#reviews" class="nav__link" onclick="this.parentElement.classList.remove('open')">Отзывы</a>
         <a href="#faq" class="nav__link" onclick="this.parentElement.classList.remove('open')">FAQ</a>
         <a href="#cta" class="btn btn--primary" style="margin-top:8px;" onclick="this.parentElement.classList.remove('open')">Забрать гайд</a>
       </div>
@@ -899,6 +1111,67 @@
     </div>
   </section>
 
+  <!-- PROGRAM -->
+  <section class="section section--dark" id="program">
+    <div class="container">
+      <h2 class="section__title fade-up">Программа гайда</h2>
+      <div class="program">
+        <div class="program__item fade-up">
+          <div class="program__time">0:00</div>
+          <div class="program__content">
+            <div class="program__name">Акт 0. Скрипт на&nbsp;80&nbsp;строк</div>
+            <div class="program__desc">Утилита для&nbsp;анализа CSV&nbsp;&mdash; всё в&nbsp;main.go, никакой архитектуры. Принцип YAGNI</div>
+          </div>
+        </div>
+        <div class="program__item fade-up">
+          <div class="program__time">13:51</div>
+          <div class="program__content">
+            <div class="program__name">Акт 1. Три слоя: Handler, Service, Repository</div>
+            <div class="program__desc">Новое требование&nbsp;&mdash; веб-интерфейс. Выделяем слои, пишем HTTP-хендлеры, E2E тесты</div>
+          </div>
+        </div>
+        <div class="program__item fade-up">
+          <div class="program__time">32:26</div>
+          <div class="program__content">
+            <div class="program__name">Акт 2. Валидация и&nbsp;интерфейсы</div>
+            <div class="program__desc">Инцидент на&nbsp;500&nbsp;двигателей. Структурная vs бизнес-валидация, best practices интерфейсов в&nbsp;Go</div>
+          </div>
+        </div>
+        <div class="program__item fade-up">
+          <div class="program__time">50:44</div>
+          <div class="program__content">
+            <div class="program__name">Акт 3. Race Conditions и&nbsp;Mutex</div>
+            <div class="program__desc">Сборка космических кораблей, метод StartAssembly, проблема атомарности и&nbsp;sync.Mutex</div>
+          </div>
+        </div>
+        <div class="program__item fade-up">
+          <div class="program__time">1:17:17</div>
+          <div class="program__content">
+            <div class="program__name">Акт 4. DDD&nbsp;&mdash; Domain-Driven Design</div>
+            <div class="program__desc">От&nbsp;анемичной модели в&nbsp;200+&nbsp;строк ифов к&nbsp;богатой доменной модели. Value Objects, Entity, Aggregate</div>
+          </div>
+        </div>
+        <div class="program__item fade-up">
+          <div class="program__time">2:30:25</div>
+          <div class="program__content">
+            <div class="program__name">Акт 5. Anti-Corruption Layer</div>
+            <div class="program__desc">Интеграция с&nbsp;внешним поставщиком Galactic Parts. HTTP-клиент, адаптер, Port-интерфейс</div>
+          </div>
+        </div>
+        <div class="program__item fade-up" style="border-bottom:none;">
+          <div class="program__time">2:45:20</div>
+          <div class="program__content">
+            <div class="program__name">Акт 6. CQRS&nbsp;&mdash; разделение чтения и&nbsp;записи</div>
+            <div class="program__desc">Табло грузится минуту. Read-модель, Handler напрямую в&nbsp;ReadRepository. Мастер-чеклист паттернов</div>
+          </div>
+        </div>
+      </div>
+      <div class="section__cta fade-up">
+        <a href="#cta" class="btn btn--primary">Забрать гайд бесплатно</a>
+      </div>
+    </div>
+  </section>
+
   <!-- FOR WHO -->
   <section class="section section--dark" id="for-who">
     <div class="container">
@@ -920,6 +1193,20 @@
     </div>
   </section>
 
+  <!-- REVIEWS -->
+  <section class="section section--dark" id="reviews">
+    <div class="container">
+      <h2 class="section__title fade-up">Что говорят прошедшие гайд</h2>
+      <div class="reviews" id="reviews-grid"></div>
+      <div class="reviews__hidden" id="reviews-hidden"></div>
+      <div class="reviews__more fade-up" id="reviews-more">
+        <button class="reviews__more-btn" onclick="document.getElementById('reviews-hidden').classList.add('open');this.parentElement.style.display='none';">
+          Ещё отзывы
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- TEACHER -->
   <section class="section section--dark" id="teacher">
     <div class="container">
@@ -930,14 +1217,14 @@
           <ul class="experience">
             <li class="experience__item">
               <div class="experience__company">
-                <span class="experience__company-name">BigTech (под NDA)</span>
+                <span class="experience__company-name">Т-Банк</span>
                 <span class="experience__badge">Staff Engineer</span>
               </div>
               <div class="experience__desc">Разрабатываю LLM-платформу для&nbsp;создания ИИ продуктов внутри компании</div>
             </li>
             <li class="experience__item">
               <div class="experience__company">
-                <span class="experience__company-name">BigTech (под NDA)</span>
+                <span class="experience__company-name">Авито</span>
                 <span class="experience__badge">Senior Engineer</span>
               </div>
               <div class="experience__desc">Разрабатывал внутреннюю платформу для&nbsp;сотен сервисов корпорации</div>
@@ -960,19 +1247,19 @@
 
           <div class="stats-row">
             <div class="stat-card">
-              <div class="stat-card__number">7000+</div>
-              <div class="stat-card__line"></div>
-              <div class="stat-card__desc">часов практики в&nbsp;BigTech</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card__number">7+&nbsp;лет</div>
-              <div class="stat-card__line"></div>
-              <div class="stat-card__desc">коммерческой разработки</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card__number">8500+</div>
+              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
               <div class="stat-card__line"></div>
               <div class="stat-card__desc">подписчиков на&nbsp;YouTube</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="8500" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">подписчиков в&nbsp;Telegram</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="8" data-suffix="+ лет">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">коммерческой разработки</div>
             </div>
           </div>
         </div>
@@ -1063,6 +1350,7 @@
   <!-- SCROLL ANIMATIONS -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Fade-up animations
       var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
@@ -1074,6 +1362,85 @@
       document.querySelectorAll('.fade-up').forEach(function(el) {
         observer.observe(el);
       });
+
+      // Counter animation
+      var counters = document.querySelectorAll('[data-count]');
+      var counterObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !entry.target.dataset.animated) {
+            entry.target.dataset.animated = 'true';
+            var target = parseInt(entry.target.dataset.count);
+            var suffix = entry.target.dataset.suffix || '';
+            var duration = 1500;
+            var start = 0;
+            var startTime = null;
+            function step(timestamp) {
+              if (!startTime) startTime = timestamp;
+              var progress = Math.min((timestamp - startTime) / duration, 1);
+              var eased = 1 - Math.pow(1 - progress, 3);
+              var current = Math.floor(eased * target);
+              entry.target.textContent = current.toLocaleString('ru-RU') + suffix;
+              if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      counters.forEach(function(el) { counterObserver.observe(el); });
+
+      // Reviews rotation
+      var allReviews = [
+        { text: 'Очень понравилось, что показано на примере как начинается с main и доходит до чистой архитектуры. Очень много объяснений. Даже просто мелких полезных моментов очень много.', name: 'Владислав К.', avatar: 'В' },
+        { text: 'Вроде про все концепции как минимум слышал, даже казалось что понимал, но тут на практике всё наконец-то встало на свои места!', name: 'Дмитрий З.', avatar: 'Д' },
+        { text: 'Подход показывать как развивается архитектура очень хороший, сразу понятно какие боли мы решаем. Гораздо понятнее гайдов, где рассказывают как делать условный DDD с нуля.', name: 'Борис К.', avatar: 'Б' },
+        { text: 'Это просто отвал башки. Как раз на работе архитектуру хорошую хотим делать на новый сервис.', name: 'Роман П.', avatar: 'Р' },
+        { text: 'Колоссальная работа проделана. Как квинтэссенция всего хорошего, к чему мне пришлось прийти через боль и унижения.', name: 'Павел Г.', avatar: 'П' },
+        { text: 'Удачно совпало, как раз на работе буду распиливать спагетти на слои, потому что уже ощущается боль в поддержке. Уже много полезного подчеркнул.', name: 'Сергей М.', avatar: 'С' },
+        { text: 'Хорошая подача, речь и структура. Классно отражены этапы развития проекта и усложнение требований.', name: 'Алексей К.', avatar: 'А' },
+        { text: 'Очень понравилась подача контента. Я на Python изучал разные типы архитектур, а тут интересно было увидеть как у Go\u2019шников всё устроено.', name: 'Виктор Л.', avatar: 'В' },
+        { text: 'Монументально! Вот это уже уровень, молодец!', name: 'Андрей', avatar: 'А' },
+        { text: 'Олег, молодец! Чётко и понятно \u2014 годнота.', name: 'Станислав В.', avatar: 'С' },
+        { text: 'Разжёвано с самого main, а то сидишь и постоянно думаешь: а как понять, когда разделять? Где какие файлы создавать?', name: 'Игорь Н.', avatar: 'И' },
+        { text: 'Как раз на работу попал и теперь полноценно ознакомиться с архитектурой проектов \u2014 очень круто!', name: 'Денис Р.', avatar: 'Д' },
+        { text: 'Много интересного для себя узнал, спасибо!', name: 'Александр К.', avatar: 'А' },
+        { text: 'Прочувствовал боль от введения новых требований.', name: 'Максим Т.', avatar: 'М' },
+        { text: 'Годнейший практический материал, респект.', name: 'Дмитрий С.', avatar: 'Д' }
+      ];
+      function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+        return arr;
+      }
+      function renderReview(r) {
+        var nameHtml = r.name ? '<span class="review__name">' + r.name + '</span>' : '';
+        return '<div class="review fade-up"><div class="review__text">' + r.text + '</div><div class="review__author"><div class="review__avatar">' + r.avatar + '</div><div class="review__meta">' + nameHtml + '<span class="review__source">прошёл гайд</span></div></div></div>';
+      }
+      shuffle(allReviews);
+      var mainGrid = document.getElementById('reviews-grid');
+      var hiddenGrid = document.getElementById('reviews-hidden');
+      var moreBtn = document.getElementById('reviews-more');
+      allReviews.slice(0, 6).forEach(function(r) { mainGrid.innerHTML += renderReview(r); });
+      var extras = allReviews.slice(6);
+      if (extras.length > 0) {
+        extras.forEach(function(r) { hiddenGrid.innerHTML += renderReview(r); });
+      } else {
+        moreBtn.style.display = 'none';
+      }
+      // Re-observe new fade-up elements
+      mainGrid.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
+      hiddenGrid.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
+
+      // Progress bar
+      var progressBar = document.getElementById('progress-bar');
+      window.addEventListener('scroll', function() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var scrollPercent = (scrollTop / docHeight) * 100;
+        progressBar.style.width = scrollPercent + '%';
+      }, { passive: true });
     });
   </script>
 
