@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бесплатные гайды — Олег Козырев</title>
+  <meta name="description" content="Бесплатные гайды по Go-разработке от Олега Козырева — архитектура, микросервисы, DDD, CQRS и многое другое.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: #182023;
+      color: #ffffff;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      width: 100%;
+    }
+
+    .header {
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #dfdf41;
+    }
+
+    .main {
+      flex: 1;
+      padding: 80px 0;
+    }
+
+    .main__title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .main__title span { color: #dfdf41; }
+
+    .main__desc {
+      font-size: 18px;
+      color: #babcbd;
+      margin-bottom: 48px;
+      max-width: 600px;
+    }
+
+    .guides {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .guide {
+      background: #31383f;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .guide:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+
+    .guide__img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .guide__body {
+      padding: 28px 24px;
+    }
+
+    .guide__badge {
+      display: inline-block;
+      padding: 4px 14px;
+      background: rgba(223,223,65,0.15);
+      color: #dfdf41;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .guide__title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .guide__desc {
+      font-size: 15px;
+      color: #babcbd;
+      line-height: 1.6;
+    }
+
+    .footer {
+      padding: 40px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer__copy {
+      font-size: 14px;
+      color: #707070;
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 0 20px; }
+      .main { padding: 48px 0; }
+      .main__title { font-size: 28px; }
+      .main__desc { font-size: 16px; }
+      .guides { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">{ Олег Козырев }</a>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container">
+      <h1 class="main__title">Бесплатные <span>гайды</span></h1>
+      <p class="main__desc">Практические материалы по Go-разработке — бери и применяй</p>
+
+      <div class="guides">
+
+        <a href="/architecture/" class="guide">
+          <img src="/architecture/hero.jpg" alt="Гайд по архитектуре Go-проекта" class="guide__img">
+          <div class="guide__body">
+            <div class="guide__badge">Бесплатно</div>
+            <div class="guide__title">Архитектура Go-проекта</div>
+            <div class="guide__desc">3 часа практики — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции проекта.</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__copy">&copy; 2026 Олег Козырев</div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,30 +1,32 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Этот файл содержит инструкции для Claude Code (claude.ai/code) при работе с этим репозиторием.
 
 Язык проекта — русский. Все ответы, комментарии, коммиты и документация должны быть на русском языке.
 
-## Project Overview
+## Обзор проекта
 
-Static HTML landing pages for lead magnets (free educational content) on olezhek28.courses. Each lead magnet is a self-contained directory with its own landing page and assets. The site is in Russian.
+Статические HTML-лендинги для лид-магнитов (бесплатные образовательные материалы). Деплоится на GitHub Pages по адресу `guide.olezhek28.courses`.
 
-## Architecture
+## Архитектура
 
-- Each lead magnet lives in its own directory (e.g., `architecture/`)
-- Pages are standalone HTML files with inline CSS and minimal inline JS — no build tools, bundlers, or frameworks
-- Each directory contains: `index.html` (landing page), `policy.html` (privacy policy), and image assets
-- Font: Manrope (loaded from Google Fonts)
-- Color scheme: dark theme (`#182023` background, `#dfdf41` accent yellow, `#ffffff` text)
+- Корневой `index.html` — каталог всех гайдов (при добавлении нового лид-магнита добавить карточку сюда)
+- Каждый лид-магнит живёт в своей директории (например, `architecture/`) → доступен по `guide.olezhek28.courses/<название>/`
+- Страницы — standalone HTML с inline CSS и минимальным inline JS, без сборщиков и фреймворков
+- Каждая директория содержит: `index.html` (лендинг), `policy.html` (политика конфиденциальности), картинки
+- `CNAME` файл задаёт кастомный домен для GitHub Pages
+- Шрифт: Manrope (подключается через Google Fonts)
+- Цветовая схема: тёмная тема (`#182023` фон, `#dfdf41` акцентный жёлтый, `#ffffff` текст)
 
-## Development
+## Разработка
 
-Open any HTML file directly in a browser — no server or build step required. For local development with live reload, use any static file server (e.g., `python3 -m http.server` from the repo root).
+Открыть любой HTML-файл в браузере — сервер и сборка не нужны. Для локальной разработки с live reload подойдёт любой статический файл-сервер (например, `python3 -m http.server` из корня репозитория).
 
-## Conventions
+## Соглашения
 
-- All CSS is inline within `<style>` tags in each HTML file (no external stylesheets)
-- BEM-like class naming: `.block__element` pattern (e.g., `.hero__title`, `.card__desc`)
-- Scroll animations use `IntersectionObserver` with `.fade-up` / `.visible` classes
-- Responsive breakpoints: 960px (tablet), 640px (mobile)
-- CTA buttons link to Telegram posts (`t.me/olezhek28go/`)
-- Images are stored alongside HTML files in the same directory
+- Весь CSS инлайновый внутри `<style>` в каждом HTML-файле (без внешних стилей)
+- Именование классов по BEM: `.block__element` (например, `.hero__title`, `.card__desc`)
+- Анимации при скролле через `IntersectionObserver` с классами `.fade-up` / `.visible`
+- Адаптивные брейкпоинты: 960px (планшет), 640px (мобильный)
+- CTA-кнопки ведут на посты в Telegram (`t.me/olezhek28go/`)
+- Картинки хранятся рядом с HTML-файлами в той же директории
