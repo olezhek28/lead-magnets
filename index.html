@@ -119,9 +119,37 @@
       padding: 40px 0;
       border-top: 1px solid rgba(255,255,255,0.05);
     }
+    .footer__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .footer__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     .footer__copy {
       font-size: 14px;
       color: #707070;
+    }
+    .footer__links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer__link {
+      font-size: 14px;
+      color: #707070;
+      transition: color 0.2s;
+    }
+    .footer__link:hover {
+      color: #babcbd;
+    }
+    .footer__legal {
+      font-size: 13px;
+      color: #505050;
+      line-height: 1.6;
     }
 
     @media (max-width: 640px) {
@@ -162,8 +190,21 @@
   </main>
 
   <footer class="footer">
-    <div class="container">
-      <div class="footer__copy">&copy; 2026 Олег Козырев</div>
+    <div class="container footer__inner">
+      <div class="footer__top">
+        <div class="footer__copy">&copy; 2026 Олег Козырев</div>
+        <div class="footer__links">
+          <a href="https://olezhek28.courses/policy" target="_blank" class="footer__link">Политика конфиденциальности</a>
+
+        </div>
+      </div>
+      <div class="footer__legal">
+        ИП Козырев Олег Вячеславович<br>
+        ИНН 440315249608<br>
+        ОГРНИП 324440000010534<br>
+        Дата регистрации&nbsp;&mdash; 25.04.2024<br>
+        Email&nbsp;&mdash; olezhek28.courses@gmail.com
+      </div>
     </div>
   </footer>
 
