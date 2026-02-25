@@ -6,12 +6,49 @@
   <title>Самый полный гайд по архитектуре Golang проекта</title>
   <meta name="description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции Go-проекта. Преподаватель — Олег Козырев.">
   <meta name="keywords" content="архитектура golang, чистая архитектура, Go, clean architecture, ddd, domain driven design, cqrs, handler service repository, собеседование golang, backend">
+  <link rel="canonical" href="https://guide.olezhek28.courses/architecture/">
   <meta property="og:title" content="Самый полный гайд по архитектуре Golang проекта">
   <meta property="og:description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. Бесплатно.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://guide.olezhek28.courses/architecture/">
+  <meta property="og:image" content="https://guide.olezhek28.courses/architecture/hero.jpg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="720">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Олег Козырев — Гайды">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Самый полный гайд по архитектуре Golang проекта">
+  <meta name="twitter:description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. Бесплатно.">
+  <meta name="twitter:image" content="https://guide.olezhek28.courses/architecture/hero.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="hero.webp" type="image/webp" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Самый полный гайд по архитектуре Golang проекта",
+    "description": "3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции Go-проекта.",
+    "provider": {
+      "@type": "Person",
+      "name": "Олег Козырев",
+      "jobTitle": "Staff Engineer",
+      "url": "https://guide.olezhek28.courses"
+    },
+    "isAccessibleForFree": true,
+    "inLanguage": "ru",
+    "url": "https://guide.olezhek28.courses/architecture/",
+    "image": "https://guide.olezhek28.courses/architecture/hero.jpg",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "RUB",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
   <style>
     /* ===== RESET & BASE ===== */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -96,7 +133,7 @@
     .nav__link {
       font-size: 14px;
       font-weight: 500;
-      color: #babcbd;
+      color: #c8cacc;
       transition: color 0.2s;
     }
     .nav__link:hover { color: #ffffff; }
@@ -110,7 +147,7 @@
     .nav__socials a {
       display: flex;
       align-items: center;
-      color: #babcbd;
+      color: #c8cacc;
       transition: color 0.2s;
     }
     .nav__socials a:hover { color: #ffffff; }
@@ -240,14 +277,14 @@
     .hero__subtitle {
       font-size: 20px;
       font-weight: 500;
-      color: #babcbd;
+      color: #c8cacc;
       margin-bottom: 16px;
     }
 
     .hero__desc {
       font-size: 16px;
       font-weight: 500;
-      color: #a7a9ab;
+      color: #b5b7b9;
       line-height: 1.7;
       margin-bottom: 40px;
     }
@@ -319,7 +356,7 @@
       font-size: 16px;
       font-weight: 500;
       line-height: 1.7;
-      color: #babcbd;
+      color: #c8cacc;
     }
 
     .section__cta {
@@ -445,14 +482,14 @@
       border-radius: 100px;
       font-size: 13px;
       font-weight: 500;
-      color: #babcbd;
+      color: #c8cacc;
       white-space: nowrap;
     }
 
     .experience__desc {
       font-size: 15px;
       font-weight: 500;
-      color: #a7a9ab;
+      color: #b5b7b9;
       line-height: 1.5;
     }
 
@@ -602,7 +639,7 @@
       transition: color 0.2s;
     }
     .footer__link:hover {
-      color: #babcbd;
+      color: #c8cacc;
     }
 
     .footer__legal {
@@ -712,6 +749,8 @@
     </div>
   </header>
 
+  <main>
+
   <!-- HERO -->
   <section class="hero">
     <div class="container">
@@ -724,7 +763,10 @@
           <a href="#cta" class="btn btn--primary">Забрать гайд бесплатно</a>
         </div>
         <div class="hero__image fade-up">
-          <img src="hero.jpg" alt="Гайд по архитектуре Go-проекта">
+          <picture>
+            <source srcset="hero.webp" type="image/webp">
+            <img src="hero.jpg" alt="Гайд по архитектуре Go-проекта" width="1280" height="720" fetchpriority="high">
+          </picture>
         </div>
       </div>
     </div>
@@ -870,7 +912,10 @@
         </div>
 
         <div class="teacher__photo fade-up">
-          <img src="oleg.png" alt="Олег Козырев — преподаватель">
+          <picture>
+            <source srcset="oleg.webp" type="image/webp">
+            <img src="oleg.png" alt="Олег Козырев — преподаватель" width="720" height="724" loading="lazy">
+          </picture>
         </div>
       </div>
     </div>
@@ -892,6 +937,8 @@
       </div>
     </div>
   </section>
+
+  </main>
 
   <!-- FOOTER -->
   <footer class="footer">
