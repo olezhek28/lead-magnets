@@ -6,6 +6,7 @@
   <title>Самый полный гайд по архитектуре Golang проекта</title>
   <meta name="description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции Go-проекта. Преподаватель — Олег Козырев.">
   <meta name="keywords" content="архитектура golang, чистая архитектура, Go, clean architecture, ddd, domain driven design, cqrs, handler service repository, собеседование golang, backend">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://guide.olezhek28.courses/architecture/">
   <meta property="og:title" content="Самый полный гайд по архитектуре Golang проекта">
   <meta property="og:description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. Бесплатно.">
@@ -540,6 +541,59 @@
       color: #182023;
     }
 
+    /* ===== FAQ ===== */
+    .faq {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq__item {
+      background: #31383f;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .faq__item summary {
+      list-style: none;
+      padding: 24px 28px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: color 0.2s;
+    }
+    .faq__item summary::-webkit-details-marker { display: none; }
+
+    .faq__item summary:hover { color: #dfdf41; }
+
+    .faq__item summary::after {
+      content: '+';
+      font-size: 22px;
+      font-weight: 400;
+      color: #dfdf41;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+
+    .faq__item[open] summary::after {
+      transform: rotate(45deg);
+    }
+
+    .faq__answer {
+      padding: 0 28px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #b5b7b9;
+    }
+
     /* ===== FINAL CTA ===== */
     .final-cta {
       padding: 48px 0 80px;
@@ -602,6 +656,13 @@
     .final-cta__btn svg {
       width: 22px;
       height: 22px;
+    }
+
+    .final-cta__hint {
+      margin-top: 16px;
+      font-size: 14px;
+      color: rgba(24, 32, 35, 0.55);
+      font-weight: 500;
     }
 
     /* ===== FOOTER ===== */
@@ -713,6 +774,9 @@
 
 
 
+      .faq__item summary { padding: 20px 20px; font-size: 15px; }
+      .faq__answer { padding: 0 20px 20px; font-size: 14px; }
+
       .final-cta { padding: 40px 0 60px; }
       .final-cta__card { padding: 40px 24px; border-radius: 24px; }
       .final-cta__title { font-size: 24px; }
@@ -735,6 +799,7 @@
         <a href="#about" class="nav__link">Что внутри</a>
         <a href="#for-who" class="nav__link">Для кого</a>
         <a href="#teacher" class="nav__link">Преподаватель</a>
+        <a href="#faq" class="nav__link">FAQ</a>
       </nav>
       <a href="#cta" class="btn btn--primary btn--header nav__cta">Забрать гайд</a>
       <button class="menu-toggle" onclick="this.parentElement.querySelector('.nav__links-mobile').classList.toggle('open')" aria-label="Меню">
@@ -744,6 +809,7 @@
         <a href="#about" class="nav__link" onclick="this.parentElement.classList.remove('open')">Что внутри</a>
         <a href="#for-who" class="nav__link" onclick="this.parentElement.classList.remove('open')">Для кого</a>
         <a href="#teacher" class="nav__link" onclick="this.parentElement.classList.remove('open')">Преподаватель</a>
+        <a href="#faq" class="nav__link" onclick="this.parentElement.classList.remove('open')">FAQ</a>
         <a href="#cta" class="btn btn--primary" style="margin-top:8px;" onclick="this.parentElement.classList.remove('open')">Забрать гайд</a>
       </div>
     </div>
@@ -921,6 +987,39 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section class="section section--dark" id="faq">
+    <div class="container">
+      <h2 class="section__title fade-up">Частые вопросы</h2>
+      <div class="faq">
+        <details class="faq__item fade-up">
+          <summary>Это правда бесплатно?</summary>
+          <div class="faq__answer">Да, гайд полностью бесплатный. Никаких скрытых платежей.</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Нужен ли опыт в Go?</summary>
+          <div class="faq__answer">Базовый синтаксис Go желателен. Гайд про архитектуру, а&nbsp;не&nbsp;про основы языка.</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Сколько времени займёт прохождение?</summary>
+          <div class="faq__answer">Около 3&nbsp;часов на&nbsp;просмотр. Рекомендуем параллельно писать код&nbsp;&mdash; тогда до&nbsp;6-10&nbsp;часов.</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>В каком формате гайд?</summary>
+          <div class="faq__answer">Видеогайд с&nbsp;подробным разбором кода на&nbsp;растущем проекте.</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Получу ли я исходный код?</summary>
+          <div class="faq__answer">Да, весь код из&nbsp;гайда доступен в&nbsp;репозитории, ссылка внутри.</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Подойдёт ли, если я пишу на другом языке?</summary>
+          <div class="faq__answer">Принципы архитектуры универсальны. Конкретные примеры на&nbsp;Go, но&nbsp;DDD, CQRS, ACL применимы к&nbsp;любому языку.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <!-- FINAL CTA -->
   <section class="final-cta" id="cta">
     <div class="container">
@@ -934,6 +1033,7 @@
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.41-.88.03-.24.37-.49.99-.75 3.9-1.7 6.5-2.82 7.82-3.37 3.72-1.55 4.5-1.82 5-1.83.11 0 .37.03.53.15.14.1.17.24.19.35.02.08.03.28.02.43z"/></svg>
           Забрать гайд в Telegram
         </a>
+        <p class="final-cta__hint">Откроется бот в Telegram, который выдаст ссылку на гайд</p>
       </div>
     </div>
   </section>
