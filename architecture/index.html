@@ -6,6 +6,7 @@
   <title>Самый полный гайд по архитектуре Golang проекта</title>
   <meta name="description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции Go-проекта. Преподаватель — Олег Козырев.">
   <meta name="keywords" content="архитектура golang, чистая архитектура, Go, clean architecture, ddd, domain driven design, cqrs, handler service repository, собеседование golang, backend">
+  <meta name="author" content="Олег Козырев">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://guide.olezhek28.courses/architecture/">
   <meta property="og:title" content="Самый полный гайд по архитектуре Golang проекта">
@@ -24,8 +25,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="hero.webp" type="image/webp" fetchpriority="high">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"></noscript>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -42,6 +43,9 @@
     "inLanguage": "ru",
     "url": "https://guide.olezhek28.courses/architecture/",
     "image": "https://guide.olezhek28.courses/architecture/hero.jpg",
+    "duration": "PT3H",
+    "educationalLevel": "Intermediate",
+    "coursePrerequisites": "Базовый синтаксис Go",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -231,9 +235,15 @@
     .btn--primary {
       background: #dfdf41;
       color: #182023;
+      animation: pulse-glow 2.5s ease-in-out infinite;
     }
     .btn--primary:hover {
       background: #caca18;
+      animation: none;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(223,223,65,0); }
+      50% { box-shadow: 0 0 20px 4px rgba(223,223,65,0.35); }
     }
 
     .btn--header {
@@ -344,6 +354,26 @@
       color: #b5b7b9;
       line-height: 1.7;
       margin-bottom: 40px;
+    }
+
+    .hero__review {
+      margin-top: 32px;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid #dfdf41;
+      border-radius: 0 12px 12px 0;
+    }
+    .hero__review-text {
+      font-size: 14px;
+      color: #c8cacc;
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+    .hero__review-author {
+      font-size: 13px;
+      color: #707070;
+      font-weight: 600;
     }
 
     /* ===== SECTION SHARED ===== */
@@ -909,6 +939,45 @@
       line-height: 1.6;
     }
 
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 44px;
+      height: 44px;
+      background: #dfdf41;
+      color: #182023;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.2s;
+      z-index: 999;
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .back-to-top:hover {
+      background: #caca18;
+    }
+    .back-to-top svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ===== STICKY MOBILE CTA ===== */
+    .sticky-cta {
+      display: none;
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 960px) {
       .container { padding: 0 24px; }
@@ -996,6 +1065,45 @@
       .btn { padding: 12px 24px; font-size: 14px; }
 
       .footer__inner { flex-direction: column; gap: 16px; text-align: center; }
+      .footer { padding-bottom: 80px; }
+
+      .sticky-cta {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(24, 32, 35, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 12px 20px;
+        z-index: 998;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(100%);
+        transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+      }
+      .sticky-cta.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .sticky-cta__btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: #dfdf41;
+        color: #182023;
+        border: none;
+        border-radius: 12px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+      }
+      .back-to-top { bottom: 80px; right: 20px; }
     }
   </style>
 </head>
@@ -1039,6 +1147,10 @@
           <p class="hero__subtitle">3&nbsp;часа практики от&nbsp;Senior Engineer из&nbsp;BigTech, которые дадут системное понимание архитектуры</p>
           <p class="hero__desc">После этого гайда ты&nbsp;будешь точно знать, как структурировать Go-проект, когда добавлять DDD, ACL и&nbsp;CQRS, и&nbsp;сможешь уверенно принимать архитектурные решения на&nbsp;работе и&nbsp;собесах</p>
           <a href="#cta" class="btn btn--primary">Забрать гайд бесплатно</a>
+          <div class="hero__review">
+            <div class="hero__review-text">&laquo;Колоссальная работа проделана. Как квинтэссенция всего хорошего, к&nbsp;чему мне пришлось прийти через боль и&nbsp;унижения.&raquo;</div>
+            <div class="hero__review-author">&mdash; Павел Г., прошёл гайд</div>
+          </div>
         </div>
         <div class="hero__image fade-up">
           <picture>
@@ -1327,6 +1439,14 @@
 
   </main>
 
+  <div class="sticky-cta" id="sticky-cta">
+    <a href="https://t.me/olezhek28go/2152" target="_blank" class="sticky-cta__btn">Забрать гайд бесплатно</a>
+  </div>
+
+  <button class="back-to-top" id="back-to-top" aria-label="Наверх">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
   <!-- FOOTER -->
   <footer class="footer">
     <div class="container footer__inner">
@@ -1433,14 +1553,31 @@
       mainGrid.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
       hiddenGrid.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
 
-      // Progress bar
+      // Progress bar + Back to top + Sticky CTA
       var progressBar = document.getElementById('progress-bar');
+      var backToTop = document.getElementById('back-to-top');
+      var stickyCta = document.getElementById('sticky-cta');
+      var finalCtaSection = document.getElementById('cta');
       window.addEventListener('scroll', function() {
         var scrollTop = window.scrollY;
         var docHeight = document.documentElement.scrollHeight - window.innerHeight;
         var scrollPercent = (scrollTop / docHeight) * 100;
         progressBar.style.width = scrollPercent + '%';
+        if (scrollTop > 600) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+        var ctaRect = finalCtaSection.getBoundingClientRect();
+        if (scrollTop > 400 && ctaRect.top > window.innerHeight) {
+          stickyCta.classList.add('visible');
+        } else {
+          stickyCta.classList.remove('visible');
+        }
       }, { passive: true });
+      backToTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     });
   </script>
 
