@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch",
+      "WebSearch",
+      "mcp__*"
+    ]
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "(afplay /System/Library/Sounds/Glass.aiff &) && sleep 0.1 && osascript -e 'display notification \"Claude ждёт ответа\" with title \"Claude Code\"' 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

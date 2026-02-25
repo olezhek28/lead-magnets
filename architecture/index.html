@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Самый полный гайд по архитектуре Golang проекта</title>
+  <meta name="description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции Go-проекта. Преподаватель — Олег Козырев.">
+  <meta name="keywords" content="архитектура golang, чистая архитектура, Go, clean architecture, ddd, domain driven design, cqrs, handler service repository, собеседование golang, backend">
+  <meta property="og:title" content="Самый полный гайд по архитектуре Golang проекта">
+  <meta property="og:description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. Бесплатно.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: #182023;
+      color: #ffffff;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; display: block; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== HEADER / NAV ===== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(24, 32, 35, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.3s;
+    }
+
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #dfdf41;
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nav__cta {
+      position: absolute;
+      right: 40px;
+    }
+
+    .nav__link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #babcbd;
+      transition: color 0.2s;
+    }
+    .nav__link:hover { color: #ffffff; }
+
+    .nav__socials {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav__socials a {
+      display: flex;
+      align-items: center;
+      color: #babcbd;
+      transition: color 0.2s;
+    }
+    .nav__socials a:hover { color: #ffffff; }
+    .nav__socials svg { width: 20px; height: 20px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .btn--primary {
+      background: #dfdf41;
+      color: #182023;
+    }
+    .btn--primary:hover {
+      background: #caca18;
+    }
+
+    .btn--header {
+      padding: 10px 24px;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    /* Mobile menu toggle */
+    .nav__links-mobile {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #ffffff;
+      margin: 5px 0;
+      transition: all 0.3s;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 100px 0 60px;
+      background: #182023;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(223, 223, 65, 0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero__inner {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+
+    .hero__content {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero__image {
+      flex: 1;
+      min-width: 0;
+      max-width: 480px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .hero__image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hero__badge {
+      display: inline-block;
+      padding: 6px 20px;
+      background: rgba(223, 223, 65, 0.15);
+      color: #dfdf41;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero__title {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero__title span {
+      color: #dfdf41;
+    }
+
+    .hero__subtitle {
+      font-size: 20px;
+      font-weight: 500;
+      color: #babcbd;
+      margin-bottom: 16px;
+    }
+
+    .hero__desc {
+      font-size: 16px;
+      font-weight: 500;
+      color: #a7a9ab;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    /* ===== SECTION SHARED ===== */
+    .section {
+      padding: 60px 0 48px;
+    }
+
+    .section__title {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section--light {
+      background: #e9e8ed;
+      color: #182023;
+    }
+    .section--dark {
+      background: #182023;
+      color: #ffffff;
+    }
+
+    /* ===== WHAT INSIDE (CARDS) ===== */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: #31383f;
+      border-radius: 20px;
+      padding: 40px 32px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    }
+
+    .card__icon {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(223, 223, 65, 0.1);
+      border-radius: 14px;
+    }
+    .card__icon svg {
+      width: 28px;
+      height: 28px;
+      color: #dfdf41;
+    }
+
+    .card__title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .card__desc {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #babcbd;
+    }
+
+    .section__cta {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    /* ===== FOR WHO ===== */
+    .for-who__title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .for-who__list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .for-who__item {
+      background: #31383f;
+      border-radius: 16px;
+      padding: 28px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #ffffff;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .for-who__icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(223,223,65,0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .for-who__icon svg {
+      width: 22px;
+      height: 22px;
+      color: #dfdf41;
+    }
+
+
+    /* ===== TEACHER ===== */
+    .teacher__grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .teacher__photo {
+      border-radius: 24px;
+      overflow: hidden;
+      background: #31383f;
+      position: sticky;
+      top: 100px;
+    }
+    .teacher__photo img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .teacher__photo-placeholder {
+      aspect-ratio: 3/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .teacher__name {
+      font-size: 40px;
+      font-weight: 500;
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+
+    /* Experience list */
+    .experience {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .experience__item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 16px;
+      padding: 24px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      align-items: baseline;
+    }
+    .experience__item:last-child {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .experience__company {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .experience__company-name {
+      font-size: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .experience__badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #babcbd;
+      white-space: nowrap;
+    }
+
+    .experience__desc {
+      font-size: 15px;
+      font-weight: 500;
+      color: #a7a9ab;
+      line-height: 1.5;
+    }
+
+    /* Stats cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: #31383f;
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      transition: transform 0.3s;
+    }
+    .stat-card:first-child {
+      background: #dfdf41;
+      color: #182023;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-card__number {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .stat-card__line {
+      width: 40px;
+      height: 2px;
+      background: rgba(255,255,255,0.15);
+      margin-bottom: 16px;
+    }
+    .stat-card:first-child .stat-card__line {
+      background: rgba(0,0,0,0.15);
+    }
+
+    .stat-card__desc {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .stat-card:first-child .stat-card__desc {
+      color: #182023;
+    }
+
+    /* ===== FINAL CTA ===== */
+    .final-cta {
+      padding: 48px 0 80px;
+      background: #182023;
+    }
+
+    .final-cta__card {
+      background: #dfdf41;
+      border-radius: 32px;
+      padding: 64px 48px;
+      text-align: center;
+      color: #182023;
+    }
+
+    .final-cta__badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .final-cta__badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border: 1.5px solid rgba(24, 32, 35, 0.25);
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #182023;
+    }
+
+    .final-cta__title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 48px;
+      color: #182023;
+    }
+
+    .final-cta__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px 48px;
+      background: #182023;
+      color: #ffffff;
+      border-radius: 100px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .final-cta__btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+    .final-cta__btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 40px 0;
+      background: #182023;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .footer__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer__copy {
+      font-size: 14px;
+      color: #707070;
+    }
+    .footer__policy {
+      font-size: 14px;
+      color: #707070;
+      transition: color 0.2s;
+    }
+    .footer__policy:hover {
+      color: #babcbd;
+    }
+
+    .footer__socials {
+      display: flex;
+      gap: 20px;
+    }
+    .footer__socials a {
+      display: flex;
+      align-items: center;
+      color: #707070;
+      transition: color 0.2s;
+    }
+    .footer__socials a:hover { color: #dfdf41; }
+    .footer__socials svg { width: 22px; height: 22px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 960px) {
+      .container { padding: 0 24px; }
+      .hero__inner { flex-direction: column; gap: 40px; }
+      .hero__content { max-width: 100%; }
+      .hero__title { font-size: 36px; }
+      .section__title { font-size: 30px; margin-bottom: 50px; }
+      .for-who__title { font-size: 30px; }
+      .teacher__name { font-size: 30px; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .teacher__grid { grid-template-columns: 1fr; gap: 40px; }
+      .teacher__photo { order: -1; max-width: 320px; position: static; }
+      .experience__item { grid-template-columns: 1fr; gap: 8px; }
+      .stats-row { grid-template-columns: repeat(3, 1fr); }
+      .section { padding: 60px 0 40px; }
+      .final-cta__card { padding: 48px 32px; }
+      .final-cta__title { font-size: 28px; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { display: none; }
+      .menu-toggle { display: block; }
+
+      .nav__links-mobile.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: #182023;
+        padding: 20px 24px;
+        gap: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .nav__links-mobile .nav__link { display: block; font-size: 16px; }
+      .nav__cta { display: none; }
+
+      .hero { padding: 120px 0 60px; }
+      .hero__title { font-size: 28px; }
+      .hero__subtitle { font-size: 17px; }
+      .hero__desc { font-size: 14px; }
+
+      .cards { grid-template-columns: 1fr; }
+
+      .section__title { font-size: 24px; margin-bottom: 40px; }
+      .for-who__title { font-size: 24px; }
+      .for-who__list { grid-template-columns: 1fr; }
+      .for-who__item { font-size: 14px; padding: 16px 16px; }
+      .teacher__name { font-size: 26px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-card { padding: 24px 20px; }
+      .stat-card__number { font-size: 24px; }
+      .experience__company-name { font-size: 14px; }
+      .experience__badge { font-size: 11px; }
+      .experience__desc { font-size: 13px; }
+
+      .section { padding: 40px 0 24px; }
+
+      .card { padding: 28px 24px; }
+      .card__title { font-size: 14px; }
+      .card__desc { font-size: 12px; }
+
+
+
+      .final-cta { padding: 40px 0 60px; }
+      .final-cta__card { padding: 40px 24px; border-radius: 24px; }
+      .final-cta__title { font-size: 24px; }
+      .final-cta__badges { flex-wrap: wrap; }
+      .final-cta__btn { padding: 16px 32px; font-size: 16px; }
+
+      .btn { padding: 12px 24px; font-size: 14px; }
+
+      .footer__inner { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">{ Олег Козырев }</a>
+      <nav class="nav">
+        <a href="#about" class="nav__link">Что внутри</a>
+        <a href="#for-who" class="nav__link">Для кого</a>
+        <a href="#teacher" class="nav__link">Преподаватель</a>
+      </nav>
+      <a href="#cta" class="btn btn--primary btn--header nav__cta">Забрать гайд</a>
+      <button class="menu-toggle" onclick="this.parentElement.querySelector('.nav__links-mobile').classList.toggle('open')" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav__links-mobile">
+        <a href="#about" class="nav__link" onclick="this.parentElement.classList.remove('open')">Что внутри</a>
+        <a href="#for-who" class="nav__link" onclick="this.parentElement.classList.remove('open')">Для кого</a>
+        <a href="#teacher" class="nav__link" onclick="this.parentElement.classList.remove('open')">Преподаватель</a>
+        <a href="#cta" class="btn btn--primary" style="margin-top:8px;" onclick="this.parentElement.classList.remove('open')">Забрать гайд</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__inner">
+        <div class="hero__content fade-up">
+          <div class="hero__badge">Бесплатно</div>
+          <h1 class="hero__title">Самый полный гайд по&nbsp;<span>архитектуре Go-проекта</span></h1>
+          <p class="hero__subtitle">3&nbsp;часа практики от&nbsp;Senior Engineer из&nbsp;BigTech, которые дадут системное понимание архитектуры</p>
+          <p class="hero__desc">После этого гайда ты&nbsp;будешь точно знать, как структурировать Go-проект, когда добавлять DDD, ACL и&nbsp;CQRS, и&nbsp;сможешь уверенно принимать архитектурные решения на&nbsp;работе и&nbsp;собесах</p>
+          <a href="#cta" class="btn btn--primary">Забрать гайд бесплатно</a>
+        </div>
+        <div class="hero__image fade-up">
+          <img src="hero.jpg" alt="Гайд по архитектуре Go-проекта">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT INSIDE -->
+  <section class="section section--dark" id="about">
+    <div class="container">
+      <h2 class="section__title fade-up">Архитектура Go-проекта от&nbsp;и&nbsp;до<br>в&nbsp;одном подробном гайде</h2>
+
+      <div class="cards">
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </div>
+          <div class="card__title">Handler / Service / Repository</div>
+          <div class="card__desc">Разберешься, почему именно 3&nbsp;слоя, а&nbsp;не&nbsp;2 или&nbsp;10. Увидишь эволюцию каждого слоя на&nbsp;реальном коде</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34"/><path d="M8 3l4 4-4 4"/><line x1="22" y1="12" x2="12" y2="12"/></svg>
+          </div>
+          <div class="card__title">Интерфейсы и&nbsp;валидация</div>
+          <div class="card__desc">Узнаешь, где правильно объявлять интерфейсы и&nbsp;как разделить валидацию на&nbsp;структурную и&nbsp;бизнес-логику</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div class="card__title">Race Conditions и&nbsp;Mutex</div>
+          <div class="card__desc">Разберешься, откуда берутся гонки в&nbsp;сервисном слое и&nbsp;как их&nbsp;решать</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="card__title">DDD: Domain-Driven Design</div>
+          <div class="card__desc">Научишься выносить бизнес-логику из&nbsp;раздутых сервисов в&nbsp;доменные модели</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="card__title">Anti-Corruption Layer</div>
+          <div class="card__desc">Научишься строить адаптер между внешним API и&nbsp;доменом, чтобы чужие модели и&nbsp;термины не&nbsp;просачивались в&nbsp;твой код</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="card__title">CQRS</div>
+          <div class="card__desc">Узнаешь, как отделить запросы на&nbsp;чтение от&nbsp;записи и&nbsp;ускорить ответ сервиса в&nbsp;десятки раз</div>
+        </div>
+      </div>
+
+      <div class="section__cta fade-up">
+        <a href="#cta" class="btn btn--primary">Забрать гайд бесплатно</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR WHO -->
+  <section class="section section--dark" id="for-who">
+    <div class="container">
+      <h2 class="for-who__title fade-up">Этот гайд для&nbsp;тебя, если</h2>
+      <ul class="for-who__list">
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          Проект растет, код превращается в&nbsp;кашу, хочешь навести порядок в&nbsp;архитектуре
+        </li>
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          Хочешь систематизировать знания и&nbsp;уверенно отвечать на&nbsp;собесах по&nbsp;архитектуре
+        </li>
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/></svg></div>
+          Слышал про DDD, CQRS, ACL, но&nbsp;не&nbsp;понимаешь, когда это реально нужно
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- TEACHER -->
+  <section class="section section--dark" id="teacher">
+    <div class="container">
+      <div class="teacher__grid">
+        <div class="fade-up">
+          <h2 class="teacher__name">Преподаватель&nbsp;&mdash;<br>Олег Козырев</h2>
+
+          <ul class="experience">
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">BigTech (под NDA)</span>
+                <span class="experience__badge">Staff Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатываю LLM-платформу для&nbsp;создания ИИ продуктов внутри компании</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">BigTech (под NDA)</span>
+                <span class="experience__badge">Senior Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал внутреннюю платформу для&nbsp;сотен сервисов корпорации</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Ozon Tech</span>
+                <span class="experience__badge">Senior Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал сервисы логистики, модерации контента и&nbsp;мониторинга доставки</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Route 256</span>
+                <span class="experience__badge">Преподаватель</span>
+              </div>
+              <div class="experience__desc">Менторил и&nbsp;преподавал курсы по&nbsp;построению микросервисов в&nbsp;школе Ozon Tech</div>
+            </li>
+          </ul>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card__number">7000+</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">часов практики в&nbsp;BigTech</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number">7+&nbsp;лет</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">коммерческой разработки</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number">8500+</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">подписчиков на&nbsp;YouTube</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="teacher__photo fade-up">
+          <img src="oleg.png" alt="Олег Козырев — преподаватель">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta" id="cta">
+    <div class="container">
+      <div class="final-cta__card fade-up">
+        <div class="final-cta__badges">
+          <span class="final-cta__badge">3 часа практики</span>
+          <span class="final-cta__badge">Бесплатно</span>
+        </div>
+        <h2 class="final-cta__title">Забирай готовый гайд<br>по&nbsp;архитектуре Go-проекта</h2>
+        <a href="https://t.me/olezhek28go/2152" target="_blank" class="final-cta__btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.41-.88.03-.24.37-.49.99-.75 3.9-1.7 6.5-2.82 7.82-3.37 3.72-1.55 4.5-1.82 5-1.83.11 0 .37.03.53.15.14.1.17.24.19.35.02.08.03.28.02.43z"/></svg>
+          Забрать гайд в Telegram
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__copy">&copy; 2026 Олег Козырев</div>
+      <a href="policy.html" target="_blank" class="footer__policy">Политика конфиденциальности</a>
+    </div>
+  </footer>
+
+  <!-- SCROLL ANIMATIONS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.fade-up').forEach(function(el) {
+        observer.observe(el);
+      });
+    });
+  </script>
+
+</body>
+</html>
