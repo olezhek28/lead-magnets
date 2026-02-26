@@ -1,24 +1,25 @@
 service: idea-board
-
-image: olezhek28/idea-board
+image: godev-vibe/idea-board
 
 servers:
   web:
-    hosts:
-      - YOUR_VPS_IP
-    labels:
-      traefik.http.routers.idea-board.rule: Host(`ideas.olezhek28.courses`)
-      traefik.http.routers.idea-board.tls: true
-      traefik.http.routers.idea-board.tls.certresolver: letsencrypt
+    - 89.19.208.212
 
-volumes:
-  - "idea-board-data:/app/data"
+proxy:
+  ssl: true
+  host: ideas.olezhek28.courses
+  app_port: 3000
+  healthcheck:
+    path: /api/auth/me
 
 registry:
   server: ghcr.io
-  username: olezhek28
+  username: godev-vibe
   password:
     - KAMAL_REGISTRY_PASSWORD
+
+volumes:
+  - "idea-board-data:/app/data"
 
 env:
   secret:
@@ -32,16 +33,3 @@ env:
 
 builder:
   arch: amd64
-
-traefik:
-  options:
-    publish:
-      - "443:443"
-    volume:
-      - "letsencrypt:/letsencrypt"
-  args:
-    entryPoints.web.address: ":80"
-    entryPoints.websecure.address: ":443"
-    certificatesResolvers.letsencrypt.acme.email: "olezhek28@gmail.com"
-    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
-    certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint: "web"
