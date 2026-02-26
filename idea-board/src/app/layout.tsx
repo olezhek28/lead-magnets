@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Idea Board — Борда идей для контента",
     description: "Предлагай темы для контента, голосуй за идеи и следи за их реализацией",
-    url: "https://ideas.olezhek28.dev",
+    url: "https://ideas.olezhek28.courses",
     siteName: "Idea Board",
     type: "website",
   },
@@ -26,10 +26,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="bg-bg-base text-text-primary font-sans min-h-screen">
+      <body className="bg-bg-base text-text-primary font-sans min-h-screen flex flex-col">
         <AuthProvider>
           <Header />
-          {children}
+          <div className="flex-1">{children}</div>
+          <footer className="border-t border-border-light py-10">
+            <div className="max-w-[1200px] mx-auto px-5 flex flex-col gap-6 text-center sm:text-left">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <span className="text-sm text-[#707070]">&copy; 2026 Олег Козырев</span>
+              </div>
+              <div className="text-[13px] text-[#505050] leading-relaxed">
+                ИП Козырев Олег Вячеславович<br />
+                ИНН 440315249608<br />
+                ОГРНИП 324440000010534<br />
+                Дата регистрации&nbsp;&mdash; 25.04.2024<br />
+                Email&nbsp;&mdash; olezhek28.courses@gmail.com
+              </div>
+            </div>
+          </footer>
         </AuthProvider>
       </body>
     </html>

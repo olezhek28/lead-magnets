@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
 
     await sendTelegramMessage(
       chatId,
-      `Привет, ${firstName}! Я бот Idea Board.\n\nАвторизуйся на сайте, чтобы предлагать идеи и голосовать:\n${process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.dev"}`
+      `Привет, ${firstName}! Я бот Idea Board.\n\nАвторизуйся на сайте, чтобы предлагать идеи и голосовать:\n${process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.courses"}`
     );
     return NextResponse.json({ ok: true });
   }

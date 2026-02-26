@@ -7,7 +7,7 @@ servers:
 
 proxy:
   ssl: true
-  host: ideas.olezhek28.dev
+  host: ideas.olezhek28.courses
   app_port: 3100
   healthcheck:
     path: /api/auth/me
@@ -29,7 +29,7 @@ env:
     - ADMIN_TELEGRAM_ID
     - WEBHOOK_SECRET
   clear:
-    NEXT_PUBLIC_APP_URL: https://ideas.olezhek28.dev
+    NEXT_PUBLIC_APP_URL: https://ideas.olezhek28.courses
     DATABASE_PATH: /app/data/ideas.db
     MAX_VOTES: "10"
     REGEN_INTERVAL_HOURS: "24"

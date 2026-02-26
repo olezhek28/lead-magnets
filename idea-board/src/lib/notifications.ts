@@ -52,7 +52,7 @@ export async function notifyAuthorIdeaApproved(idea: { id: number; title: string
 
   if (!author || !author.notifications_enabled || !author.bot_started) return;
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.dev";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.courses";
   const ideaUrl = `${appUrl}?idea=${idea.id}`;
   const text = `🎉 Твоя идея «<b>${idea.title}</b>» прошла модерацию и опубликована!\n\n👉 <a href="${ideaUrl}">Перейти к идее</a>`;
 
@@ -80,7 +80,7 @@ export async function notifyAuthorNewVote(
 
   if (!author || !author.notifications_enabled || !author.bot_started) return;
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.dev";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.courses";
   const ideaUrl = `${appUrl}?idea=${idea.id}`;
   const text = `👍 +1 за идею «<b>${idea.title}</b>»\nВсего голосов: ${idea.votes_count}\n\n👉 <a href="${ideaUrl}">Перейти к идее</a>`;
 
