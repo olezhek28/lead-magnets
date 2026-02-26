@@ -1,0 +1,47 @@
+service: idea-board
+
+image: olezhek28/idea-board
+
+servers:
+  web:
+    hosts:
+      - YOUR_VPS_IP
+    labels:
+      traefik.http.routers.idea-board.rule: Host(`ideas.olezhek28.courses`)
+      traefik.http.routers.idea-board.tls: true
+      traefik.http.routers.idea-board.tls.certresolver: letsencrypt
+
+volumes:
+  - "idea-board-data:/app/data"
+
+registry:
+  server: ghcr.io
+  username: olezhek28
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  secret:
+    - TELEGRAM_BOT_TOKEN
+    - JWT_SECRET
+    - ADMIN_TELEGRAM_ID
+  clear:
+    TELEGRAM_BOT_USERNAME: idea_board_olezhek28_bot
+    NEXT_PUBLIC_APP_URL: https://ideas.olezhek28.courses
+    DATABASE_PATH: /app/data/ideas.db
+
+builder:
+  arch: amd64
+
+traefik:
+  options:
+    publish:
+      - "443:443"
+    volume:
+      - "letsencrypt:/letsencrypt"
+  args:
+    entryPoints.web.address: ":80"
+    entryPoints.websecure.address: ":443"
+    certificatesResolvers.letsencrypt.acme.email: "olezhek28@gmail.com"
+    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
+    certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint: "web"
