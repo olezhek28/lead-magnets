@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { verifyJwt, getCurrentUser } from "@/lib/auth";
-import { getUserWithBalance } from "@/lib/votes";
+import { getUserWithBalance, MONTHLY_IDEA_LIMIT } from "@/lib/votes";
+import { notifyAdminNewIdea } from "@/lib/notifications";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -96,9 +97,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Пользователь не найден" }, { status: 404 });
   }
 
-  if (user.ideas_this_month >= 3) {
+  if (user.ideas_this_month >= MONTHLY_IDEA_LIMIT) {
     return NextResponse.json({
-      error: "Вы исчерпали лимит идей в этом месяце (3/3). Новые идеи можно предлагать с 1-го числа следующего месяца",
+      error: `Вы исчерпали лимит идей в этом месяце (${MONTHLY_IDEA_LIMIT}/${MONTHLY_IDEA_LIMIT}). Новые идеи можно предлагать с 1-го числа следующего месяца`,
     }, { status: 429 });
   }
 
@@ -123,7 +124,11 @@ export async function POST(request: NextRequest) {
 
   db.prepare("UPDATE users SET ideas_this_month = ideas_this_month + 1 WHERE id = ?").run(session.userId);
 
-  const idea = db.prepare("SELECT * FROM ideas WHERE id = ?").get(result.lastInsertRowid);
+  const idea = db.prepare("SELECT * FROM ideas WHERE id = ?").get(result.lastInsertRowid) as any;
+
+  notifyAdminNewIdea(idea, user).catch((err) =>
+    console.error("Ошибка уведомления админа:", err)
+  );
 
   return NextResponse.json({ idea }, { status: 201 });
 }

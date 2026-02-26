@@ -1,10 +1,66 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { sendTelegramMessage } from "@/lib/telegram";
+import { sendTelegramMessage, answerCallbackQuery, editTelegramMessage } from "@/lib/telegram";
 import { isAdminTelegramId } from "@/lib/auth";
+import { notifyAuthorIdeaApproved } from "@/lib/notifications";
 
 export async function POST(request: NextRequest) {
+  const secret = process.env.WEBHOOK_SECRET;
+  if (secret && request.headers.get("x-telegram-bot-api-secret-token") !== secret) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
   const body = await request.json();
+
+  // Обработка callback_query (инлайн-кнопки модерации)
+  if (body.callback_query) {
+    const cq = body.callback_query;
+    const data = cq.data as string;
+    const telegramId = cq.from.id;
+    const chatId = cq.message.chat.id;
+    const messageId = cq.message.message_id;
+
+    if (!isAdminTelegramId(telegramId)) {
+      await answerCallbackQuery(cq.id, "Только админ может модерировать");
+      return NextResponse.json({ ok: true });
+    }
+
+    const match = data.match(/^(approve|reject)_(\d+)$/);
+    if (!match) {
+      await answerCallbackQuery(cq.id);
+      return NextResponse.json({ ok: true });
+    }
+
+    const action = match[1];
+    const ideaId = Number(match[2]);
+    const db = getDb();
+
+    const idea = db.prepare("SELECT * FROM ideas WHERE id = ?").get(ideaId) as any;
+
+    if (!idea || idea.status !== "moderation") {
+      await answerCallbackQuery(cq.id, "Уже обработано");
+      return NextResponse.json({ ok: true });
+    }
+
+    const originalText = cq.message.text || "";
+
+    if (action === "approve") {
+      db.prepare("UPDATE ideas SET status = 'new' WHERE id = ?").run(ideaId);
+      await editTelegramMessage(chatId, messageId, originalText + "\n\n✅ Опубликовано");
+      await answerCallbackQuery(cq.id, "Опубликовано!");
+      notifyAuthorIdeaApproved(idea).catch((err) =>
+        console.error("Ошибка уведомления автора:", err)
+      );
+    } else {
+      db.prepare("UPDATE users SET ideas_this_month = MAX(0, ideas_this_month - 1) WHERE id = ?").run(idea.author_id);
+      db.prepare("DELETE FROM ideas WHERE id = ?").run(ideaId);
+      await editTelegramMessage(chatId, messageId, originalText + "\n\n❌ Отклонено");
+      await answerCallbackQuery(cq.id, "Отклонено");
+    }
+
+    return NextResponse.json({ ok: true });
+  }
+
   const message = body.message;
 
   if (!message?.text) {
@@ -64,7 +120,7 @@ export async function POST(request: NextRequest) {
 
     await sendTelegramMessage(
       chatId,
-      `Привет, ${firstName}! Я бот Idea Board.\n\nАвторизуйся на сайте, чтобы предлагать идеи и голосовать:\n${process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.courses"}`
+      `Привет, ${firstName}! Я бот Idea Board.\n\nАвторизуйся на сайте, чтобы предлагать идеи и голосовать:\n${process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.dev"}`
     );
     return NextResponse.json({ ok: true });
   }

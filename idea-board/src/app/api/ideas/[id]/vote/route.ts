@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserWithBalance } from "@/lib/votes";
+import { notifyAuthorNewVote } from "@/lib/notifications";
 
 export async function POST(
   request: NextRequest,
@@ -46,6 +47,10 @@ export async function POST(
 
   const updatedUser = db.prepare("SELECT votes_balance FROM users WHERE id = ?").get(session.userId) as any;
   const updatedIdea = db.prepare("SELECT votes_count FROM ideas WHERE id = ?").get(id) as any;
+
+  notifyAuthorNewVote(Number(id), session.userId).catch((err) =>
+    console.error("Ошибка уведомления о голосе:", err)
+  );
 
   return NextResponse.json({
     votesCount: updatedIdea.votes_count,
