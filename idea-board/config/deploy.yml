@@ -8,7 +8,7 @@ servers:
 proxy:
   ssl: true
   host: ideas.olezhek28.courses
-  app_port: 3000
+  app_port: 3100
   healthcheck:
     path: /api/auth/me
 
