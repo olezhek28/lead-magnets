@@ -1,6 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth";
+import { verifyJwt, getCurrentUser } from "@/lib/auth";
+import { notifyAuthorIdeaDone } from "@/lib/notifications";
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const db = getDb();
+
+  let currentUserId: number | null = null;
+  const token = request.cookies.get("auth_token")?.value;
+  if (token) {
+    const payload = await verifyJwt(token);
+    if (payload) currentUserId = payload.userId;
+  }
+
+  const voteSelect = currentUserId
+    ? `, (SELECT 1 FROM votes WHERE user_id = ${currentUserId} AND idea_id = i.id) as user_voted`
+    : `, 0 as user_voted`;
+
+  const idea = db.prepare(`
+    SELECT i.*, u.username as author_username, u.first_name as author_name
+    ${voteSelect}
+    FROM ideas i
+    JOIN users u ON u.id = i.author_id
+    WHERE i.id = ? AND i.status NOT IN ('moderation', 'archived')
+  `).get(id);
+
+  if (!idea) {
+    return NextResponse.json({ error: "Идея не найдена" }, { status: 404 });
+  }
+
+  return NextResponse.json({ idea });
+}
 
 export async function PATCH(
   request: NextRequest,
@@ -38,7 +72,14 @@ export async function PATCH(
 
   db.prepare(`UPDATE ideas SET ${updates.join(", ")} WHERE id = ?`).run(...values, id);
 
-  const updated = db.prepare("SELECT * FROM ideas WHERE id = ?").get(id);
+  const updated = db.prepare("SELECT * FROM ideas WHERE id = ?").get(id) as any;
+
+  if (status === "done" && idea.status !== "done") {
+    notifyAuthorIdeaDone(updated).catch((err) =>
+      console.error("Ошибка уведомления автора (done):", err)
+    );
+  }
+
   return NextResponse.json({ idea: updated });
 }
 

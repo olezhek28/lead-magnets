@@ -21,7 +21,6 @@ const STATUSES = [
   { value: "", label: "Все" },
   { value: "new", label: "Новые" },
   { value: "planned", label: "В планах" },
-  { value: "in_progress", label: "В работе" },
   { value: "done", label: "Сделано" },
 ];
 

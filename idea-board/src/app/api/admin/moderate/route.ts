@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import {
+  approveIdea,
+  approveIdeaWithEdit,
+  rejectIdea,
+  notifyAuthorIdeaApproved,
+  notifyAuthorIdeaRejected,
+} from "@/lib/notifications";
 
 export async function POST(request: NextRequest) {
   const session = await getCurrentUser();
@@ -18,17 +25,26 @@ export async function POST(request: NextRequest) {
   }
 
   if (action === "approve") {
-    db.prepare("UPDATE ideas SET status = 'new', updated_at = datetime('now') WHERE id = ?").run(ideaId);
+    approveIdea(ideaId);
+    notifyAuthorIdeaApproved(idea).catch((err) =>
+      console.error("Ошибка уведомления автора:", err)
+    );
   } else if (action === "reject") {
-    db.prepare("DELETE FROM ideas WHERE id = ?").run(ideaId);
-    db.prepare("UPDATE users SET ideas_this_month = MAX(0, ideas_this_month - 1) WHERE id = ?").run(idea.author_id);
+    const ideaTitle = idea.title;
+    const authorId = idea.author_id;
+    rejectIdea(ideaId, authorId);
+    notifyAuthorIdeaRejected(ideaTitle, authorId).catch((err) =>
+      console.error("Ошибка уведомления автора (reject):", err)
+    );
   } else if (action === "edit_approve") {
     if (!title || !description) {
       return NextResponse.json({ error: "Укажите заголовок и описание" }, { status: 400 });
     }
-    db.prepare(
-      "UPDATE ideas SET status = 'new', title = ?, description = ?, updated_at = datetime('now') WHERE id = ?"
-    ).run(title, description, ideaId);
+    approveIdeaWithEdit(ideaId, title, description);
+    const updatedIdea = db.prepare("SELECT * FROM ideas WHERE id = ?").get(ideaId) as any;
+    notifyAuthorIdeaApproved(updatedIdea).catch((err) =>
+      console.error("Ошибка уведомления автора:", err)
+    );
   } else {
     return NextResponse.json({ error: "Невалидное действие" }, { status: 400 });
   }

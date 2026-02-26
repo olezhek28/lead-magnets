@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { verifyJwt, getCurrentUser } from "@/lib/auth";
 import { getUserWithBalance, MONTHLY_IDEA_LIMIT } from "@/lib/votes";
 import { notifyAdminNewIdea } from "@/lib/notifications";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -90,6 +91,11 @@ export async function POST(request: NextRequest) {
   const session = await getCurrentUser();
   if (!session) {
     return NextResponse.json({ error: "Необходима авторизация" }, { status: 401 });
+  }
+
+  const rl = rateLimit(`ideas:${session.userId}`, 5, 60 * 1000);
+  if (!rl.ok) {
+    return NextResponse.json({ error: "Слишком много запросов, подождите минуту" }, { status: 429 });
   }
 
   const user = getUserWithBalance(session.userId);

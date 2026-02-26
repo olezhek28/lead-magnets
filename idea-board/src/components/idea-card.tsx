@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StatusBadge } from "./status-badge";
 import { CategoryBadge } from "./category-badge";
 import { VoteButton } from "./vote-button";
@@ -32,7 +33,9 @@ export function IdeaCard({ idea }: { idea: Idea }) {
           <CategoryBadge category={idea.category} />
         </div>
 
-        <h3 className="text-lg font-bold mb-1 text-white">{idea.title}</h3>
+        <Link href={`/ideas/${idea.id}`} className="text-lg font-bold mb-1 text-white hover:text-accent transition-colors block">
+          {idea.title}
+        </Link>
         <p className="text-text-secondary text-sm mb-3 line-clamp-2">{idea.description}</p>
 
         {idea.status === "done" && idea.result_url && (

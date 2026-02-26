@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserWithBalance } from "@/lib/votes";
 import { notifyAuthorNewVote } from "@/lib/notifications";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(
   request: NextRequest,
@@ -11,6 +12,11 @@ export async function POST(
   const session = await getCurrentUser();
   if (!session) {
     return NextResponse.json({ error: "Необходима авторизация" }, { status: 401 });
+  }
+
+  const rl = rateLimit(`vote:${session.userId}`, 20, 60 * 1000);
+  if (!rl.ok) {
+    return NextResponse.json({ error: "Слишком много запросов, подождите минуту" }, { status: 429 });
   }
 
   const { id } = await params;

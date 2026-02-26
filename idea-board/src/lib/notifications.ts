@@ -10,6 +10,29 @@ const CATEGORY_LABELS: Record<string, string> = {
   tool: "Инструмент",
 };
 
+function getAppUrl() {
+  return process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.courses";
+}
+
+function getIdeaUrl(ideaId: number) {
+  return `${getAppUrl()}/ideas/${ideaId}`;
+}
+
+type AuthorNotifiable = { chat_id: number; notifications_enabled: number; bot_started: number } | undefined;
+
+function getAuthorForNotification(authorId: number): AuthorNotifiable {
+  const db = getDb();
+  return db
+    .prepare("SELECT chat_id, notifications_enabled, bot_started FROM users WHERE id = ?")
+    .get(authorId) as AuthorNotifiable;
+}
+
+function canNotify(author: AuthorNotifiable): author is { chat_id: number; notifications_enabled: number; bot_started: number } {
+  return !!author && !!author.notifications_enabled && !!author.bot_started;
+}
+
+// --- Уведомление админу о новой идее ---
+
 export async function notifyAdminNewIdea(
   idea: { id: number; title: string; description: string; category: string },
   author: { username?: string; first_name: string }
@@ -44,25 +67,78 @@ export async function notifyAdminNewIdea(
   await sendTelegramMessageWithButtons(admin.chat_id, text, buttons);
 }
 
-export async function notifyAuthorIdeaApproved(idea: { id: number; title: string; author_id: number }) {
+// --- Shared-логика модерации ---
+
+export function approveIdea(ideaId: number) {
   const db = getDb();
-  const author = db
-    .prepare("SELECT chat_id, notifications_enabled, bot_started FROM users WHERE id = ?")
-    .get(idea.author_id) as { chat_id: number; notifications_enabled: number; bot_started: number } | undefined;
+  db.prepare("UPDATE ideas SET status = 'new', updated_at = datetime('now') WHERE id = ?").run(ideaId);
+}
 
-  if (!author || !author.notifications_enabled || !author.bot_started) return;
+export function approveIdeaWithEdit(ideaId: number, title: string, description: string) {
+  const db = getDb();
+  db.prepare(
+    "UPDATE ideas SET status = 'new', title = ?, description = ?, updated_at = datetime('now') WHERE id = ?"
+  ).run(title, description, ideaId);
+}
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.courses";
-  const ideaUrl = `${appUrl}?idea=${idea.id}`;
-  const text = `🎉 Твоя идея «<b>${idea.title}</b>» прошла модерацию и опубликована!\n\n👉 <a href="${ideaUrl}">Перейти к идее</a>`;
+export function rejectIdea(ideaId: number, authorId: number) {
+  const db = getDb();
+  db.prepare("DELETE FROM ideas WHERE id = ?").run(ideaId);
+  db.prepare("UPDATE users SET ideas_this_month = MAX(0, ideas_this_month - 1) WHERE id = ?").run(authorId);
+}
+
+// --- Уведомления автору ---
+
+export async function notifyAuthorIdeaApproved(idea: { id: number; title: string; author_id: number }) {
+  const author = getAuthorForNotification(idea.author_id);
+  if (!canNotify(author)) return;
+
+  const ideaUrl = getIdeaUrl(idea.id);
+  const text = [
+    `🎉 <b>Спасибо за идею!</b>`,
+    ``,
+    `Твоя идея «<b>${idea.title}</b>» прошла модерацию и опубликована.`,
+    ``,
+    `Поделись ссылкой с друзьями, чтобы за неё проголосовали:`,
+    `${ideaUrl}`,
+  ].join("\n");
 
   await sendTelegramMessage(author.chat_id, text);
 }
 
-export async function notifyAuthorNewVote(
-  ideaId: number,
-  voterId: number
-) {
+export async function notifyAuthorIdeaRejected(ideaTitle: string, authorId: number) {
+  const author = getAuthorForNotification(authorId);
+  if (!canNotify(author)) return;
+
+  const text = [
+    `😔 Спасибо за идею «<b>${ideaTitle}</b>»!`,
+    ``,
+    `К сожалению, она не прошла модерацию. Попробуй переформулировать или предложить другую тему.`,
+    ``,
+    `Слот для идеи возвращён — можешь предложить новую.`,
+  ].join("\n");
+
+  await sendTelegramMessage(author.chat_id, text);
+}
+
+export async function notifyAuthorIdeaDone(idea: { id: number; title: string; author_id: number; result_url?: string }) {
+  const author = getAuthorForNotification(idea.author_id);
+  if (!canNotify(author)) return;
+
+  const lines = [
+    `🔥 <b>Идея реализована!</b>`,
+    ``,
+    `Твоя идея «<b>${idea.title}</b>» воплощена в жизнь.`,
+  ];
+
+  if (idea.result_url) {
+    lines.push(``, `👉 <a href="${idea.result_url}">Смотреть результат</a>`);
+  }
+
+  await sendTelegramMessage(author.chat_id, lines.join("\n"));
+}
+
+export async function notifyAuthorNewVote(ideaId: number, voterId: number) {
   const db = getDb();
 
   const idea = db.prepare("SELECT id, title, author_id, votes_count FROM ideas WHERE id = ?").get(ideaId) as {
@@ -70,18 +146,12 @@ export async function notifyAuthorNewVote(
   } | undefined;
 
   if (!idea) return;
-
-  // Не уведомляем, если автор голосует за свою идею
   if (idea.author_id === voterId) return;
 
-  const author = db
-    .prepare("SELECT chat_id, notifications_enabled, bot_started FROM users WHERE id = ?")
-    .get(idea.author_id) as { chat_id: number; notifications_enabled: number; bot_started: number } | undefined;
+  const author = getAuthorForNotification(idea.author_id);
+  if (!canNotify(author)) return;
 
-  if (!author || !author.notifications_enabled || !author.bot_started) return;
-
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.courses";
-  const ideaUrl = `${appUrl}?idea=${idea.id}`;
+  const ideaUrl = getIdeaUrl(idea.id);
   const text = `👍 +1 за идею «<b>${idea.title}</b>»\nВсего голосов: ${idea.votes_count}\n\n👉 <a href="${ideaUrl}">Перейти к идее</a>`;
 
   await sendTelegramMessage(author.chat_id, text);

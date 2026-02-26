@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { sendTelegramMessage, answerCallbackQuery, editTelegramMessage } from "@/lib/telegram";
 import { isAdminTelegramId } from "@/lib/auth";
-import { notifyAuthorIdeaApproved } from "@/lib/notifications";
+import { approveIdea, rejectIdea, notifyAuthorIdeaApproved, notifyAuthorIdeaRejected } from "@/lib/notifications";
 
 export async function POST(request: NextRequest) {
   const secret = process.env.WEBHOOK_SECRET;
@@ -45,17 +45,21 @@ export async function POST(request: NextRequest) {
     const originalText = cq.message.text || "";
 
     if (action === "approve") {
-      db.prepare("UPDATE ideas SET status = 'new' WHERE id = ?").run(ideaId);
+      approveIdea(ideaId);
       await editTelegramMessage(chatId, messageId, originalText + "\n\n✅ Опубликовано");
       await answerCallbackQuery(cq.id, "Опубликовано!");
       notifyAuthorIdeaApproved(idea).catch((err) =>
         console.error("Ошибка уведомления автора:", err)
       );
     } else {
-      db.prepare("UPDATE users SET ideas_this_month = MAX(0, ideas_this_month - 1) WHERE id = ?").run(idea.author_id);
-      db.prepare("DELETE FROM ideas WHERE id = ?").run(ideaId);
+      const ideaTitle = idea.title;
+      const authorId = idea.author_id;
+      rejectIdea(ideaId, authorId);
       await editTelegramMessage(chatId, messageId, originalText + "\n\n❌ Отклонено");
       await answerCallbackQuery(cq.id, "Отклонено");
+      notifyAuthorIdeaRejected(ideaTitle, authorId).catch((err) =>
+        console.error("Ошибка уведомления автора (reject):", err)
+      );
     }
 
     return NextResponse.json({ ok: true });
