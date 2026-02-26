@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { getUserWithBalance } from "@/lib/votes";
+import { getUserWithBalance, MONTHLY_IDEA_LIMIT } from "@/lib/votes";
 import { getDb } from "@/lib/db";
 
 export async function GET() {
@@ -26,6 +26,8 @@ export async function GET() {
       votesBalance: user.votes_balance,
       votesGiven,
       ideasThisMonth: user.ideas_this_month,
+      monthlyIdeaLimit: MONTHLY_IDEA_LIMIT,
+      maxVotes: Number(process.env.MAX_VOTES || 10),
       isAdmin: user.is_admin === 1,
       lastVoteRegenAt: user.last_vote_regen_at,
     },

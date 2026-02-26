@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Idea Board — Борда идей для контента",
     description: "Предлагай темы для контента, голосуй за идеи и следи за их реализацией",
-    url: "https://ideas.olezhek28.courses",
+    url: "https://ideas.olezhek28.dev",
     siteName: "Idea Board",
     type: "website",
   },

@@ -7,7 +7,7 @@ servers:
 
 proxy:
   ssl: true
-  host: ideas.olezhek28.courses
+  host: ideas.olezhek28.dev
   app_port: 3100
   healthcheck:
     path: /api/auth/me
@@ -24,12 +24,16 @@ volumes:
 env:
   secret:
     - TELEGRAM_BOT_TOKEN
+    - TELEGRAM_BOT_USERNAME
     - JWT_SECRET
     - ADMIN_TELEGRAM_ID
+    - WEBHOOK_SECRET
   clear:
-    TELEGRAM_BOT_USERNAME: idea_board_olezhek28_bot
-    NEXT_PUBLIC_APP_URL: https://ideas.olezhek28.courses
+    NEXT_PUBLIC_APP_URL: https://ideas.olezhek28.dev
     DATABASE_PATH: /app/data/ideas.db
+    MAX_VOTES: "10"
+    REGEN_INTERVAL_HOURS: "24"
+    MONTHLY_IDEA_LIMIT: "3"
 
 builder:
   arch: amd64

@@ -10,6 +10,8 @@ interface User {
   votesBalance: number;
   votesGiven: number;
   ideasThisMonth: number;
+  monthlyIdeaLimit: number;
+  maxVotes: number;
   isAdmin: boolean;
 }
 

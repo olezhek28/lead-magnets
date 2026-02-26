@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { IdeaCard } from "./idea-card";
 
@@ -28,21 +28,38 @@ export function IdeasList() {
   const searchParams = useSearchParams();
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    setLoading(true);
+    // Отменяем предыдущий запрос
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    setFetching(true);
     const params = new URLSearchParams(searchParams.toString());
-    fetch(`/api/ideas?${params.toString()}`)
+
+    fetch(`/api/ideas?${params.toString()}`, { signal: controller.signal })
       .then((res) => res.json())
       .then((data) => {
         setIdeas(data.ideas);
         setPagination(data.pagination);
       })
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (err.name !== "AbortError") console.error(err);
+      })
+      .finally(() => {
+        setInitialLoading(false);
+        setFetching(false);
+      });
+
+    return () => controller.abort();
   }, [searchParams]);
 
-  if (loading) {
+  // Скелетоны только при первой загрузке
+  if (initialLoading) {
     return (
       <div className="space-y-4">
         {[1, 2, 3].map((i) => (
@@ -52,7 +69,7 @@ export function IdeasList() {
     );
   }
 
-  if (ideas.length === 0) {
+  if (ideas.length === 0 && !fetching) {
     return (
       <div className="text-center py-20">
         <p className="text-text-secondary text-lg">Идей пока нет</p>
@@ -63,7 +80,7 @@ export function IdeasList() {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className={`space-y-4 transition-opacity duration-150 ${fetching ? "opacity-60" : "opacity-100"}`}>
         {ideas.map((idea) => (
           <IdeaCard key={idea.id} idea={idea} />
         ))}

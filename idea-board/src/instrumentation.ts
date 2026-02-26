@@ -17,7 +17,10 @@ export async function register() {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: webhookUrl }),
+            body: JSON.stringify({
+              url: webhookUrl,
+              secret_token: process.env.WEBHOOK_SECRET,
+            }),
           }
         );
         const result = await response.json();

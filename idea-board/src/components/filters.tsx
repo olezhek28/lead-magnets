@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 
 const SORTS = [
   { value: "popular", label: "Популярное" },
@@ -29,6 +29,7 @@ export function Filters() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("q") || "");
+  const [, startTransition] = useTransition();
 
   const currentSort = searchParams.get("sort") || "popular";
   const currentCategory = searchParams.get("category") || "";
@@ -43,7 +44,9 @@ export function Filters() {
         params.delete(key);
       }
       params.delete("page");
-      router.push(`/?${params.toString()}`);
+      startTransition(() => {
+        router.replace(`/?${params.toString()}`);
+      });
     },
     [router, searchParams]
   );
