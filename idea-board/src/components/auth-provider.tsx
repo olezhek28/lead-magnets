@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { createContext, useContext, useCallback, ReactNode } from "react";
+import useSWR from "swr";
 
 interface User {
   id: number;
@@ -29,33 +30,25 @@ const AuthContext = createContext<AuthContextType>({
   logout: async () => {},
 });
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json()).then((data) => data.user ?? null);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: user, isLoading: loading, mutate } = useSWR<User | null>("/api/auth/me", fetcher, {
+    dedupingInterval: 60000,
+    revalidateOnFocus: false,
+  });
 
   const refreshUser = useCallback(async () => {
-    try {
-      const res = await fetch("/api/auth/me");
-      const data = await res.json();
-      setUser(data.user);
-    } catch {
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    await mutate();
+  }, [mutate]);
 
-  useEffect(() => {
-    refreshUser();
-  }, [refreshUser]);
-
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await fetch("/api/auth/logout", { method: "POST" });
-    setUser(null);
-  };
+    await mutate(null, { revalidate: false });
+  }, [mutate]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, refreshUser, logout }}>
+    <AuthContext.Provider value={{ user: user ?? null, loading, refreshUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

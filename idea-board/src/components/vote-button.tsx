@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSWRConfig } from "swr";
 import { useAuth } from "./auth-provider";
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 
 export function VoteButton({ ideaId, votesCount: initialCount, userVoted: initialVoted, onVoteChange }: Props) {
   const { user, refreshUser } = useAuth();
+  const { mutate: globalMutate } = useSWRConfig();
   const [count, setCount] = useState(initialCount);
   const [voted, setVoted] = useState(initialVoted);
   const [loading, setLoading] = useState(false);
@@ -33,6 +35,7 @@ export function VoteButton({ ideaId, votesCount: initialCount, userVoted: initia
         setCount(data.votesCount);
         setVoted(!voted);
         refreshUser();
+        globalMutate((key: unknown) => typeof key === "string" && key.startsWith("/api/ideas?"));
         onVoteChange?.(data.votesCount, data.votesBalance);
       }
     } catch {} finally {

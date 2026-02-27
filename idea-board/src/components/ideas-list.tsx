@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import useSWR from "swr";
 import { IdeaCard } from "./idea-card";
 
 interface Idea {
@@ -24,42 +24,23 @@ interface Pagination {
   total: number;
 }
 
+interface IdeasResponse {
+  ideas: Idea[];
+  pagination: Pagination;
+}
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export function IdeasList() {
   const searchParams = useSearchParams();
-  const [ideas, setIdeas] = useState<Idea[]>([]);
-  const [pagination, setPagination] = useState<Pagination | null>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [fetching, setFetching] = useState(false);
-  const abortRef = useRef<AbortController | null>(null);
+  const swrKey = `/api/ideas?${searchParams.toString()}`;
 
-  useEffect(() => {
-    // Отменяем предыдущий запрос
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
+  const { data, isLoading, isValidating } = useSWR<IdeasResponse>(swrKey, fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 10000,
+  });
 
-    setFetching(true);
-    const params = new URLSearchParams(searchParams.toString());
-
-    fetch(`/api/ideas?${params.toString()}`, { signal: controller.signal })
-      .then((res) => res.json())
-      .then((data) => {
-        setIdeas(data.ideas);
-        setPagination(data.pagination);
-      })
-      .catch((err) => {
-        if (err.name !== "AbortError") console.error(err);
-      })
-      .finally(() => {
-        setInitialLoading(false);
-        setFetching(false);
-      });
-
-    return () => controller.abort();
-  }, [searchParams]);
-
-  // Скелетоны только при первой загрузке
-  if (initialLoading) {
+  if (isLoading) {
     return (
       <div className="space-y-4">
         {[1, 2, 3].map((i) => (
@@ -69,7 +50,10 @@ export function IdeasList() {
     );
   }
 
-  if (ideas.length === 0 && !fetching) {
+  const ideas = data?.ideas ?? [];
+  const pagination = data?.pagination ?? null;
+
+  if (ideas.length === 0 && !isValidating) {
     return (
       <div className="text-center py-20">
         <p className="text-text-secondary text-lg">Идей пока нет</p>
@@ -80,7 +64,7 @@ export function IdeasList() {
 
   return (
     <>
-      <div className={`space-y-4 transition-opacity duration-150 ${fetching ? "opacity-60" : "opacity-100"}`}>
+      <div className={`space-y-4 transition-opacity duration-150 ${isValidating ? "opacity-60" : "opacity-100"}`}>
         {ideas.map((idea) => (
           <IdeaCard key={idea.id} idea={idea} />
         ))}

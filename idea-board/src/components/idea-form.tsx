@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSWRConfig } from "swr";
 import { useAuth } from "./auth-provider";
 
 const CATEGORIES = [
@@ -11,7 +12,8 @@ const CATEGORIES = [
 ];
 
 export function IdeaForm({ onCreated }: { onCreated?: () => void }) {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const { mutate: globalMutate } = useSWRConfig();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -48,6 +50,8 @@ export function IdeaForm({ onCreated }: { onCreated?: () => void }) {
       setSuccess(true);
       setTitle("");
       setDescription("");
+      refreshUser();
+      globalMutate((key: unknown) => typeof key === "string" && key.startsWith("/api/ideas?"));
       setTimeout(() => {
         setSuccess(false);
         setOpen(false);

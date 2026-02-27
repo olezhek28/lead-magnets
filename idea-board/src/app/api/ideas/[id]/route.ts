@@ -18,8 +18,12 @@ export async function GET(
   }
 
   const voteSelect = currentUserId
-    ? `, (SELECT 1 FROM votes WHERE user_id = ${currentUserId} AND idea_id = i.id) as user_voted`
+    ? `, (SELECT 1 FROM votes WHERE user_id = ? AND idea_id = i.id) as user_voted`
     : `, 0 as user_voted`;
+
+  const queryParams: any[] = [];
+  if (currentUserId) queryParams.push(currentUserId);
+  queryParams.push(id);
 
   const idea = db.prepare(`
     SELECT i.*, u.username as author_username, u.first_name as author_name
@@ -27,7 +31,7 @@ export async function GET(
     FROM ideas i
     JOIN users u ON u.id = i.author_id
     WHERE i.id = ? AND i.status NOT IN ('moderation', 'archived')
-  `).get(id);
+  `).get(...queryParams);
 
   if (!idea) {
     return NextResponse.json({ error: "Идея не найдена" }, { status: 404 });
