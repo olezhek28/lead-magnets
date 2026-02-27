@@ -4,9 +4,11 @@ import { StatusBadge } from "@/components/status-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { VoteButton } from "@/components/vote-button";
 import Link from "next/link";
+import { useAuth } from "@/components/auth-provider";
 import type { Idea } from "@/types/idea";
 
 export function IdeaPageClient({ idea }: { idea: Idea }) {
+  const { user } = useAuth();
   const date = new Date(idea.created_at).toLocaleDateString("ru-RU", {
     day: "numeric",
     month: "long",
@@ -47,8 +49,7 @@ export function IdeaPageClient({ idea }: { idea: Idea }) {
             )}
 
             <div className="flex items-center gap-3 text-sm text-text-secondary pt-3 border-t border-border">
-              <span>@{idea.author_username || idea.author_name}</span>
-              <span>&middot;</span>
+              {user?.isAdmin && <><span>@{idea.author_username || idea.author_name}</span><span>&middot;</span></>}
               <span>{date}</span>
               <span>&middot;</span>
               <span>{idea.votes_count} {pluralVotes(idea.votes_count)}</span>

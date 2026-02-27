@@ -1,10 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { StatusBadge } from "./status-badge";
 import { CategoryBadge } from "./category-badge";
 import { VoteButton } from "./vote-button";
+import { useAuth } from "./auth-provider";
 import type { Idea } from "@/types/idea";
 
 export function IdeaCard({ idea }: { idea: Idea }) {
+  const { user } = useAuth();
   const date = new Date(idea.created_at).toLocaleDateString("ru-RU", {
     day: "numeric",
     month: "short",
@@ -32,7 +36,7 @@ export function IdeaCard({ idea }: { idea: Idea }) {
         )}
 
         <div className="flex items-center gap-3 text-xs text-text-secondary">
-          <span>@{idea.author_username || idea.author_name}</span>
+          {user?.isAdmin && <span>@{idea.author_username || idea.author_name}</span>}
           <span>{date}</span>
         </div>
       </div>
