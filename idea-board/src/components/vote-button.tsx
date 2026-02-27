@@ -45,7 +45,7 @@ export function VoteButton({ ideaId, votesCount: initialCount, userVoted: initia
   };
 
   const isDone = status === "done";
-  const disabled = isDone || !user || (user.votesBalance <= 0 && !voted);
+  const disabled = isDone || !user || (!user.isAdmin && user.votesBalance <= 0 && !voted);
 
   return (
     <button

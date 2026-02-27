@@ -41,14 +41,16 @@ export async function POST(
     return NextResponse.json({ error: "Нельзя голосовать за реализованные идеи" }, { status: 403 });
   }
 
-  if (user.votes_balance <= 0) {
+  if (!session.isAdmin && user.votes_balance <= 0) {
     return NextResponse.json({ error: "У вас закончились голоса. Голоса восстанавливаются каждые 24 часа" }, { status: 429 });
   }
 
   const transaction = db.transaction(() => {
     db.prepare("INSERT INTO votes (user_id, idea_id) VALUES (?, ?)").run(session.userId, numericId);
     db.prepare("UPDATE ideas SET votes_count = votes_count + 1 WHERE id = ?").run(numericId);
-    db.prepare("UPDATE users SET votes_balance = votes_balance - 1 WHERE id = ?").run(session.userId);
+    if (!session.isAdmin) {
+      db.prepare("UPDATE users SET votes_balance = votes_balance - 1 WHERE id = ?").run(session.userId);
+    }
   });
 
   try {

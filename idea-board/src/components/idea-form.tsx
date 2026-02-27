@@ -22,7 +22,7 @@ export function IdeaForm({ onCreated }: { onCreated?: () => void }) {
 
   const limit = user.monthlyIdeaLimit || 3;
   const ideasLeft = limit - (user.ideasThisMonth || 0);
-  const canCreate = ideasLeft > 0;
+  const canCreate = user.isAdmin || ideasLeft > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +66,7 @@ export function IdeaForm({ onCreated }: { onCreated?: () => void }) {
         className={`flex items-center gap-2 px-5 py-2.5 rounded-[1000px] font-semibold text-sm transition-colors ${canCreate ? "bg-accent text-bg-base hover:bg-accent-hover" : "bg-bg-card text-text-secondary cursor-not-allowed"}`}
         title={!canCreate ? `Лимит идей исчерпан (${limit}/${limit}). Новые идеи с 1-го числа` : undefined}>
         + Предложить идею
-        <span className="text-xs opacity-70">({ideasLeft}/{limit})</span>
+        {!user.isAdmin && <span className="text-xs opacity-70">({ideasLeft}/{limit})</span>}
       </button>
     );
   }

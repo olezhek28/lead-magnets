@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Пользователь не найден" }, { status: 404 });
   }
 
-  if (user.ideas_this_month >= MONTHLY_IDEA_LIMIT) {
+  if (!session.isAdmin && user.ideas_this_month >= MONTHLY_IDEA_LIMIT) {
     return NextResponse.json({
       error: `Вы исчерпали лимит идей в этом месяце (${MONTHLY_IDEA_LIMIT}/${MONTHLY_IDEA_LIMIT}). Новые идеи можно предлагать с 1-го числа следующего месяца`,
     }, { status: 429 });
