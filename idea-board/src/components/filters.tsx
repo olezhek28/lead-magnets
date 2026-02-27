@@ -19,8 +19,7 @@ const CATEGORIES = [
 const STATUSES = [
   { value: "", label: "Все" },
   { value: "new", label: "Новые" },
-  { value: "planned", label: "В планах" },
-  { value: "done", label: "Сделано" },
+  { value: "done", label: "Реализованные" },
 ];
 
 export function Filters() {

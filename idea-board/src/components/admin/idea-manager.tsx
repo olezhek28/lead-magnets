@@ -5,9 +5,9 @@ import { StatusBadge } from "../status-badge";
 import { CategoryBadge } from "../category-badge";
 import type { Idea } from "@/types/idea";
 
-const STATUSES = ["new", "planned", "in_progress", "done"];
+const STATUSES = ["new", "done"];
 const STATUS_LABELS: Record<string, string> = {
-  new: "Новая", planned: "В планах", in_progress: "В работе", done: "Сделано"
+  new: "Новая", done: "Сделано"
 };
 
 export function IdeaManager() {
@@ -102,11 +102,10 @@ export function IdeaManager() {
               {changingId === idea.id && (
                 <div className="flex gap-2 mt-3 pt-3 border-t border-border">
                   <input value={resultUrl} onChange={(e) => setResultUrl(e.target.value)}
-                    placeholder="Ссылка на результат (обязательно)"
+                    placeholder="Ссылка на результат (необязательно)"
                     className="flex-1 bg-bg-base border border-border rounded-xl px-3 py-1.5 text-sm" />
-                  <button onClick={() => changeStatus(idea.id, "done", resultUrl)}
-                    disabled={!resultUrl}
-                    className="bg-status-done text-white px-3 py-1.5 rounded-[1000px] text-sm disabled:opacity-50">Готово</button>
+                  <button onClick={() => changeStatus(idea.id, "done", resultUrl || undefined)}
+                    className="bg-status-done text-white px-3 py-1.5 rounded-[1000px] text-sm">Готово</button>
                   <button onClick={() => { setChangingId(null); setResultUrl(""); }}
                     className="text-text-secondary text-sm">Отмена</button>
                 </div>

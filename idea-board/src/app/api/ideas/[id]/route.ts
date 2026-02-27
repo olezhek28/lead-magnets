@@ -76,10 +76,6 @@ export async function PATCH(
 
   const { status, title, description, result_url } = body;
 
-  if (status === "done" && !result_url && !idea.result_url) {
-    return NextResponse.json({ error: "Для статуса 'Сделано' обязательна ссылка на результат" }, { status: 400 });
-  }
-
   const updates: string[] = [];
   const values: any[] = [];
 

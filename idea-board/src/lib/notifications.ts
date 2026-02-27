@@ -128,15 +128,18 @@ export async function notifyAuthorIdeaDone(idea: { id: number; title: string; au
   const author = getAuthorForNotification(idea.author_id);
   if (!canNotify(author)) return;
 
+  const ideaUrl = getIdeaUrl(idea.id);
+  const resultLink = idea.result_url
+    ? `👉 <a href="${idea.result_url}">Смотреть результат</a>`
+    : `👉 <a href="${ideaUrl}">Перейти к идее</a>`;
+
   const lines = [
     `🔥 <b>Идея реализована!</b>`,
     ``,
     `Твоя идея «<b>${escapeHtml(idea.title)}</b>» воплощена в жизнь.`,
+    ``,
+    resultLink,
   ];
-
-  if (idea.result_url) {
-    lines.push(``, `👉 <a href="${idea.result_url}">Смотреть результат</a>`);
-  }
 
   await sendTelegramMessage(author.chat_id, lines.join("\n"));
 }

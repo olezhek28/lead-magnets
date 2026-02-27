@@ -1,8 +1,6 @@
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
   new: { label: "Новая", color: "bg-status-new" },
-  planned: { label: "В планах", color: "bg-status-planned" },
-  in_progress: { label: "В работе", color: "bg-status-in-progress" },
-  done: { label: "Сделано", color: "bg-status-done" },
+  done: { label: "Реализована", color: "bg-status-done" },
   moderation: { label: "На модерации", color: "bg-status-moderation" },
 };
 
