@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     Курс «Микросервисы, как в BigTech 2.0»
                   </a>
                   <a
-                    href="https://olezhek28.courses/go"
+                    href="https://olezhek28.courses/gothrough"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-[#909090] hover:text-accent transition-colors"
