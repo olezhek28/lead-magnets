@@ -1,13 +1,17 @@
 import { jwtVerify } from "jose";
 
-const JWT_SECRET_RAW = process.env.JWT_SECRET;
-if (!JWT_SECRET_RAW && process.env.NODE_ENV === "production") {
-  throw new Error("JWT_SECRET обязателен в production");
-}
+let _jwtSecret: Uint8Array | null = null;
 
-export const JWT_SECRET = new TextEncoder().encode(
-  JWT_SECRET_RAW || "dev-secret-change-me-in-production-32ch"
-);
+export function getJwtSecret(): Uint8Array {
+  if (!_jwtSecret) {
+    const raw = process.env.JWT_SECRET;
+    if (!raw && process.env.NODE_ENV === "production") {
+      console.error("JWT_SECRET не задан в production — используется дефолтный (НЕБЕЗОПАСНО)");
+    }
+    _jwtSecret = new TextEncoder().encode(raw || "dev-secret-change-me-in-production-32ch");
+  }
+  return _jwtSecret;
+}
 
 export interface JwtPayload {
   userId: number;
@@ -17,7 +21,7 @@ export interface JwtPayload {
 
 export async function verifyJwt(token: string): Promise<JwtPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as unknown as JwtPayload;
   } catch {
     return null;

@@ -1,7 +1,7 @@
 import { SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { getDb } from "./db";
-import { JWT_SECRET, verifyJwt } from "./jwt";
+import { getJwtSecret, verifyJwt } from "./jwt";
 import type { JwtPayload } from "./jwt";
 
 export type { JwtPayload };
@@ -14,7 +14,7 @@ export async function createJwt(payload: JwtPayload): Promise<string> {
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("30d")
     .setIssuedAt()
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function getCurrentUser(): Promise<(JwtPayload & { user: any }) | null> {
