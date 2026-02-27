@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: idea.description,
     openGraph: {
       title: `${idea.title} | ${category}`,
-      description: `${idea.description}\n\nГолосов: ${idea.votes_count}`,
+      description: idea.description,
       url: `https://ideas.olezhek28.courses/ideas/${id}`,
       siteName: "Idea Board",
       type: "article",
