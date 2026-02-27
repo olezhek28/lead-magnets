@@ -4,20 +4,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { VoteButton } from "@/components/vote-button";
 import Link from "next/link";
-
-interface Idea {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  status: string;
-  result_url: string | null;
-  votes_count: number;
-  user_voted: number | null;
-  author_username: string | null;
-  author_name: string;
-  created_at: string;
-}
+import type { Idea } from "@/types/idea";
 
 export function IdeaPageClient({ idea }: { idea: Idea }) {
   const date = new Date(idea.created_at).toLocaleDateString("ru-RU", {

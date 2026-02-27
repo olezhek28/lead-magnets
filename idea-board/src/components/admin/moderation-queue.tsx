@@ -2,16 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { CategoryBadge } from "../category-badge";
-
-interface Idea {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  author_username: string | null;
-  author_name: string;
-  created_at: string;
-}
+import type { Idea } from "@/types/idea";
 
 export function ModerationQueue() {
   const [ideas, setIdeas] = useState<Idea[]>([]);

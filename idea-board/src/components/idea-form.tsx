@@ -3,13 +3,9 @@
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 import { useAuth } from "./auth-provider";
+import { CATEGORY_LABELS } from "@/lib/constants";
 
-const CATEGORIES = [
-  { value: "youtube", label: "YouTube" },
-  { value: "telegram", label: "Telegram" },
-  { value: "course", label: "Курс" },
-  { value: "tool", label: "Инструмент" },
-];
+const CATEGORIES = Object.entries(CATEGORY_LABELS).map(([value, label]) => ({ value, label }));
 
 export function IdeaForm({ onCreated }: { onCreated?: () => void }) {
   const { user, refreshUser } = useAuth();

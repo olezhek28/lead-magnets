@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { getDb } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { IdeaPageClient } from "./idea-page-client";
+import { CATEGORY_LABELS } from "@/lib/constants";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -25,14 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Идея не найдена" };
   }
 
-  const CATEGORY_MAP: Record<string, string> = {
-    youtube: "YouTube",
-    telegram: "Telegram",
-    course: "Курс",
-    tool: "Инструмент",
-  };
-
-  const category = CATEGORY_MAP[idea.category] || idea.category;
+  const category = CATEGORY_LABELS[idea.category] || idea.category;
 
   return {
     title: `${idea.title} — Idea Board`,

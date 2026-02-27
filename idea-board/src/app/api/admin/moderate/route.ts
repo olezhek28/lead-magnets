@@ -15,7 +15,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Доступ запрещён" }, { status: 403 });
   }
 
-  const { ideaId, action, title, description } = await request.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Невалидный JSON" }, { status: 400 });
+  }
+  const { ideaId, action, title, description } = body;
 
   const db = getDb();
   const idea = db.prepare("SELECT * FROM ideas WHERE id = ? AND status = 'moderation'").get(ideaId) as any;

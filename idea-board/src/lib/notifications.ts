@@ -3,12 +3,15 @@ import { sendTelegramMessage, sendTelegramMessageWithButtons } from "./telegram"
 
 const ADMIN_TELEGRAM_ID = Number(process.env.ADMIN_TELEGRAM_ID || "0");
 
-const CATEGORY_LABELS: Record<string, string> = {
-  youtube: "YouTube",
-  telegram: "Telegram",
-  course: "Курс",
-  tool: "Инструмент",
-};
+import { CATEGORY_LABELS } from "./constants";
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 function getAppUrl() {
   return process.env.NEXT_PUBLIC_APP_URL || "https://ideas.olezhek28.courses";
@@ -50,11 +53,11 @@ export async function notifyAdminNewIdea(
   const text = [
     `🆕 <b>Новая идея на модерации</b>`,
     ``,
-    `<b>${idea.title}</b>`,
-    `${idea.description}`,
+    `<b>${escapeHtml(idea.title)}</b>`,
+    `${escapeHtml(idea.description)}`,
     ``,
-    `📂 ${categoryLabel}`,
-    `👤 ${authorName}`,
+    `📂 ${escapeHtml(categoryLabel)}`,
+    `👤 ${escapeHtml(authorName)}`,
   ].join("\n");
 
   const buttons = [
@@ -97,7 +100,7 @@ export async function notifyAuthorIdeaApproved(idea: { id: number; title: string
   const text = [
     `🎉 <b>Спасибо за идею!</b>`,
     ``,
-    `Твоя идея «<b>${idea.title}</b>» прошла модерацию и опубликована.`,
+    `Твоя идея «<b>${escapeHtml(idea.title)}</b>» прошла модерацию и опубликована.`,
     ``,
     `Поделись ссылкой с друзьями, чтобы за неё проголосовали:`,
     `${ideaUrl}`,
@@ -111,7 +114,7 @@ export async function notifyAuthorIdeaRejected(ideaTitle: string, authorId: numb
   if (!canNotify(author)) return;
 
   const text = [
-    `😔 Спасибо за идею «<b>${ideaTitle}</b>»!`,
+    `😔 Спасибо за идею «<b>${escapeHtml(ideaTitle)}</b>»!`,
     ``,
     `К сожалению, она не прошла модерацию. Попробуй переформулировать или предложить другую тему.`,
     ``,
@@ -128,7 +131,7 @@ export async function notifyAuthorIdeaDone(idea: { id: number; title: string; au
   const lines = [
     `🔥 <b>Идея реализована!</b>`,
     ``,
-    `Твоя идея «<b>${idea.title}</b>» воплощена в жизнь.`,
+    `Твоя идея «<b>${escapeHtml(idea.title)}</b>» воплощена в жизнь.`,
   ];
 
   if (idea.result_url) {
@@ -152,7 +155,7 @@ export async function notifyAuthorNewVote(ideaId: number, voterId: number) {
   if (!canNotify(author)) return;
 
   const ideaUrl = getIdeaUrl(idea.id);
-  const text = `👍 +1 за идею «<b>${idea.title}</b>»\nВсего голосов: ${idea.votes_count}\n\n👉 <a href="${ideaUrl}">Перейти к идее</a>`;
+  const text = `👍 +1 за идею «<b>${escapeHtml(idea.title)}</b>»\nВсего голосов: ${idea.votes_count}\n\n👉 <a href="${ideaUrl}">Перейти к идее</a>`;
 
   await sendTelegramMessage(author.chat_id, text);
 }

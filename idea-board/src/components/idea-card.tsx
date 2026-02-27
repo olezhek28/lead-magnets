@@ -2,20 +2,7 @@ import Link from "next/link";
 import { StatusBadge } from "./status-badge";
 import { CategoryBadge } from "./category-badge";
 import { VoteButton } from "./vote-button";
-
-interface Idea {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  status: string;
-  result_url: string | null;
-  votes_count: number;
-  user_voted: number | null;
-  author_username: string | null;
-  author_name: string;
-  created_at: string;
-}
+import type { Idea } from "@/types/idea";
 
 export function IdeaCard({ idea }: { idea: Idea }) {
   const date = new Date(idea.created_at).toLocaleDateString("ru-RU", {

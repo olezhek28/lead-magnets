@@ -3,22 +3,12 @@
 import { useState, useEffect } from "react";
 import { StatusBadge } from "../status-badge";
 import { CategoryBadge } from "../category-badge";
+import type { Idea } from "@/types/idea";
 
 const STATUSES = ["new", "planned", "in_progress", "done"];
 const STATUS_LABELS: Record<string, string> = {
   new: "Новая", planned: "В планах", in_progress: "В работе", done: "Сделано"
 };
-
-interface Idea {
-  id: number;
-  title: string;
-  category: string;
-  status: string;
-  result_url: string | null;
-  votes_count: number;
-  author_username: string | null;
-  author_name: string;
-}
 
 export function IdeaManager() {
   const [ideas, setIdeas] = useState<Idea[]>([]);

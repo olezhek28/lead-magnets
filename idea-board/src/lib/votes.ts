@@ -1,8 +1,7 @@
 import { getDb } from "./db";
+import { MAX_VOTES, REGEN_INTERVAL_HOURS, MONTHLY_IDEA_LIMIT } from "./constants";
 
-const MAX_VOTES = Number(process.env.MAX_VOTES || 10);
-const REGEN_INTERVAL_HOURS = Number(process.env.REGEN_INTERVAL_HOURS || 24);
-export const MONTHLY_IDEA_LIMIT = Number(process.env.MONTHLY_IDEA_LIMIT || 3);
+export { MONTHLY_IDEA_LIMIT };
 
 export function regenerateVotes(userId: number): void {
   const db = getDb();

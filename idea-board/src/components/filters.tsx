@@ -9,12 +9,11 @@ const SORTS = [
   { value: "new", label: "Новое" },
 ];
 
+import { CATEGORY_LABELS } from "@/lib/constants";
+
 const CATEGORIES = [
   { value: "", label: "Все" },
-  { value: "youtube", label: "YouTube" },
-  { value: "telegram", label: "Telegram" },
-  { value: "course", label: "Курс" },
-  { value: "tool", label: "Инструмент" },
+  ...Object.entries(CATEGORY_LABELS).map(([value, label]) => ({ value, label })),
 ];
 
 const STATUSES = [

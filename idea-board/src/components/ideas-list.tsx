@@ -3,20 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import { IdeaCard } from "./idea-card";
-
-interface Idea {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  status: string;
-  result_url: string | null;
-  votes_count: number;
-  user_voted: number | null;
-  author_username: string | null;
-  author_name: string;
-  created_at: string;
-}
+import type { Idea } from "@/types/idea";
 
 interface Pagination {
   page: number;
@@ -31,9 +18,24 @@ interface IdeasResponse {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+function buildSwrKey(searchParams: URLSearchParams): string {
+  const normalized = new URLSearchParams();
+  const sort = searchParams.get("sort");
+  if (sort && sort !== "popular") normalized.set("sort", sort);
+  const category = searchParams.get("category");
+  if (category) normalized.set("category", category);
+  const status = searchParams.get("status");
+  if (status) normalized.set("status", status);
+  const q = searchParams.get("q");
+  if (q) normalized.set("q", q);
+  const page = searchParams.get("page");
+  if (page && page !== "1") normalized.set("page", page);
+  return `/api/ideas?${normalized.toString()}`;
+}
+
 export function IdeasList() {
   const searchParams = useSearchParams();
-  const swrKey = `/api/ideas?${searchParams.toString()}`;
+  const swrKey = buildSwrKey(searchParams);
 
   const { data, isLoading, isValidating } = useSWR<IdeasResponse>(swrKey, fetcher, {
     revalidateOnFocus: false,

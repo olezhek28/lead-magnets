@@ -50,7 +50,12 @@ export async function POST(request: NextRequest) {
     }, { status: 429 });
   }
 
-  const body = await request.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Невалидный JSON" }, { status: 400 });
+  }
   const { title, description, category } = body;
 
   if (!title || title.length > 100) {
@@ -59,7 +64,7 @@ export async function POST(request: NextRequest) {
   if (!description || description.length < 30 || description.length > 500) {
     return NextResponse.json({ error: "Описание обязательно (30-500 символов)" }, { status: 400 });
   }
-  const validCategories = ["youtube", "telegram", "course", "tool"];
+  const { VALID_CATEGORIES: validCategories } = await import("@/lib/constants");
   if (!validCategories.includes(category)) {
     return NextResponse.json({ error: "Невалидная категория" }, { status: 400 });
   }

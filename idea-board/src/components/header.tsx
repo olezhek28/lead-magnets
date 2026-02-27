@@ -9,9 +9,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-bg-base/80 border-b border-border-light">
       <div className="max-w-[1200px] mx-auto px-5 h-16 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2">
-          <span className="text-accent font-bold text-xl">IB</span>
-          <span className="font-semibold text-lg hidden sm:inline">Idea Board</span>
+        <a href="https://olezhek28.courses" className="text-accent font-bold text-lg sm:text-xl whitespace-nowrap">
+          {"{ Олег Козырев }"}
         </a>
 
         <div className="flex items-center gap-4">

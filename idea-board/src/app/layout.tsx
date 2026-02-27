@@ -32,8 +32,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="flex-1">{children}</div>
           <footer className="border-t border-border-light py-10">
             <div className="max-w-[1200px] mx-auto px-5 flex flex-col gap-6 text-center sm:text-left">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <span className="text-sm text-[#707070]">&copy; 2026 Олег Козырев</span>
+                <div className="flex items-center gap-4">
+                  <a
+                    href="https://olezhek28.courses/microservices"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-[#909090] hover:text-accent transition-colors"
+                  >
+                    Курс «Микросервисы, как в BigTech 2.0»
+                  </a>
+                  <a
+                    href="https://olezhek28.courses/go"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-[#909090] hover:text-accent transition-colors"
+                  >
+                    Курс «Go, прорвёмся!»
+                  </a>
+                </div>
               </div>
               <div className="text-[13px] text-[#505050] leading-relaxed">
                 ИП Козырев Олег Вячеславович<br />

@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getUserWithBalance } from "@/lib/votes";
 import { notifyAuthorNewVote } from "@/lib/notifications";
 import { rateLimit } from "@/lib/rate-limit";
+import { MAX_VOTES } from "@/lib/constants";
 
 export async function POST(
   request: NextRequest,
@@ -20,23 +21,20 @@ export async function POST(
   }
 
   const { id } = await params;
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId <= 0) {
+    return NextResponse.json({ error: "Невалидный ID" }, { status: 400 });
+  }
+
   const db = getDb();
   const user = getUserWithBalance(session.userId);
 
   const idea = db.prepare(
     "SELECT * FROM ideas WHERE id = ? AND status NOT IN ('moderation', 'archived') AND merged_into_id IS NULL"
-  ).get(id) as any;
+  ).get(numericId) as any;
 
   if (!idea) {
     return NextResponse.json({ error: "Идея не найдена" }, { status: 404 });
-  }
-
-  const existingVote = db.prepare(
-    "SELECT * FROM votes WHERE user_id = ? AND idea_id = ?"
-  ).get(session.userId, id);
-
-  if (existingVote) {
-    return NextResponse.json({ error: "Вы уже голосовали за эту идею" }, { status: 409 });
   }
 
   if (user.votes_balance <= 0) {
@@ -44,17 +42,24 @@ export async function POST(
   }
 
   const transaction = db.transaction(() => {
-    db.prepare("INSERT INTO votes (user_id, idea_id) VALUES (?, ?)").run(session.userId, id);
-    db.prepare("UPDATE ideas SET votes_count = votes_count + 1 WHERE id = ?").run(id);
+    db.prepare("INSERT INTO votes (user_id, idea_id) VALUES (?, ?)").run(session.userId, numericId);
+    db.prepare("UPDATE ideas SET votes_count = votes_count + 1 WHERE id = ?").run(numericId);
     db.prepare("UPDATE users SET votes_balance = votes_balance - 1 WHERE id = ?").run(session.userId);
   });
 
-  transaction();
+  try {
+    transaction();
+  } catch (e: any) {
+    if (e.code === "SQLITE_CONSTRAINT_UNIQUE" || e.message?.includes("UNIQUE constraint failed")) {
+      return NextResponse.json({ error: "Вы уже голосовали за эту идею" }, { status: 409 });
+    }
+    throw e;
+  }
 
   const updatedUser = db.prepare("SELECT votes_balance FROM users WHERE id = ?").get(session.userId) as any;
-  const updatedIdea = db.prepare("SELECT votes_count FROM ideas WHERE id = ?").get(id) as any;
+  const updatedIdea = db.prepare("SELECT votes_count FROM ideas WHERE id = ?").get(numericId) as any;
 
-  notifyAuthorNewVote(Number(id), session.userId).catch((err) =>
+  notifyAuthorNewVote(numericId, session.userId).catch((err) =>
     console.error("Ошибка уведомления о голосе:", err)
   );
 
@@ -74,22 +79,26 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId <= 0) {
+    return NextResponse.json({ error: "Невалидный ID" }, { status: 400 });
+  }
+
   const db = getDb();
 
   const existingVote = db.prepare(
     "SELECT * FROM votes WHERE user_id = ? AND idea_id = ?"
-  ).get(session.userId, id);
+  ).get(session.userId, numericId);
 
   if (!existingVote) {
     return NextResponse.json({ error: "Вы не голосовали за эту идею" }, { status: 404 });
   }
 
-  const MAX_VOTES = 10;
   const user = db.prepare("SELECT votes_balance FROM users WHERE id = ?").get(session.userId) as any;
 
   const transaction = db.transaction(() => {
-    db.prepare("DELETE FROM votes WHERE user_id = ? AND idea_id = ?").run(session.userId, id);
-    db.prepare("UPDATE ideas SET votes_count = votes_count - 1 WHERE id = ?").run(id);
+    db.prepare("DELETE FROM votes WHERE user_id = ? AND idea_id = ?").run(session.userId, numericId);
+    db.prepare("UPDATE ideas SET votes_count = votes_count - 1 WHERE id = ?").run(numericId);
     if (user.votes_balance < MAX_VOTES) {
       db.prepare("UPDATE users SET votes_balance = MIN(votes_balance + 1, ?) WHERE id = ?").run(MAX_VOTES, session.userId);
     }
@@ -98,7 +107,7 @@ export async function DELETE(
   transaction();
 
   const updatedUser = db.prepare("SELECT votes_balance FROM users WHERE id = ?").get(session.userId) as any;
-  const updatedIdea = db.prepare("SELECT votes_count FROM ideas WHERE id = ?").get(id) as any;
+  const updatedIdea = db.prepare("SELECT votes_count FROM ideas WHERE id = ?").get(numericId) as any;
 
   return NextResponse.json({
     votesCount: updatedIdea.votes_count,

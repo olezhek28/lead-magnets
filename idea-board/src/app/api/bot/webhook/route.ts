@@ -6,11 +6,16 @@ import { approveIdea, rejectIdea, notifyAuthorIdeaApproved, notifyAuthorIdeaReje
 
 export async function POST(request: NextRequest) {
   const secret = process.env.WEBHOOK_SECRET;
-  if (secret && request.headers.get("x-telegram-bot-api-secret-token") !== secret) {
+  if (!secret || request.headers.get("x-telegram-bot-api-secret-token") !== secret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
-  const body = await request.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Невалидный JSON" }, { status: 400 });
+  }
 
   // Обработка callback_query (инлайн-кнопки модерации)
   if (body.callback_query) {

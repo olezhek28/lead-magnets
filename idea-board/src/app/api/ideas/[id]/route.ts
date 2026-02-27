@@ -8,6 +8,11 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId <= 0) {
+    return NextResponse.json({ error: "Невалидный ID" }, { status: 400 });
+  }
+
   const db = getDb();
 
   let currentUserId: number | null = null;
@@ -23,7 +28,7 @@ export async function GET(
 
   const queryParams: any[] = [];
   if (currentUserId) queryParams.push(currentUserId);
-  queryParams.push(id);
+  queryParams.push(numericId);
 
   const idea = db.prepare(`
     SELECT i.*, u.username as author_username, u.first_name as author_name
@@ -50,10 +55,21 @@ export async function PATCH(
   }
 
   const { id } = await params;
-  const body = await request.json();
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId <= 0) {
+    return NextResponse.json({ error: "Невалидный ID" }, { status: 400 });
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Невалидный JSON" }, { status: 400 });
+  }
+
   const db = getDb();
 
-  const idea = db.prepare("SELECT * FROM ideas WHERE id = ?").get(id) as any;
+  const idea = db.prepare("SELECT * FROM ideas WHERE id = ?").get(numericId) as any;
   if (!idea) {
     return NextResponse.json({ error: "Идея не найдена" }, { status: 404 });
   }
@@ -74,9 +90,9 @@ export async function PATCH(
 
   updates.push("updated_at = datetime('now')");
 
-  db.prepare(`UPDATE ideas SET ${updates.join(", ")} WHERE id = ?`).run(...values, id);
+  db.prepare(`UPDATE ideas SET ${updates.join(", ")} WHERE id = ?`).run(...values, numericId);
 
-  const updated = db.prepare("SELECT * FROM ideas WHERE id = ?").get(id) as any;
+  const updated = db.prepare("SELECT * FROM ideas WHERE id = ?").get(numericId) as any;
 
   if (status === "done" && idea.status !== "done") {
     notifyAuthorIdeaDone(updated).catch((err) =>
@@ -97,10 +113,15 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId <= 0) {
+    return NextResponse.json({ error: "Невалидный ID" }, { status: 400 });
+  }
+
   const db = getDb();
 
-  db.prepare("DELETE FROM votes WHERE idea_id = ?").run(id);
-  db.prepare("DELETE FROM ideas WHERE id = ?").run(id);
+  db.prepare("DELETE FROM votes WHERE idea_id = ?").run(numericId);
+  db.prepare("DELETE FROM ideas WHERE id = ?").run(numericId);
 
   return NextResponse.json({ ok: true });
 }

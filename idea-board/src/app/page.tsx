@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { IdeasList } from "@/components/ideas-list";
 import { Filters } from "@/components/filters";
-import { IdeaFormWrapper } from "@/components/idea-form-wrapper";
+import { IdeaForm } from "@/components/idea-form";
 import { SWRProvider } from "@/components/swr-provider";
 import { queryIdeas } from "@/lib/ideas-query";
 import { verifyJwt } from "@/lib/auth";
@@ -43,7 +43,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
             Предлагай темы для контента и голосуй за то, что хочешь видеть
           </p>
         </div>
-        <IdeaFormWrapper />
+        <IdeaForm />
       </div>
 
       <div className="bg-bg-card border border-border rounded-[20px] p-5 mb-8">
