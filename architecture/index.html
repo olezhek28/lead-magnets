@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+      ym(96022201, 'init', {webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/96022201" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  <!-- TGTrack: Откуда Подписки -->
+  <script src="https://api.tgtrack.ru/API/landing_script/v1/?linkID=682732c86bc8d9&type=ya&counterID=96022201" type="text/javascript" defer></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Самый полный гайд по архитектуре Golang проекта</title>
@@ -1119,7 +1134,6 @@
         <a href="#about" class="nav__link">Что внутри</a>
         <a href="#program" class="nav__link">Программа</a>
         <a href="#reviews" class="nav__link">Отзывы</a>
-        <a href="#faq" class="nav__link">FAQ</a>
       </nav>
       <a href="#cta" class="btn btn--primary btn--header nav__cta">Забрать гайд</a>
       <button class="menu-toggle" onclick="this.parentElement.querySelector('.nav__links-mobile').classList.toggle('open')" aria-label="Меню">
@@ -1129,7 +1143,6 @@
         <a href="#about" class="nav__link" onclick="this.parentElement.classList.remove('open')">Что внутри</a>
         <a href="#program" class="nav__link" onclick="this.parentElement.classList.remove('open')">Программа</a>
         <a href="#reviews" class="nav__link" onclick="this.parentElement.classList.remove('open')">Отзывы</a>
-        <a href="#faq" class="nav__link" onclick="this.parentElement.classList.remove('open')">FAQ</a>
         <a href="#cta" class="btn btn--primary" style="margin-top:8px;" onclick="this.parentElement.classList.remove('open')">Забрать гайд</a>
       </div>
     </div>
@@ -1147,10 +1160,6 @@
           <p class="hero__subtitle">3&nbsp;часа практики от&nbsp;Senior Engineer из&nbsp;BigTech, которые дадут системное понимание архитектуры</p>
           <p class="hero__desc">После этого гайда ты&nbsp;будешь точно знать, как структурировать Go-проект, когда добавлять DDD, ACL и&nbsp;CQRS, и&nbsp;сможешь уверенно принимать архитектурные решения на&nbsp;работе и&nbsp;собесах</p>
           <a href="#cta" class="btn btn--primary">Забрать гайд бесплатно</a>
-          <div class="hero__review">
-            <div class="hero__review-text">&laquo;Колоссальная работа проделана. Как квинтэссенция всего хорошего, к&nbsp;чему мне пришлось прийти через боль и&nbsp;унижения.&raquo;</div>
-            <div class="hero__review-author">&mdash; Павел Г., прошёл гайд</div>
-          </div>
         </div>
         <div class="hero__image fade-up">
           <picture>
@@ -1162,10 +1171,31 @@
     </div>
   </section>
 
+  <!-- FOR WHO -->
+  <section class="section section--dark" id="for-who">
+    <div class="container">
+      <h2 class="for-who__title fade-up">Этот гайд для&nbsp;тебя, если</h2>
+      <ul class="for-who__list">
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          Проект растет, код превращается в&nbsp;кашу, хочешь навести порядок в&nbsp;архитектуре
+        </li>
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          Хочешь систематизировать знания и&nbsp;уверенно отвечать на&nbsp;собесах по&nbsp;архитектуре
+        </li>
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/></svg></div>
+          Слышал про DDD, CQRS, ACL, но&nbsp;не&nbsp;понимаешь, когда это реально нужно
+        </li>
+      </ul>
+    </div>
+  </section>
+
   <!-- WHAT INSIDE -->
   <section class="section section--dark" id="about">
     <div class="container">
-      <h2 class="section__title fade-up">Архитектура Go-проекта от&nbsp;и&nbsp;до<br>в&nbsp;одном подробном гайде</h2>
+      <h2 class="section__title fade-up">Что подробно разбираем</h2>
 
       <div class="cards">
         <div class="card fade-up">
@@ -1232,76 +1262,55 @@
           <div class="program__time">0:00</div>
           <div class="program__content">
             <div class="program__name">Акт 0. Скрипт на&nbsp;80&nbsp;строк</div>
-            <div class="program__desc">Утилита для&nbsp;анализа CSV&nbsp;&mdash; всё в&nbsp;main.go, никакой архитектуры. Принцип YAGNI</div>
+            <div class="program__desc">Пишем утилиту с нуля и кладём весь код в один файл на 80 строк. Разбираемся, что такое принцип YAGNI и почему не надо усложнять раньше времени</div>
           </div>
         </div>
         <div class="program__item fade-up">
           <div class="program__time">13:51</div>
           <div class="program__content">
             <div class="program__name">Акт 1. Три слоя: Handler, Service, Repository</div>
-            <div class="program__desc">Новое требование&nbsp;&mdash; веб-интерфейс. Выделяем слои, пишем HTTP-хендлеры, E2E тесты</div>
+            <div class="program__desc">Утилита превращается в HTTP-сервис с CRUD, и сразу встаёт вопрос: как это организовать. Разбираем, почему именно три слоя Handler, Service, Repository, что каждый из них защищает и как выглядит эволюция кода от скрипта до полноценного сервиса. И как покрыть всё это E2E тестами</div>
           </div>
         </div>
         <div class="program__item fade-up">
           <div class="program__time">32:26</div>
           <div class="program__content">
             <div class="program__name">Акт 2. Валидация и&nbsp;интерфейсы</div>
-            <div class="program__desc">Инцидент на&nbsp;500&nbsp;двигателей. Структурная vs бизнес-валидация, best practices интерфейсов в&nbsp;Go</div>
+            <div class="program__desc">Смотрим, где должна жить валидация, чем структурная отличается от бизнес-логики и как правильно объявлять интерфейсы в Go</div>
           </div>
         </div>
         <div class="program__item fade-up">
           <div class="program__time">50:44</div>
           <div class="program__content">
             <div class="program__name">Акт 3. Race Conditions и&nbsp;Mutex</div>
-            <div class="program__desc">Сборка космических кораблей, метод StartAssembly, проблема атомарности и&nbsp;sync.Mutex</div>
+            <div class="program__desc">Разбираемся, как возникают гонки данных: две горутины одновременно обращаются к одному полю и данные расходятся в минус. Что такое атомарность операций и как навести порядок через sync.Mutex</div>
           </div>
         </div>
         <div class="program__item fade-up">
           <div class="program__time">1:17:17</div>
           <div class="program__content">
             <div class="program__name">Акт 4. DDD&nbsp;&mdash; Domain-Driven Design</div>
-            <div class="program__desc">От&nbsp;анемичной модели в&nbsp;200+&nbsp;строк ифов к&nbsp;богатой доменной модели. Value Objects, Entity, Aggregate</div>
+            <div class="program__desc">Сервис разбух до 200+ строк ифов. Переходим на богатую доменную модель: Value Object, Entity и Aggregate, где каждый объект сам отвечает за свои правила</div>
           </div>
         </div>
         <div class="program__item fade-up">
           <div class="program__time">2:30:25</div>
           <div class="program__content">
             <div class="program__name">Акт 5. Anti-Corruption Layer</div>
-            <div class="program__desc">Интеграция с&nbsp;внешним поставщиком Galactic Parts. HTTP-клиент, адаптер, Port-интерфейс</div>
+            <div class="program__desc">Подключаем внешний API и строим Anti-Corruption Layer, смотрим как изолировать чужой формат данных так, чтобы при смене поставщика менялся только один файл</div>
           </div>
         </div>
         <div class="program__item fade-up" style="border-bottom:none;">
           <div class="program__time">2:45:20</div>
           <div class="program__content">
             <div class="program__name">Акт 6. CQRS&nbsp;&mdash; разделение чтения и&nbsp;записи</div>
-            <div class="program__desc">Табло грузится минуту. Read-модель, Handler напрямую в&nbsp;ReadRepository. Мастер-чеклист паттернов</div>
+            <div class="program__desc">Страница грузится 800ms и подгружает тысячи полей, хотя показывает только четыре. Разбираемся, как разделить чтение и запись: Write path через агрегат, Read path напрямую в SQL.<br><span style="color:#dfdf41">В конце готовый чеклист, когда и какой паттерн использовать</span></div>
           </div>
         </div>
       </div>
       <div class="section__cta fade-up">
         <a href="#cta" class="btn btn--primary">Забрать гайд бесплатно</a>
       </div>
-    </div>
-  </section>
-
-  <!-- FOR WHO -->
-  <section class="section section--dark" id="for-who">
-    <div class="container">
-      <h2 class="for-who__title fade-up">Этот гайд для&nbsp;тебя, если</h2>
-      <ul class="for-who__list">
-        <li class="for-who__item fade-up">
-          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-          Проект растет, код превращается в&nbsp;кашу, хочешь навести порядок в&nbsp;архитектуре
-        </li>
-        <li class="for-who__item fade-up">
-          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-          Хочешь систематизировать знания и&nbsp;уверенно отвечать на&nbsp;собесах по&nbsp;архитектуре
-        </li>
-        <li class="for-who__item fade-up">
-          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/></svg></div>
-          Слышал про DDD, CQRS, ACL, но&nbsp;не&nbsp;понимаешь, когда это реально нужно
-        </li>
-      </ul>
     </div>
   </section>
 
@@ -1386,38 +1395,6 @@
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section class="section section--dark" id="faq">
-    <div class="container">
-      <h2 class="section__title fade-up">Частые вопросы</h2>
-      <div class="faq">
-        <details class="faq__item fade-up">
-          <summary>Это правда бесплатно?</summary>
-          <div class="faq__answer">Да, гайд полностью бесплатный. Никаких скрытых платежей.</div>
-        </details>
-        <details class="faq__item fade-up">
-          <summary>Нужен ли опыт в Go?</summary>
-          <div class="faq__answer">Базовый синтаксис Go желателен. Гайд про архитектуру, а&nbsp;не&nbsp;про основы языка.</div>
-        </details>
-        <details class="faq__item fade-up">
-          <summary>Сколько времени займёт прохождение?</summary>
-          <div class="faq__answer">Около 3&nbsp;часов на&nbsp;просмотр. Рекомендуем параллельно писать код&nbsp;&mdash; тогда до&nbsp;6-10&nbsp;часов.</div>
-        </details>
-        <details class="faq__item fade-up">
-          <summary>В каком формате гайд?</summary>
-          <div class="faq__answer">Видеогайд с&nbsp;подробным разбором кода на&nbsp;растущем проекте.</div>
-        </details>
-        <details class="faq__item fade-up">
-          <summary>Получу ли я исходный код?</summary>
-          <div class="faq__answer">Да, весь код из&nbsp;гайда доступен в&nbsp;репозитории, ссылка внутри.</div>
-        </details>
-        <details class="faq__item fade-up">
-          <summary>Подойдёт ли, если я пишу на другом языке?</summary>
-          <div class="faq__answer">Принципы архитектуры универсальны. Конкретные примеры на&nbsp;Go, но&nbsp;DDD, CQRS, ACL применимы к&nbsp;любому языку.</div>
-        </details>
-      </div>
-    </div>
-  </section>
 
   <!-- FINAL CTA -->
   <section class="final-cta" id="cta">
@@ -1432,7 +1409,7 @@
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.41-.88.03-.24.37-.49.99-.75 3.9-1.7 6.5-2.82 7.82-3.37 3.72-1.55 4.5-1.82 5-1.83.11 0 .37.03.53.15.14.1.17.24.19.35.02.08.03.28.02.43z"/></svg>
           Забрать гайд в Telegram
         </a>
-        <p class="final-cta__hint">Откроется бот в Telegram, который выдаст ссылку на гайд</p>
+        <p class="final-cta__hint">* После нажатия на кнопку откроется пост в моём Telegram-канале со ссылкой на гайд</p>
       </div>
     </div>
   </section>
