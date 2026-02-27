@@ -26,7 +26,7 @@ export function IdeaPageClient({ idea }: { idea: Idea }) {
 
       <div className="bg-bg-card border border-border rounded-[20px] p-6">
         <div className="flex gap-5">
-          <VoteButton ideaId={idea.id} votesCount={idea.votes_count} userVoted={!!idea.user_voted} />
+          <VoteButton ideaId={idea.id} votesCount={idea.votes_count} userVoted={!!idea.user_voted} status={idea.status} />
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-3 flex-wrap">

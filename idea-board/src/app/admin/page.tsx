@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ModerationQueue } from "@/components/admin/moderation-queue";
 import { IdeaManager } from "@/components/admin/idea-manager";
 import { DashboardStats } from "@/components/admin/dashboard-stats";
@@ -16,7 +17,10 @@ export default function AdminPage() {
 
   return (
     <main className="max-w-[1200px] mx-auto px-5 py-8">
-      <h1 className="text-3xl font-extrabold text-white mb-6">Админ-панель</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-extrabold text-white">Админ-панель</h1>
+        <Link href="/" className="text-text-secondary hover:text-white text-sm transition-colors">&larr; На главную</Link>
+      </div>
 
       <div className="flex gap-2 mb-6 border-b border-border pb-4">
         {TABS.map((t) => (

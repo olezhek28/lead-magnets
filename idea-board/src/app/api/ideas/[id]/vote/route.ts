@@ -37,6 +37,10 @@ export async function POST(
     return NextResponse.json({ error: "Идея не найдена" }, { status: 404 });
   }
 
+  if (idea.status === "done") {
+    return NextResponse.json({ error: "Нельзя голосовать за реализованные идеи" }, { status: 403 });
+  }
+
   if (user.votes_balance <= 0) {
     return NextResponse.json({ error: "У вас закончились голоса. Голоса восстанавливаются каждые 24 часа" }, { status: 429 });
   }
@@ -85,6 +89,14 @@ export async function DELETE(
   }
 
   const db = getDb();
+
+  const ideaForDelete = db.prepare("SELECT status FROM ideas WHERE id = ?").get(numericId) as any;
+  if (!ideaForDelete) {
+    return NextResponse.json({ error: "Идея не найдена" }, { status: 404 });
+  }
+  if (ideaForDelete.status === "done") {
+    return NextResponse.json({ error: "Нельзя менять голос за реализованные идеи" }, { status: 403 });
+  }
 
   const existingVote = db.prepare(
     "SELECT * FROM votes WHERE user_id = ? AND idea_id = ?"

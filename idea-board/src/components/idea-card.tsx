@@ -16,7 +16,7 @@ export function IdeaCard({ idea }: { idea: Idea }) {
 
   return (
     <div className="flex gap-4 bg-bg-card border border-border rounded-[20px] p-5 hover:border-border/80 transition-colors">
-      <VoteButton ideaId={idea.id} votesCount={idea.votes_count} userVoted={!!idea.user_voted} />
+      <VoteButton ideaId={idea.id} votesCount={idea.votes_count} userVoted={!!idea.user_voted} status={idea.status} />
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-2 flex-wrap">
