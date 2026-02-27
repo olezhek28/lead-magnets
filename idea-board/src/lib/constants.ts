@@ -7,6 +7,6 @@ export const CATEGORY_LABELS: Record<string, string> = {
 
 export const VALID_CATEGORIES = Object.keys(CATEGORY_LABELS);
 
-export const MAX_VOTES = Number(process.env.MAX_VOTES || 10);
+export const MAX_VOTES = Number(process.env.MAX_VOTES || 5);
 export const REGEN_INTERVAL_HOURS = Number(process.env.REGEN_INTERVAL_HOURS || 24);
-export const MONTHLY_IDEA_LIMIT = Number(process.env.MONTHLY_IDEA_LIMIT || 3);
+export const MONTHLY_IDEA_LIMIT = Number(process.env.MONTHLY_IDEA_LIMIT || 10);
