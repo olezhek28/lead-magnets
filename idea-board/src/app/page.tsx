@@ -50,7 +50,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-sm text-text-secondary">
           <div className="flex items-start gap-2">
             <span className="text-lg leading-none mt-0.5">💡</span>
-            <span>Предлагай идеи для видео, постов, курсов и инструментов</span>
+            <span>
+              Предлагай идеи для{" "}
+              <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">YouTube-канала</a>,{" "}
+              <a href="https://t.me/olezhek28go" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Telegram-канала</a>,{" "}
+              курсов и инструментов
+            </span>
           </div>
           <div className="flex items-start gap-2">
             <span className="text-lg leading-none mt-0.5">👍</span>
