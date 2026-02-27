@@ -40,30 +40,51 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         <div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Борда идей</h1>
           <p className="text-text-secondary mt-1">
-            Предлагай темы для контента и голосуй за то, что хочешь видеть
+            Единое место, где идеи не теряются, в отличие от голосовалок в Telegram
           </p>
         </div>
         <IdeaForm />
       </div>
 
       <div className="bg-bg-card border border-border rounded-[20px] p-5 mb-8">
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-sm text-text-secondary">
-          <div className="flex items-start gap-2">
-            <span className="text-lg leading-none mt-0.5">💡</span>
-            <span>
-              Предлагай идеи для{" "}
-              <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">YouTube-канала</a>,{" "}
-              <a href="https://t.me/olezhek28go" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Telegram-канала</a>,{" "}
-              курсов и инструментов
-            </span>
+        <div className="flex flex-col gap-4 text-sm text-text-secondary">
+          <p className="text-text-primary font-medium">
+            Опиши идею — если за неё проголосует много людей, она будет реализована.
+            Вот что можно предлагать:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="flex items-start gap-2">
+              <span className="text-lg leading-none mt-0.5">🎬</span>
+              <span>
+                Ролики для{" "}
+                <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">YouTube-канала</a>{" "}
+                — разборы, туториалы, код-ревью
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg leading-none mt-0.5">✈️</span>
+              <span>
+                Посты для{" "}
+                <a href="https://t.me/olezhek28go" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Telegram-канала</a>{" "}
+                — шпаргалки, советы, статьи
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg leading-none mt-0.5">🎓</span>
+              <span>
+                Темы для{" "}
+                <a href="https://olezhek28.courses" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">курсов</a>{" "}
+                — чему хотите научиться
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-lg leading-none mt-0.5">🛠</span>
+              <span>Инструменты — нужна утилита или сервис? Предлагай, сделаем вместе</span>
+            </div>
           </div>
-          <div className="flex items-start gap-2">
-            <span className="text-lg leading-none mt-0.5">👍</span>
-            <span>Голосуй за чужие идеи — топовые реализую в первую очередь</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="text-lg leading-none mt-0.5">🔔</span>
-            <span>Следи за статусом — бот уведомит, когда идея будет реализована</span>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 pt-3 border-t border-border text-xs">
+            <span>👍 Голосуй за чужие идеи — топовые реализую в первую очередь</span>
+            <span>🔔 Бот уведомит, когда идея будет реализована</span>
           </div>
         </div>
       </div>
