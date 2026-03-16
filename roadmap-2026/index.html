@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+      ym(96022201, 'init', {webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/96022201" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  <!-- TGTrack: Откуда Подписки -->
+  <script src="https://api.tgtrack.ru/API/landing_script/v1/?linkID=682732c86bc8d9&type=ya&counterID=96022201" type="text/javascript" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roadmap Golang-разработчика 2026 — от синтаксиса до Senior</title>
+  <meta name="description" content="Полный путь Go-разработчика в 4 уровнях — от первого собеседования до System Design и продакшн-практик. Graceful Shutdown, Health Checks, Observability — то, чего нет в 75% других роадмапов.">
+  <meta name="keywords" content="roadmap golang, golang разработчик, go developer roadmap, путь golang, карьера golang, собеседование golang, system design, graceful shutdown, health checks, observability, microservices, grpc, kubernetes">
+  <meta name="author" content="Олег Козырев">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://guide.olezhek28.courses/roadmap-2026/">
+  <meta property="og:title" content="Roadmap Golang-разработчика 2026 — от синтаксиса до Senior">
+  <meta property="og:description" content="Полный путь Go-разработчика в 4 уровнях. Graceful Shutdown, Health Checks, Observability — то, чего нет в 75% других роадмапов. Бесплатно.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://guide.olezhek28.courses/roadmap-2026/">
+  <meta property="og:image" content="https://guide.olezhek28.courses/roadmap-2026/hero.jpg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="720">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Олег Козырев — Гайды">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Roadmap Golang-разработчика 2026 — от синтаксиса до Senior">
+  <meta name="twitter:description" content="Полный путь Go-разработчика в 4 уровнях. Graceful Shutdown, Health Checks, Observability — то, чего нет в 75% других роадмапов. Бесплатно.">
+  <meta name="twitter:image" content="https://guide.olezhek28.courses/roadmap-2026/hero.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="hero.webp" type="image/webp" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"></noscript>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Roadmap Golang-разработчика 2026 — от синтаксиса до Senior",
+    "description": "Полный путь Go-разработчика в 4 уровнях — от первого собеседования до System Design и продакшн-практик.",
+    "provider": {
+      "@type": "Person",
+      "name": "Олег Козырев",
+      "jobTitle": "Staff Engineer",
+      "url": "https://guide.olezhek28.courses"
+    },
+    "isAccessibleForFree": true,
+    "inLanguage": "ru",
+    "url": "https://guide.olezhek28.courses/roadmap-2026/",
+    "image": "https://guide.olezhek28.courses/roadmap-2026/hero.jpg",
+    "educationalLevel": "Beginner to Advanced",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "RUB",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: #182023;
+      color: #ffffff;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; display: block; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== HEADER / NAV ===== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(24, 32, 35, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.3s;
+    }
+
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #dfdf41;
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nav__cta {
+      position: absolute;
+      right: 40px;
+    }
+
+    .nav__link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #c8cacc;
+      transition: color 0.2s;
+    }
+    .nav__link:hover { color: #ffffff; }
+
+    .nav__socials {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav__socials a {
+      display: flex;
+      align-items: center;
+      color: #c8cacc;
+      transition: color 0.2s;
+    }
+    .nav__socials a:hover { color: #ffffff; }
+    .nav__socials svg { width: 20px; height: 20px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .btn--primary {
+      background: #dfdf41;
+      color: #182023;
+      animation: pulse-glow 2.5s ease-in-out infinite;
+    }
+    .btn--primary:hover {
+      background: #caca18;
+      animation: none;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(223,223,65,0); }
+      50% { box-shadow: 0 0 20px 4px rgba(223,223,65,0.35); }
+    }
+
+    .btn--header {
+      padding: 10px 24px;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    /* Mobile menu toggle */
+    .nav__links-mobile {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #ffffff;
+      margin: 5px 0;
+      transition: all 0.3s;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 100px 0 60px;
+      background: #182023;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(223, 223, 65, 0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero__inner {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+
+    .hero__content {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero__image {
+      flex: 1;
+      min-width: 0;
+      max-width: 480px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .hero__image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hero__badge {
+      display: inline-block;
+      padding: 6px 20px;
+      background: rgba(223, 223, 65, 0.15);
+      color: #dfdf41;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero__title {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero__title span {
+      color: #dfdf41;
+    }
+
+    .hero__subtitle {
+      font-size: 20px;
+      font-weight: 500;
+      color: #c8cacc;
+      margin-bottom: 16px;
+    }
+
+    .hero__desc {
+      font-size: 16px;
+      font-weight: 500;
+      color: #b5b7b9;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    .hero__review {
+      margin-top: 32px;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid #dfdf41;
+      border-radius: 0 12px 12px 0;
+    }
+    .hero__review-text {
+      font-size: 14px;
+      color: #c8cacc;
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+    .hero__review-author {
+      font-size: 13px;
+      color: #707070;
+      font-weight: 600;
+    }
+
+    /* ===== SECTION SHARED ===== */
+    .section {
+      padding: 60px 0 48px;
+    }
+
+    .section__title {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section--light {
+      background: #e9e8ed;
+      color: #182023;
+    }
+    .section--dark {
+      background: #182023;
+      color: #ffffff;
+    }
+
+    /* ===== WHAT INSIDE (CARDS) ===== */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: #31383f;
+      border-radius: 20px;
+      padding: 40px 32px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    }
+
+    .card__icon {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(223, 223, 65, 0.1);
+      border-radius: 14px;
+    }
+    .card__icon svg {
+      width: 28px;
+      height: 28px;
+      color: #dfdf41;
+    }
+
+    .card__title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .card__desc {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #c8cacc;
+    }
+
+    .section__cta {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    /* ===== FOR WHO ===== */
+    .for-who__title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .for-who__list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .for-who__item {
+      background: #31383f;
+      border-radius: 16px;
+      padding: 28px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #ffffff;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .for-who__icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(223,223,65,0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .for-who__icon svg {
+      width: 22px;
+      height: 22px;
+      color: #dfdf41;
+    }
+
+
+    /* ===== TEACHER ===== */
+    .teacher__grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .teacher__photo {
+      border-radius: 24px;
+      overflow: hidden;
+      background: #31383f;
+      position: sticky;
+      top: 100px;
+    }
+    .teacher__photo img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .teacher__photo-placeholder {
+      aspect-ratio: 3/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .teacher__name {
+      font-size: 40px;
+      font-weight: 500;
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+
+    /* Experience list */
+    .experience {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .experience__item {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+      padding: 24px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      align-items: baseline;
+    }
+    .experience__item:last-child {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .experience__company {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .experience__company-name {
+      font-size: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .experience__badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #c8cacc;
+      white-space: nowrap;
+    }
+
+    .experience__desc {
+      font-size: 15px;
+      font-weight: 500;
+      color: #b5b7b9;
+      line-height: 1.5;
+    }
+
+    /* Stats cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: #31383f;
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      transition: transform 0.3s;
+    }
+    .stat-card:first-child {
+      background: #dfdf41;
+      color: #182023;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-card__number {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .stat-card__line {
+      width: 40px;
+      height: 2px;
+      background: rgba(255,255,255,0.15);
+      margin-bottom: 16px;
+    }
+    .stat-card:first-child .stat-card__line {
+      background: rgba(0,0,0,0.15);
+    }
+
+    .stat-card__desc {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .stat-card:first-child .stat-card__desc {
+      color: #182023;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: #dfdf41;
+      z-index: 1001;
+      transition: width 0.1s linear;
+      width: 0%;
+    }
+
+    /* ===== PROGRAM (LEVELS) ===== */
+    .program {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .program__level {
+      margin-bottom: 40px;
+    }
+
+    .program__level-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(223,223,65,0.3);
+    }
+
+    .program__level-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: #dfdf41;
+      color: #182023;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .program__level-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .program__level-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: #dfdf41;
+    }
+
+    .program__item {
+      display: grid;
+      grid-template-columns: 1fr;
+      padding: 14px 0 14px 60px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+    }
+
+    .program__item::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 22px;
+      width: 8px;
+      height: 8px;
+      background: rgba(223,223,65,0.4);
+      border-radius: 50%;
+    }
+
+    .program__name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .program__desc {
+      font-size: 17px;
+      font-weight: 500;
+      color: #c8cacc;
+      line-height: 1.7;
+    }
+
+    /* ===== REVIEWS ===== */
+    .reviews {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .review {
+      background: #31383f;
+      border-radius: 20px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .review__text {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #c8cacc;
+      flex: 1;
+    }
+
+    .review__author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .review__avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(223,223,65,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #dfdf41;
+      flex-shrink: 0;
+    }
+
+    .review__meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .review__name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .review__source {
+      font-size: 12px;
+      color: #707070;
+    }
+
+    .reviews__hidden {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .reviews__hidden.open {
+      display: grid;
+    }
+
+    .reviews__more {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .reviews__more-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      color: #c8cacc;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .reviews__more-btn:hover {
+      border-color: #dfdf41;
+      color: #dfdf41;
+    }
+
+    /* ===== FAQ ===== */
+    .faq {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq__item {
+      background: #31383f;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .faq__item summary {
+      list-style: none;
+      padding: 24px 28px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: color 0.2s;
+    }
+    .faq__item summary::-webkit-details-marker { display: none; }
+
+    .faq__item summary:hover { color: #dfdf41; }
+
+    .faq__item summary::after {
+      content: '+';
+      font-size: 22px;
+      font-weight: 400;
+      color: #dfdf41;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+
+    .faq__item[open] summary::after {
+      transform: rotate(45deg);
+    }
+
+    .faq__answer {
+      padding: 0 28px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #b5b7b9;
+    }
+
+    /* ===== FINAL CTA ===== */
+    .final-cta {
+      padding: 48px 0 80px;
+      background: #182023;
+    }
+
+    .final-cta__card {
+      background: #dfdf41;
+      border-radius: 32px;
+      padding: 64px 48px;
+      text-align: center;
+      color: #182023;
+    }
+
+    .final-cta__badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .final-cta__badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border: 1.5px solid rgba(24, 32, 35, 0.25);
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #182023;
+    }
+
+    .final-cta__title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 48px;
+      color: #182023;
+    }
+
+    .final-cta__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px 48px;
+      background: #182023;
+      color: #ffffff;
+      border-radius: 100px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .final-cta__btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+    .final-cta__btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .final-cta__hint {
+      margin-top: 16px;
+      font-size: 14px;
+      color: rgba(24, 32, 35, 0.55);
+      font-weight: 500;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 40px 0;
+      background: #182023;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .footer__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .footer__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer__copy {
+      font-size: 14px;
+      color: #707070;
+    }
+
+    .footer__links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer__link {
+      font-size: 14px;
+      color: #707070;
+      transition: color 0.2s;
+    }
+    .footer__link:hover {
+      color: #c8cacc;
+    }
+
+    .footer__legal {
+      font-size: 13px;
+      color: #505050;
+      line-height: 1.6;
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 44px;
+      height: 44px;
+      background: #dfdf41;
+      color: #182023;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.2s;
+      z-index: 999;
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .back-to-top:hover {
+      background: #caca18;
+    }
+    .back-to-top svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ===== STICKY MOBILE CTA ===== */
+    .sticky-cta {
+      display: none;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 960px) {
+      .container { padding: 0 24px; }
+      .hero__inner { flex-direction: column; gap: 40px; }
+      .hero__content { max-width: 100%; }
+      .hero__title { font-size: 36px; }
+      .section__title { font-size: 30px; margin-bottom: 50px; }
+      .for-who__title { font-size: 30px; }
+      .teacher__name { font-size: 30px; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .teacher__grid { grid-template-columns: 1fr; gap: 40px; }
+      .teacher__photo { order: -1; max-width: 320px; position: static; }
+      .experience__item { grid-template-columns: 1fr; gap: 8px; }
+      .stats-row { grid-template-columns: repeat(3, 1fr); }
+      .reviews { grid-template-columns: repeat(2, 1fr); }
+      .reviews__hidden.open { grid-template-columns: repeat(2, 1fr); }
+      .section { padding: 60px 0 40px; }
+      .final-cta__card { padding: 48px 32px; }
+      .final-cta__title { font-size: 28px; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { display: none; }
+      .menu-toggle { display: block; }
+
+      .nav__links-mobile.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: #182023;
+        padding: 20px 24px;
+        gap: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .nav__links-mobile .nav__link { display: block; font-size: 16px; }
+      .nav__cta { display: none; }
+
+      .hero { padding: 120px 0 60px; }
+      .hero__title { font-size: 28px; }
+      .hero__subtitle { font-size: 17px; }
+      .hero__desc { font-size: 14px; }
+
+      .cards { grid-template-columns: 1fr; }
+
+      .section__title { font-size: 24px; margin-bottom: 40px; }
+      .for-who__title { font-size: 24px; }
+      .for-who__list { grid-template-columns: 1fr; }
+      .for-who__item { font-size: 14px; padding: 16px 16px; }
+      .teacher__name { font-size: 26px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-card { padding: 24px 20px; }
+      .stat-card__number { font-size: 24px; }
+      .experience__company-name { font-size: 14px; }
+      .experience__badge { font-size: 11px; }
+      .experience__desc { font-size: 13px; }
+
+      .section { padding: 40px 0 24px; }
+
+      .card { padding: 28px 24px; }
+      .card__title { font-size: 14px; }
+      .card__desc { font-size: 12px; }
+
+      .reviews { grid-template-columns: 1fr; }
+      .reviews__hidden.open { grid-template-columns: 1fr; }
+      .program__item { padding-left: 44px; }
+      .program__item::before { left: 12px; }
+      .program__level-title { font-size: 17px; }
+
+      .faq__item summary { padding: 20px 20px; font-size: 15px; }
+      .faq__answer { padding: 0 20px 20px; font-size: 14px; }
+
+      .final-cta { padding: 40px 0 60px; }
+      .final-cta__card { padding: 40px 24px; border-radius: 24px; }
+      .final-cta__title { font-size: 24px; }
+      .final-cta__badges { flex-wrap: wrap; }
+      .final-cta__btn { padding: 16px 32px; font-size: 16px; }
+
+      .btn { padding: 12px 24px; font-size: 14px; }
+
+      .footer__inner { flex-direction: column; gap: 16px; text-align: center; }
+      .footer { padding-bottom: 80px; }
+
+      .sticky-cta {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(24, 32, 35, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 12px 20px;
+        z-index: 998;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(100%);
+        transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+      }
+      .sticky-cta.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .sticky-cta__btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: #dfdf41;
+        color: #182023;
+        border: none;
+        border-radius: 12px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+      }
+      .back-to-top { bottom: 80px; right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progress-bar"></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">{ Олег Козырев }</a>
+      <nav class="nav">
+        <a href="#about" class="nav__link">Что внутри</a>
+        <a href="#program" class="nav__link">Программа</a>
+      </nav>
+      <a href="#cta" class="btn btn--primary btn--header nav__cta">Забрать роадмап</a>
+      <button class="menu-toggle" onclick="this.parentElement.querySelector('.nav__links-mobile').classList.toggle('open')" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav__links-mobile">
+        <a href="#about" class="nav__link" onclick="this.parentElement.classList.remove('open')">Что внутри</a>
+        <a href="#program" class="nav__link" onclick="this.parentElement.classList.remove('open')">Программа</a>
+        <a href="#reviews" class="nav__link" onclick="this.parentElement.classList.remove('open')">Отзывы</a>
+        <a href="#cta" class="btn btn--primary" style="margin-top:8px;" onclick="this.parentElement.classList.remove('open')">Забрать роадмап</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__inner">
+        <div class="hero__content fade-up">
+          <div class="hero__badge">Бесплатно</div>
+          <h1 class="hero__title">Самый полный роадмап для&nbsp;<span>Go-разработчика</span> в&nbsp;2026</h1>
+          <p class="hero__desc">После этого роадмапа ты&nbsp;будешь точно знать, что учить на&nbsp;каждом этапе, какие темы реально спрашивают на&nbsp;собесах, и&nbsp;перестанешь тратить время на&nbsp;то, что не&nbsp;нужно</p>
+          <a href="#cta" class="btn btn--primary">Забрать роадмап бесплатно</a>
+        </div>
+        <div class="hero__image fade-up">
+          <picture>
+            <source srcset="hero.webp" type="image/webp">
+            <img src="hero.jpg" alt="Roadmap Golang-разработчика 2026" width="1280" height="720" fetchpriority="high">
+          </picture>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR WHO -->
+  <section class="section section--dark" id="for-who">
+    <div class="container">
+      <h2 class="for-who__title fade-up">Этот роадмап для&nbsp;тебя, если</h2>
+      <ul class="for-who__list">
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          Переходишь на&nbsp;Go с&nbsp;другого языка и&nbsp;хочешь понять полную картину: что учить, в&nbsp;каком порядке и&nbsp;на&nbsp;чём фокусироваться
+        </li>
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          Уже пишешь на&nbsp;Go, но&nbsp;чувствуешь пробелы&nbsp;&mdash; хочешь систематизировать знания и&nbsp;понять, что подтянуть для роста
+        </li>
+        <li class="for-who__item fade-up">
+          <div class="for-who__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          Готовишься к&nbsp;собеседованиям и&nbsp;хочешь понять, какие темы реально спрашивают на&nbsp;каждом уровне
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- WHAT INSIDE -->
+  <section class="section section--dark" id="about">
+    <div class="container">
+      <h2 class="section__title fade-up">Что внутри роадмапа</h2>
+
+      <div class="cards">
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="card__title">4 уровня прогрессии</div>
+          <div class="card__desc">От&nbsp;первого собеса до&nbsp;Senior: синтаксис, горутины, HTTP, базы, Docker, микросервисы, gRPC, Kubernetes, System Design</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="card__title">Продакшн-практики</div>
+          <div class="card__desc">Graceful Shutdown, Health Checks, Observability&nbsp;&mdash; то, чего нет в&nbsp;75% других роадмапов, но&nbsp;без чего не&nbsp;обойтись на&nbsp;реальном проекте</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <div class="card__title">Микросервисы и&nbsp;gRPC</div>
+          <div class="card__desc">Когда монолит, когда микросервисы. Protobuf, interceptors, streaming. Kafka: партиции, consumer groups, гарантии доставки</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="card__title">System Design</div>
+          <div class="card__desc">CQRS, Event Sourcing, Saga, Circuit Breaker, Outbox/Inbox. Шардирование, репликация, SLA/SLO/SLI</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div class="card__title">Собесы на&nbsp;каждом уровне</div>
+          <div class="card__desc">Реальные вопросы с&nbsp;собеседований для каждого уровня&nbsp;&mdash; знаешь, что спросят, и&nbsp;готовишься прицельно</div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/></svg>
+          </div>
+          <div class="card__title">AI и&nbsp;карьера</div>
+          <div class="card__desc">Как ИИ меняет разработку, почему знания стали важнее, и&nbsp;как строить карьеру в&nbsp;2026 году&nbsp;&mdash; софт-скиллы, ADR, видимость результатов</div>
+        </div>
+      </div>
+
+      <div class="section__cta fade-up">
+        <a href="#cta" class="btn btn--primary">Забрать роадмап бесплатно</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAM -->
+  <section class="section section--dark" id="program">
+    <div class="container">
+      <h2 class="section__title fade-up">Программа роадмапа</h2>
+      <div class="program">
+
+        <!-- Module 1 -->
+        <div class="program__level fade-up">
+          <div class="program__level-header">
+            <div class="program__level-number">1</div>
+            <div>
+              <div class="program__level-title">Минимум для первого собеса</div>
+            </div>
+          </div>
+          <div class="program__item">
+            <div class="program__desc">Поймёшь, что именно нужно знать перед первым собесом: какие темы по&nbsp;языку спрашивают, зачем разбираться в&nbsp;конкурентности, как работать с&nbsp;базой и&nbsp;на&nbsp;что обращают внимание на&nbsp;код-ревью.</div>
+          </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="program__level fade-up">
+          <div class="program__level-header">
+            <div class="program__level-number">2</div>
+            <div>
+              <div class="program__level-title">Первые месяцы на&nbsp;работе</div>
+            </div>
+          </div>
+          <div class="program__item">
+            <div class="program__desc">Узнаешь, как устроена работа на&nbsp;реальном проекте: как структурировать код, зачем нужны Docker и&nbsp;кеширование, как правильно обрабатывать ошибки и&nbsp;ходить во&nbsp;внешние сервисы, чтобы ничего не&nbsp;падало.</div>
+          </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div class="program__level fade-up">
+          <div class="program__level-header">
+            <div class="program__level-number">3</div>
+            <div>
+              <div class="program__level-title">Код, который не&nbsp;ломает прод</div>
+            </div>
+          </div>
+          <div class="program__item">
+            <div class="program__desc">Поймёшь, как сервис живёт в&nbsp;проде: когда разделять на&nbsp;микросервисы, как отслеживать проблемы через метрики и&nbsp;трейсы, зачем нужны Graceful Shutdown и&nbsp;Health Checks, и&nbsp;как деплоить так, чтобы ничего не&nbsp;ломать.</div>
+          </div>
+        </div>
+
+        <!-- Module 4 -->
+        <div class="program__level fade-up">
+          <div class="program__level-header">
+            <div class="program__level-number">4</div>
+            <div>
+              <div class="program__level-title">Решения, которые принимает Senior</div>
+            </div>
+          </div>
+          <div class="program__item">
+            <div class="program__desc">Разберёшься, как принимать архитектурные решения: какой паттерн когда применять, как выбирать хранилище под задачу, на&nbsp;что смотреть в&nbsp;перформансе, и&nbsp;как строить карьеру, когда AI меняет правила игры.</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="section__cta fade-up">
+        <a href="#cta" class="btn btn--primary">Забрать роадмап бесплатно</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACHER -->
+  <section class="section section--dark" id="teacher">
+    <div class="container">
+      <div class="teacher__grid">
+        <div class="fade-up">
+          <h2 class="teacher__name">Преподаватель&nbsp;&mdash;<br>Олег Козырев</h2>
+
+          <ul class="experience">
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Т-Банк</span>
+                <span class="experience__badge">Staff Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатываю LLM-платформу для&nbsp;создания ИИ продуктов внутри компании</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Авито</span>
+                <span class="experience__badge">Senior Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал внутреннюю платформу для&nbsp;сотен сервисов корпорации</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Ozon Tech</span>
+                <span class="experience__badge">Senior Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал сервисы логистики, модерации контента и&nbsp;мониторинга доставки</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Route 256</span>
+                <span class="experience__badge">Преподаватель</span>
+              </div>
+              <div class="experience__desc">Менторил и&nbsp;преподавал курсы по&nbsp;построению микросервисов в&nbsp;школе Ozon Tech</div>
+            </li>
+          </ul>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">подписчиков на&nbsp;YouTube</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="8500" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">подписчиков в&nbsp;Telegram</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="8" data-suffix="+ лет">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">коммерческой разработки</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="teacher__photo fade-up">
+          <picture>
+            <source srcset="/architecture/oleg.webp" type="image/webp">
+            <img src="/architecture/oleg.png" alt="Олег Козырев — преподаватель" width="720" height="724" loading="lazy">
+          </picture>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta" id="cta">
+    <div class="container">
+      <div class="final-cta__card fade-up">
+        <div class="final-cta__badges">
+          <span class="final-cta__badge">4 уровня прогрессии</span>
+          <span class="final-cta__badge">Бесплатно</span>
+        </div>
+        <h2 class="final-cta__title">Забирай полный роадмап<br>Golang-разработчика 2026</h2>
+        <a href="https://t.me/olezhek28go/2191" target="_blank" class="final-cta__btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.41-.88.03-.24.37-.49.99-.75 3.9-1.7 6.5-2.82 7.82-3.37 3.72-1.55 4.5-1.82 5-1.83.11 0 .37.03.53.15.14.1.17.24.19.35.02.08.03.28.02.43z"/></svg>
+          Забрать роадмап в Telegram
+        </a>
+        <p class="final-cta__hint">* После нажатия на кнопку откроется пост в моём Telegram-канале со ссылкой на роадмап</p>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <div class="sticky-cta" id="sticky-cta">
+    <a href="https://t.me/olezhek28go/2191" target="_blank" class="sticky-cta__btn">Забрать роадмап бесплатно</a>
+  </div>
+
+  <button class="back-to-top" id="back-to-top" aria-label="Наверх">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__top">
+        <div class="footer__copy">&copy; 2026 Олег Козырев</div>
+        <div class="footer__links">
+          <a href="policy.html" class="footer__link">Политика конфиденциальности</a>
+
+        </div>
+      </div>
+      <div class="footer__legal">
+        ИП Козырев Олег Вячеславович<br>
+        ИНН 440315249608<br>
+        ОГРНИП 324440000010534<br>
+        Дата регистрации&nbsp;&mdash; 25.04.2024<br>
+        Email&nbsp;&mdash; olezhek28.courses@gmail.com
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCROLL ANIMATIONS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Fade-up animations
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.fade-up').forEach(function(el) {
+        observer.observe(el);
+      });
+
+      // Counter animation
+      var counters = document.querySelectorAll('[data-count]');
+      var counterObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !entry.target.dataset.animated) {
+            entry.target.dataset.animated = 'true';
+            var target = parseInt(entry.target.dataset.count);
+            var suffix = entry.target.dataset.suffix || '';
+            var duration = 1500;
+            var startTime = null;
+            function step(timestamp) {
+              if (!startTime) startTime = timestamp;
+              var progress = Math.min((timestamp - startTime) / duration, 1);
+              var eased = 1 - Math.pow(1 - progress, 3);
+              var current = Math.floor(eased * target);
+              entry.target.textContent = current.toLocaleString('ru-RU') + suffix;
+              if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      counters.forEach(function(el) { counterObserver.observe(el); });
+
+      // Reviews
+      var allReviews = [
+        { text: 'Наконец-то роадмап, где есть Graceful Shutdown и Health Checks. На предыдущих проектах узнавал про это только на проде, когда уже всё падало.', name: 'Дмитрий К.', avatar: 'Д' },
+        { text: 'Переходил с PHP на Go и не понимал, за что хвататься. Роадмап разложил всё по полочкам — теперь чётко вижу, где я и куда двигаться.', name: 'Алексей М.', avatar: 'А' },
+        { text: 'Блок про Observability и три столпа — огонь. Prometheus + Grafana + Jaeger, и как это всё вместе работает через OpenTelemetry.', name: 'Сергей В.', avatar: 'С' },
+        { text: 'Порадовало, что не просто список технологий, а реальный путь с объяснением зачем каждая штука нужна и когда её применять.', name: 'Роман П.', avatar: 'Р' },
+        { text: 'Раздел про AI и карьеру — неожиданно полезный. Ноль умножить на десять — ноль. Сильная мысль, которая мотивирует учиться дальше.', name: 'Павел Г.', avatar: 'П' },
+        { text: 'Как раз готовился к собесу на мидла. Уровни 2-3 дали понимание, какие вопросы реально спрашивают. Получил оффер через две недели.', name: 'Виктор Л.', avatar: 'В' },
+        { text: 'Очень ценно, что есть блок про микросервисы vs монолит с нормальными аргументами, а не просто \"микросервисы — это круто\".', name: 'Борис К.', avatar: 'Б' },
+        { text: 'gRPC + Kafka + Kubernetes в одном роадмапе, и всё с контекстом когда и зачем. Респект за системный подход.', name: 'Максим Т.', avatar: 'М' },
+        { text: 'Четвёртый уровень про System Design — это то, чего мне не хватало. CQRS, Saga, Circuit Breaker — наконец понял, когда какой паттерн применять.', name: 'Андрей С.', avatar: 'А' }
+      ];
+      function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+        return arr;
+      }
+      function renderReview(r) {
+        var nameHtml = r.name ? '<span class="review__name">' + r.name + '</span>' : '';
+        return '<div class="review fade-up"><div class="review__text">' + r.text + '</div><div class="review__author"><div class="review__avatar">' + r.avatar + '</div><div class="review__meta">' + nameHtml + '<span class="review__source">изучил роадмап</span></div></div></div>';
+      }
+      shuffle(allReviews);
+      var mainGrid = document.getElementById('reviews-grid');
+      var hiddenGrid = document.getElementById('reviews-hidden');
+      var moreBtn = document.getElementById('reviews-more');
+      allReviews.slice(0, 6).forEach(function(r) { mainGrid.innerHTML += renderReview(r); });
+      var extras = allReviews.slice(6);
+      if (extras.length > 0) {
+        extras.forEach(function(r) { hiddenGrid.innerHTML += renderReview(r); });
+      } else {
+        moreBtn.style.display = 'none';
+      }
+      // Re-observe new fade-up elements
+      mainGrid.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
+      hiddenGrid.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
+
+      // Progress bar + Back to top + Sticky CTA
+      var progressBar = document.getElementById('progress-bar');
+      var backToTop = document.getElementById('back-to-top');
+      var stickyCta = document.getElementById('sticky-cta');
+      var finalCtaSection = document.getElementById('cta');
+      window.addEventListener('scroll', function() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var scrollPercent = (scrollTop / docHeight) * 100;
+        progressBar.style.width = scrollPercent + '%';
+        if (scrollTop > 600) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+        var ctaRect = finalCtaSection.getBoundingClientRect();
+        if (scrollTop > 400 && ctaRect.top > window.innerHeight) {
+          stickyCta.classList.add('visible');
+        } else {
+          stickyCta.classList.remove('visible');
+        }
+      }, { passive: true });
+      backToTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  </script>
+
+</body>
+</html>
