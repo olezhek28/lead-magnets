@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
       (function(m,e,t,r,i,k,a){
@@ -16,8 +18,6 @@
   <!-- /Yandex.Metrika counter -->
   <!-- TGTrack: Откуда Подписки -->
   <script src="https://api.tgtrack.ru/API/landing_script/v1/?linkID=682732c86bc8d9&type=ya&counterID=96022201" type="text/javascript" defer></script>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Самый полный гайд по архитектуре Golang проекта</title>
   <meta name="description" content="3 часа практики на реальном проекте — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции Go-проекта. Преподаватель — Олег Козырев.">
   <meta name="keywords" content="архитектура golang, чистая архитектура, Go, clean architecture, ddd, domain driven design, cqrs, handler service repository, собеседование golang, backend">
@@ -40,8 +40,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="hero.webp" type="image/webp" fetchpriority="high">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1150,7 +1150,7 @@
       background: #0a0a0a;
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 24px;
-      padding: 28px 36px 36px;
+      padding: 22px 36px 28px;
       color: #ffffff;
       text-align: center;
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
@@ -1188,6 +1188,7 @@
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 16px;
+      padding-right: 44px;
     }
     .popup__brand {
       width: 32px;
@@ -1227,9 +1228,9 @@
 
     /* Иллюстрация PDF (CSS-плейсхолдер) */
     .popup__illu {
-      width: 220px;
-      height: 220px;
-      margin: 4px auto 14px;
+      width: 170px;
+      height: 170px;
+      margin: 0 auto 6px;
       position: relative;
       display: flex;
       align-items: center;
@@ -1244,8 +1245,8 @@
     }
     .popup__illu-doc {
       position: relative;
-      width: 158px;
-      height: 202px;
+      width: 124px;
+      height: 158px;
       background: linear-gradient(155deg, #23262a 0%, #15171a 100%);
       border-radius: 12px;
       transform: rotate(-6deg);
@@ -1277,7 +1278,7 @@
       right: 10%;
       top: 20%;
       font-weight: 800;
-      font-size: 19px;
+      font-size: 17px;
       letter-spacing: 0.5px;
       line-height: 1;
       color: #dfdf41;
@@ -1294,9 +1295,9 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
       white-space: nowrap;
     }
-    .popup__illu-chip--1 { left: 4%; top: 14%; transform: rotate(-4deg); }
-    .popup__illu-chip--2 { right: 2%; top: 40%; transform: rotate(5deg); }
-    .popup__illu-chip--3 { right: 8%; bottom: 12%; transform: rotate(-3deg); }
+    .popup__illu-chip--1 { left: -8%; top: 6%; transform: rotate(-4deg); }
+    .popup__illu-chip--2 { right: -4%; top: 38%; transform: rotate(5deg); }
+    .popup__illu-chip--3 { right: 0%; bottom: 8%; transform: rotate(-3deg); }
 
     .popup__title {
       margin: 0;
@@ -1314,8 +1315,8 @@
       line-height: 1.5;
     }
     .popup__inside {
-      margin-top: 22px;
-      padding: 18px;
+      margin-top: 18px;
+      padding: 16px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.10);
       border-radius: 16px;
@@ -1397,6 +1398,28 @@
       .popup__title { font-size: 28px; }
       .popup__desc { font-size: 14px; }
       .popup__btn { width: 100%; }
+    }
+
+    /* Компактный режим под низкие вьюпорты — чтобы кнопка влезала без скролла */
+    @media (min-width: 641px) and (max-height: 760px) {
+      .popup__card { padding: 22px 34px 30px; }
+      .popup__header { margin-bottom: 12px; }
+      .popup__illu { width: 190px; height: 190px; margin: 0 auto 10px; }
+      .popup__illu-doc { width: 138px; height: 176px; }
+      .popup__illu-text { font-size: 17px; }
+      .popup__title { font-size: 30px; }
+      .popup__desc { font-size: 14px; margin-top: 10px; }
+      .popup__inside { margin-top: 16px; padding: 16px; }
+      .popup__list { gap: 9px; }
+      .popup__btn { margin-top: 18px; padding: 14px 26px; }
+    }
+    @media (min-width: 641px) and (max-height: 640px) {
+      .popup__illu { width: 130px; height: 130px; margin: 0 auto 6px; }
+      .popup__illu-doc { width: 100px; height: 128px; }
+      .popup__illu-text { font-size: 13px; }
+      .popup__illu-chip { font-size: 10px; padding: 4px 8px; }
+      .popup__title { font-size: 26px; }
+      .popup__inside { margin-top: 12px; padding: 14px; }
     }
 
     /* Reduced motion */
@@ -1741,7 +1764,7 @@
 
       <h2 class="popup__title" id="exit-popup-title">Уже уходишь?</h2>
 
-      <p class="popup__desc" id="exit-popup-desc">Забери шпаргалку «Архитектура Go-проекта» — карта эволюции от первого main.go до CQRS. Поймёшь, на каком этапе твой код прямо сейчас, что пора усложнять, а до чего ещё рано.</p>
+      <p class="popup__desc" id="exit-popup-desc">Забери бесплатную шпаргалку «Архитектура Go-проекта» — поймёшь, на каком этапе твой код прямо сейчас, что пора усложнять, а до чего ещё рано.</p>
 
       <div class="popup__inside">
         <div class="popup__inside-title">Что внутри:</div>
@@ -1760,7 +1783,7 @@
                 <path d="M2 5.2L4 7.2L8 2.8" stroke="#dfdf41" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span>
-            <span>Чек-листы: когда применять, когда не нужно</span>
+            <span>Чек-листы, когда переходить на следующий этап</span>
           </li>
           <li class="popup__list-item">
             <span class="popup__check" aria-hidden="true">
@@ -1768,7 +1791,7 @@
                 <path d="M2 5.2L4 7.2L8 2.8" stroke="#dfdf41" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span>
-            <span>Сводная таблица 5 главных принципов</span>
+            <span>5 главных принципов правильной архитектуры</span>
           </li>
         </ul>
       </div>
@@ -1941,7 +1964,11 @@
         try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
       }
 
-      if (wasShown()) return;
+      var forceShow = /[?&]popup=1\b/.test(window.location.search);
+      if (forceShow) {
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      }
+      if (!forceShow && wasShown()) return;
 
       var shown = false;
       var lastFocused = null;
@@ -2001,7 +2028,9 @@
       });
       if (ctaBtn) ctaBtn.addEventListener('click', hidePopup);
 
-      if (window.innerWidth > MOBILE_BREAKPOINT) {
+      if (forceShow) {
+        setTimeout(showPopup, 300);
+      } else if (window.innerWidth > MOBILE_BREAKPOINT) {
         document.documentElement.addEventListener('mouseleave', function(e) {
           if (e.clientY < 0) showPopup();
         });
