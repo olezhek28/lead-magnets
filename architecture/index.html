@@ -1120,6 +1120,172 @@
       }
       .back-to-top { bottom: 80px; right: 20px; }
     }
+
+    /* Exit-intent попап */
+    .popup {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 250ms ease;
+    }
+    .popup.is-visible { display: flex; opacity: 1; }
+    .popup__overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .popup__card {
+      position: relative;
+      display: flex;
+      width: 100%;
+      max-width: 880px;
+      background: #1f292d;
+      border-radius: 24px;
+      overflow: hidden;
+      transform: scale(0.96);
+      transition: transform 250ms ease;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    }
+    .popup.is-visible .popup__card { transform: scale(1); }
+    .popup__close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      font-size: 24px;
+      line-height: 1;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 2;
+      transition: background 150ms ease;
+    }
+    .popup__close:hover { background: rgba(255, 255, 255, 0.16); }
+    .popup__image {
+      flex: 0 0 360px;
+      background: #182023;
+    }
+    .popup__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .popup__content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .popup__badge {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 6px 12px;
+      background: rgba(223, 223, 65, 0.12);
+      color: #dfdf41;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 999px;
+    }
+    .popup__title {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+    .popup__desc {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.55;
+      color: #a8b3b8;
+    }
+    .popup__desc code {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #dfdf41;
+    }
+    .popup__list-title {
+      margin: 8px 0 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .popup__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .popup__list li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #d4dade;
+    }
+    .popup__list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 8px;
+      height: 8px;
+      background: #dfdf41;
+      border-radius: 50%;
+    }
+    .popup__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 8px;
+      padding: 16px 28px;
+      background: #dfdf41;
+      color: #182023;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+    .popup__btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(223, 223, 65, 0.3);
+    }
+
+    @media (max-width: 960px) {
+      .popup__card { max-width: 560px; flex-direction: column; }
+      .popup__image { flex: 0 0 240px; }
+      .popup__content { padding: 28px; }
+      .popup__title { font-size: 26px; }
+    }
+    @media (max-width: 640px) {
+      .popup { padding: 12px; }
+      .popup__image { flex: 0 0 180px; }
+      .popup__content { padding: 24px; gap: 12px; }
+      .popup__title { font-size: 22px; }
+      .popup__desc { font-size: 14px; }
+      .popup__list li { font-size: 14px; }
+      .popup__btn { padding: 14px 22px; font-size: 15px; }
+    }
   </style>
 </head>
 <body>
