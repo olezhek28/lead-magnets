@@ -1416,6 +1416,29 @@
 
   </main>
 
+  <!-- Exit-intent попап -->
+  <div class="popup" id="exit-popup" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="exit-popup-title">
+    <div class="popup__overlay" data-popup-close></div>
+    <div class="popup__card">
+      <button class="popup__close" type="button" aria-label="Закрыть" data-popup-close>×</button>
+      <div class="popup__image">
+        <img src="popup.webp" alt="" loading="lazy" width="600" height="600">
+      </div>
+      <div class="popup__content">
+        <span class="popup__badge">Бонус к гайду</span>
+        <h2 class="popup__title" id="exit-popup-title">Уже уходишь?</h2>
+        <p class="popup__desc">Забери шпаргалку «Архитектура Go-проекта» — карта эволюции от первого <code>main.go</code> до CQRS. Поймёшь, на каком этапе твой код прямо сейчас, что пора усложнять, а до чего ещё рано.</p>
+        <p class="popup__list-title">Что внутри:</p>
+        <ul class="popup__list">
+          <li>Все 7 этапов эволюции архитектуры</li>
+          <li>Чек-листы: когда применять, когда не нужно</li>
+          <li>Сводная таблица 5 главных принципов</li>
+        </ul>
+        <a href="https://t.me/olezhek28go/2191" target="_blank" rel="noopener" class="popup__btn" data-popup-cta>Забрать шпаргалку</a>
+      </div>
+    </div>
+  </div>
+
   <div class="sticky-cta" id="sticky-cta">
     <a href="https://t.me/olezhek28go/2191" target="_blank" class="sticky-cta__btn">Забрать гайд бесплатно</a>
   </div>
