@@ -1957,18 +1957,11 @@
       var popup = document.getElementById('exit-popup');
       if (!popup) return;
 
-      function wasShown() {
-        try { return localStorage.getItem(STORAGE_KEY) === '1'; } catch (e) { return false; }
-      }
-      function markShown() {
-        try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
-      }
+      function markShown() {}
 
       var forceShow = /[?&]popup=1\b/.test(window.location.search);
-      if (forceShow) {
-        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
-      }
-      if (!forceShow && wasShown()) return;
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
 
       var shown = false;
       var lastFocused = null;
