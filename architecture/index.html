@@ -1745,6 +1745,82 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
+
+    // Exit-intent попап
+    (function() {
+      var STORAGE_KEY = 'architecture_exit_popup_shown';
+      var TTL_MS = 7 * 24 * 60 * 60 * 1000;
+      var MOBILE_BREAKPOINT = 640;
+      var MOBILE_MIN_TIME_MS = 15000;
+      var MOBILE_SCROLL_THRESHOLD = 0.5;
+
+      var popup = document.getElementById('exit-popup');
+      if (!popup) return;
+
+      function wasShownRecently() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return false;
+          var ts = parseInt(raw, 10);
+          if (isNaN(ts)) return false;
+          return Date.now() - ts < TTL_MS;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      if (wasShownRecently()) return;
+
+      var shown = false;
+
+      function showPopup() {
+        if (shown) return;
+        shown = true;
+        popup.classList.add('is-visible');
+        popup.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (e) {}
+      }
+
+      function hidePopup() {
+        popup.classList.remove('is-visible');
+        popup.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      popup.addEventListener('click', function(e) {
+        if (e.target.hasAttribute('data-popup-close')) hidePopup();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && popup.classList.contains('is-visible')) hidePopup();
+      });
+      var ctaBtn = popup.querySelector('[data-popup-cta]');
+      if (ctaBtn) ctaBtn.addEventListener('click', hidePopup);
+
+      if (window.innerWidth > MOBILE_BREAKPOINT) {
+        document.addEventListener('mouseleave', function(e) {
+          if (e.clientY <= 0) showPopup();
+        });
+      } else {
+        var startedAt = Date.now();
+        var maxScrollPct = 0;
+        var lastScrollY = window.scrollY;
+        window.addEventListener('scroll', function() {
+          var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          var pct = docHeight > 0 ? window.scrollY / docHeight : 0;
+          if (pct > maxScrollPct) maxScrollPct = pct;
+          var scrollingUp = window.scrollY < lastScrollY;
+          lastScrollY = window.scrollY;
+          if (
+            scrollingUp &&
+            maxScrollPct >= MOBILE_SCROLL_THRESHOLD &&
+            Date.now() - startedAt >= MOBILE_MIN_TIME_MS
+          ) {
+            showPopup();
+          }
+        }, { passive: true });
+      }
+    })();
   </script>
 
 </body>
