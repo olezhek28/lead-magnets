@@ -1,5 +1,50 @@
+# https://guide.olezhek28.courses/robots.txt
+
 User-agent: *
 Allow: /
 Disallow: /.github/
+
+# Яндекс — с очисткой UTM-параметров для нормализации страниц
+User-agent: Yandex
+Allow: /
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: YandexNeuro
+Allow: /
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# AI-краулеры — индексируем для GEO/LLM-поиска
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
 
 Sitemap: https://guide.olezhek28.courses/sitemap.xml

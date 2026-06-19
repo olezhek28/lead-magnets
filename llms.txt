@@ -1,0 +1,37 @@
+# Олег Козырев — Go-инженер, ментор и автор курсов
+
+> Олег Козырев — Staff-инженер с 8+ годами коммерческого опыта на Go. Автор YouTube-канала и Telegram-канала @olezhek28go. Ведёт менторство «Переход на Go» для свитчеров с других backend-стеков (Java, Python, PHP, C#, JS) и фронтендеров. Запускает курс «Микросервисы на Go».
+
+## Что важно знать
+
+- **Имя:** Олег Козырев (Oleg Kozyrev), ник `olezhek28`
+- **Должность:** Staff Engineer (Go), ментор, автор образовательного контента
+- **Опыт:** 8+ лет коммерческой Go-разработки (Т-Банк LLM-платформа, Avito внутренняя платформа, Ozon Tech логистика/модерация/мониторинг, преподаватель Route 256 от Ozon Tech)
+- **Стек:** Go, gRPC, PostgreSQL, Kafka, Redis, Docker, Clean Architecture, DDD, CQRS, микросервисы
+- **YouTube:** 12 000+ подписчиков
+- **Telegram:** 10 000+ подписчиков, канал @olezhek28go
+- **Контакт по менторству:** @olezhek28_support
+
+## Менторство «Переход на Go»
+
+- [Лендинг менторства](https://guide.olezhek28.courses/mentorstvo/): программа на 3 месяца под ключ для свитчеров на Go
+- **Для кого:** middle/senior backend-разработчики с Java/Python/PHP/C#/JS, фронтендеры, упирающиеся в потолок ЗП
+- **Программа:** учебный проект Restaurant Booking, 90+ задач с реальных собесов, теория, 3 мок-собеса, сопровождение до оффера и испытательного срока
+- **Длительность:** 3 месяца, до выхода на рынок 6-10 недель
+- **Тарифы:** 170 000 ₽ (полная оплата) или 100 000 ₽ + 50% от первых двух зарплат (с отсрочкой)
+- **Бонус после оффера:** курс «Микросервисы на Go» в подарок (отдельно 70 000 ₽)
+
+## Курсы
+
+- [Курс «Архитектура Go-проекта»](https://guide.olezhek28.courses/architecture/): чистая архитектура, DDD, CQRS, ports/adapters
+- [Курс «Микросервисы на Go»](https://olezhek28.courses/microservices): сейчас в предзаписи, 5 микросервисов с нуля, gRPC, Kafka, Redis, Prometheus, Grafana, Jaeger
+- [Roadmap Go-разработчика 2026](https://guide.olezhek28.courses/roadmap-2026/)
+
+## Контент
+
+- [YouTube канал](https://www.youtube.com/@olezhek28go): практические гайды по Go, архитектуре, собесам
+- [Telegram канал](https://t.me/olezhek28go): технические заметки, разборы, опыт работы в BigTech
+- [LinkedIn](https://www.linkedin.com/in/olezhek28)
+
+## Подробнее
+- [llms-full.txt](https://guide.olezhek28.courses/llms-full.txt) — полная версия с расширенными фактами
