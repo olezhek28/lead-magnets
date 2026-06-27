@@ -17,8 +17,8 @@
   'use strict';
 
   var COUNTER_ID = 96022201;
-  var DISMISS_KEY = 'cookieConsent.dismissedAt';
-  var DISMISS_TTL_MS = 5 * 24 * 60 * 60 * 1000; // 5 дней
+  var CONSENT_KEY = 'cookieConsent.v3';
+  var CONSENT_TTL_MS = 5 * 24 * 60 * 60 * 1000; // 5 дней
 
   // ====== Yandex.Metrika — стартуем сразу ======
   function loadMetrika() {
@@ -44,8 +44,6 @@
     });
   }
 
-  loadMetrika();
-
   function clearMetrikaCookies() {
     var hostname = window.location.hostname;
     var domains = [hostname, '.' + hostname];
@@ -66,15 +64,24 @@
     }
   }
 
-  function markDismissed() {
-    try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch (e) {}
-  }
-  function isDismissedRecently() {
+  function saveConsent(state) {
     try {
-      var ts = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
-      if (!ts) return false;
-      return (Date.now() - ts) < DISMISS_TTL_MS;
-    } catch (e) { return false; }
+      localStorage.setItem(CONSENT_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        analytics: !!state.analytics,
+        advertising: !!state.advertising
+      }));
+    } catch (e) {}
+  }
+  function getSavedConsent() {
+    try {
+      var raw = localStorage.getItem(CONSENT_KEY);
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      if (!data || typeof data.timestamp !== 'number') return null;
+      if (Date.now() - data.timestamp >= CONSENT_TTL_MS) return null; // протух
+      return data;
+    } catch (e) { return null; }
   }
 
   // ====== Styles ======
@@ -209,11 +216,12 @@
       if (!act) return;
 
       if (act === 'accept') {
-        markDismissed();
+        saveConsent({ analytics: true, advertising: true });
+        loadMetrika(); // на случай первого визита, когда метрика не была загружена
         hideEl(banner);
       } else if (act === 'decline') {
         clearMetrikaCookies();
-        markDismissed();
+        saveConsent({ analytics: false, advertising: false });
         hideEl(banner);
       } else if (act === 'settings') {
         hideEl(banner, 200);
@@ -260,8 +268,8 @@
       }
       var act = t && t.getAttribute && t.getAttribute('data-act');
       if (act === 'ok') {
-        if (!state.analytics) clearMetrikaCookies();
-        markDismissed();
+        if (state.analytics) loadMetrika(); else clearMetrikaCookies();
+        saveConsent(state);
         hideEl(modal, 250);
         return;
       }
@@ -273,7 +281,15 @@
   }
 
   function init() {
-    if (isDismissedRecently()) return; // взаимодействовал с баннером недавно — не показываем
+    var saved = getSavedConsent();
+    if (saved) {
+      // Недавнее решение — уважаем его, баннер не показываем
+      if (saved.analytics) loadMetrika(); // согласился раньше — продолжаем трекать
+      // если отказался — метрика не грузится вообще
+      return;
+    }
+    // Первый визит или прошло >5 дней — грузим метрику и показываем баннер
+    loadMetrika();
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', showBanner);
     } else {
