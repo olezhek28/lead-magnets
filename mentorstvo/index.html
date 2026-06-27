@@ -84,27 +84,27 @@
           "offers": {
             "@type": "AggregateOffer",
             "priceCurrency": "RUB",
-            "lowPrice": "100000",
-            "highPrice": "170000",
+            "lowPrice": "110000",
+            "highPrice": "180000",
             "offerCount": "2",
             "availability": "https://schema.org/InStock",
             "offers": [
               {
                 "@type": "Offer",
                 "name": "Тариф 1 · Основной",
-                "price": "170000",
+                "price": "180000",
                 "priceCurrency": "RUB",
                 "availability": "https://schema.org/InStock",
-                "description": "Платишь всю сумму один раз. После оффера больше ничего не должен.",
+                "description": "180 000 ₽ в рассрочку. При полной оплате сразу — скидка 10 000 ₽. После оффера никаких дополнительных выплат.",
                 "url": "https://guide.olezhek28.courses/mentorstvo/#цена"
               },
               {
                 "@type": "Offer",
-                "name": "Тариф 2 · С отсрочкой",
-                "price": "100000",
+                "name": "Тариф 2 · С постоплатой",
+                "price": "110000",
                 "priceCurrency": "RUB",
                 "availability": "https://schema.org/InStock",
-                "description": "100 000 ₽ предоплата + 50% от первых двух зарплат после трудоустройства. Постоплата платится только когда устроился.",
+                "description": "110 000 ₽ предоплата + 50% от первых двух зарплат на новой работе. При полной оплате предоплаты сразу — скидка 10 000 ₽.",
                 "url": "https://guide.olezhek28.courses/mentorstvo/#цена"
               }
             ]
@@ -125,8 +125,8 @@
       "offers": {
         "@type": "AggregateOffer",
         "priceCurrency": "RUB",
-        "lowPrice": "100000",
-        "highPrice": "170000",
+        "lowPrice": "110000",
+        "highPrice": "180000",
         "offerCount": "2"
       },
       "termsOfService": "https://guide.olezhek28.courses/mentorstvo/policy.html"
@@ -194,7 +194,7 @@
       "mainEntity": [
         {"@type":"Question","name":"Сколько длится менторство?","acceptedAnswer":{"@type":"Answer","text":"Программа рассчитана на 3 месяца активной работы + 3 месяца поддержки после оффера. До оффера у всех уходит разное время: кто-то устраивается за 3 месяца, кто-то за 6. После активной части куратор ещё 3 месяца отвечает в чате + ежемесячный созвон со мной."}},
         {"@type":"Question","name":"Можно ли совмещать с основной работой?","acceptedAnswer":{"@type":"Answer","text":"Да, можно. По статистике курсов уделять нужно около 10 часов в неделю. Большинство участников совмещают с текущей работой и собесами."}},
-        {"@type":"Question","name":"Какой нужен бэкграунд для старта?","acceptedAnswer":{"@type":"Answer","text":"Актуальный коммерческий опыт в любом backend-стеке (Java, Python, PHP, C#) или сильный JS-фуллстек для фронтендеров. Менторство рассчитано на свитчеров, а не на тех, кто только начинает."}},
+        {"@type":"Question","name":"Какой нужен бэкграунд для старта?","acceptedAnswer":{"@type":"Answer","text":"Актуальный коммерческий опыт в любом backend-стеке (Java, Python, PHP, C#) или сильный JS-фуллстек для фронтендеров. Менторство рассчитано на свитчеров, а не на тех, кто только начинает. Если ещё нет нужного опыта — напиши в Telegram-поддержку, порекомендуем, как подтянуть базовые знания."}},
         {"@type":"Question","name":"У меня опыт только по ГПХ, это проблема?","acceptedAnswer":{"@type":"Answer","text":"Для некоторых компаний работа только по ГПХ может быть стоп-фактором, но в целом ничего критичного. Компаний на рынке много, и если в одних откажут, в других ты спокойно устроишься."}},
         {"@type":"Question","name":"Кто будет со мной работать, Олег лично или менторы из команды?","acceptedAnswer":{"@type":"Answer","text":"Разные части программы ведут разные специалисты. Все записанные уроки, материалы, гайды от Олега. Также Олег проводит ежемесячные групповые созвоны на все 6 месяцев программы. В чате работает куратор — сеньор Go-разработчик, отвечает на технические вопросы. Мок-собесы и ревью кода ведут опытные менторы, те же, что отвечают за ревью на курсе «Микросервисы на Go»."}},
         {"@type":"Question","name":"Помогаете только с РФ-рынком или валютной удалёнкой тоже?","acceptedAnswer":{"@type":"Answer","text":"В рамках менторства мы заточены именно на рынок РФ и максимально его понимаем. С валютными удалёнками опыта у нас нет, поэтому с LinkedIn, оформлением профиля и подобными вещами не поможем."}},
@@ -944,10 +944,11 @@
         <div class="structure__cards">
           <div class="structure__card fade-up">
             <div class="structure__card-label">Активная программа · 3 месяца</div>
-            <div class="structure__card-title">Доводим до&nbsp;оффера</div>
+            <div class="structure__card-title">Выходим на&nbsp;рынок</div>
             <ul class="structure__card-list">
               <li>Учебный проект Restaurant Booking</li>
               <li>Легенда и&nbsp;резюме под&nbsp;Go-рынок</li>
+              <li>Созвон по&nbsp;защите легенды</li>
               <li>90+ видеоразборов задач с&nbsp;собесов</li>
               <li>Разобранные теоретические вопросы с&nbsp;собесов</li>
               <li>2 мок-собеса с&nbsp;детальным фидбеком</li>
@@ -1318,16 +1319,18 @@
       <div class="pricing__tiers">
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Тариф 1 · Основной</div>
-          <div class="tier__price"><b>170 000 ₽</b></div>
-          <div class="tier__format">Платишь всю сумму один раз. После оффера никаких дополнительных выплат.</div>
-          <div class="tier__note">В&nbsp;рассрочку — на&nbsp;10 000 ₽ дороже, зато можно платить от&nbsp;15 000 ₽/месяц. Также возможна внутренняя рассрочка на&nbsp;3 месяца.</div>
+          <div class="tier__price"><b>180 000 ₽</b></div>
+          <div class="tier__format">При полной оплате сразу — скидка 10 000 ₽.</div>
+          <div class="tier__format" style="margin-top:8px">Можно в&nbsp;рассрочку: внутреннюю на&nbsp;3 месяца или банковскую на&nbsp;12 месяцев от&nbsp;15 000 ₽/месяц.</div>
+          <div class="tier__note">После оффера&nbsp;— никаких дополнительных выплат.</div>
         </div>
         <div class="tier tier--light fade-up">
           <div class="tier__label">Тариф 2 · С&nbsp;постоплатой</div>
-          <div class="tier__price"><b>100 000 ₽</b></div>
+          <div class="tier__price"><b>110 000 ₽</b></div>
           <div class="tier__format" style="font-weight:600;color:var(--accent-ink)">+ 50% от&nbsp;первых двух зарплат</div>
-          <div class="tier__format" style="margin-top:6px">Меньше платишь на&nbsp;старте, остальное&nbsp;- после получения первой зарплаты на&nbsp;новой работе. И&nbsp;предоплату, и&nbsp;постоплату можно разбить на&nbsp;части.</div>
-          <div class="tier__note">В&nbsp;рассрочку — на&nbsp;10 000 ₽ дороже, зато можно платить от&nbsp;9 166 ₽/месяц. Также возможна внутренняя рассрочка на&nbsp;3 месяца.</div>
+          <div class="tier__format" style="margin-top:8px">При полной оплате предоплаты сразу — скидка 10 000 ₽.</div>
+          <div class="tier__format" style="margin-top:6px">Можно в&nbsp;рассрочку: внутреннюю на&nbsp;3 месяца или банковскую на&nbsp;12 месяцев от&nbsp;9 166 ₽/месяц.</div>
+          <div class="tier__note">Постоплата&nbsp;— после первой зарплаты на&nbsp;новой работе. Её&nbsp;тоже можно разбить на&nbsp;2 части.</div>
         </div>
       </div>
 
@@ -1376,7 +1379,7 @@
     <div class="container">
       <div class="yt__head fade-up">
         <h2 class="yt__title" id="yt-title">Кстати, я&nbsp;веду YouTube<br>и&nbsp;ламповый TG-канальчик</h2>
-        <p class="section__sub" style="margin-top:14px;max-width:680px">Хочешь заценить, как я&nbsp;подаю информацию&nbsp;— посмотри обучающий ролик на&nbsp;моём YouTube-канале.</p>
+        <p class="section__sub" style="margin-top:14px;max-width:680px">Хочешь заценить, как я&nbsp;подаю информацию&nbsp;— посмотри обучающие ролики на&nbsp;моём YouTube-канале.</p>
       </div>
 
       <div class="yt__grid">
@@ -1433,7 +1436,7 @@
         </details>
         <details class="faq__item fade-up">
           <summary>Какой нужен бэкграунд для старта?<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__answer">Если у&nbsp;тебя уже есть актуальный коммерческий опыт в&nbsp;любом backend-стеке или сильный JS-фуллстек (для фронтендеров), этих знаний за&nbsp;глаза хватит. А&nbsp;если только вкатываешься в&nbsp;гошку и&nbsp;опыта практически не&nbsp;было, то&nbsp;это менторство тебе пока не&nbsp;подойдёт, оно рассчитано на&nbsp;свитчеров.</div>
+          <div class="faq__answer">Если у&nbsp;тебя уже есть актуальный коммерческий опыт в&nbsp;любом backend-стеке или сильный JS-фуллстек (для фронтендеров), этих знаний за&nbsp;глаза хватит. А&nbsp;если только вкатываешься в&nbsp;гошку и&nbsp;опыта практически не&nbsp;было, то&nbsp;это менторство тебе пока не&nbsp;подойдёт, оно рассчитано на&nbsp;свитчеров. Но&nbsp;напиши в&nbsp;Telegram-поддержку&nbsp;— порекомендуем, как подтянуть базовые знания, и&nbsp;подскажем, когда уже будешь готов к&nbsp;менторству.</div>
         </details>
         <details class="faq__item fade-up">
           <summary>У&nbsp;меня опыт только по&nbsp;ГПХ, это проблема?<span class="faq__icon" aria-hidden="true"></span></summary>
