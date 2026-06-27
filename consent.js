@@ -17,7 +17,8 @@
   'use strict';
 
   var COUNTER_ID = 96022201;
-  var SESSION_KEY = 'cookieConsent.session';
+  var DISMISS_KEY = 'cookieConsent.dismissedAt';
+  var DISMISS_TTL_MS = 5 * 24 * 60 * 60 * 1000; // 5 дней
 
   // ====== Yandex.Metrika — стартуем сразу ======
   function loadMetrika() {
@@ -65,11 +66,15 @@
     }
   }
 
-  function markSession() {
-    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+  function markDismissed() {
+    try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch (e) {}
   }
-  function isSessionMarked() {
-    try { return sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) { return false; }
+  function isDismissedRecently() {
+    try {
+      var ts = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
+      if (!ts) return false;
+      return (Date.now() - ts) < DISMISS_TTL_MS;
+    } catch (e) { return false; }
   }
 
   // ====== Styles ======
@@ -204,11 +209,11 @@
       if (!act) return;
 
       if (act === 'accept') {
-        markSession();
+        markDismissed();
         hideEl(banner);
       } else if (act === 'decline') {
         clearMetrikaCookies();
-        markSession();
+        markDismissed();
         hideEl(banner);
       } else if (act === 'settings') {
         hideEl(banner, 200);
@@ -256,7 +261,7 @@
       var act = t && t.getAttribute && t.getAttribute('data-act');
       if (act === 'ok') {
         if (!state.analytics) clearMetrikaCookies();
-        markSession();
+        markDismissed();
         hideEl(modal, 250);
         return;
       }
@@ -268,7 +273,7 @@
   }
 
   function init() {
-    if (isSessionMarked()) return; // в этой сессии уже выбрали — баннер не показываем
+    if (isDismissedRecently()) return; // взаимодействовал с баннером недавно — не показываем
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', showBanner);
     } else {
