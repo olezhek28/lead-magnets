@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 ИНН 440315249608<br />
                 ОГРНИП 324440000010534<br />
                 Дата регистрации&nbsp;&mdash; 25.04.2024<br />
-                Email&nbsp;&mdash; olezhek28.courses@gmail.com
+                Email&nbsp;&mdash; olezhek28.courses@yandex.ru
               </div>
             </div>
           </footer>
