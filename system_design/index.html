@@ -339,6 +339,7 @@
     color: var(--text-mute); white-space: nowrap; /* 6.1:1 на плашке */
   }
   /* уменьшенная пилюля автора — встроена в строку заголовка сразу за «System Design» */
+  .hero__t2 { display: block; }
   .author--sm { gap: 10px; padding: 6px 18px 6px 6px; font-size: 13px; margin-left: 16px; translate: 0 -4px; }
   .author--sm .author__ava { width: 34px; height: 34px; }
   .author--sm .author__role { font-size: 12.5px; }
@@ -760,6 +761,7 @@
   .program__item {
     background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl);
     transition: background .3s var(--ease), border-color .3s var(--ease);
+    scroll-margin-top: 84px;
   }
   .program__item:hover { border-color: var(--border-acc); }
   .program__item[open] { background: var(--bg-secondary); border-color: var(--border-acc); }
@@ -1004,7 +1006,7 @@
   .tier--light {
     background: var(--light-bg); color: var(--light-ink); border: 1px solid var(--light-bg);
     box-shadow: 0 40px 90px -46px rgba(0,0,0,.95);
-    translate: 0 -14px; padding-bottom: 54px;
+    padding-bottom: 40px;
   }
   .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--accent); }
   .tier__badge {
@@ -1248,7 +1250,10 @@
   @media (max-width: 768px) {
     .container { padding: 0 22px; }
     /* в узком инлайн больше не читается — плашка съезжает под заголовок отдельной строкой */
-    .hero__title .author--sm { display: flex; width: fit-content; margin: 14px auto 6px; translate: none; vertical-align: baseline; }
+    .hero__title { display: flex; flex-direction: column; align-items: center; }
+    .hero__t1 { order: 1; }
+    .hero__t2 { order: 2; }
+    .hero__title .author--sm { order: 3; display: flex; width: fit-content; margin: 16px auto 0; translate: none; }
     .cases { grid-template-columns: 1fr; }
     .arch__flow { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .arch__arrows { display: none; }
@@ -1313,7 +1318,7 @@
     .final__badge { font-size: 11.5px; padding: 7px 12px; }
     .tier { padding: 34px 24px 30px; }
     /* бейдж из absolute — в поток: на узком он наезжал на длинный заголовок тарифа */
-    .tier__badge { position: static; display: inline-block; margin-bottom: 14px; letter-spacing: .1em; }
+    .tier__badge { position: static; align-self: flex-start; width: fit-content; display: inline-block; margin-bottom: 16px; letter-spacing: .1em; }
     .tier__label { padding-right: 0; min-height: 0; }
 
     /* три превью 16:9 стопкой давали ~3 экрана пустой фактуры —
@@ -1477,7 +1482,7 @@
     <div class="container">
       <div class="hero__inner">
         <div class="hero__eyebrow fade-up"><span class="hero__eyebrow-dot" aria-hidden="true"></span>Идёт предзапись&nbsp;· до&nbsp;23 августа</div>
-        <h1 class="hero__title fade-up">System&nbsp;Design<span class="author author--sm">
+        <h1 class="hero__title fade-up"><span class="hero__t1">System&nbsp;Design</span><span class="author author--sm">
             <picture class="author__ava">
               <source srcset="oleg-round.webp" type="image/webp">
               <img src="oleg-round.png" alt="Олег Козырев, автор курса" width="34" height="34" decoding="async">
@@ -1486,7 +1491,7 @@
               <span class="author__role">Автор курса</span>
               <span class="author__pos">Staff Engineer из&nbsp;BigTech</span>
             </span>
-          </span><br><b>от&nbsp;паники к&nbsp;алгоритму</b></h1>
+          </span><b class="hero__t2">от&nbsp;паники к&nbsp;алгоритму</b></h1>
         <p class="hero__subtitle fade-up">Научись <span class="hl">уверенно проходить секцию System Design</span> и&nbsp;повысь свои шансы на&nbsp;трудоустройство в&nbsp;бигтех или повышение грейда до&nbsp;сеньора.</p>
         <!-- CTA-капсула: слева дата старта, в центре кнопка, справа длительность -->
         <div class="hero__cta fade-up">
@@ -1556,7 +1561,6 @@
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
-            <p class="program__promise">К&nbsp;концу недели у&nbsp;тебя есть каркас, по&nbsp;которому раскладывается любая задача. Больше никакой паники на&nbsp;старте.</p>
             <div class="program__block">
               <span class="program__label">Блок 1 · Алгоритм интервью</span>
               <ul class="program__list">
@@ -1587,7 +1591,6 @@
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
-            <p class="program__promise">Самая плотная неделя, но&nbsp;одна сквозная тема: от&nbsp;«как хранить» до&nbsp;«что теряем при масштабировании». Здесь сыпется большинство, ты&nbsp;будешь отвечать уверенно.</p>
             <div class="program__block">
               <span class="program__label">Блок 1 · Хранение и&nbsp;запросы</span>
               <ul class="program__list">
@@ -1618,7 +1621,6 @@
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
-            <p class="program__promise">Делаем систему быстрой и&nbsp;живучей. Короткие уроки, много практики, передышка после ядра БД.</p>
             <div class="program__block">
               <span class="program__label">Блок 1 · Кэш и&nbsp;очереди</span>
               <ul class="program__list">
@@ -1655,7 +1657,6 @@
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
-            <p class="program__promise">Переходим от&nbsp;блоков к&nbsp;системам, три полных разбора вживую, от&nbsp;требований до&nbsp;deep-dive.</p>
             <div class="program__block">
               <span class="program__label">Блок 1 · Мессенджер и&nbsp;лента</span>
               <ul class="program__list">
@@ -1681,7 +1682,6 @@
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
-            <p class="program__promise">Финал. Самые каверзные кейсы, и&nbsp;как вести себя в&nbsp;реальном 45-минутном слоте, чтобы знания превратились в&nbsp;оффер.</p>
             <div class="program__block">
               <span class="program__label">Блок 1 · Три сложных кейса</span>
               <ul class="program__list">
@@ -1737,7 +1737,7 @@
         </div>
 
         <div class="tier tier--light fade-up">
-          <span class="tier__badge">Рекомендуем</span>
+          <span class="tier__badge">Рекомендую</span>
           <div class="tier__label">Практика с&nbsp;ментором</div>
           <div class="tier__price"><b>79 990 ₽</b></div>
           <div class="tier__price-old">цена предзаписи · после <s>89 990 ₽</s></div>
@@ -2089,6 +2089,13 @@
         if (!wk.open) return;
         weeks.forEach(function (other) {
           if (other !== wk && other.open) other.open = false;
+        });
+        // после схлопывания недели выше показываем начало открытой недели, а не её низ
+        requestAnimationFrame(function () {
+          var top = wk.getBoundingClientRect().top;
+          if (top < 60 || top > window.innerHeight * 0.55) {
+            wk.scrollIntoView({ block: 'start', behavior: 'smooth' });
+          }
         });
       });
     });
