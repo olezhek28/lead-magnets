@@ -1439,7 +1439,13 @@
   .gc-modal__close:hover { background: rgba(52,63,68,.95); }
   .gc-modal__body { padding: 8px clamp(8px, 3vw, 40px) clamp(16px, 3vw, 40px); }
   .gc-modal__body iframe { display: block; width: 100% !important; min-height: 1040px; border: 0 !important; background: var(--bg-card); }
-  @media (max-width: 640px) { .gc-modal { padding: 0 0 40px; } .gc-modal__panel { width: 100%; border-radius: 0; border: 0; min-height: 100vh; } }
+  @media (max-width: 640px) {
+    .gc-modal { padding: 0 0 40px; overflow-x: hidden; }
+    .gc-modal__panel { width: 100%; max-width: 100vw; border-radius: 0; border: 0; min-height: 100vh; overflow-x: hidden; }
+    .gc-modal__body { padding: 6px 0 44px; overflow-x: hidden; }
+    .gc-modal__body iframe { width: 100% !important; max-width: 100vw; min-height: 1320px; }
+    .gc-modal__close { top: 12px; right: 12px; width: 46px; height: 46px; font-size: 19px; background: #1e272b; box-shadow: 0 8px 24px -6px rgba(0,0,0,.85); }
+  }
   body.gc-lock { overflow: hidden; }
   @media (prefers-reduced-motion: reduce) { .gc-modal__panel { animation: none; } }
 </style>
