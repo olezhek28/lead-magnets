@@ -1,50 +1,55 @@
 # https://guide.olezhek28.courses/robots.txt
+#
+# Служебные пути (docs, idea-board, tasks, .claude, CLAUDE.md) ссылок с сайта
+# не имеют, но репозиторий публичный — краулер может подсмотреть структуру там
+# и попробовать те же пути на домене. Запрещаем во всех группах: робот со своей
+# секцией читает только её и User-agent: * не смотрит.
+# С июля 2026 они вдобавок вырезаются из артефакта при деплое (см. deploy.yml).
 
 User-agent: *
 Allow: /
 Disallow: /.github/
+Disallow: /.claude/
+Disallow: /docs/
+Disallow: /idea-board/
+Disallow: /tasks/
+Disallow: /CLAUDE.md
+Disallow: /README.md
 
-# Яндекс — с очисткой UTM-параметров для нормализации страниц
+# Яндекс — отдельная группа ради Clean-param: он нормализует UTM-метки,
+# чтобы один и тот же лендинг с разными метками не считался разными страницами
 User-agent: Yandex
-Allow: /
-Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
-
 User-agent: YandexBot
-Allow: /
-
 User-agent: YandexNeuro
 Allow: /
+Disallow: /.github/
+Disallow: /.claude/
+Disallow: /docs/
+Disallow: /idea-board/
+Disallow: /tasks/
+Disallow: /CLAUDE.md
+Disallow: /README.md
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
 
-# Google
+# Google и AI-краулеры — перечислены явно, чтобы намерение было видно:
+# для GEO/LLM-поиска сайт открыт, закрыты только служебные каталоги
 User-agent: Googlebot
-Allow: /
-
 User-agent: Google-Extended
-Allow: /
-
-# AI-краулеры — индексируем для GEO/LLM-поиска
 User-agent: GPTBot
-Allow: /
-
 User-agent: ChatGPT-User
-Allow: /
-
 User-agent: ClaudeBot
-Allow: /
-
 User-agent: anthropic-ai
-Allow: /
-
 User-agent: Claude-Web
-Allow: /
-
 User-agent: PerplexityBot
-Allow: /
-
 User-agent: cohere-ai
-Allow: /
-
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /.github/
+Disallow: /.claude/
+Disallow: /docs/
+Disallow: /idea-board/
+Disallow: /tasks/
+Disallow: /CLAUDE.md
+Disallow: /README.md
 
 Sitemap: https://guide.olezhek28.courses/sitemap.xml
