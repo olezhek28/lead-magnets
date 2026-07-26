@@ -109,7 +109,7 @@ Go, gRPC, HTTP, REST, PostgreSQL, Kafka, Redis, Docker, Docker Compose, Nginx, P
 
 ---
 
-## 3. Курс «System Design — от паники к алгоритму»
+## 3. Курс «System Design: от паники к алгоритму»
 
 ### Что это
 
