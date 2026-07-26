@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Бесплатные гайды — Олег Козырев</title>
-  <meta name="description" content="Бесплатные гайды по Go-разработке от Олега Козырева — архитектура, микросервисы, DDD, CQRS и многое другое.">
-  <meta name="keywords" content="golang, go разработка, гайды, бесплатные курсы, архитектура, микросервисы, DDD, CQRS, backend">
+  <title>Гайды и курсы по Go — Олег Козырев</title>
+  <meta name="description" content="Бесплатные гайды по Go-разработке — roadmap 2026 и архитектура проекта. Платные программы — менторство до оффера и курс по секции System Design на собесе.">
+  <meta name="keywords" content="golang, go разработка, гайды, бесплатные курсы, архитектура, микросервисы, DDD, CQRS, backend, system design, менторство go, собеседование">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://guide.olezhek28.courses/">
-  <meta property="og:title" content="Бесплатные гайды по Go-разработке — Олег Козырев">
-  <meta property="og:description" content="Практические материалы по Go-разработке — архитектура, микросервисы, DDD, CQRS и многое другое. Бесплатно.">
+  <meta property="og:title" content="Гайды и курсы по Go-разработке — Олег Козырев">
+  <meta property="og:description" content="Бесплатные гайды — roadmap 2026 и архитектура Go-проекта. Программы обучения — менторство до оффера и курс по System Design.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://guide.olezhek28.courses/">
   <meta property="og:image" content="https://guide.olezhek28.courses/architecture/hero.jpg">
@@ -18,8 +18,8 @@
   <meta property="og:locale" content="ru_RU">
   <meta property="og:site_name" content="Олег Козырев — Гайды">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Бесплатные гайды по Go-разработке — Олег Козырев">
-  <meta name="twitter:description" content="Практические материалы по Go-разработке — архитектура, микросервисы, DDD, CQRS и многое другое.">
+  <meta name="twitter:title" content="Гайды и курсы по Go-разработке — Олег Козырев">
+  <meta name="twitter:description" content="Бесплатные гайды — roadmap 2026 и архитектура Go-проекта. Программы обучения — менторство до оффера и курс по System Design.">
   <meta name="twitter:image" content="https://guide.olezhek28.courses/architecture/hero.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,9 +29,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Бесплатные гайды по Go-разработке — Олег Козырев",
+    "name": "Гайды и курсы по Go-разработке — Олег Козырев",
     "url": "https://guide.olezhek28.courses/",
-    "description": "Бесплатные гайды по Go-разработке от Олега Козырева — архитектура, микросервисы, DDD, CQRS и многое другое.",
+    "description": "Бесплатные гайды по Go-разработке — roadmap 2026 и архитектура проекта. Платные программы — менторство до оффера и курс по секции System Design.",
     "author": {
       "@type": "Person",
       "name": "Олег Козырев",
@@ -95,6 +95,24 @@
       color: #babcbd;
       margin-bottom: 48px;
       max-width: 600px;
+    }
+
+    .section + .section {
+      margin-top: 72px;
+      padding-top: 64px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .section__title {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .section__desc {
+      font-size: 16px;
+      color: #babcbd;
+      margin-bottom: 28px;
+      max-width: 620px;
     }
 
     .guides {
@@ -189,6 +207,9 @@
       .main { padding: 48px 0; }
       .main__title { font-size: 28px; }
       .main__desc { font-size: 16px; }
+      .section + .section { margin-top: 48px; padding-top: 40px; }
+      .section__title { font-size: 22px; }
+      .section__desc { font-size: 15px; margin-bottom: 22px; }
       .guides { grid-template-columns: 1fr; }
     }
   </style>
@@ -203,45 +224,68 @@
 
   <main class="main">
     <div class="container">
-      <h1 class="main__title">Бесплатные <span>гайды</span></h1>
+      <h1 class="main__title">Гайды и <span>курсы</span></h1>
       <p class="main__desc">Практические материалы по Go-разработке — бери и применяй</p>
 
-      <div class="guides">
+      <section class="section">
+        <h2 class="section__title">Бесплатные гайды</h2>
+        <p class="section__desc">Открывай и читай — ничего оставлять взамен не нужно.</p>
 
-        <a href="/roadmap-2026/" class="guide">
-          <picture>
-            <source srcset="/roadmap-2026/hero.webp" type="image/webp">
-            <img src="/roadmap-2026/hero.jpg" alt="Roadmap Golang-разработчика 2026" class="guide__img" width="1280" height="720" loading="lazy">
-          </picture>
-          <div class="guide__body">
-            <div class="guide__badge">Бесплатно</div>
-            <div class="guide__title">Roadmap Golang-разработчика 2026</div>
-            <div class="guide__desc">После этого роадмапа ты будешь точно знать, что учить на каждом этапе, какие темы реально спрашивают на собесах, и перестанешь тратить время на то, что не нужно.</div>
-          </div>
-        </a>
+        <div class="guides">
 
-        <a href="/architecture/" class="guide">
-          <picture>
-            <source srcset="/architecture/hero.webp" type="image/webp">
-            <img src="/architecture/hero.jpg" alt="Гайд по архитектуре Go-проекта" class="guide__img" width="1280" height="720" loading="lazy">
-          </picture>
-          <div class="guide__body">
-            <div class="guide__badge">Бесплатно</div>
-            <div class="guide__title">Архитектура Go-проекта</div>
-            <div class="guide__desc">3 часа практики — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции проекта.</div>
-          </div>
-        </a>
+          <a href="/roadmap-2026/" class="guide">
+            <picture>
+              <source srcset="/roadmap-2026/hero.webp" type="image/webp">
+              <img src="/roadmap-2026/hero.jpg" alt="Roadmap Golang-разработчика 2026" class="guide__img" width="1280" height="720" loading="lazy">
+            </picture>
+            <div class="guide__body">
+              <div class="guide__badge">Бесплатно</div>
+              <div class="guide__title">Roadmap Golang-разработчика 2026</div>
+              <div class="guide__desc">После этого роадмапа ты будешь точно знать, что учить на каждом этапе, какие темы реально спрашивают на собесах, и перестанешь тратить время на то, что не нужно.</div>
+            </div>
+          </a>
 
-        <a href="/mentorstvo/" class="guide">
-          <img src="/mentorstvo/og-image.png" alt="Менторство по Go до оффера" class="guide__img" loading="lazy">
-          <div class="guide__body">
-            <div class="guide__badge">Менторство</div>
-            <div class="guide__title">Менторство по Go до оффера</div>
-            <div class="guide__desc">Доведу до оффера в Go без потери в зарплате. Для свитчеров и фронтендеров.</div>
-          </div>
-        </a>
+          <a href="/architecture/" class="guide">
+            <picture>
+              <source srcset="/architecture/hero.webp" type="image/webp">
+              <img src="/architecture/hero.jpg" alt="Гайд по архитектуре Go-проекта" class="guide__img" width="1280" height="720" loading="lazy">
+            </picture>
+            <div class="guide__body">
+              <div class="guide__badge">Бесплатно</div>
+              <div class="guide__title">Архитектура Go-проекта</div>
+              <div class="guide__desc">3 часа практики — от скрипта на 80 строк до DDD, Anti-Corruption Layer и CQRS. 7 этапов эволюции проекта.</div>
+            </div>
+          </a>
 
-      </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section__title">Курсы и менторство</h2>
+        <p class="section__desc">Программы с живыми разборами, обратной связью и сопровождением.</p>
+
+        <div class="guides">
+
+          <a href="/system_design/" class="guide">
+            <img src="/system_design/cover.svg" alt="Курс System Design — от паники к алгоритму" class="guide__img" width="1280" height="720" loading="lazy">
+            <div class="guide__body">
+              <div class="guide__badge">Курс · предзапись</div>
+              <div class="guide__title">System Design — от паники к алгоритму</div>
+              <div class="guide__desc">Как пройти секцию System Design на собесе в бигтех или закрыть грейд до сеньора. 5 недель, живые разборы, практика. Старт 7 сентября 2026.</div>
+            </div>
+          </a>
+
+          <a href="/mentorstvo/" class="guide">
+            <img src="/mentorstvo/og-image.png" alt="Менторство по Go до оффера" class="guide__img" loading="lazy">
+            <div class="guide__body">
+              <div class="guide__badge">Менторство</div>
+              <div class="guide__title">Менторство по Go до оффера</div>
+              <div class="guide__desc">Доведу до оффера в Go без потери в зарплате. Для свитчеров и фронтендеров.</div>
+            </div>
+          </a>
+
+        </div>
+      </section>
     </div>
   </main>
 
