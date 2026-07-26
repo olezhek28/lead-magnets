@@ -24,6 +24,10 @@
 <meta property="og:url" content="https://guide.olezhek28.courses/system_design/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- прогреваем соединение под анкету GetCourse: DNS+TCP+TLS делаются заранее,
+     но ничего не загружается и не выполняется — хит в Метрику не уходит,
+     а форма по клику открывается заметно быстрее на плохой сети -->
+<link rel="preconnect" href="https://school.olezhek28.courses">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1440,6 +1444,22 @@
   .gc-modal__close:hover { background: rgba(52,63,68,.95); }
   .gc-modal__body { padding: 8px clamp(8px, 3vw, 40px) clamp(16px, 3vw, 40px); }
   .gc-modal__body iframe { display: block; width: 100% !important; min-height: 1040px; border: 0 !important; background: var(--bg-card); }
+  /* пока форма не загрузилась — держим её вне потока, иначе пустой iframe
+     на 1040px растягивает модалку и под заглушкой зияет дыра */
+  .gc-modal__body.is-loading iframe { position: absolute; visibility: hidden; }
+  .gc-modal__loading {
+    min-height: 420px; display: flex; flex-direction: column; gap: 16px;
+    align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 13px; color: var(--text-mute); text-align: center;
+  }
+  .gc-modal__loading a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .gc-spinner {
+    width: 26px; height: 26px; border-radius: 50%; flex: none;
+    border: 2px solid var(--border-acc); border-top-color: var(--accent);
+    animation: gcSpin .8s linear infinite;
+  }
+  @keyframes gcSpin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .gc-spinner { animation-duration: 2.4s; } }
   @media (max-width: 640px) {
     .gc-modal { padding: 0 0 40px; overflow-x: hidden; }
     .gc-modal__panel { width: 100%; max-width: 100vw; border-radius: 0; border: 0; min-height: 100vh; overflow-x: hidden; }
@@ -2154,9 +2174,16 @@
   <div class="gc-modal__backdrop" data-gc-close></div>
   <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Анкета предзаписи">
     <button type="button" class="gc-modal__close" data-gc-close aria-label="Закрыть">&#10005;</button>
-    <div class="gc-modal__body">
-      <!-- виджет рендерит форму в iframe прямо сюда -->
-      <script id="899a0f68032eb1a5b3f89a1a2ce8291d864ab292" src="https://school.olezhek28.courses/pl/lite/widget/script?id=1633267"></script>
+    <!-- Скрипт виджета GetCourse СПЕЦИАЛЬНО не стоит здесь в разметке: его iframe
+         (school.olezhek28.courses) отправляет собственный хит в тот же счётчик
+         96022201, и при загрузке вместе со страницей это ломало аналитику —
+         второй просмотр приезжал у каждого посетителя, обнуляя показатель
+         отказов и удваивая глубину просмотра. Теперь скрипт вставляется по
+         первому клику, см. loadWidget() ниже. -->
+    <div class="gc-modal__body is-loading" id="gc-modal-body">
+      <div class="gc-modal__loading" id="gc-loading" role="status">
+        <span class="gc-spinner" aria-hidden="true"></span>Загружаю анкету…
+      </div>
     </div>
   </div>
 </div>
@@ -2181,10 +2208,54 @@
     if (!modal) return;
     var lastTrigger = null;
     var closeBtn = modal.querySelector('.gc-modal__close');
+
+    // ===== Ленивая загрузка виджета GetCourse =====
+    // Грузим форму только по первому клику. Если вставить её скрипт в разметку,
+    // iframe отправит свой хит в счётчик у каждого посетителя — см. комментарий
+    // у .gc-modal__body.
+    var WIDGET_ID = '899a0f68032eb1a5b3f89a1a2ce8291d864ab292';
+    var WIDGET_SRC = 'https://school.olezhek28.courses/pl/lite/widget/script?id=1633267';
+    var FORM_URL = 'https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267';
+    var widgetRequested = false;
+
+    // идемпотентно: зовётся и по load iframe, и по страховочному таймауту
+    function widgetReady() {
+      var body = document.getElementById('gc-modal-body');
+      var ph = document.getElementById('gc-loading');
+      if (body) body.classList.remove('is-loading');
+      if (ph && ph.parentNode) ph.parentNode.removeChild(ph);
+    }
+    function widgetFailed() {
+      var ph = document.getElementById('gc-loading');
+      if (ph) ph.innerHTML = 'Не удалось загрузить анкету. <a href="' + FORM_URL +
+        '">Открыть её отдельной страницей</a>';
+    }
+    function loadWidget() {
+      if (widgetRequested) return;
+      widgetRequested = true;
+      var body = document.getElementById('gc-modal-body');
+      if (!body) return;
+      var s = document.createElement('script');
+      s.id = WIDGET_ID;
+      s.src = WIDGET_SRC;
+      s.onerror = widgetFailed;
+      s.onload = function () {
+        // DOMContentLoaded, на который виджет подписывается сам, давно прошёл,
+        // поэтому дёргаем кастомное событие — на него он подписан тоже
+        document.dispatchEvent(new Event('StartWidget' + WIDGET_ID));
+        var frame = body.querySelector('iframe');
+        if (!frame) { widgetFailed(); return; }
+        frame.addEventListener('load', widgetReady);
+        setTimeout(widgetReady, 8000); // не залипаем на заглушке, если load не придёт
+      };
+      body.appendChild(s);
+    }
+
     function open(e) {
       if (e) { e.preventDefault(); lastTrigger = e.currentTarget; }
       goal('sd_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
       modal.hidden = false; document.body.classList.add('gc-lock');
+      loadWidget();
       if (closeBtn) closeBtn.focus();
     }
     function close() {
