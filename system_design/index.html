@@ -5,8 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Cookie-баннер + Яндекс.Метрика (счётчик 96022201, общий для guide.olezhek28.courses) -->
 <script src="/consent.js" defer></script>
-<title>System Design: от паники к алгоритму | Курс Олега Козырева</title>
-<meta name="description" content="Курс для backend-мидлов, которые упираются в секцию System Design на собесе в бигтех. 5 недель, живые разборы, практика под давлением. Старт 7 сентября 2026.">
+
+<!-- ДАТЫ ПОТОКА (старт 7 сентября 2026, предзапись до 23 августа) зашиты в 13 местах.
+     При смене потока обновить ВСЕ, иначе разметка и llms-файлы будут противоречить
+     тому, что написано на странице:
+       этот файл — description; JSON-LD: startDate и два priceValidUntil;
+         бейдж предзаписи в герое; капсула «Старт потока»; плашка в блоке тарифов;
+         бейдж в финальном блоке
+       /llms.txt — вводный абзац и строка «Длительность»
+       /llms-full.txt — «Статус» и «Старт потока»
+       /index.html — описание карточки курса в каталоге
+     Видимые на странице заметны сразу, а priceValidUntil, llms-файлы и каталог
+     глазами не видны — про них и забывают. -->
+
+<title>System Design: курс подготовки к секции на собеседовании</title>
+<meta name="description" content="Курс для backend-мидлов, которые упираются в секцию System Design на собеседовании в бигтех. 5 недель, живые разборы, практика под давлением. Старт 7 сентября 2026.">
 <meta name="author" content="Олег Козырев">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="System Design: от паники к алгоритму">
@@ -24,7 +37,8 @@
 <meta name="twitter:description" content="Курс для backend-мидлов, которые упираются в секцию System Design на собесе в бигтех. Пройти секцию, а не выучить гору теории.">
 <meta name="twitter:image" content="https://guide.olezhek28.courses/system_design/og-image.png">
 <meta name="theme-color" content="#10171A">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="yandex" content="all">
 <meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://guide.olezhek28.courses/system_design/">
 <meta property="og:url" content="https://guide.olezhek28.courses/system_design/">
@@ -1272,6 +1286,15 @@
   .footer__tg:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 
   /* нижний ряд: реквизиты + ряд юр-ссылок */
+  /* перелинковка на соседние лендинги: без неё страница — тупик, уходить
+     некуда ни человеку, которому курс не подошёл, ни краулеру */
+  .footer__more { padding-top: 34px; border-top: 1px solid var(--border-mid); margin-bottom: 34px; }
+  .footer__more-label { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
+  .footer__more-row { display: flex; flex-wrap: wrap; gap: 10px 26px; }
+  .footer__more-row a { font-size: 14px; color: var(--text-mute); border-bottom: 1px solid transparent; transition: color .2s var(--ease), border-color .2s var(--ease); }
+  .footer__more-row a:hover { color: var(--accent); border-bottom-color: rgba(223,223,65,.5); }
+  .footer__more-row a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-sm); }
+
   .footer__bottom { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 48px; padding-top: 34px; border-top: 1px solid var(--border-mid); align-items: start; }
   .footer__brand { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); margin-bottom: 18px; letter-spacing: -0.01em; }
   .footer__brand b { color: var(--accent); }
@@ -1626,7 +1649,7 @@
               <span class="author__pos">Golang Staff Engineer</span>
             </span>
           </span><b class="hero__t2">от&nbsp;паники к&nbsp;алгоритму</b></h1>
-        <p class="hero__subtitle fade-up">Научись уверенно проходить <span class="hl">секцию System Design</span> и&nbsp;повысь свои шансы на&nbsp;трудоустройство в&nbsp;бигтех или повышение грейда до&nbsp;сеньора.</p>
+        <p class="hero__subtitle fade-up">Научись уверенно проходить <span class="hl">секцию System Design</span> на&nbsp;собеседовании&nbsp;— и&nbsp;повысь шансы на&nbsp;оффер в&nbsp;бигтехе или грейд сеньора.</p>
         <!-- CTA-капсула: слева дата старта, в центре кнопка, справа длительность -->
         <div class="hero__cta fade-up">
           <div class="cta-capsule">
@@ -1659,7 +1682,7 @@
         <div class="merge__who fade-up">
           <div class="merge__profile">
             <div class="merge__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.2"></circle></svg></div>
-            <div class="merge__ptext"><b>Метишь в&nbsp;крупный бигтех</b>: Яндекс, Озон, Т-Банк, ВК, Сбер, Авито, WB&nbsp;— на&nbsp;собесе почти всегда тебя будет ждать System Design.</div>
+            <div class="merge__ptext"><b>Метишь в&nbsp;крупный бигтех</b>: Яндекс, Озон, Т-Банк, ВК, Сбер, Авито, WB&nbsp;— там тебя почти всегда будет ждать секция системного дизайна.</div>
           </div>
           <div class="merge__profile">
             <div class="merge__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div>
@@ -1690,7 +1713,7 @@
           <summary>
             <div class="program__head">
               <span class="program__step">Неделя 01</span>
-              <span class="program__name">Алгоритм интервью + первый слой архитектуры</span>
+              <h3 class="program__name">Алгоритм интервью + первый слой архитектуры</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
@@ -1720,7 +1743,7 @@
           <summary>
             <div class="program__head">
               <span class="program__step">Неделя 02</span>
-              <span class="program__name">Ядро баз данных</span>
+              <h3 class="program__name">Ядро баз данных</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
@@ -1750,7 +1773,7 @@
           <summary>
             <div class="program__head">
               <span class="program__step">Неделя 03</span>
-              <span class="program__name">Кэш, очереди и&nbsp;устойчивость</span>
+              <h3 class="program__name">Кэш, очереди и&nbsp;устойчивость</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
@@ -1786,7 +1809,7 @@
           <summary>
             <div class="program__head">
               <span class="program__step">Неделя 04</span>
-              <span class="program__name">Первые боевые кейсы</span>
+              <h3 class="program__name">Первые боевые кейсы</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
@@ -1811,7 +1834,7 @@
           <summary>
             <div class="program__head">
               <span class="program__step">Неделя 05</span>
-              <span class="program__name">Сложные кейсы + поведение на&nbsp;собесе</span>
+              <h3 class="program__name">Сложные кейсы + поведение на&nbsp;собесе</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
@@ -1920,7 +1943,7 @@
     <!-- верхний блок: «Есть вопрос?» + телеграм-плитка (поддержка) -->
     <div class="footer__top">
       <div class="footer__ask">
-        <h2 class="footer__ask-title">Есть вопрос?</h2>
+        <div class="footer__ask-title">Есть вопрос?</div>
         <div class="footer__ask-rule" aria-hidden="true"></div>
         <a class="footer__ask-note" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">Пиши в&nbsp;телеграм&nbsp;— отвечу сразу, как увижу сообщение:)</a>
       </div>
@@ -1928,6 +1951,18 @@
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"></path></svg>
       </a>
     </div>
+
+    <!-- ссылки на соседние лендинги: единственный выход со страницы для того,
+         кому курс не подошёл, и единственный путь вглубь сайта для краулера -->
+    <nav class="footer__more" aria-label="Другие материалы">
+      <div class="footer__more-label">Другие материалы</div>
+      <div class="footer__more-row">
+        <a href="/roadmap-2026/">Roadmap Go-разработчика 2026</a>
+        <a href="/architecture/">Архитектура Go-проекта</a>
+        <a href="/mentorstvo/">Менторство по&nbsp;Go до&nbsp;оффера</a>
+        <a href="/">Все гайды и&nbsp;курсы</a>
+      </div>
+    </nav>
 
     <!-- нижний ряд: реквизиты + ряд юр-ссылок -->
     <div class="footer__bottom">

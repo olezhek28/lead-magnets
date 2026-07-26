@@ -4,3 +4,6 @@ __pycache__/
 .playwright-mcp/
 .mcp.json
 .idea/
+
+# рабочая SEO-заметка — только локально, не публикуем
+docs/seo.md
