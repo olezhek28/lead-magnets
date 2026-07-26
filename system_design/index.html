@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- ⚠️ вставить свой счётчик/пиксель (Яндекс.Метрика / TGTrack) — чужие ID из lead-magnets НЕ подставлять -->
+<!-- Cookie-баннер + Яндекс.Метрика (счётчик 96022201, общий для guide.olezhek28.courses) -->
+<script src="/consent.js" defer></script>
 <title>System Design — от паники к алгоритму | Курс Олега Козырева</title>
 <meta name="description" content="Курс для backend-мидлов, которые упираются в секцию System Design на собесе в бигтех. 5 недель, живые разборы, практика под давлением. Старт 7 сентября 2026.">
 <meta name="author" content="Олег Козырев">
@@ -1468,7 +1469,7 @@
       <a class="header__nav-link" href="#programma">Программа</a>
       <a class="header__nav-link" href="#tarify">Тарифы</a>
     </nav>
-    <a class="btn btn--primary header__cta" href="#tarify">Записаться на&nbsp;поток</a>
+    <a class="btn btn--primary header__cta" href="#tarify" data-goal="header">Записаться на&nbsp;поток</a>
     <button class="menu-toggle" id="menu-toggle" aria-label="Меню" aria-expanded="false" aria-controls="nav-mobile">
       <span></span><span></span><span></span>
     </button>
@@ -1476,7 +1477,7 @@
       <a class="header__nav-link" href="#dlya-kogo">Для кого</a>
       <a class="header__nav-link" href="#programma">Программа</a>
       <a class="header__nav-link" href="#tarify">Тарифы</a>
-      <a class="btn btn--primary" href="#tarify">Записаться на&nbsp;поток</a>
+      <a class="btn btn--primary" href="#tarify" data-goal="nav_mobile">Записаться на&nbsp;поток</a>
     </div>
   </div>
 </header>
@@ -1495,7 +1496,7 @@
             </picture>
             <span class="author__txt">
               <span class="author__role">Автор курса</span>
-              <span class="author__pos">Staff Engineer из&nbsp;BigTech</span>
+              <span class="author__pos">Golang Staff Engineer</span>
             </span>
           </span><b class="hero__t2">от&nbsp;паники к&nbsp;алгоритму</b></h1>
         <p class="hero__subtitle fade-up">Научись уверенно проходить <span class="hl">секцию System Design</span> и&nbsp;повысь свои шансы на&nbsp;трудоустройство в&nbsp;бигтех или повышение грейда до&nbsp;сеньора.</p>
@@ -1506,7 +1507,7 @@
               <span class="cta-capsule__label">Старт потока</span>
               <span class="cta-capsule__value cta-capsule__value--accent">7 сентября</span>
             </div>
-            <a class="btn btn--primary" href="#tarify">
+            <a class="btn btn--primary" href="#tarify" data-goal="hero">
               Записаться на&nbsp;поток
               <svg class="btn__arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10"></path><path d="M8 3l4 4-4 4"></path></svg>
             </a>
@@ -1707,7 +1708,7 @@
       </div>
 
       <div class="section__cta fade-up">
-        <a class="btn btn--primary btn--lg" href="#tarify">Записаться на&nbsp;поток</a>
+        <a class="btn btn--primary btn--lg" href="#tarify" data-goal="programma">Записаться на&nbsp;поток</a>
       </div>
     </div>
   </section>
@@ -1738,8 +1739,9 @@
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Справочник с&nbsp;продвинутыми темами</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Доступ к&nbsp;общему чатику потока</li>
           </ul>
-          <!-- ⚠️ placeholder: URL анкеты предзаписи -->
-          <div class="tier__cta"><a class="btn btn--primary btn--block" href="#" data-gc-open>Заполнить анкету предзаписи</a></div>
+          <!-- href — фолбэк на случай, если JS не сработал или ссылку открыли в новой вкладке;
+               при работающем JS клик перехватывается и форма открывается в модалке -->
+          <div class="tier__cta"><a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_standart">Заполнить анкету предзаписи</a></div>
         </div>
 
         <div class="tier tier--light fade-up">
@@ -1753,8 +1755,7 @@
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Групповая практика каждую неделю:</b> команда по&nbsp;трое проектирует задание по&nbsp;теме, ментор подключается к&nbsp;каждой команде, а&nbsp;потом ты&nbsp;вслух защищаешь решение под вопросами</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Бонусные разборы типичных архитектурных ошибок</li>
           </ul>
-          <!-- ⚠️ placeholder: URL анкеты предзаписи -->
-          <div class="tier__cta"><a class="btn btn--primary btn--block" href="#" data-gc-open>Заполнить анкету предзаписи</a></div>
+          <div class="tier__cta"><a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_mentor">Заполнить анкету предзаписи</a></div>
         </div>
       </div>
     </div>
@@ -1770,8 +1771,7 @@
           <span class="final__badge">60 мест</span>
         </div>
         <h2 class="final__title">Записывайся на&nbsp;поток, пока действует цена предзаписи</h2>
-        <!-- ⚠️ placeholder: URL анкеты предзаписи -->
-        <a class="final__btn" href="#" data-gc-open>Записаться на&nbsp;поток</a>
+        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="final">Записаться на&nbsp;поток</a>
         <p class="final__hint">* После нажатия откроется анкета предзаписи</p>
       </div>
     </div>
@@ -1780,7 +1780,7 @@
 </main>
 
 <div class="sticky-cta" id="sticky-cta">
-  <a class="btn btn--primary btn--block" href="#tarify">Записаться на&nbsp;поток</a>
+  <a class="btn btn--primary btn--block" href="#tarify" data-goal="sticky">Записаться на&nbsp;поток</a>
 </div>
 
 <button class="back-to-top" id="back-to-top" aria-label="Наверх">
@@ -2162,12 +2162,28 @@
 </div>
 <script>
   (function () {
+    // ===== Цели Яндекс.Метрики =====
+    // ym появляется из /consent.js и может отсутствовать: пользователь отклонил
+    // аналитику в баннере либо сработал блокировщик. Молча пропускаем.
+    var COUNTER = 96022201;
+    function goal(name, place) {
+      if (typeof window.ym !== 'function') return;
+      window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
+    }
+    // якорные CTA (ведут к #tarify); кнопки анкеты считаются отдельно, в open()
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest && e.target.closest('[data-goal]');
+      if (!el || el.hasAttribute('data-gc-open')) return;
+      goal('sd_cta_click', el.getAttribute('data-goal'));
+    });
+
     var modal = document.getElementById('gc-modal');
     if (!modal) return;
     var lastTrigger = null;
     var closeBtn = modal.querySelector('.gc-modal__close');
     function open(e) {
       if (e) { e.preventDefault(); lastTrigger = e.currentTarget; }
+      goal('sd_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
       modal.hidden = false; document.body.classList.add('gc-lock');
       if (closeBtn) closeBtn.focus();
     }

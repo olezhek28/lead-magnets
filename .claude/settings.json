@@ -3,7 +3,9 @@
     "allow": [
       "WebFetch",
       "WebSearch",
-      "mcp__*"
+      "mcp__Bright Data",
+      "mcp__reddit",
+      "mcp__sequential-thinking"
     ]
   },
   "hooks": {
