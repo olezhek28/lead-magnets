@@ -10,10 +10,12 @@
      При смене потока обновить ВСЕ, иначе разметка и llms-файлы будут противоречить
      тому, что написано на странице:
        этот файл — description; JSON-LD: startDate и два priceValidUntil;
-         бейдж предзаписи в герое; капсула «Старт потока»; плашка в блоке тарифов;
+         бейдж предзаписи в герое; капсула &quot;Старт потока&quot;; в блоке тарифов —
+         плашка предзаписи, карточка &quot;Старт потока&quot; в полосе фактов и строка
+         &quot;цена предзаписи, действует до…&quot; в каждом из двух тарифов;
          бейдж в финальном блоке
-       /llms.txt — вводный абзац и строка «Длительность»
-       /llms-full.txt — «Статус» и «Старт потока»
+       /llms.txt — вводный абзац и строка &quot;Длительность&quot;
+       /llms-full.txt — &quot;Статус&quot; и &quot;Старт потока&quot;
        /index.html — описание карточки курса в каталоге
      Видимые на странице заметны сразу, а priceValidUntil, llms-файлы и каталог
      глазами не видны — про них и забывают. -->
@@ -23,7 +25,7 @@
 <meta name="author" content="Олег Козырев">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="System Design: от паники к алгоритму">
-<meta property="og:description" content="Курс для backend-мидлов, которые упираются в секцию System Design на собесе в бигтех. Задача — пройти секцию, а не перелопатить гору теории.">
+<meta property="og:description" content="Курс для backend-мидлов, которые упираются в секцию System Design на собесе в бигтех. Задача: пройти секцию, а не перелопатить гору теории.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="Олег Козырев · Курсы">
@@ -92,29 +94,29 @@
           "offers": {
             "@type": "AggregateOffer",
             "priceCurrency": "RUB",
-            "lowPrice": "49990",
-            "highPrice": "79990",
+            "lowPrice": "53990",
+            "highPrice": "89990",
             "offerCount": "2",
             "availability": "https://schema.org/PreOrder",
             "offers": [
               {
                 "@type": "Offer",
                 "name": "Стандарт",
-                "price": "49990",
+                "price": "53990",
                 "priceCurrency": "RUB",
                 "priceValidUntil": "2026-08-23",
                 "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи, после — 54 990 ₽. Все видеоуроки курса за 5 недель, живой еженедельный Q&A, методички с памятками и деревьями решений, справочник с продвинутыми темами, доступ к чату потока.",
+                "description": "Цена предзаписи; при оплате сразу целиком 49 990 ₽, в рассрочку 4 499 ₽/мес на 12 месяцев. 42 урока в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               },
               {
                 "@type": "Offer",
                 "name": "Практика с ментором",
-                "price": "79990",
+                "price": "89990",
                 "priceCurrency": "RUB",
                 "priceValidUntil": "2026-08-23",
                 "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи, после — 89 990 ₽. Всё из тарифа «Стандарт», плюс разбор каждого домашнего задания живым ментором, еженедельная групповая практика в команде из трёх человек с защитой решения вслух и бонусные разборы типичных архитектурных ошибок.",
+                "description": "Цена предзаписи; при оплате сразу целиком 80 990 ₽, в рассрочку 7 499 ₽/мес на 12 месяцев. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               }
             ]
@@ -225,7 +227,7 @@
   /* ===== RAIL — прогресс чтения как мини-карта документа =====
      Вертикальная линия в левом поле: узел = секция, позиция узла пропорциональна
      её месту в документе, жёлтая часть = сколько уже прочитано.
-     Геометрия скруглённая (язык B): узлы — «скруглённые квадраты», линия с радиусом. */
+     Геометрия скруглённая (язык B): узлы — "скруглённые квадраты", линия с радиусом. */
   .rail {
     position: fixed; z-index: 900; pointer-events: none;
     /* контейнер 1240 + падинг 44 → левый край контента = 50% - 576px;
@@ -257,7 +259,7 @@
     background: var(--accent); border-color: var(--accent);
     box-shadow: 0 0 0 4px rgba(223,223,65,.14), 0 0 16px -2px rgba(223,223,65,.5);
   }
-  /* короткая отсечка в поле — «здесь читатель сейчас».
+  /* короткая отсечка в поле — "здесь читатель сейчас".
      От края узла до левого края текста ровно 18px, поэтому длина 8px:
      остаётся по 5px воздуха с обеих сторон и отсечка не липнет к букве */
   .rail__node.is-current::after {
@@ -349,7 +351,7 @@
   .header__nav-link:hover, .header__nav-link:focus-visible { color: var(--text-h); }
   .header__nav-link:hover::after, .header__nav-link:focus-visible::after { transform: scaleX(1); }
   .header__nav-link:active { color: var(--accent); }
-  /* активная секция — обязательная обратная связь «где я» */
+  /* активная секция — обязательная обратная связь "где я" */
   .header__nav-link.is-current { color: var(--accent); }
   .header__nav-link.is-current::after { transform: scaleX(1); background: rgba(223,223,65,.55); }
   .header__cta { padding: 12px 20px; font-size: 13px; flex-shrink: 0; }
@@ -405,10 +407,10 @@
     letter-spacing: -0.04em; color: var(--text-h); margin-bottom: 30px;
   }
   .hero__title b { font-weight: 700; color: var(--accent); letter-spacing: -0.045em; }
-  /* вторая строка «от паники к алгоритму» + плашка держатся вместе на одной строке,
+  /* вторая строка "от паники к алгоритму" + плашка держатся вместе на одной строке,
      плашка садится справа от заголовка на том же уровне (как на микросервисах) */
   /* плашка автора идёт инлайн сразу за последними словами подзаголовка,
-     на той же строке — «…большие системы. [плашка]» */
+     на той же строке — "…большие системы. [плашка]" */
   /* плашка автора — отдельной строкой по центру между заголовком и подзаголовком */
   .hero__author-row { display: flex; justify-content: center; margin: 0 0 30px; }
   .hero__subtitle { font-size: 18.5px; font-weight: 400; line-height: 1.62; color: var(--text-mute); margin: 0 auto 52px; max-width: 660px; text-align: center; text-wrap: pretty; }
@@ -466,7 +468,7 @@
     font-family: var(--font); font-size: 13px; font-weight: 400; line-height: 1.25;
     color: var(--text-mute); white-space: nowrap; /* 6.1:1 на плашке */
   }
-  /* уменьшенная пилюля автора — встроена в строку заголовка сразу за «System Design» */
+  /* уменьшенная пилюля автора — встроена в строку заголовка сразу за "System Design" */
   .hero__t2 { display: block; }
   .author--sm { gap: 10px; padding: 6px 18px 6px 6px; font-size: 13px; margin-left: 16px; translate: 0 -4px; }
   .author--sm .author__ava { width: 34px; height: 34px; }
@@ -491,7 +493,7 @@
   .section { padding: 96px 0 96px; }
   .section--tight { padding: 84px 0 88px; }
   .section__head { margin-bottom: 56px; max-width: 780px; }
-  /* сознательно ломаем «всё по центру»: шапки секций живут слева, на своей оси */
+  /* сознательно ломаем "всё по центру": шапки секций живут слева, на своей оси */
   .section__head--center { margin-left: 0; margin-right: auto; text-align: left; }
   .section__title {
     position: relative; font-family: var(--display);
@@ -504,8 +506,8 @@
   .section__cta { margin-top: 52px; }
 
   /* ===== ЭТО ПРО ТЕБЯ, ЕСЛИ… — объединённый блок (мотивация + узнавание) =====
-     слева — «Почему это важно» (деньги/грейд/senior + бигтех + ловушка),
-     справа — «Узнаёшь себя?» (профили и затык на интервью). Каждый тезис — один раз.
+     слева — "Почему это важно" (деньги/грейд/senior + бигтех + ловушка),
+     справа — "Узнаёшь себя?" (профили и затык на интервью). Каждый тезис — один раз.
      На ≤960 колонки складываются в одну. */
   .merge { display: grid; grid-template-columns: 1.05fr .95fr; gap: 30px; align-items: stretch; }
   /* без левой колонки — одна центрированная колонка узнавания */
@@ -599,7 +601,7 @@
   .scene .fl-c { fill: var(--coral); stroke: none; }
   .scene .dt   { fill: var(--text-mute); stroke: none; }
 
-  /* таймер-циферблат внутри слота (иллюстрация «времени») */
+  /* таймер-циферблат внутри слота (иллюстрация "времени") */
   .slot__ph--clock { flex-direction: column; gap: 4px; }
   .dial { position: relative; width: 152px; height: 152px; max-width: 60%; aspect-ratio: 1; }
   .dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -696,13 +698,13 @@
     font-weight: 500; letter-spacing: -0.02em; color: var(--light-ink); text-wrap: balance;
   }
 
-  /* ===== ROAD — «Что получишь» как лента-путь =====
+  /* ===== ROAD — "Что получишь" как лента-путь =====
      Семь пунктов — не список, а хронология самого собеседования: от первой минуты
      к финалу. Геометрия задана в условных единицах поля 1240 × 1190; --u привязан
      к ширине контейнера (cqw), поэтому композиция масштабируется целиком.
      Лента заполняется по прокрутке — прогресс считает общий rAF-тикер страницы.
 
-     ≥1024px — змейка-лента с диагональной штриховкой и «дышащей» кромкой
+     ≥1024px — змейка-лента с диагональной штриховкой и "дышащей" кромкой
      (feTurbulence + feDisplacementMap), крупные номера с пунктирными выносками.
      <1024px — вертикальная лента: рельса слева, тот же прогресс.
 
@@ -722,7 +724,7 @@
   .road__trackline { fill: none; stroke: rgba(255,255,255,.07); stroke-width: 47.5; stroke-linecap: round; filter: url(#roadWobble); }
   /* заполнение по прокрутке */
   .road__fill  { fill: none; stroke: url(#roadGrad); stroke-width: 41; stroke-linecap: round; stroke-linejoin: round; }
-  /* штриховка поверх заполненной части — фактура, а не «рисованность» */
+  /* штриховка поверх заполненной части — фактура, а не "рисованность" */
   .road__hatch { fill: none; stroke: url(#roadHatchPattern); stroke-width: 41; stroke-linecap: round; stroke-linejoin: round; }
 
   .road__steps { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
@@ -877,8 +879,8 @@
   .program__lead-note { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(223,223,65,.18); font-size: 14px; color: var(--text-mute); line-height: 1.6; }
 
   /* аккордеон недель: серые скруглённые карточки, плашки-лейблы внутри.
-     Секция намеренно спокойная — жёлтого минимум (только плашка «Результат
-     недели» + активный тогл). Ни таймлайн-рейки, ни бокового артефакта. */
+     Секция намеренно спокойная — жёлтого минимум (только плашка "Результат
+     недели" + активный тогл). Ни таймлайн-рейки, ни бокового артефакта. */
   .program { max-width: 1080px; margin: 0; display: flex; flex-direction: column; gap: 16px; }
   .program__item {
     background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl);
@@ -893,8 +895,8 @@
   .program__step { display: block; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text-faint); margin-bottom: 13px; letter-spacing: .18em; text-transform: uppercase; transition: color .3s var(--ease); }
   .program__item[open] .program__step { color: var(--accent); }
   .program__name { font-family: var(--display); font-size: clamp(20px, 2.4vw, 30px); font-weight: 500; color: var(--text-h); line-height: 1.16; letter-spacing: -0.03em; text-wrap: balance; }
-  /* тогл: скруглённый квадрат «+»; в раскрытом состоянии штрихи поворачиваются
-     в «×», сам квадрат остаётся квадратом (не ромбом) */
+  /* тогл: скруглённый квадрат "+"; в раскрытом состоянии штрихи поворачиваются
+     в "×", сам квадрат остаётся квадратом (не ромбом) */
   .program__toggle {
     position: relative; width: 46px; height: 46px; border-radius: var(--r-md);
     background: var(--bg-primary); color: var(--text-mute); border: 1px solid var(--border-acc);
@@ -919,7 +921,7 @@
   .program__body { padding: 2px 34px 34px; }
   .program__promise { font-size: 16.5px; line-height: 1.56; color: var(--text-h); font-family: var(--display); font-weight: 400; letter-spacing: -0.015em; max-width: 74ch; margin-bottom: 30px; }
   .program__block + .program__block { margin-top: 34px; }
-  /* плашка-лейбл: тёмная для смысловых блоков, жёлтая — только «Результат недели» */
+  /* плашка-лейбл: тёмная для смысловых блоков, жёлтая — только "Результат недели" */
   .program__label {
     display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 500;
     letter-spacing: .14em; text-transform: uppercase; color: var(--text-h);
@@ -940,7 +942,7 @@
   .program__extra-text { font-size: 15px; line-height: 1.65; color: var(--text-body); }
   .program__extra-text b { color: var(--text-h); font-weight: 600; }
 
-  /* ===== HOW (паттерн «Как всё устроено» — чередующиеся ряды) ===== */
+  /* ===== HOW (паттерн "Как всё устроено" — чередующиеся ряды) ===== */
   .how__format {
     max-width: 1080px; margin: 0 0 56px; padding: 24px 30px;
     background: linear-gradient(100deg, rgba(223,223,65,.12), rgba(223,223,65,.02) 65%, transparent);
@@ -1048,7 +1050,7 @@
   .tree__leaf { width: 100%; padding: 9px 8px; border-radius: 5px; background: var(--bg-secondary); border: 1px solid var(--border-mid); font-size: 11.5px; font-family: var(--mono); color: var(--text-mute); text-align: center; }
 
   /* витрина методичек: ровный ряд с общей базовой линией.
-     «лесенка» ломала выравнивание названий и делала блок неопрятным */
+     "лесенка" ломала выравнивание названий и делала блок неопрятным */
   .artifacts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 64px; margin-bottom: 0; }
   .artifact {
     background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg);
@@ -1145,7 +1147,7 @@
   .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
   .tier--light .tier__price { color: var(--light-ink); }
   .tier__price b { font-weight: 500; }
-  .tier__price-old { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); margin-bottom: 30px; min-height: 20px; }
+  .tier__price-old { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); margin-bottom: 10px; min-height: 20px; }
   .tier__price-old s { color: var(--text-mute); text-decoration-color: var(--coral); }
   .tier--light .tier__price-old s { color: var(--light-mute); }
   .tier--light .tier__price-old { color: var(--light-meta); }
@@ -1165,7 +1167,64 @@
   .tier--light .btn--primary { background: var(--light-ink); color: var(--accent); }
   .tier--light .btn--primary:hover { background: #05090b; box-shadow: 0 16px 34px -18px rgba(0,0,0,.8); }
 
-  .pricing__scarcity { margin: 0 0 34px; }
+  .pricing__scarcity { margin: 0 0 14px; }
+
+  /* полоса фактов о потоке: формат курса читается до того, как человек дошёл до цены */
+  .pricing__facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 18px; }
+  .fact { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 15px 18px; display: flex; flex-direction: column; gap: 7px; }
+  .fact__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
+  .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
+  .fact__value--accent { color: var(--accent); }
+
+  /* позиционная строка тарифа: чем этот тариф отличается по сути, а не по списку пунктов */
+  .tier__tagline { font-family: var(--display); font-size: 18px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; color: var(--text-h); margin-bottom: 22px; min-height: 48px; }
+  .tier--light .tier__tagline { color: var(--light-ink); }
+  /* по закону основная цена — та, что с рассрочкой; полная оплата показывается
+     как скидка к ней, а не рассрочка как наценка */
+  .tier__price-full { font-size: 14.5px; line-height: 1.5; color: var(--text-mute); margin-bottom: 12px; }
+  .tier__price-full b { color: var(--accent); font-weight: 600; }
+  .tier--light .tier__price-full { color: var(--light-mute); }
+  .tier--light .tier__price-full b { color: var(--light-ink); }
+  .tier__pay { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; color: var(--text-faint); margin-bottom: 28px; }
+  .tier--light .tier__pay { color: var(--light-meta); }
+  /* после блока практики список продолжается — второй разделитель не нужен */
+  .tier__practice + .tier__list { border-top: none; padding-top: 0; }
+
+  /* чего в тарифе НЕТ: разницу видно глазами, а не вычитанием двух списков */
+  .tier__list li.tier__off { color: var(--text-deco); }
+  .tier--light .tier__list li.tier__off { color: var(--light-faint); }
+  .tier__off s { text-decoration-color: rgba(255,255,255,.22); }
+  .tier__cross { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(255,255,255,.03); border: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; color: var(--text-deco); }
+  .tier__cross svg { width: 10px; height: 10px; }
+  .tier__only { display: block; font-family: var(--mono); font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+
+  .tier__practice { margin: -6px 0 28px; padding: 20px 22px 18px; border-radius: var(--r-md); background: rgba(16,23,26,.05); border: 1px solid rgba(16,23,26,.1); }
+  .tier__practice-title { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--light-meta); margin-bottom: 15px; }
+  .tier__steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 11px; }
+  .tier__steps li { counter-increment: step; position: relative; padding-left: 30px; font-size: 14px; line-height: 1.5; color: var(--light-mute); }
+  .tier__steps li::before { content: counter(step); position: absolute; left: 0; top: 1px; width: 20px; height: 20px; border-radius: 5px; background: var(--light-ink); color: var(--accent); font-family: var(--mono); font-size: 11px; display: flex; align-items: center; justify-content: center; }
+  .tier__practice-note { margin-top: 15px; padding-top: 13px; border-top: 1px solid rgba(16,23,26,.1); font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--light-meta); }
+
+  .tier__hint { margin-top: 12px; font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--text-faint); text-align: center; }
+  .tier--light .tier__hint { color: var(--light-faint); }
+
+  /* оплата: главное ценовое возражение снимается рядом с ценой, а не в FAQ */
+  .pricing__pay { margin-top: 18px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 30px 34px; }
+  .pricing__pay-title { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 20px; }
+  .paylist { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 34px; }
+  .paylist li { position: relative; padding-left: 26px; font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
+  .paylist li::before { content: ''; position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; background: var(--accent); opacity: .5; }
+  .paylist b { display: block; color: var(--text-h); font-weight: 600; margin-bottom: 3px; }
+  .paylist a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(223,223,65,.3); }
+  .paylist a:hover { border-bottom-color: var(--accent); }
+
+  /* возврат + честная анти-гарантия: страх живёт рядом с кнопкой, там и снимаем */
+  .honest { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .honest__item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 28px 30px; }
+  .honest__item--anti { border-color: var(--border-coral); }
+  .honest__title { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; color: var(--text-h); margin-bottom: 10px; }
+  .honest__item--anti .honest__title { color: var(--coral); }
+  .honest__text { font-size: 14.5px; line-height: 1.6; color: var(--text-mute); }
 
   /* ===== YOUTUBE / лид-магниты ===== */
   .yt__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 34px; }
@@ -1189,7 +1248,7 @@
   .yt__name { padding: 16px 18px; font-size: 13.5px; font-weight: 400; color: var(--text-faint); line-height: 1.45; border-top: 1px solid var(--border-mid); }
   .yt__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
 
-  /* ===== FAQ (не «коробочки», а типографский указатель) ===== */
+  /* ===== FAQ (не "коробочки", а типографский указатель) ===== */
   /* сетка, а не columns: при раскрытии ответа вопросы не перепрыгивают
      из колонки в колонку под курсором */
   .faq { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; align-items: start; max-width: 100%; margin: 0; }
@@ -1247,7 +1306,7 @@
 
   .footer { padding: 90px 0 80px; border-top: 1px solid var(--border-card); }
 
-  /* верхний блок: карточка «Есть вопрос?» + телеграм-плитка */
+  /* верхний блок: карточка "Есть вопрос?" + телеграм-плитка */
   .footer__top { display: grid; grid-template-columns: 1.02fr .98fr; gap: 22px; margin-bottom: 44px; }
   .footer__ask {
     display: flex; flex-direction: column;
@@ -1361,6 +1420,10 @@
     .pricing__tiers { grid-template-columns: 1fr; }
     .tier--light { translate: none; padding-bottom: 40px; }
     .tier__label { padding-right: 130px; min-height: 0; }
+    /* карточки встали в столбик — выравнивать высоту слоганов больше не нужно */
+    .tier__tagline { min-height: 0; }
+    .pricing__facts { grid-template-columns: 1fr 1fr; }
+    .paylist, .honest { grid-template-columns: 1fr; }
     .yt__grid { grid-template-columns: 1fr; max-width: 460px; }
     /* .faq — grid, а не multi-column: `columns: 1` здесь не действовал,
        FAQ оставался в две колонки вплоть до 320px */
@@ -1523,6 +1586,11 @@
     .arch__flow { grid-template-columns: minmax(0,1fr); }
     .tier { padding: 28px 18px 26px; }
     .tier__price { font-size: 32px; }
+    .tier__tagline { font-size: 16.5px; }
+    .tier__practice { padding: 18px 16px 16px; }
+    .pricing__pay, .honest__item { padding: 24px 18px; }
+    .fact { padding: 13px 15px; }
+    .fact__value { font-size: 15.5px; }
     .yt__card { grid-template-columns: 104px minmax(0,1fr); }
     .yt__name { padding: 12px 13px; font-size: 12.5px; }
     .yt__play-btn { width: 34px; height: 34px; }
@@ -1538,7 +1606,8 @@
 
     /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */
     .eyebrow, .mech__eyebrow, .mech__do-label, .program__step, .program__label,
-    .row__label, .visual__cap, .hook__label,
+    .row__label, .visual__cap, .hook__label, .fact__label,
+    .pricing__pay-title, .tier__practice-title,
     .tier__label, .tier__badge, .final__badge { letter-spacing: 0; }
 
     /* nowrap-мета переполняла контейнер */
@@ -1608,6 +1677,7 @@
     <nav class="header__nav" aria-label="Навигация">
       <a class="header__nav-link" href="#dlya-kogo">Для кого</a>
       <a class="header__nav-link" href="#programma">Программа</a>
+      <a class="header__nav-link" href="#avtor">Автор</a>
       <a class="header__nav-link" href="#tarify">Тарифы</a>
     </nav>
     <a class="btn btn--primary header__cta" href="#tarify" data-goal="header">Записаться на&nbsp;поток</a>
@@ -1617,6 +1687,7 @@
     <div class="nav-mobile container" id="nav-mobile">
       <a class="header__nav-link" href="#dlya-kogo">Для кого</a>
       <a class="header__nav-link" href="#programma">Программа</a>
+      <a class="header__nav-link" href="#avtor">Автор</a>
       <a class="header__nav-link" href="#tarify">Тарифы</a>
       <a class="btn btn--primary" href="#tarify" data-goal="nav_mobile">Записаться на&nbsp;поток</a>
     </div>
@@ -1640,7 +1711,7 @@
               <span class="author__pos">Golang Staff Engineer</span>
             </span>
           </span><b class="hero__t2">от&nbsp;паники к&nbsp;алгоритму</b></h1>
-        <p class="hero__subtitle fade-up">Научись уверенно проходить <span class="hl">секцию System Design</span> на&nbsp;собеседовании&nbsp;— и&nbsp;повысь шансы на&nbsp;оффер в&nbsp;бигтехе или грейд сеньора.</p>
+        <p class="hero__subtitle fade-up">Научись уверенно проходить <span class="hl">секцию System Design</span> на&nbsp;собеседовании, и&nbsp;повысь шансы на&nbsp;оффер в&nbsp;бигтехе или грейд сеньора.</p>
         <!-- CTA-капсула: слева дата старта, в центре кнопка, справа длительность -->
         <div class="hero__cta fade-up">
           <div class="cta-capsule">
@@ -1673,7 +1744,7 @@
         <div class="merge__who fade-up">
           <div class="merge__profile">
             <div class="merge__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.2"></circle></svg></div>
-            <div class="merge__ptext"><b>Метишь в&nbsp;крупный бигтех</b>: Яндекс, Озон, Т-Банк, ВК, Сбер, Авито, WB&nbsp;— там тебя почти всегда будет ждать секция системного дизайна.</div>
+            <div class="merge__ptext"><b>Метишь в&nbsp;крупный бигтех</b>: Яндекс, Озон, Т-Банк, ВК, Сбер, Авито, WB. Там тебя почти всегда будет ждать секция системного дизайна.</div>
           </div>
           <div class="merge__profile">
             <div class="merge__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div>
@@ -1703,29 +1774,38 @@
         <details class="program__item fade-up" name="program-week" open>
           <summary>
             <div class="program__head">
-              <span class="program__step">Неделя 01</span>
-              <h3 class="program__name">Алгоритм интервью + первый слой архитектуры</h3>
+              <span class="program__step">Неделя 01 · уроки 01-12</span>
+              <h3 class="program__name">Алгоритм интервью и&nbsp;первый слой архитектуры</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
+            <p class="program__promise">К&nbsp;концу недели у&nbsp;тебя есть каркас, по&nbsp;которому раскладывается любая задача, и&nbsp;понимание, из&nbsp;чего вообще собирается вход в&nbsp;любую систему.</p>
             <div class="program__block">
-              <span class="program__label">Блок 1 · Алгоритм интервью</span>
+              <span class="program__label">Модуль 1 · Алгоритм SD-интервью</span>
               <ul class="program__list">
-                <li><b>Как устроено SD-интервью.</b> Что на&nbsp;самом деле оценивают и&nbsp;почему «правильного ответа» не&nbsp;существует.</li>
-                <li><b>Сигналы зрелости.</b> По&nbsp;каким фразам интервьюер отличает Senior от&nbsp;джуна, и&nbsp;как их&nbsp;подавать.</li>
-                <li><b>5-шаговый фреймворк разбора.</b> Скелет, который превращает «спроектируй X» в&nbsp;план на&nbsp;45&nbsp;минут.</li>
-                <li><b>Уточняющие вопросы.</b> Что спросить в&nbsp;первые 5&nbsp;минут, чтобы сузить задачу (плюс памятка частых пропусков).</li>
+                <li><b>01. Как устроено SD-интервью.</b> Три формата секции и&nbsp;как разложить 45-минутный слот.</li>
+                <li><b>02. Что оценивает интервьюер.</b> Восемь ходов, которые работают в&nbsp;плюс, и&nbsp;что портит впечатление.</li>
+                <li><b>03. Пять шагов разбора задачи.</b> Что происходит на&nbsp;каждом шаге и&nbsp;какими фразами переходить между ними.</li>
+                <li><b>04. Уточняющие вопросы.</b> Десять вопросов на&nbsp;старте и&nbsp;пять тем, которые легко пропустить.</li>
+                <li><b>05. Оценка нагрузки через ×10 DAU.</b> Три источника цифр, базовые формулы и&nbsp;сквозной прогон на&nbsp;каталоге магазина.</li>
+                <li><b>06. REST API на&nbsp;собесе.</b> Шаблон ручки из&nbsp;семи пунктов, Idempotency-Key и&nbsp;с&nbsp;чего начинать: монолит или микросервисы.</li>
+                <li><b>07. Сквозной кейс: запуск Ленты Avito.</b> Прогоняем все пять шагов на&nbsp;живом примере от&nbsp;и&nbsp;до.</li>
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label">Блок 2 · Первый слой архитектуры</span>
+              <span class="program__label">Модуль 2 · Сеть и&nbsp;доставка</span>
               <ul class="program__list">
-                <li><b>Capacity planning через ×10 DAU.</b> Прикинуть RPS, storage и&nbsp;bandwidth на&nbsp;салфетке, без страха перед числами.</li>
-                <li><b>REST API на&nbsp;собесе.</b> Контракт, Idempotency-Key и&nbsp;почему «Monolith First» это сильный ход, а&nbsp;не&nbsp;слабость.</li>
-                <li><b>Сквозной кейс: Лента Avito.</b> Прогоняем весь фреймворк на&nbsp;живом примере от&nbsp;и&nbsp;до.</li>
-                <li><b>Сеть и&nbsp;доставка.</b> Load Balancer, API Gateway, CDN, DNS, из&nbsp;чего собирается вход в&nbsp;любую систему.</li>
+                <li><b>08. Балансировка нагрузки.</b> L4 против L7, восемь алгоритмов и&nbsp;почему gRPC ломает обычную балансировку.</li>
+                <li><b>09. Консистентное хеширование.</b> Кольцо и&nbsp;виртуальные ноды, сколько данных реально переезжает, миграция шардов Notion за&nbsp;четыре фазы.</li>
+                <li><b>10. API Gateway и&nbsp;обратный прокси.</b> Что gateway добавляет к&nbsp;прокси, зачем BFF и&nbsp;как не&nbsp;отрастить толстый gateway.</li>
+                <li><b>11. CDN.</b> Push против pull, многоуровневый кэш, ключ кэша, инвалидация и&nbsp;подписанные ссылки.</li>
+                <li><b>12. DNS.</b> Иерархия и&nbsp;резолвинг, типы записей, TTL и&nbsp;миф про&nbsp;десять секунд после деплоя.</li>
               </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Домашка недели</span>
+              <p class="program__result">Экстренная выкатка обновления на&nbsp;50&nbsp;млн устройств.</p>
             </div>
           </div>
         </details>
@@ -1733,29 +1813,32 @@
         <details class="program__item fade-up" name="program-week">
           <summary>
             <div class="program__head">
-              <span class="program__step">Неделя 02</span>
+              <span class="program__step">Неделя 02 · уроки 13-23</span>
               <h3 class="program__name">Ядро баз данных</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
+            <p class="program__promise">Самая плотная неделя, зато одна сквозная тема: от&nbsp;того, как база кладёт байты на&nbsp;диск, до&nbsp;того, что теряешь, когда данные перестают влезать в&nbsp;один узел.</p>
             <div class="program__block">
-              <span class="program__label">Блок 1 · Хранение и&nbsp;запросы</span>
+              <span class="program__label">Модуль 3 · Хранение данных</span>
               <ul class="program__list">
-                <li><b>Модели данных и&nbsp;выбор БД.</b> SQL vs NoSQL по&nbsp;делу: когда документ, когда KV, когда граф.</li>
-                <li><b>Индексы под собес.</b> B-Tree vs LSM и&nbsp;почему запрос «тормозит», на&nbsp;уровне, где не&nbsp;подловят.</li>
-                <li><b>Транзакции и&nbsp;ACID.</b> Что реально гарантирует БД, а&nbsp;что ты&nbsp;додумал.</li>
-                <li><b>Уровни изоляции и&nbsp;аномалии.</b> Dirty read, phantom, write skew, и&nbsp;как выбрать уровень под задачу.</li>
+                <li><b>13. Модели данных и&nbsp;выбор БД.</b> SQL против NoSQL, типы хранилищ и&nbsp;как базу выбирают под конкретную задачу.</li>
+                <li><b>14. Как база хранит данные.</b> Страницы и&nbsp;куча, журнал раньше данных, почему коммит ждёт диск, восстановление после крэша.</li>
+                <li><b>15. Индексы под собес.</b> B-Tree против LSM, ловушка порядка колонок в&nbsp;составном индексе и&nbsp;когда индекс вредит.</li>
+                <li><b>16. Транзакции и&nbsp;ACID.</b> Что стоит за&nbsp;каждой буквой и&nbsp;почему ACID и&nbsp;BASE это не&nbsp;противоположности.</li>
+                <li><b>17. Конкурентный доступ: блокировки против версий.</b> 2PL, гранулярность, deadlock, MVCC, снапшот и&nbsp;vacuum.</li>
+                <li><b>18. Уровни изоляции и&nbsp;аномалии.</b> Четыре уровня как контракт, а&nbsp;не&nbsp;шкала, и&nbsp;матрица "уровень против аномалии".</li>
+                <li><b>19. Репликация: с&nbsp;одним лидером и&nbsp;без лидера.</b> Отставание реплики и&nbsp;три аномалии чтения, кворум, раскол и&nbsp;фенсинг.</li>
+                <li><b>20. Репликация с&nbsp;несколькими лидерами.</b> Три класса конфликтов, четыре стратегии резолюции, топологии обмена.</li>
+                <li><b>21. Консенсус: Raft и&nbsp;Paxos.</b> Term, голоса и&nbsp;лог, split vote при разрыве сети, шесть систем консенсуса в&nbsp;проде.</li>
+                <li><b>22. Партиционирование и&nbsp;шардирование.</b> Пять техник, гибридный шардинг, горячий ключ и&nbsp;плохие ключи шардирования.</li>
+                <li><b>23. CAP, PACELC и&nbsp;модели согласованности.</b> Почему CAP смотрят по&nbsp;фичам, а&nbsp;не&nbsp;по&nbsp;системе, и&nbsp;как обосновать выбор.</li>
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label">Блок 2 · Распределённые данные</span>
-              <ul class="program__list">
-                <li><b>Репликация.</b> Single-leader и&nbsp;leaderless: пережить падение узла и&nbsp;не&nbsp;потерять данные.</li>
-                <li><b>Distributed consensus (Raft).</b> Как кластер договаривается о&nbsp;лидере, без академизма.</li>
-                <li><b>Шардирование и&nbsp;партиционирование.</b> Как разрезать данные, когда они не&nbsp;влезают на&nbsp;один узел.</li>
-                <li><b>CAP и&nbsp;PACELC.</b> Теорема, которую все цитируют неправильно, с&nbsp;практическим применением.</li>
-              </ul>
+              <span class="program__label program__label--result">Домашка недели</span>
+              <p class="program__result">Ядро БД: выбор хранилища, индексы под запросы, уровень изоляции.</p>
             </div>
           </div>
         </details>
@@ -1763,35 +1846,35 @@
         <details class="program__item fade-up" name="program-week">
           <summary>
             <div class="program__head">
-              <span class="program__step">Неделя 03</span>
+              <span class="program__step">Неделя 03 · уроки 24-32</span>
               <h3 class="program__name">Кэш, очереди и&nbsp;устойчивость</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
+            <p class="program__promise">Неделя ровно про&nbsp;то, что спрашивают, когда начинают расшатывать твою систему: а&nbsp;если нагрузка вырастет в&nbsp;десять раз, а&nbsp;если узел упадёт.</p>
             <div class="program__block">
-              <span class="program__label">Блок 1 · Кэш и&nbsp;очереди</span>
+              <span class="program__label">Модуль 4 · Кэш и&nbsp;очереди</span>
               <ul class="program__list">
-                <li><b>Кэширование.</b> Стратегии и&nbsp;архитектура: где поставить кэш и&nbsp;что он&nbsp;реально ускорит.</li>
-                <li><b>Проблемы кэша.</b> Инвалидация, stampede, «протухшие» данные, любимая ловушка интервьюеров.</li>
-                <li><b>Очереди и&nbsp;брокеры.</b> Message Queue vs Event Stream, Kafka: когда async, когда sync.</li>
+                <li><b>24. Кэширование: стратегии и&nbsp;архитектура.</b> Кто ходит в&nbsp;базу на&nbsp;промахе, пять ролей Redis, вытеснение и&nbsp;два уровня кэша.</li>
+                <li><b>25. Проблемы кэша и&nbsp;инвалидация.</b> Пять проблем и&nbsp;чем лечится каждая, чем убирать устаревшее, холодный кэш и&nbsp;сто процентов промахов.</li>
+                <li><b>26. Очереди и&nbsp;брокеры.</b> Очередь против лога, гарантии доставки, DLQ и&nbsp;антипаттерн "топик на&nbsp;юзера".</li>
+                <li><b>27. Идемпотентность и&nbsp;transactional outbox.</b> Где на&nbsp;самом деле проходит контракт, outbox против двойной записи, где ловить дубли.</li>
+                <li><b>28. Распределённые транзакции: 2PC, 3PC, сага.</b> Blocking problem, почему компенсация это не&nbsp;откат, резерв вместо компенсации в&nbsp;TCC.</li>
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label">Блок 2 · Согласованность между сервисами</span>
+              <span class="program__label">Модуль 5 · Устойчивость и&nbsp;масштабирование</span>
               <ul class="program__list">
-                <li><b>Идемпотентность и&nbsp;transactional outbox.</b> Как не&nbsp;отправить платёж дважды и&nbsp;не&nbsp;потерять событие.</li>
-                <li><b>Распределённые транзакции.</b> 2PC, 3PC, saga: согласовать данные между сервисами без общей БД.</li>
+                <li><b>29. Ретраи, таймауты и&nbsp;backoff.</b> Почему наивные ретраи дают каскад: jitter, дедлайны через всю цепочку, потолок повторов.</li>
+                <li><b>30. Circuit breaker и&nbsp;bulkhead.</b> Три состояния, при каких условиях размыкается, изоляция ресурсов и&nbsp;логика на&nbsp;клиенте.</li>
+                <li><b>31. Rate limiting.</b> Три способа счёта и&nbsp;их&nbsp;отношение к&nbsp;всплеску, где держать счётчик, почему нельзя считать по&nbsp;IP.</li>
+                <li><b>32. Масштабирование и&nbsp;плавная деградация.</b> Вертикально или горизонтально, почему процессор плохая метрика, что гасим первым, стадо запросов.</li>
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label">Блок 3 · Отказоустойчивость</span>
-              <ul class="program__list">
-                <li><b>Retries, timeout, backoff.</b> Как ретраить, чтобы не&nbsp;устроить лавину на&nbsp;упавший сервис.</li>
-                <li><b>Circuit breaker и&nbsp;bulkhead.</b> Локализовать отказ, чтобы падение одного не&nbsp;утянуло всё.</li>
-                <li><b>Rate limiting.</b> Token bucket и&nbsp;sliding window: защита от&nbsp;перегрузки и&nbsp;абьюза.</li>
-                <li><b>Масштабирование и&nbsp;graceful degradation.</b> Как деградировать красиво, а&nbsp;не&nbsp;падать целиком.</li>
-              </ul>
+              <span class="program__label program__label--result">Домашка недели</span>
+              <p class="program__result">Устойчивость: проблемы кэша, сага на&nbsp;три сервиса, rate limiting.</p>
             </div>
           </div>
         </details>
@@ -1799,24 +1882,26 @@
         <details class="program__item fade-up" name="program-week">
           <summary>
             <div class="program__head">
-              <span class="program__step">Неделя 04</span>
-              <h3 class="program__name">Первые боевые кейсы</h3>
+              <span class="program__step">Неделя 04 · уроки 33-37</span>
+              <h3 class="program__name">Боевые кейсы: соцсети и&nbsp;медиа</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
+            <p class="program__promise">Пять систем целиком, все по&nbsp;одному каркасу: требования, модель данных, API, общая схема, углубление. Ровно так же это идёт на&nbsp;секции.</p>
             <div class="program__block">
-              <span class="program__label">Блок 1 · Мессенджер и&nbsp;лента</span>
+              <span class="program__label">Модуль 6 · Боевые кейсы: соцсети и&nbsp;медиа</span>
               <ul class="program__list">
-                <li><b>Мессенджер (Telegram).</b> WebSockets vs polling, presence, доставка и&nbsp;порядок сообщений, хранение истории.</li>
-                <li><b>Лента (Avito Объявления).</b> Fan-out on write vs on read, ранжирование, кэш ленты, media pipeline.</li>
+                <li><b>33. Мессенджер: Telegram.</b> Как держать 50-100&nbsp;млн соединений, доставка и&nbsp;порядок сообщений, большой чат и&nbsp;всплеск звезды, presence и&nbsp;синхронизация между устройствами.</li>
+                <li><b>34. Лента: Avito Объявления.</b> Fan-out и&nbsp;горячий источник. Плюс почему это не&nbsp;"лента Twitter" и&nbsp;почему это стоит сказать первым.</li>
+                <li><b>35. Фото-соцсеть со&nbsp;Stories.</b> Три числа и&nbsp;три разных горлышка, двухфазная загрузка, медиа-пайплайн.</li>
+                <li><b>36. Видеоплатформа: YouTube.</b> Конвейер транскодирования, доставка через ABR и&nbsp;CDN, счётчик просмотров без инкремента в&nbsp;транзакции.</li>
+                <li><b>37. Музыкальный стриминг: Яндекс.Музыка и&nbsp;Spotify.</b> Почему аудио это не&nbsp;видео и&nbsp;как устроены доставка и&nbsp;плейбек.</li>
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label">Блок 2 · Видеоплатформа</span>
-              <ul class="program__list">
-                <li><b>Видеоплатформа (YouTube).</b> Upload и&nbsp;транскодирование, CDN-доставка, обзор рекомендаций.</li>
-              </ul>
+              <span class="program__label program__label--result">Домашка недели</span>
+              <p class="program__result">Боевой кейс: лента Avito от&nbsp;монолита до&nbsp;гибридной схемы для&nbsp;звёзд.</p>
             </div>
           </div>
         </details>
@@ -1824,32 +1909,120 @@
         <details class="program__item fade-up" name="program-week">
           <summary>
             <div class="program__head">
-              <span class="program__step">Неделя 05</span>
-              <h3 class="program__name">Сложные кейсы + поведение на&nbsp;собесе</h3>
+              <span class="program__step">Неделя 05 · уроки 38-42</span>
+              <h3 class="program__name">Сложные кейсы и&nbsp;поведение на&nbsp;собесе</h3>
             </div>
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
+            <p class="program__promise">Три самых злых кейса, где ломаются даже те, кто дошёл сюда уверенно, и&nbsp;отдельный блок про&nbsp;то, как себя вести в&nbsp;45-минутном слоте.</p>
             <div class="program__block">
-              <span class="program__label">Блок 1 · Три сложных кейса</span>
+              <span class="program__label">Модуль 7 · Боевые кейсы: конкуренция, поиск, гео</span>
               <ul class="program__list">
-                <li><b>Билеты (Яндекс Афиша).</b> Double booking, борьба за&nbsp;одно место, виртуальная очередь под пик.</li>
-                <li><b>Поиск + Autocomplete (Яндекс / Google).</b> Inverted index, Elasticsearch, trie, relevance и&nbsp;ранжирование.</li>
-                <li><b>Ride-sharing (Яндекс Такси / Uber).</b> Geospatial-индексы (geohash, quadtree), матчинг, real-time tracking, surge.</li>
+                <li><b>38. Билеты: Яндекс Афиша и&nbsp;double booking.</b> Четыре уровня защиты от&nbsp;двойной продажи, резерв с&nbsp;TTL и&nbsp;идемпотентная оплата.</li>
+                <li><b>39. Поиск: Яндекс Поиск, Google и&nbsp;autocomplete.</b> Trie с&nbsp;предрассчитанным топ-K для&nbsp;подсказок, scatter-gather по&nbsp;шардам и&nbsp;ранжирование для&nbsp;поиска.</li>
+                <li><b>40. Заказ такси: Яндекс Такси и&nbsp;Uber.</b> Почему Trip и&nbsp;Order это разные объекты, два потока вместо одного, гео-индекс и&nbsp;матчинг.</li>
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label">Блок 2 · Поведение на&nbsp;собесе</span>
+              <span class="program__label">Модуль 8 · Поведение на&nbsp;SD-интервью</span>
               <ul class="program__list">
-                <li><b>Как вести себя на&nbsp;собесе.</b> Тайминг 45&nbsp;минут, думать вслух, первые 5&nbsp;минут, как реагировать когда «копают» и&nbsp;выкрутиться из&nbsp;тупика. Объяснять «почему», а&nbsp;не&nbsp;пересказывать паттерны.</li>
+                <li><b>41. Как не&nbsp;звучать как YouTube-видео.</b> Думать вслух, реагировать, когда копают, и&nbsp;выбираться из&nbsp;тупика, вместо пересказа заученного.</li>
+                <li><b>42. Пробное SD-интервью: эталон.</b> Полная секция от&nbsp;начала до&nbsp;конца, чтобы ты&nbsp;видел, как выглядит хороший проход целиком.</li>
               </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Домашка недели</span>
+              <p class="program__result">Финал: Яндекс Афиша с&nbsp;double booking и&nbsp;пробное интервью.</p>
             </div>
           </div>
         </details>
       </div>
 
+      <div class="program__extra fade-up">
+        <div class="program__extra-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        </div>
+        <div class="program__extra-text">
+          <b>Каждый урок это видео плюс подробный текстовый конспект.</b> Видео задаёт контекст и&nbsp;показывает ход мысли, конспект фиксирует то&nbsp;же самое текстом со&nbsp;схемами: к&nbsp;нему удобно вернуться перед домашкой и&nbsp;за&nbsp;полчаса до&nbsp;собеса. Всего в&nbsp;курсе 42&nbsp;урока в&nbsp;восьми модулях, домашка выдаётся раз в&nbsp;неделю.
+        </div>
+      </div>
+
       <div class="section__cta fade-up">
         <a class="btn btn--primary btn--lg" href="#tarify" data-goal="programma">Записаться на&nbsp;поток</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 11. АВТОР КУРСА =====
+       Стоит перед тарифами намеренно: к цене человек подходит, уже зная, кому платит. -->
+  <section class="section" id="avtor" aria-labelledby="teacher-title">
+    <div class="container">
+      <div class="teacher__grid">
+        <div class="fade-up">
+          <h2 class="teacher__name" id="teacher-title">Автор курса:<br>Олег Козырев</h2>
+
+          <ul class="experience">
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Т-Банк</span>
+                <span class="experience__badge">Staff Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал LLM-платформу для&nbsp;создания ИИ-продуктов внутри компании</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Авито</span>
+                <span class="experience__badge">Senior Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал внутреннюю платформу для&nbsp;сотен сервисов корпорации</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Ozon Tech</span>
+                <span class="experience__badge">Senior Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал сервисы логистики, модерации контента и&nbsp;мониторинга доставки</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Route 256</span>
+                <span class="experience__badge">Преподаватель</span>
+              </div>
+              <div class="experience__desc">Менторил и&nbsp;преподавал курсы по&nbsp;построению микросервисов в&nbsp;школе Ozon Tech</div>
+            </li>
+          </ul>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="13000" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">подписчиков на&nbsp;YouTube</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">подписчиков в&nbsp;Telegram</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="8" data-suffix="+ лет">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">коммерческой разработки</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="teacher__side fade-up">
+          <div class="teacher__photo">
+            <picture>
+              <source srcset="oleg-portrait.webp" type="image/webp">
+              <img src="oleg-portrait.jpg" alt="Олег Козырев, автор курса по System Design" width="720" height="960" loading="lazy">
+            </picture>
+          </div>
+<!-- Слот .teacher__quote оставлен пустым намеренно: личная цитата должна быть
+               написана самим Олегом, а не сочинена за него. Разметка под неё:
+               <blockquote class="teacher__quote">…</blockquote> -->
+        </div>
       </div>
     </div>
   </section>
@@ -1859,44 +2032,107 @@
     <div class="container">
       <div class="section__head section__head--center fade-up">
         <h2 class="section__title">Тарифы</h2>
+        <p class="section__sub">Материал курса в обоих тарифах одинаковый, все 42 урока и все разборы. Разница одна: проверяет ли твои решения живой человек и успеешь ли ты потренироваться защищать их вслух до собеса.</p>
       </div>
 
       <div class="pricing__scarcity fade-up">
         <span class="scarcity">
           <span class="scarcity__dot" aria-hidden="true"></span>
-          <span><b>Старт 7 сентября 2026</b></span>
+          <span><b>Идёт предзапись:</b> до 23 августа цена ниже. Следующий поток только через полгода</span>
         </span>
+      </div>
+
+      <div class="pricing__facts fade-up">
+        <div class="fact">
+          <span class="fact__label">Старт потока</span>
+          <span class="fact__value fact__value--accent">7 сентября 2026</span>
+        </div>
+        <div class="fact">
+          <span class="fact__label">Длительность</span>
+          <span class="fact__value">5 недель</span>
+        </div>
+        <div class="fact">
+          <span class="fact__label">Нагрузка</span>
+          <span class="fact__value">5–6 часов в неделю</span>
+        </div>
+        <div class="fact">
+          <span class="fact__label">Мест на поток</span>
+          <span class="fact__value">60</span>
+        </div>
       </div>
 
       <div class="pricing__tiers">
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
-          <div class="tier__price"><b>49 990 ₽</b></div>
-          <div class="tier__price-old">цена предзаписи · после <s>54 990 ₽</s></div>
+          <div class="tier__tagline">Весь материал и&nbsp;алгоритм. Готовишься сам, вопросы задаёшь на&nbsp;живых Q&amp;A</div>
+          <div class="tier__price"><b>53 990 ₽</b></div>
+          <div class="tier__price-full">или <b>49 990&nbsp;₽</b>, если оплатить сразу целиком</div>
+          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;499&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
           <ul class="tier__list">
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Все видеоуроки курса (5&nbsp;недель)</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Живой еженедельный Q&amp;A</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Методички: памятки, деревья решений, шпаргалки</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Справочник с&nbsp;продвинутыми темами</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>42 урока: видео плюс подробный текстовый конспект.</b> Алгоритм интервью, сеть и&nbsp;доставка, хранение данных, кэш и&nbsp;очереди, устойчивость под нагрузкой, поведение на&nbsp;секции</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>8 систем, разобранных целиком:</b> Telegram, лента Avito, фото-соцсеть со&nbsp;Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с&nbsp;автодополнением, Яндекс Такси. Каждая идёт как секция: требования, прикидка нагрузки, наивная версия, что в&nbsp;ней ломается на&nbsp;росте, куда копнёт интервьюер</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Разбираем и&nbsp;то, как это ломалось в&nbsp;проде.</b> Не&nbsp;только как правильно: откат Amazon Prime Video обратно в&nbsp;монолит, 140&nbsp;микросервисов Segment, которые собрали назад</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Домашка каждую неделю.</b> Не&nbsp;тесты, а&nbsp;задачи в&nbsp;формате секции: посчитать RPS под свою нагрузку, выбрать ключ шардирования и&nbsp;объяснить, почему дата заказа тут плохой ключ, собрать saga для&nbsp;заказа через три сервиса</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Живой еженедельный Q&amp;A с&nbsp;Олегом.</b> Разбираем то, что не&nbsp;зашло, отвечаю на&nbsp;вопросы по&nbsp;материалу и&nbsp;по&nbsp;собесам, иногда проектируем кейс прямо у&nbsp;доски</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Доступ к&nbsp;общему чатику потока</li>
+            <li class="tier__off"><span class="tier__cross" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2.7 2.7l4.6 4.6M7.3 2.7l-4.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><s>Разбор твоих домашек ментором</s><span class="tier__only">есть в&nbsp;тарифе с&nbsp;практикой</span></li>
+            <li class="tier__off"><span class="tier__cross" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2.7 2.7l4.6 4.6M7.3 2.7l-4.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><s>Групповая практика и&nbsp;защита решения вслух</s><span class="tier__only">есть в&nbsp;тарифе с&nbsp;практикой</span></li>
           </ul>
           <!-- href — фолбэк на случай, если JS не сработал или ссылку открыли в новой вкладке;
                при работающем JS клик перехватывается и форма открывается в модалке -->
-          <div class="tier__cta"><a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_standart">Заполнить анкету предзаписи</a></div>
+          <div class="tier__cta">
+            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_standart">Заполнить анкету предзаписи</a>
+            <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
+          </div>
         </div>
 
         <div class="tier tier--light fade-up">
           <span class="tier__badge">Рекомендую</span>
           <div class="tier__label">Практика с&nbsp;ментором</div>
-          <div class="tier__price"><b>79 990 ₽</b></div>
-          <div class="tier__price-old">цена предзаписи · после <s>89 990 ₽</s></div>
+          <div class="tier__tagline">Всё то&nbsp;же самое, плюс проверка твоих решений и&nbsp;репетиция собеса</div>
+          <div class="tier__price"><b>89 990 ₽</b></div>
+          <div class="tier__price-full">или <b>80 990&nbsp;₽</b>, если оплатить сразу целиком</div>
+          <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;499&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
           <ul class="tier__list">
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Всё, что есть в&nbsp;Стандарте, плюс:</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Разбор каждого твоего ДЗ живым ментором</b></li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Групповая практика каждую неделю:</b> команда по&nbsp;трое проектирует задание по&nbsp;теме, ментор подключается к&nbsp;каждой команде, а&nbsp;потом ты&nbsp;вслух защищаешь решение под вопросами</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Бонусные разборы типичных архитектурных ошибок</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Всё, что есть в&nbsp;Стандарте:</b> 42&nbsp;урока, 8&nbsp;разобранных систем, домашки, живой Q&amp;A и&nbsp;чат потока. Плюс:</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Ментор разбирает каждую твою домашку.</b> Читает схему и&nbsp;твои обоснования и&nbsp;пишет подробный разбор: где решение поедет под нагрузкой, какой выбор не&nbsp;объяснён, что на&nbsp;секции спросят следом</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Домашки проверяем 8&nbsp;недель</b>, на&nbsp;три недели дольше самого курса. Ушёл в&nbsp;аврал на&nbsp;работе или отстал на&nbsp;неделю, спокойно догонишь: проверка никуда не&nbsp;денется</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Групповая практика каждую неделю.</b> То, ради чего вообще берут этот тариф:</li>
           </ul>
-          <div class="tier__cta"><a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_mentor">Заполнить анкету предзаписи</a></div>
+          <div class="tier__practice">
+            <div class="tier__practice-title">Как проходит практика</div>
+            <ol class="tier__steps">
+              <li>Небольшая группа получает задание по&nbsp;пройденной теме</li>
+              <li>Ментор подключается к&nbsp;группе и&nbsp;направляет по&nbsp;ходу</li>
+              <li>Потом ты&nbsp;вслух защищаешь решение под вопросами, как на&nbsp;секции</li>
+            </ol>
+            <div class="tier__practice-note">5&nbsp;недель курса, 5&nbsp;таких практик. К&nbsp;реальной секции тебя уже не&nbsp;первый раз гоняют вопросами по&nbsp;твоей же&nbsp;архитектуре</div>
+          </div>
+          <div class="tier__cta">
+            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_mentor">Заполнить анкету предзаписи</a>
+            <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing__pay fade-up">
+        <div class="pricing__pay-title">Как можно оплатить</div>
+        <ul class="paylist">
+          <li><b>Рассрочка до&nbsp;12 месяцев</b>4&nbsp;499&nbsp;₽/мес за&nbsp;Стандарт и&nbsp;7&nbsp;499&nbsp;₽/мес за&nbsp;тариф с&nbsp;практикой. Срок можно взять и&nbsp;короче. Если платишь сразу целиком, цена ниже</li>
+          <li><b>Налоговый вычет 13%</b>Часть стоимости вернёшь через налоговую, документы для&nbsp;этого пришлю</li>
+          <li><b>Оплата от&nbsp;компании</b>Многие работодатели оплачивают обучение сотрудникам. Напиши в&nbsp;<a href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">телеграм</a>, и&nbsp;я&nbsp;пришлю счёт и&nbsp;документы на&nbsp;юрлицо</li>
+          <li><b>Оплата из&nbsp;другой страны</b>Иностранной картой и&nbsp;не&nbsp;только рублями. Рассрочка работает в&nbsp;том числе для&nbsp;Беларуси и&nbsp;Казахстана</li>
+        </ul>
+      </div>
+
+      <div class="honest fade-up">
+        <div class="honest__item">
+          <div class="honest__title">Не&nbsp;подойдёт, вернём деньги</div>
+          <p class="honest__text">Если в&nbsp;первую неделю после старта поймёшь, что курс тебе не&nbsp;подходит, вернём всю стоимость. Решишь уйти позже, пересчитаем и&nbsp;вернём за&nbsp;непройденную часть.</p>
+        </div>
+        <div class="honest__item honest__item--anti">
+          <div class="honest__title">Чего мы&nbsp;не&nbsp;обещаем</div>
+          <p class="honest__text">Оффер. System Design это лишь один этап найма, и&nbsp;решение принимает не&nbsp;курс. Обещаем другое: ты&nbsp;перестанешь плыть на&nbsp;этой секции и&nbsp;будешь понимать, что делаешь и&nbsp;почему.</p>
         </div>
       </div>
     </div>
@@ -1931,12 +2167,12 @@
 <!-- ===== ЮР-ФУТЕР ===== -->
 <footer class="footer">
   <div class="container">
-    <!-- верхний блок: «Есть вопрос?» + телеграм-плитка (поддержка) -->
+    <!-- верхний блок: &quot;Есть вопрос?&quot; + телеграм-плитка (поддержка) -->
     <div class="footer__top">
       <div class="footer__ask">
         <div class="footer__ask-title">Есть вопрос?</div>
         <div class="footer__ask-rule" aria-hidden="true"></div>
-        <a class="footer__ask-note" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">Пиши в&nbsp;телеграм&nbsp;— отвечу сразу, как увижу сообщение:)</a>
+        <a class="footer__ask-note" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">Пиши в&nbsp;телеграм, отвечу сразу, как увижу сообщение:)</a>
       </div>
       <a class="footer__tg" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener" aria-label="Написать в поддержку в Telegram">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"></path></svg>
@@ -1997,7 +2233,7 @@
       }
     });
 
-    // ===== «Знакомая ситуация»: обратный отсчёт циферблата 45:00 → 00:00 =====
+    // ===== "Знакомая ситуация": обратный отсчёт циферблата 45:00 → 00:00 =====
     // Запуск по появлению в кадре (свой IntersectionObserver, без второго слушателя скролла).
     (function () {
       var reduceClock = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2041,7 +2277,7 @@
       dials.forEach(function (d) { clockObserver.observe(d); });
     })();
 
-    // ===== лента-путь «Что получишь»: заполнение по прокрутке =====
+    // ===== лента-путь "Что получишь": заполнение по прокрутке =====
     // Своего слушателя скролла и своего rAF-цикла здесь нет: геометрия считается
     // в общем measure(), а перерисовка — в общем тикере onScrollFrame() ниже.
     var road = document.getElementById('road');
@@ -2280,7 +2516,7 @@
       if (window.innerWidth > 960 && navMobile.classList.contains('open')) closeMenu();
     });
 
-    // ===== «где я»: подсветка текущего пункта навигации =====
+    // ===== "где я": подсветка текущего пункта навигации =====
     var navLinks = Array.prototype.slice.call(document.querySelectorAll('.header__nav-link'));
     var sections = navLinks
       .map(function (l) { return document.querySelector(l.getAttribute('href')); })
@@ -2302,7 +2538,7 @@
   });
 </script>
 
-<!-- ===== Модалка предзаписи: форма GetCourse (виджет) открывается по кнопкам «Заполнить анкету» ===== -->
+<!-- ===== Модалка предзаписи: форма GetCourse (виджет) открывается по кнопкам &quot;Заполнить анкету&quot; ===== -->
 <div class="gc-modal" id="gc-modal" hidden>
   <div class="gc-modal__backdrop" data-gc-close></div>
   <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Анкета предзаписи">
