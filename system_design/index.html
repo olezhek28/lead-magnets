@@ -111,7 +111,7 @@
               },
               {
                 "@type": "Offer",
-                "name": "Практика с ментором",
+                "name": "С проверкой и практикой",
                 "price": "89990",
                 "priceCurrency": "RUB",
                 "priceValidUntil": "2026-08-23",
@@ -187,7 +187,7 @@
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; font-size: 16px; scroll-padding-top: 96px; }
+  html { scroll-behavior: smooth; font-size: 16px; scroll-padding-top: 96px; overflow-x: clip; }
   body {
     font-family: var(--font);
     background: var(--bg-primary);
@@ -222,7 +222,7 @@
   .mech, .tier--light, .final__card { --focus: var(--light-ink); }
   :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
-  .container { max-width: 1240px; margin: 0 auto; padding: 0 44px; }
+  .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
 
   /* ===== RAIL — прогресс чтения как мини-карта документа =====
      Вертикальная линия в левом поле: узел = секция, позиция узла пропорциональна
@@ -259,9 +259,7 @@
     background: var(--accent); border-color: var(--accent);
     box-shadow: 0 0 0 4px rgba(223,223,65,.14), 0 0 16px -2px rgba(223,223,65,.5);
   }
-  /* короткая отсечка в поле — "здесь читатель сейчас".
-     От края узла до левого края текста ровно 18px, поэтому длина 8px:
-     остаётся по 5px воздуха с обеих сторон и отсечка не липнет к букве */
+  /* короткая отсечка в поле — "здесь читатель сейчас" */
   .rail__node.is-current::after {
     content: ''; position: absolute; left: 15px; top: 4px; width: 8px; height: 2px;
     border-radius: 1px; background: var(--accent-dim);
@@ -388,7 +386,7 @@
     background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28); font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
   .hero__eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: heroPulse 2s infinite; }
   @keyframes heroPulse { 0% { box-shadow: 0 0 0 0 rgba(223,223,65,.5); } 70% { box-shadow: 0 0 0 7px rgba(223,223,65,0); } 100% { box-shadow: 0 0 0 0 rgba(223,223,65,0); } }
-  @media (prefers-reduced-motion: reduce) { .hero__eyebrow-dot { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero__eyebrow-dot { animation: none; } .v1__row:hover .v1__node { transform: none; } }
   .hero::before {
     content: ''; position: absolute; top: -320px; left: 50%; transform: translateX(-50%);
     width: 1100px; height: 900px;
@@ -500,6 +498,9 @@
     font-size: clamp(30px, 4vw, 50px); font-weight: 500; line-height: 1.04;
     color: var(--text-h); margin: 0 0 18px; letter-spacing: -0.035em; text-wrap: balance;
   }
+  /* акцент-чёрточки у заголовков секций нет намеренно: она жила на left:-44px
+     шириной 26px, то есть в поле контейнера — ровно там, где идёт рейка
+     прогресса, и пересекала её при любой ширине экрана (см. 899093b) */
   .section__title b { color: var(--accent); font-weight: 700; }
   .section__sub { font-size: 17px; font-weight: 400; line-height: 1.62; color: var(--text-mute); max-width: 62ch; }
   .eyebrow { display: inline-block; padding: 0; background: none; border: none; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); margin-bottom: 18px; letter-spacing: .18em; text-transform: uppercase; }
@@ -573,6 +574,35 @@
   .merge__ptext { font-size: 15.5px; line-height: 1.62; color: var(--text-mute); text-wrap: pretty; }
   .merge__ptext b { color: var(--text-h); font-weight: 600; }
 
+  /* ===== "Это про тебя" — лента с узлами (roadmap-мотив) ===== */
+  .v1 { position: relative; max-width: 860px; }
+  /* лента-риска: от центра первого узла к центру последнего */
+  .v1::before {
+    content: ''; position: absolute; left: 25px; top: 46px; bottom: 46px; width: 2px; border-radius: 2px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dim) 22%, var(--border-acc) 100%); opacity: .55;
+  }
+  .v1__row { position: relative; display: grid; grid-template-columns: 52px 1fr; column-gap: 30px; align-items: start; padding: 26px 0; }
+  .v1__row + .v1__row { border-top: 1px solid var(--border-mid); }
+  .v1__node {
+    position: relative; z-index: 2; width: 52px; height: 52px; border-radius: 50%;
+    background: var(--bg-card); border: 1px solid var(--border-acc); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), box-shadow .35s var(--ease), transform .35s var(--ease);
+  }
+  .v1__node svg { width: 23px; height: 23px; }
+  .v1__row:hover .v1__node, .v1__row:focus-within .v1__node {
+    background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    box-shadow: 0 0 0 5px rgba(223,223,65,.14), 0 0 26px -2px rgba(223,223,65,.55); transform: translateY(-1px);
+  }
+  .v1__text {
+    font-family: var(--display); font-weight: 400; font-size: clamp(18px, 2.1vw, 23px); line-height: 1.42;
+    letter-spacing: -0.018em; color: var(--text-mute); text-wrap: pretty; align-self: center; transition: color .3s var(--ease);
+  }
+  .v1__row:hover .v1__text, .v1__row:focus-within .v1__text { color: var(--text-body); }
+  .v1__text b { font-weight: 600; color: var(--text-h); }
+  .v1__row:hover .v1__text b { color: var(--accent); }
+  .v1__row:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-md); }
+
   /* ===== ЗНАКОМАЯ СИТУАЦИЯ (5 смысловых блоков, у каждого своя картинка) ===== */
   /* слот под гифку/мем (figure), внутри — SVG-сцена-заглушка на случай, если гиф не загрузился */
   .slot {
@@ -581,9 +611,10 @@
     background: var(--bg-secondary); border: 1px solid var(--border-card);
     transition: border-color .35s var(--ease);
   }
-  .slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1; }
+  /* мем лежит видео (mp4/webm вместо гифки: те же 5 роликов весили 5.8 МБ, стали 0.5) */
+  .slot img, .slot video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1; }
   /* когда в слоте есть картинка — прячем SVG-заглушку и таймер */
-  .slot:has(img) .slot__ph { display: none; }
+  .slot:has(img) .slot__ph, .slot:has(video) .slot__ph { display: none; }
   .slot__ph {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.02) 0 9px, transparent 9px 18px);
@@ -625,26 +656,19 @@
     content: ''; position: absolute; left: 0; top: .48em; bottom: .3em; width: 2px; border-radius: 2px;
     background: var(--border-coral);
   }
-  /* ироничная подпись — код-комментарий */
-  .pain__joke {
-    margin-top: 12px; font-family: var(--mono); font-size: 12.5px; line-height: 1.5;
-    color: var(--comment); letter-spacing: .01em; text-wrap: pretty;
-  }
-  .pain__joke .c { color: var(--accent-dim); }
-
   /* добивающий такт — коралл */
   .pf { color: var(--coral); }
 
   /* 5 смысловых блоков, чередуют сторону картинки (editorial-ритм) */
   .blocks { display: flex; flex-direction: column; }
   .block {
-    display: grid; grid-template-columns: 260px 1fr;
+    display: grid; grid-template-columns: 220px 1fr;
     grid-template-areas: "head head" "media body";
     column-gap: 48px; row-gap: 26px; align-items: start;
     padding: 46px 0; border-top: 1px solid var(--border-card);
   }
   .block:first-child { border-top: none; padding-top: 8px; }
-  .block--flip { grid-template-columns: 1fr 260px; grid-template-areas: "head head" "body media"; }
+  .block--flip { grid-template-columns: 1fr 220px; grid-template-areas: "head head" "body media"; }
   .block__head { grid-area: head; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
   .block__num {
     font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--accent);
@@ -653,14 +677,16 @@
   .block__title { font-family: var(--display); font-size: clamp(21px,2.5vw,27px); font-weight: 600; color: var(--text-h); letter-spacing: -0.02em; line-height: 1.1; }
   .block__tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); }
   .block__media { grid-area: media; min-width: 0; position: sticky; top: 28px; }
-  .block__body { grid-area: body; min-width: 0; display: flex; flex-direction: column; gap: 30px; }
+  /* текст боли короткий, а мем-слот высокий: без выравнивания по центру
+     справа от картинки оставалась дыра в половину блока */
+  .block__body { grid-area: body; min-width: 0; align-self: center; display: flex; flex-direction: column; gap: 30px; }
   .block__body .sit-pain { padding-left: 0; }
   .block:hover .slot { border-color: var(--border-coral); }
   .block:hover .pain__text::before { background: var(--coral); }
 
   @media (max-width: 1180px) {
-    .block { grid-template-columns: 230px 1fr; column-gap: 40px; }
-    .block--flip { grid-template-columns: 1fr 230px; }
+    .block { grid-template-columns: 200px 1fr; column-gap: 40px; }
+    .block--flip { grid-template-columns: 1fr 200px; }
   }
 
   /* ===== MECHANISM (светлый островок) ===== */
@@ -678,9 +704,10 @@
   }
   .mech > * { position: relative; }
   .mech__eyebrow { display: inline-block; padding: 0; background: none; border: none; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--light-faint); letter-spacing: .18em; text-transform: uppercase; margin-bottom: 20px; }
-  .mech__title { font-family: var(--display); font-size: clamp(30px, 4vw, 50px); font-weight: 500; line-height: 1.02; letter-spacing: -0.038em; color: var(--light-ink); margin-bottom: 24px; text-wrap: balance; max-width: 22ch; }
+  .mech__title { font-family: var(--display); font-size: clamp(24px, 3.4vw, 42px); font-weight: 500; line-height: 1.05; letter-spacing: -0.04em; color: var(--light-ink); margin-bottom: 24px; white-space: nowrap; }
   /* подводка-лид под заголовком — короткий заход к видео */
   .mech__lead { font-size: 17px; line-height: 1.7; color: var(--light-mute); max-width: 68ch; text-wrap: pretty; margin-bottom: 34px; }
+  .mech__lead--tight { margin-bottom: 12px; }
   /* видеопродажник: заглушка на светлом островке (язык .yt__thumb / .yt__play-btn) */
   .video { position: relative; border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(16,23,26,.16); box-shadow: 0 34px 80px -46px rgba(0,0,0,.7); cursor: pointer; }
   .video:hover .yt__play-btn { transform: scale(1.08); }
@@ -694,8 +721,8 @@
   .thesis b { display: block; font-family: var(--display); font-weight: 600; font-size: 15.5px; letter-spacing: -0.012em; color: var(--light-ink); margin-bottom: 7px; }
   .mech__quote {
     margin-top: 34px; padding: 4px 0 4px 26px; border-left: 2px solid var(--accent);
-    font-family: var(--display); font-size: clamp(19px, 2.2vw, 25px); line-height: 1.34;
-    font-weight: 500; letter-spacing: -0.02em; color: var(--light-ink); text-wrap: balance;
+    font-family: var(--display); font-size: clamp(15px, 1.9vw, 23px); line-height: 1.34;
+    font-weight: 500; letter-spacing: -0.02em; color: var(--light-ink); max-width: 46ch; text-wrap: balance;
   }
 
   /* ===== ROAD — "Что получишь" как лента-путь =====
@@ -713,7 +740,7 @@
      (x=35 из 1240) с учётом полутолщины обводки остаётся правее края контента,
      так что наезда на рейку нет. */
   .road-outer { container-type: inline-size; max-width: 1240px; margin: 0 auto; }
-  .road { --u: .0806452cqw; --p: 0; position: relative; aspect-ratio: 1240 / 1190; }
+  .road { --u: .0806452cqw; --p: 0; position: relative; aspect-ratio: 1240 / 1420; margin-bottom: -110px; }
   .road__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
   /* полотно ленты: широкое, с неидеально ровной кромкой */
@@ -878,6 +905,55 @@
   .program__lead-text b { color: var(--text-h); font-weight: 600; }
   .program__lead-note { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(223,223,65,.18); font-size: 14px; color: var(--text-mute); line-height: 1.6; }
 
+  /* ===== Шапка секции "Программа" (эйброу + конкретика) ===== */
+  .prog-head { text-align: center; max-width: 900px; margin: 0 auto 44px; }
+  .prog-head__pill { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 26px;
+    padding: 9px 20px 9px 16px; border-radius: 999px; background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28);
+    font-family: var(--mono); font-size: 14px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .prog-head__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: progPulse 2.4s var(--ease) infinite; }
+  @keyframes progPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(223,223,65,.5); } 60% { box-shadow: 0 0 0 8px rgba(223,223,65,0); } }
+  .prog-head__title { font-family: var(--display); font-size: clamp(30px, 4.4vw, 52px); font-weight: 600; line-height: 1.1; letter-spacing: -0.03em; color: var(--text-h); }
+  .prog-head__title b { color: var(--accent); font-weight: 700; }
+  .prog-head__sub { font-size: 17.5px; line-height: 1.6; color: var(--text-mute); max-width: 62ch; margin: 24px auto 0; text-wrap: pretty; }
+  .prog-head__sub em { font-style: normal; color: var(--text-body); }
+  @media (prefers-reduced-motion: reduce) { .prog-head__dot { animation: none; } }
+
+  /* ===== Результат недели: чип в шапке + строка внизу (вариант C) ===== */
+  .week-chip {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+    font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+    background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28);
+    padding: 6px 13px 6px 10px; border-radius: 999px;
+  }
+  .week-chip svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .program__item:not([open]) .week-chip { display: none; }
+  .week-strip {
+    margin-top: 32px; display: flex; align-items: center; gap: 18px;
+    padding: 16px 20px; background: var(--bg-primary);
+    border: 1px solid var(--border-card); border-left: 2px solid var(--accent); border-radius: var(--r-md);
+  }
+  .week-strip__thumb { width: 60px; height: 42px; flex-shrink: 0; padding: 8px; }
+  .week-strip__text { font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
+  .week-strip__text b { color: var(--text-h); font-weight: 600; }
+  /* мини-мокапы артефактов */
+  .art-mock { border-radius: var(--r-md); background: linear-gradient(160deg, rgba(255,255,255,.05) 0%, rgba(0,0,0,.25) 100%); border: 1px solid var(--border-mid); padding: 14px; display: flex; flex-direction: column; gap: 7px; overflow: hidden; }
+  .art-mock__line { height: 4px; border-radius: 2px; background: rgba(255,255,255,.08); }
+  .mock-step { display: flex; align-items: center; gap: 6px; }
+  .mock-step .art-mock__line { flex: 1; }
+  .mock-step:nth-child(2) .art-mock__line { max-width: 84%; }
+  .mock-step:nth-child(3) .art-mock__line { max-width: 66%; }
+  .mock-step:nth-child(4) .art-mock__line { max-width: 78%; }
+  .mock-tree { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .mock-tree__root { width: 38%; height: 8px; border-radius: 3px; background: var(--accent); }
+  .mock-tree__row { display: flex; gap: 8px; width: 100%; }
+  .mock-tree__leaf { flex: 1; height: 8px; border-radius: 3px; background: rgba(255,255,255,.09); border: 1px solid var(--border-mid); }
+  .mock-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 5px; }
+  .mock-grid span { border-radius: 4px; background: rgba(255,255,255,.07); border: 1px solid var(--border-mid); }
+  .mock-grid span:nth-child(2) { background: rgba(223,223,65,.3); border-color: rgba(223,223,65,.5); }
+  .mock-grid span:nth-child(6) { background: rgba(255,133,98,.22); border-color: rgba(255,133,98,.45); }
+  @media (max-width: 640px) { .week-strip { flex-direction: column; align-items: flex-start; gap: 12px; } }
+
   /* аккордеон недель: серые скруглённые карточки, плашки-лейблы внутри.
      Секция намеренно спокойная — жёлтого минимум (только плашка "Результат
      недели" + активный тогл). Ни таймлайн-рейки, ни бокового артефакта. */
@@ -952,6 +1028,15 @@
   .how__format-icon { width: 52px; height: 52px; border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 12px 32px -14px rgba(223,223,65,.6); }
   .how__format-icon svg { width: 26px; height: 26px; }
   .how__format-text { font-family: var(--display); font-size: 17px; line-height: 1.45; letter-spacing: -0.02em; color: var(--text-h); font-weight: 500; }
+  /* нагрузка — инлайн акцент-строка (вариант 3) */
+  .load-inline { max-width: 760px; display: flex; align-items: flex-start; gap: 15px; padding: 4px 0; }
+  .load-inline__icon { flex-shrink: 0; width: 34px; height: 34px; margin-top: 2px; display: flex; align-items: center; justify-content: center;
+    color: var(--accent); border: 1px solid rgba(223,223,65,.28); border-radius: 999px; background: rgba(223,223,65,.06); }
+  .load-inline__icon svg { width: 18px; height: 18px; stroke-width: 1.8; }
+  .load-inline__text { font-family: var(--display); font-size: 19px; line-height: 1.5; letter-spacing: -0.015em; color: var(--text-body); font-weight: 400; text-wrap: pretty; }
+  .load-inline__text b { color: var(--accent); font-weight: 600; }
+  .load-inline__text em { font-style: normal; color: var(--text-h); font-weight: 500; }
+  @media (max-width: 640px) { .load-inline__text { font-size: 17px; } }
 
   .rows { display: flex; flex-direction: column; gap: 96px; }
   .row { display: grid; grid-template-columns: 1fr 1.08fr; gap: 72px; align-items: center; }
@@ -1101,7 +1186,7 @@
   .experience { list-style: none; margin-bottom: 44px; }
   /* компания и роль — одна колонка в столбик: длинный бейдж больше
      не выталкивает строку и не ломает выравнивание описаний */
-  .experience__item { display: grid; grid-template-columns: 260px 1fr; gap: 8px 28px; padding: 20px 0; border-top: 1px solid var(--border-card); align-items: start; }
+  .experience__item { display: grid; grid-template-columns: 220px 1fr; gap: 8px 28px; padding: 20px 0; border-top: 1px solid var(--border-card); align-items: start; }
   .experience__item:last-child { border-bottom: 1px solid var(--border-card); }
   .experience__company { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
   .experience__company-name { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--text-h); white-space: nowrap; letter-spacing: -0.02em; line-height: 1.2; }
@@ -1122,109 +1207,8 @@
   .teacher__photo img { display: block; width: 100%; height: auto; object-fit: cover; }
   .teacher__quote { background: none; border: none; border-left: 2px solid var(--accent); border-radius: 0; padding: 6px 0 6px 22px; font-family: var(--display); font-size: 17px; line-height: 1.42; letter-spacing: -0.02em; color: var(--text-h); }
 
-  /* ===== PRICING ===== */
-  /* stretch, а не start: карточки одной высоты — кнопки выстраиваются в одну линию */
-  .pricing__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
-  .tier { border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; height: 100%; }
-  .tier--dark { background: var(--bg-card); border: 1px solid var(--border-card); }
-  .tier--light {
-    background: var(--light-bg); color: var(--light-ink); border: 1px solid var(--light-bg);
-    box-shadow: 0 40px 90px -46px rgba(0,0,0,.95);
-    padding-bottom: 40px;
-  }
-  .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--accent); }
-  .tier__badge {
-    position: absolute; top: 26px; right: 26px; font-family: var(--mono);
-    font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
-    padding: 7px 12px; border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink);
-  }
-  .tier--light .tier__badge { background: var(--light-ink); color: var(--accent); }
-  .tier__label {
-    font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; line-height: 1.5;
-    margin-bottom: 20px; color: var(--text-faint); padding-right: 136px; min-height: 34px;
-  }
-  .tier--light .tier__label { color: var(--light-meta); }
-  .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
-  .tier--light .tier__price { color: var(--light-ink); }
-  .tier__price b { font-weight: 500; }
-  .tier__price-old { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); margin-bottom: 10px; min-height: 20px; }
-  .tier__price-old s { color: var(--text-mute); text-decoration-color: var(--coral); }
-  .tier--light .tier__price-old s { color: var(--light-mute); }
-  .tier--light .tier__price-old { color: var(--light-meta); }
-  .tier__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; padding-top: 26px; border-top: 1px solid var(--border-acc); }
-  .tier--light .tier__list { border-top-color: rgba(16,23,26,.12); }
-  .tier__list li { position: relative; padding-left: 32px; font-size: 15px; line-height: 1.58; color: var(--text-mute); }
-  .tier--light .tier__list li { color: var(--light-mute); }
-  .tier__list li b { color: var(--text-h); font-weight: 600; }
-  .tier--light .tier__list li b { color: var(--light-ink); }
-  .tier__check { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(223,223,65,.12); border: 1px solid rgba(223,223,65,.22); display: flex; align-items: center; justify-content: center; }
-  .tier--light .tier__check { background: var(--accent); border-color: var(--accent); }
-  .tier__check svg { width: 10px; height: 10px; color: var(--accent); }
-  .tier--light .tier__check svg { color: var(--accent-ink); }
-  .tier__note { margin-top: auto; padding-top: 20px; font-size: 12.5px; color: var(--text-faint); line-height: 1.6; }
-  .tier--light .tier__note { color: var(--light-faint); }
-  .tier__cta { margin-top: auto; padding-top: 20px; }
-  .tier--light .btn--primary { background: var(--light-ink); color: var(--accent); }
-  .tier--light .btn--primary:hover { background: #05090b; box-shadow: 0 16px 34px -18px rgba(0,0,0,.8); }
-
-  .pricing__scarcity { margin: 0 0 14px; }
-
-  /* полоса фактов о потоке: формат курса читается до того, как человек дошёл до цены */
-  .pricing__facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 18px; }
-  .fact { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 15px 18px; display: flex; flex-direction: column; gap: 7px; }
-  .fact__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
-  .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
-  .fact__value--accent { color: var(--accent); }
-
-  /* позиционная строка тарифа: чем этот тариф отличается по сути, а не по списку пунктов */
-  .tier__tagline { font-family: var(--display); font-size: 18px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; color: var(--text-h); margin-bottom: 22px; min-height: 48px; }
-  .tier--light .tier__tagline { color: var(--light-ink); }
-  /* по закону основная цена — та, что с рассрочкой; полная оплата показывается
-     как скидка к ней, а не рассрочка как наценка */
-  .tier__price-full { font-size: 14.5px; line-height: 1.5; color: var(--text-mute); margin-bottom: 12px; }
-  .tier__price-full b { color: var(--accent); font-weight: 600; }
-  .tier--light .tier__price-full { color: var(--light-mute); }
-  .tier--light .tier__price-full b { color: var(--light-ink); }
-  .tier__pay { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; color: var(--text-faint); margin-bottom: 28px; }
-  .tier--light .tier__pay { color: var(--light-meta); }
-  /* после блока практики список продолжается — второй разделитель не нужен */
-  .tier__practice + .tier__list { border-top: none; padding-top: 0; }
-
-  /* чего в тарифе НЕТ: разницу видно глазами, а не вычитанием двух списков */
-  .tier__list li.tier__off { color: var(--text-deco); }
-  .tier--light .tier__list li.tier__off { color: var(--light-faint); }
-  .tier__off s { text-decoration-color: rgba(255,255,255,.22); }
-  .tier__cross { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(255,255,255,.03); border: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; color: var(--text-deco); }
-  .tier__cross svg { width: 10px; height: 10px; }
-  .tier__only { display: block; font-family: var(--mono); font-size: 11px; color: var(--text-faint); margin-top: 4px; }
-
-  .tier__practice { margin: -6px 0 28px; padding: 20px 22px 18px; border-radius: var(--r-md); background: rgba(16,23,26,.05); border: 1px solid rgba(16,23,26,.1); }
-  .tier__practice-title { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--light-meta); margin-bottom: 15px; }
-  .tier__steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 11px; }
-  .tier__steps li { counter-increment: step; position: relative; padding-left: 30px; font-size: 14px; line-height: 1.5; color: var(--light-mute); }
-  .tier__steps li::before { content: counter(step); position: absolute; left: 0; top: 1px; width: 20px; height: 20px; border-radius: 5px; background: var(--light-ink); color: var(--accent); font-family: var(--mono); font-size: 11px; display: flex; align-items: center; justify-content: center; }
-  .tier__practice-note { margin-top: 15px; padding-top: 13px; border-top: 1px solid rgba(16,23,26,.1); font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--light-meta); }
-
-  .tier__hint { margin-top: 12px; font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--text-faint); text-align: center; }
-  .tier--light .tier__hint { color: var(--light-faint); }
-
-  /* оплата: главное ценовое возражение снимается рядом с ценой, а не в FAQ */
-  .pricing__pay { margin-top: 18px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 30px 34px; }
-  .pricing__pay-title { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 20px; }
-  .paylist { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 34px; }
-  .paylist li { position: relative; padding-left: 26px; font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
-  .paylist li::before { content: ''; position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; background: var(--accent); opacity: .5; }
-  .paylist b { display: block; color: var(--text-h); font-weight: 600; margin-bottom: 3px; }
-  .paylist a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(223,223,65,.3); }
-  .paylist a:hover { border-bottom-color: var(--accent); }
-
-  /* возврат + честная анти-гарантия: страх живёт рядом с кнопкой, там и снимаем */
-  .honest { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-  .honest__item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 28px 30px; }
-  .honest__item--anti { border-color: var(--border-coral); }
-  .honest__title { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; color: var(--text-h); margin-bottom: 10px; }
-  .honest__item--anti .honest__title { color: var(--coral); }
-  .honest__text { font-size: 14.5px; line-height: 1.6; color: var(--text-mute); }
+  /* Стили тарифов лежат ниже, в блоке "ТАРИФЫ — стили из версии Олега":
+     маркетолог перенёс их в конец файла, и дубль здесь был мёртвым. */
 
   /* ===== YOUTUBE / лид-магниты ===== */
   .yt__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 34px; }
@@ -1341,15 +1325,6 @@
   .footer__tg:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 
   /* нижний ряд: реквизиты + ряд юр-ссылок */
-  /* перелинковка на соседние лендинги: без неё страница — тупик, уходить
-     некуда ни человеку, которому курс не подошёл, ни краулеру */
-  .footer__more { padding-top: 34px; border-top: 1px solid var(--border-mid); margin-bottom: 34px; }
-  .footer__more-label { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
-  .footer__more-row { display: flex; flex-wrap: wrap; gap: 10px 26px; }
-  .footer__more-row a { font-size: 14px; color: var(--text-mute); border-bottom: 1px solid transparent; transition: color .2s var(--ease), border-color .2s var(--ease); }
-  .footer__more-row a:hover { color: var(--accent); border-bottom-color: rgba(223,223,65,.5); }
-  .footer__more-row a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-sm); }
-
   .footer__bottom { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 48px; padding-top: 34px; border-top: 1px solid var(--border-mid); align-items: start; }
   .footer__brand { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); margin-bottom: 18px; letter-spacing: -0.01em; }
   .footer__brand b { color: var(--accent); }
@@ -1381,7 +1356,6 @@
   .sticky-cta { display: none; }
 
   /* ===== RESPONSIVE ===== */
-
   @media (max-width: 1080px) {
     .header__nav { gap: 2px; }
     .header__nav-link { font-size: 13.5px; padding: 8px 9px; }
@@ -1420,10 +1394,6 @@
     .pricing__tiers { grid-template-columns: 1fr; }
     .tier--light { translate: none; padding-bottom: 40px; }
     .tier__label { padding-right: 130px; min-height: 0; }
-    /* карточки встали в столбик — выравнивать высоту слоганов больше не нужно */
-    .tier__tagline { min-height: 0; }
-    .pricing__facts { grid-template-columns: 1fr 1fr; }
-    .paylist, .honest { grid-template-columns: 1fr; }
     .yt__grid { grid-template-columns: 1fr; max-width: 460px; }
     /* .faq — grid, а не multi-column: `columns: 1` здесь не действовал,
        FAQ оставался в две колонки вплоть до 320px */
@@ -1440,6 +1410,11 @@
   /* планшет-портрет: то, что на 960 ещё держалось в две-четыре колонки */
   @media (max-width: 768px) {
     .container { padding: 0 22px; }
+    .v1__row { column-gap: 20px; grid-template-columns: 46px 1fr; padding: 22px 0; }
+    .v1__node { width: 46px; height: 46px; }
+    .v1__node svg { width: 21px; height: 21px; }
+    .v1::before { left: 22px; }
+    .v1__text { font-size: 18px; }
     /* в узком инлайн больше не читается — плашка съезжает под заголовок отдельной строкой */
     .hero__title { display: flex; flex-direction: column; align-items: center; }
     .hero__t1 { order: 1; }
@@ -1586,11 +1561,6 @@
     .arch__flow { grid-template-columns: minmax(0,1fr); }
     .tier { padding: 28px 18px 26px; }
     .tier__price { font-size: 32px; }
-    .tier__tagline { font-size: 16.5px; }
-    .tier__practice { padding: 18px 16px 16px; }
-    .pricing__pay, .honest__item { padding: 24px 18px; }
-    .fact { padding: 13px 15px; }
-    .fact__value { font-size: 15.5px; }
     .yt__card { grid-template-columns: 104px minmax(0,1fr); }
     .yt__name { padding: 12px 13px; font-size: 12.5px; }
     .yt__play-btn { width: 34px; height: 34px; }
@@ -1606,8 +1576,7 @@
 
     /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */
     .eyebrow, .mech__eyebrow, .mech__do-label, .program__step, .program__label,
-    .row__label, .visual__cap, .hook__label, .fact__label,
-    .pricing__pay-title, .tier__practice-title,
+    .row__label, .visual__cap, .hook__label,
     .tier__label, .tier__badge, .final__badge { letter-spacing: 0; }
 
     /* nowrap-мета переполняла контейнер */
@@ -1634,8 +1603,6 @@
   .gc-modal__close:hover { background: rgba(52,63,68,.95); }
   .gc-modal__body { padding: 8px clamp(8px, 3vw, 40px) clamp(16px, 3vw, 40px); }
   .gc-modal__body iframe { display: block; width: 100% !important; min-height: 1040px; border: 0 !important; background: var(--bg-card); }
-  /* пока форма не загрузилась — держим её вне потока, иначе пустой iframe
-     на 1040px растягивает модалку и под заглушкой зияет дыра */
   .gc-modal__body.is-loading iframe { position: absolute; visibility: hidden; }
   .gc-modal__loading {
     min-height: 420px; display: flex; flex-direction: column; gap: 16px;
@@ -1643,13 +1610,6 @@
     font-family: var(--mono); font-size: 13px; color: var(--text-mute); text-align: center;
   }
   .gc-modal__loading a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-  .gc-spinner {
-    width: 26px; height: 26px; border-radius: 50%; flex: none;
-    border: 2px solid var(--border-acc); border-top-color: var(--accent);
-    animation: gcSpin .8s linear infinite;
-  }
-  @keyframes gcSpin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .gc-spinner { animation-duration: 2.4s; } }
   @media (max-width: 640px) {
     .gc-modal { padding: 0 0 40px; overflow-x: hidden; }
     .gc-modal__panel { width: 100%; max-width: 100vw; border-radius: 0; border: 0; min-height: 100vh; overflow-x: hidden; }
@@ -1659,6 +1619,242 @@
   }
   body.gc-lock { overflow: hidden; }
   @media (prefers-reduced-motion: reduce) { .gc-modal__panel { animation: none; } }
+
+  /* ===== ТАРИФЫ — стили из версии Олега (перенос) ===== */
+  /* ===== PRICING ===== */
+  /* stretch, а не start: карточки одной высоты — кнопки выстраиваются в одну линию */
+  .pricing__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
+  .tier { border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; height: 100%; }
+  .tier--dark { background: var(--bg-card); border: 1px solid var(--border-card); }
+  .tier--light {
+    background: var(--light-bg); color: var(--light-ink); border: 1px solid var(--light-bg);
+    box-shadow: 0 40px 90px -46px rgba(0,0,0,.95);
+    padding-bottom: 40px;
+  }
+  .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--accent); }
+  .tier__badge {
+    position: absolute; top: 26px; right: 26px; font-family: var(--mono);
+    font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+    padding: 7px 12px; border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink);
+  }
+  .tier--light .tier__badge { background: var(--light-ink); color: var(--accent); }
+  .tier__label {
+    font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; line-height: 1.5;
+    margin-bottom: 20px; color: var(--text-faint); padding-right: 136px; min-height: 34px;
+  }
+  .tier--light .tier__label { color: var(--light-meta); }
+  .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+  .tier--light .tier__price { color: var(--light-ink); }
+  .tier__price b { font-weight: 500; }
+  .tier__price-old { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); margin-bottom: 10px; min-height: 20px; }
+  .tier__price-old s { color: var(--text-mute); text-decoration-color: var(--coral); }
+  .tier--light .tier__price-old s { color: var(--light-mute); }
+  .tier--light .tier__price-old { color: var(--light-meta); }
+  .tier__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; padding-top: 26px; border-top: 1px solid var(--border-acc); }
+  .tier--light .tier__list { border-top-color: rgba(16,23,26,.12); }
+  .tier__list li { position: relative; padding-left: 32px; font-size: 15px; line-height: 1.58; color: var(--text-mute); }
+  .tier--light .tier__list li { color: var(--light-mute); }
+  .tier__list li b { color: var(--text-h); font-weight: 600; }
+  .tier--light .tier__list li b { color: var(--light-ink); }
+  .tier__check { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(223,223,65,.12); border: 1px solid rgba(223,223,65,.22); display: flex; align-items: center; justify-content: center; }
+  .tier--light .tier__check { background: var(--accent); border-color: var(--accent); }
+  .tier__check svg { width: 10px; height: 10px; color: var(--accent); }
+  .tier--light .tier__check svg { color: var(--accent-ink); }
+  .tier__note { margin-top: auto; padding-top: 20px; font-size: 12.5px; color: var(--text-faint); line-height: 1.6; }
+  .tier--light .tier__note { color: var(--light-faint); }
+  .tier__cta { margin-top: auto; padding-top: 20px; }
+  .tier--light .btn--primary { background: var(--light-ink); color: var(--accent); }
+  .tier--light .btn--primary:hover { background: #05090b; box-shadow: 0 16px 34px -18px rgba(0,0,0,.8); }
+
+  .pricing__scarcity { margin: 0 0 14px; }
+
+  /* полоса фактов о потоке: формат курса читается до того, как человек дошёл до цены */
+  .pricing__facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 18px; }
+  .fact { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 15px 18px; display: flex; flex-direction: column; gap: 7px; }
+  .fact__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
+  .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
+  .fact__value--accent { color: var(--accent); }
+
+  /* позиционная строка тарифа: чем этот тариф отличается по сути, а не по списку пунктов */
+  .tier__tagline { font-family: var(--display); font-size: 18px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; color: var(--text-h); margin-bottom: 22px; min-height: 48px; }
+  .tier--light .tier__tagline { color: var(--light-ink); }
+  /* по закону основная цена — та, что с рассрочкой; полная оплата показывается
+     как скидка к ней, а не рассрочка как наценка */
+  .tier__price-full { font-size: 14.5px; line-height: 1.5; color: var(--text-mute); margin-bottom: 12px; }
+  .tier__price-full b { color: var(--accent); font-weight: 600; }
+  .tier--light .tier__price-full { color: var(--light-mute); }
+  .tier--light .tier__price-full b { color: var(--light-ink); }
+  .tier__pay { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; color: var(--text-faint); margin-bottom: 28px; }
+  .tier--light .tier__pay { color: var(--light-meta); }
+  /* после блока практики список продолжается — второй разделитель не нужен */
+  .tier__practice + .tier__list { border-top: none; padding-top: 0; }
+
+  /* чего в тарифе НЕТ: разницу видно глазами, а не вычитанием двух списков */
+  .tier__list li.tier__off { color: var(--text-deco); }
+  .tier--light .tier__list li.tier__off { color: var(--light-faint); }
+  .tier__off s { text-decoration-color: rgba(255,255,255,.22); }
+  .tier__cross { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(255,255,255,.03); border: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; color: var(--text-deco); }
+  .tier__cross svg { width: 10px; height: 10px; }
+  .tier__only { display: block; font-family: var(--mono); font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+
+  .tier__practice { margin: -6px 0 28px; padding: 20px 22px 18px; border-radius: var(--r-md); background: rgba(16,23,26,.05); border: 1px solid rgba(16,23,26,.1); }
+  .tier__practice-title { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--light-meta); margin-bottom: 15px; }
+  .tier__steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 11px; }
+  .tier__steps li { counter-increment: step; position: relative; padding-left: 30px; font-size: 14px; line-height: 1.5; color: var(--light-mute); }
+  .tier__steps li::before { content: counter(step); position: absolute; left: 0; top: 1px; width: 20px; height: 20px; border-radius: 5px; background: var(--light-ink); color: var(--accent); font-family: var(--mono); font-size: 11px; display: flex; align-items: center; justify-content: center; }
+  .tier__practice-note { margin-top: 15px; padding-top: 13px; border-top: 1px solid rgba(16,23,26,.1); font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--light-meta); }
+
+  .tier__hint { margin-top: 12px; font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--text-faint); text-align: center; }
+  .tier--light .tier__hint { color: var(--light-faint); }
+
+  /* оплата: главное ценовое возражение снимается рядом с ценой, а не в FAQ */
+  .pricing__pay { margin-top: 18px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 30px 34px; }
+  .pricing__pay-title { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 20px; }
+  .paylist { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 34px; }
+  .paylist li { position: relative; padding-left: 26px; font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
+  .paylist li::before { content: ''; position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; background: var(--accent); opacity: .5; }
+  .paylist b { display: block; color: var(--text-h); font-weight: 600; margin-bottom: 3px; }
+  .paylist a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(223,223,65,.3); }
+  .paylist a:hover { border-bottom-color: var(--accent); }
+
+  /* возврат + честная анти-гарантия: страх живёт рядом с кнопкой, там и снимаем */
+  .honest { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+  .honest__item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 28px 30px; }
+  .honest__item--anti { border-color: var(--border-coral); }
+  .honest__title { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; color: var(--text-h); margin-bottom: 10px; }
+  .honest__item--anti .honest__title { color: var(--coral); }
+  .honest__text { font-size: 14.5px; line-height: 1.6; color: var(--text-mute); }
+
+  /* мобильная адаптация новых grid-классов тарифов */
+  @media (max-width: 640px) {
+    .pricing__facts { grid-template-columns: 1fr 1fr; }
+    .paylist, .honest { grid-template-columns: 1fr; }
+  }
+
+  /* ===== YOUTUBE/TG — стили с менторства (перенос) ===== */
+  .yt__head { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 44px; }
+  .yt__title { font-size: 28px; font-weight: 500; color: var(--text-h); line-height: 1.2; letter-spacing: -0.5px; max-width: 560px; text-wrap: balance; }
+  .yt__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 36px; }
+  .yt__card { display: block; border-radius: 18px; overflow: hidden; border: 1px solid var(--border-card); background: var(--bg-card); transition: transform .25s ease, border-color .25s ease; }
+  .yt__card:hover { transform: translateY(-3px); border-color: var(--border-acc); }
+  .yt__thumb { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--bg-secondary); }
+  .yt__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .yt__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(24,32,35,.18); transition: background .2s ease; }
+  .yt__card:hover .yt__play { background: rgba(24,32,35,.30); }
+  .yt__play-btn { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,0,0,.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+  .yt__play-btn svg { width: 24px; height: 24px; color: #fff; margin-left: 3px; }
+  .yt__name { padding: 18px 20px; font-size: 15px; font-weight: 500; color: var(--text-h); line-height: 1.4; }
+  .yt__actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  @media (max-width: 860px) {
+    .yt__title { font-size: 28px; }
+    .yt__grid { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
+    .yt__head { grid-template-columns: 1fr; }
+  }
+
+  /* ===== Плашка нагрузки как чат-сообщение от Олега ===== */
+  .chatload { display: flex; align-items: flex-end; gap: 14px; }
+  .chatload__avatar { flex: 0 0 auto; width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border-acc); box-shadow: 0 6px 18px -8px rgba(0,0,0,.7); }
+  .chatload__avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 52% 26%; }
+  .chatload__bubble { position: relative; max-width: 540px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 4px var(--r-lg) var(--r-lg) var(--r-lg); padding: 12px 16px 13px; box-shadow: 0 10px 30px -18px rgba(0,0,0,.8); }
+  .chatload__bubble::before { content: ''; position: absolute; left: -7px; bottom: 0; width: 14px; height: 16px; background: var(--bg-card); border-left: 1px solid var(--border-card); border-bottom: 1px solid var(--border-card); clip-path: path('M14 16 C 7 16, 0 12, 0 0 L 14 0 Z'); border-radius: 0 0 0 3px; }
+  .chatload__name { font-family: var(--display); font-size: .82rem; font-weight: 600; color: var(--accent); margin-bottom: 3px; }
+  .chatload__text { color: var(--text-body); font-size: 1.02rem; line-height: 1.5; }
+  .chatload__text .hl-soft { color: var(--text-h); font-weight: 600; background: none; padding: 0; }
+  @media (max-width: 640px) { .chatload { align-items: flex-start; } .chatload__avatar { width: 44px; height: 44px; } .chatload__text { font-size: .98rem; } }
+
+  /* "Как устроено обучение": заголовок по центру, отступ чат-плашки, акцент на карточках */
+  #kak-uchimsya .section__head { text-align: center; margin-left: auto; margin-right: auto; }
+  #kak-uchimsya .chatload { margin-bottom: 72px; }
+  #kak-uchimsya .cases__item:first-child { background: rgba(223,223,65,.08); border-color: rgba(223,223,65,.35); }
+  #kak-uchimsya .cases__item:first-child b { color: var(--accent); }
+
+  /* блок "комфортик в чатике" — две колонки: слева мокап телефона со скринами чата,
+     справа заголовок + текст (как в блоке про чат на лендинге микросервисов) */
+  .row--chat { margin-top: 96px; align-items: center; }
+  .chatphone { display: flex; justify-content: center; }
+  /* рамка смартфона на CSS: скруглённый корпус + вырез-динамик сверху */
+  .phone {
+    position: relative; width: 100%; max-width: 268px; aspect-ratio: 9 / 18.6;
+    background: linear-gradient(160deg, #232d31, #141b1e);
+    border: 1px solid var(--border-acc); border-radius: 40px;
+    padding: 12px; box-shadow: var(--sh-lift);
+  }
+  /* динамик-вырез */
+  .phone::before {
+    content: ''; position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    width: 54px; height: 6px; border-radius: 999px; background: rgba(0,0,0,.55); z-index: 3;
+  }
+  .phone__screen {
+    position: relative; width: 100%; height: 100%; border-radius: 30px; overflow: hidden;
+    background: var(--bg-primary);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 30px 22px;
+    background-image:
+      linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  /* реальный скриншот, когда его вставят, ляжет поверх заглушки и закроет её */
+  .phone__screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+  .phone__screen:has(img) .phone__ph { display: none; }
+  .phone__ph { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .phone__ico {
+    width: 62px; height: 62px; border-radius: 18px;
+    background: rgba(223,223,65,.10); border: 1px solid rgba(223,223,65,.24); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .phone__ico svg { width: 30px; height: 30px; }
+  .phone__tag { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+  .phone__note { font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--text-faint); letter-spacing: .02em; }
+  @media (max-width: 640px) { .phone { max-width: 230px; } }
+
+  /* плавное раскрытие недели программы (вместо прыжка) */
+  html { interpolate-size: allow-keywords; }
+  .program__item::details-content {
+    height: 0; overflow: hidden;
+    transition: height .38s var(--ease), content-visibility .38s allow-discrete;
+  }
+  .program__item[open]::details-content { height: auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .program__item::details-content { transition: none; }
+    * { animation: none !important; transition: none !important; }
+  }
+  /* ===== ВОССТАНОВЛЕНО ИЗ ВЕРСИИ ОЛЕГА =====
+     Всё ниже потерялось при переносе текстов, но нужно работающей странице:
+     спиннер модалки GetCourse, перелинковка в подвале и адаптив блока тарифов. */
+  .gc-spinner {
+    width: 26px; height: 26px; border-radius: 50%; flex: none;
+    border: 2px solid var(--border-acc); border-top-color: var(--accent);
+    animation: gcSpin .8s linear infinite;
+  }
+  @keyframes gcSpin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .gc-spinner { animation-duration: 2.4s; } }
+
+  /* перелинковка на соседние лендинги: без неё страница — тупик, уходить
+     некуда ни человеку, которому курс не подошёл, ни краулеру */
+  .footer__more { padding-top: 34px; border-top: 1px solid var(--border-mid); margin-bottom: 34px; }
+  .footer__more-label { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
+  .footer__more-row { display: flex; flex-wrap: wrap; gap: 10px 26px; }
+  .footer__more-row a { font-size: 14px; color: var(--text-mute); border-bottom: 1px solid transparent; transition: color .2s var(--ease), border-color .2s var(--ease); }
+  .footer__more-row a:hover { color: var(--accent); border-bottom-color: rgba(223,223,65,.5); }
+  .footer__more-row a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-sm); }
+
+  /* в блоке "честно" снова два пункта — возврат и "чего не обещаем" */
+  .honest { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 960px) {
+    /* карточки встали в столбик — выравнивать высоту слоганов больше не нужно */
+    .tier__tagline { min-height: 0; }
+    .pricing__facts { grid-template-columns: 1fr 1fr; }
+    .paylist, .honest { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 400px) {
+    .tier__tagline { font-size: 16.5px; }
+    .tier__practice { padding: 18px 16px 16px; }
+    .pricing__pay, .honest__item { padding: 24px 18px; }
+    .fact { padding: 13px 15px; }
+    .fact__value { font-size: 15.5px; }
+  }
 </style>
 </head>
 <body>
@@ -1675,20 +1871,24 @@
   <div class="container header__inner">
     <a href="#top" class="header__logo"><b>{</b> System Design <b>}</b></a>
     <nav class="header__nav" aria-label="Навигация">
-      <a class="header__nav-link" href="#dlya-kogo">Для кого</a>
+      <a class="header__nav-link" href="#dlya-kogo">О курсе</a>
       <a class="header__nav-link" href="#programma">Программа</a>
-      <a class="header__nav-link" href="#avtor">Автор</a>
+      <a class="header__nav-link" href="#kak-uchimsya">Как всё устроено</a>
+      <a class="header__nav-link" href="#avtor">Об авторе</a>
       <a class="header__nav-link" href="#tarify">Тарифы</a>
+      <a class="header__nav-link" href="#faq">FAQ</a>
     </nav>
     <a class="btn btn--primary header__cta" href="#tarify" data-goal="header">Записаться на&nbsp;поток</a>
     <button class="menu-toggle" id="menu-toggle" aria-label="Меню" aria-expanded="false" aria-controls="nav-mobile">
       <span></span><span></span><span></span>
     </button>
     <div class="nav-mobile container" id="nav-mobile">
-      <a class="header__nav-link" href="#dlya-kogo">Для кого</a>
+      <a class="header__nav-link" href="#dlya-kogo">О курсе</a>
       <a class="header__nav-link" href="#programma">Программа</a>
-      <a class="header__nav-link" href="#avtor">Автор</a>
+      <a class="header__nav-link" href="#kak-uchimsya">Как всё устроено</a>
+      <a class="header__nav-link" href="#avtor">Об авторе</a>
       <a class="header__nav-link" href="#tarify">Тарифы</a>
+      <a class="header__nav-link" href="#faq">FAQ</a>
       <a class="btn btn--primary" href="#tarify" data-goal="nav_mobile">Записаться на&nbsp;поток</a>
     </div>
   </div>
@@ -1708,10 +1908,10 @@
             </picture>
             <span class="author__txt">
               <span class="author__role">Автор курса</span>
-              <span class="author__pos">Golang Staff Engineer</span>
+              <span class="author__pos">Staff Engineer из&nbsp;BigTech</span>
             </span>
           </span><b class="hero__t2">от&nbsp;паники к&nbsp;алгоритму</b></h1>
-        <p class="hero__subtitle fade-up">Научись уверенно проходить <span class="hl">секцию System Design</span> на&nbsp;собеседовании, и&nbsp;повысь шансы на&nbsp;оффер в&nbsp;бигтехе или грейд сеньора.</p>
+        <p class="hero__subtitle fade-up">Научись уверенно проходить секцию System Design и&nbsp;повысь свои шансы на&nbsp;<span class="hl">трудоустройство в&nbsp;бигтех</span> или повышение <span class="hl">грейда до&nbsp;сеньора</span>.</p>
         <!-- CTA-капсула: слева дата старта, в центре кнопка, справа длительность -->
         <div class="hero__cta fade-up">
           <div class="cta-capsule">
@@ -1736,29 +1936,216 @@
   <!-- ===== 3. ЭТО ПРО ТЕБЯ, ЕСЛИ… (мотивация + узнавание, объединённый блок) ===== -->
   <section class="section" id="dlya-kogo">
     <div class="container">
-      <div class="section__head section__head--center fade-up">
+      <div class="section__head fade-up">
         <h2 class="section__title">Это про&nbsp;тебя, <b>если…</b></h2>
       </div>
-      <div class="merge merge--solo">
-        <!-- узнавание (профили / затык на интервью) -->
-        <div class="merge__who fade-up">
-          <div class="merge__profile">
-            <div class="merge__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.2"></circle></svg></div>
-            <div class="merge__ptext"><b>Метишь в&nbsp;крупный бигтех</b>: Яндекс, Озон, Т-Банк, ВК, Сбер, Авито, WB. Там тебя почти всегда будет ждать секция системного дизайна.</div>
+      <div class="v1 fade-up">
+        <div class="v1__row" tabindex="0">
+          <div class="v1__node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.2"></circle></svg></div>
+          <div class="v1__text"><b>Метишь в&nbsp;крупный бигтех</b>: Яндекс, Озон, Т-Банк, ВК, Сбер, Авито, WB&nbsp;— на&nbsp;собесе почти всегда тебя будет ждать System Design.</div>
+        </div>
+        <div class="v1__row" tabindex="0">
+          <div class="v1__node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div>
+          <div class="v1__text"><b>Хочешь перейти из&nbsp;мидла в&nbsp;senior</b>, а&nbsp;грейд как раз упирается в&nbsp;System Design.</div>
+        </div>
+        <div class="v1__row" tabindex="0">
+          <div class="v1__node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"></path><path d="M9 21h6"></path></svg></div>
+          <div class="v1__text">На&nbsp;проектах ты&nbsp;с&nbsp;такими задачами не&nbsp;работал, и&nbsp;<b>опыту в&nbsp;System Design взяться неоткуда</b>.</div>
+        </div>
+        <div class="v1__row" tabindex="0">
+          <div class="v1__node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path></svg></div>
+          <div class="v1__text">Хочешь не&nbsp;просто пройти секцию, а&nbsp;<b>разобраться, как всё это работает под капотом</b>.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. ЗНАКОМАЯ СИТУАЦИЯ? ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section__head section__head--center fade-up">
+        <h2 class="section__title">Знакомая ситуация?</h2>
+      </div>
+      <div class="blocks">
+<!-- ===== БЛОК 5 · Чёрный ящик = боль 6 · лупа над чёрным ящиком · финал ===== -->
+        <div class="block fade-up">
+          <div class="block__head">
+            <span class="block__num">01</span>
+            <h3 class="block__title">Боязно идти на&nbsp;секцию</h3>
           </div>
-          <div class="merge__profile">
-            <div class="merge__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div>
-            <div class="merge__ptext"><b>Хочешь перейти из&nbsp;мидла в&nbsp;senior</b>, а&nbsp;грейд как раз и&nbsp;упирается в&nbsp;System Design.</div>
+          <div class="block__media">
+            <figure class="slot">
+              <video class="slot__gif" autoplay loop muted playsinline preload="metadata" poster="sit-01-poster.jpg" role="img" aria-label="Правила оценки — чёрный ящик">
+                <source src="sit-01.webm" type="video/webm">
+                <source src="sit-01.mp4" type="video/mp4">
+              </video>
+              <div class="slot__ph">
+                <svg class="scene" viewBox="0 0 48 48" aria-hidden="true">
+                  <rect class="fl" x="9" y="16" width="22" height="20" rx="2.5"></rect>
+                  <rect class="ln" x="9" y="16" width="22" height="20" rx="2.5"></rect>
+                  <path class="ln-c" d="M17 23.5c0-2 2-3.5 4-3s2.5 2.5 1 4c-1 1-2 1.5-2 3"></path>
+                  <circle class="fl-c" cx="20" cy="32" r="1.1"></circle>
+                  <circle class="ln-a" cx="31" cy="14" r="7"></circle>
+                  <line class="ln-a" x1="36" y1="19" x2="41" y2="24"></line>
+                </svg>
+                <span class="slot__tag">GIF · сюда мем</span>
+              </div>
+            </figure>
           </div>
-          <div class="merge__profile">
-            <div class="merge__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"></path><path d="M9 21h6"></path></svg></div>
-            <div class="merge__ptext">На&nbsp;проектах ты&nbsp;с&nbsp;такими задачами не&nbsp;работал, и&nbsp;<b>опыту в&nbsp;System Design взяться неоткуда</b>.</div>
+          <div class="block__body">
+            <div class="sit-pain">
+              <p class="pain__text">На&nbsp;System Design даже идти боязно: непонятно, что там вообще спрашивают и&nbsp;по&nbsp;каким правилам оценивают. Проще пока не&nbsp;соваться, вот и&nbsp;откладываешь собес месяцами. <span class="pf">А&nbsp;это лишние месяцы на&nbsp;старом грейде и&nbsp;старой зарплате.</span></p>
+            </div>
           </div>
-          <div class="merge__profile">
-            <div class="merge__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path></svg></div>
-            <div class="merge__ptext">Хочешь не&nbsp;просто пройти секцию, а&nbsp;<b>разобраться, как всё это работает под капотом</b>.</div>
+        </div><!-- ===== БЛОК 4 · Руками не трогал = боль 5 · монолит + недосягаемый кластер ===== -->
+        <div class="block block--flip fade-up">
+          <div class="block__head">
+            <span class="block__num">02</span>
+            <h3 class="block__title">На&nbsp;работе не&nbsp;сталкивался полноценно с&nbsp;сисдизом</h3>
+          </div>
+          <div class="block__media">
+            <figure class="slot">
+              <video class="slot__gif" autoplay loop muted playsinline preload="metadata" poster="sit-02-poster.jpg" role="img" aria-label="Highload только в статьях">
+                <source src="sit-02.webm" type="video/webm">
+                <source src="sit-02.mp4" type="video/mp4">
+              </video>
+              <div class="slot__ph">
+                <svg class="scene" viewBox="0 0 48 48" aria-hidden="true">
+                  <path class="ln" d="M8 18l8-4 8 4v12l-8 4-8-4z"></path>
+                  <path class="ln" d="M8 18l8 4 8-4M16 22v12"></path>
+                  <circle class="ln-c" cx="34" cy="14" r="3"></circle>
+                  <circle class="ln-c" cx="41" cy="27" r="3"></circle>
+                  <circle class="ln-c" cx="30" cy="30" r="3"></circle>
+                  <path class="ln-c" style="stroke-dasharray:2 3;" d="M34 17l-3 10M36.5 15.5 39 24M32.5 28.5 38.5 26"></path>
+                </svg>
+                <span class="slot__tag">GIF · сюда мем</span>
+              </div>
+            </figure>
+          </div>
+          <div class="block__body">
+            <div class="sit-pain">
+              <p class="pain__text">На&nbsp;работе круды и&nbsp;монолит, highload видел только в&nbsp;статьях. <span class="pf">А&nbsp;на&nbsp;собесе просят спроектировать то, что руками не&nbsp;трогал.</span></p>
+            </div>
+          </div>
+        </div><!-- ===== БЛОК 3 · Заучил, но не понимаешь = боль 3 · книга-кабанчик ===== -->
+        <div class="block fade-up">
+          <div class="block__head">
+            <span class="block__num">03</span>
+            <h3 class="block__title">Заучил типовые задачи, но&nbsp;если копнут в&nbsp;сторону, начинаешь сыпаться</h3>
+          </div>
+          <div class="block__media">
+            <figure class="slot">
+              <video class="slot__gif" autoplay loop muted playsinline preload="metadata" poster="sit-03-poster.jpg" role="img" aria-label="Заучил, а понимания нет">
+                <source src="sit-03.webm" type="video/webm">
+                <source src="sit-03.mp4" type="video/mp4">
+              </video>
+              <div class="slot__ph">
+                <svg class="scene" viewBox="0 0 48 48" aria-hidden="true">
+                  <rect class="ln" x="10" y="7" width="28" height="34" rx="2.5"></rect>
+                  <line class="ln" x1="16" y1="7" x2="16" y2="41"></line>
+                  <path class="ln" d="M20 30c-1-6 3-10 8-9 3 0 5 2 8 2l2 2-2 1.5c0 3-3 5-6 5h-2"></path>
+                  <path class="ln" d="M27 21l2-3 2 3"></path>
+                  <path class="ln" d="M20 31v3M25 31v3M31 31v3"></path>
+                  <path class="ln" d="M20 27c-2-1-2-3 0-3.5"></path>
+                  <circle class="dt" cx="32" cy="24" r="1"></circle>
+                  <path class="ln-c" d="M36 26l-2.5 1.5"></path>
+                </svg>
+                <span class="slot__tag">GIF · сюда мем</span>
+              </div>
+            </figure>
+          </div>
+          <div class="block__body">
+            <div class="sit-pain">
+              <p class="pain__text">Заучил теорию, кабанчика, пересмотрел разборы на&nbsp;ютубе, отвечаешь по&nbsp;шаблону. А&nbsp;копнут глубже (а&nbsp;если нагрузка вырастет, если узел упадёт) или дадут незнакомую задачу, и&nbsp;оказывается, что как оно внутри устроено, ты&nbsp;не&nbsp;понимаешь <span class="pf">и&nbsp;начинаешь плыть на&nbsp;уточняющих вопросах.</span></p>
+            </div>
+          </div>
+        </div><!-- ===== БЛОК 1 · Время давит = боли 1 + 4 · картинка = ТАЙМЕР ===== -->
+        <div class="block block--flip fade-up">
+          <div class="block__head">
+            <span class="block__num">04</span>
+            <h3 class="block__title">Без понятия, как всё успеть решить</h3>
+          </div>
+          <div class="block__media">
+            <figure class="slot">
+              <video class="slot__gif" autoplay loop muted playsinline preload="metadata" poster="sit-04-poster.jpg" role="img" aria-label="Время на секции утекает">
+                <source src="sit-04.webm" type="video/webm">
+                <source src="sit-04.mp4" type="video/mp4">
+              </video>
+              <div class="slot__ph slot__ph--clock">
+                <div class="dial" data-clock>
+                  <svg viewBox="0 0 240 240" aria-hidden="true">
+                    <circle class="ring-bg" cx="120" cy="120" r="110"></circle>
+                    <circle class="ring-fg" cx="120" cy="120" r="110"></circle>
+                  </svg>
+                  <div class="dial__time">
+                    <span class="dial__num" data-num>50:00</span>
+                    <span class="dial__tick">осталось</span>
+                  </div>
+                </div>
+                <span class="slot__tag">GIF · сюда мем</span>
+              </div>
+            </figure>
+          </div>
+          <div class="block__body">
+            <div class="sit-pain">
+              <p class="pain__text">Дают задачу, которую ты&nbsp;вживую никогда не&nbsp;проектировал, и&nbsp;ты&nbsp;не&nbsp;знаешь, за&nbsp;что хвататься, с&nbsp;чего начать, что рисовать, о&nbsp;чём спрашивать. А&nbsp;тебе за&nbsp;50&nbsp;минут надо: собрать функциональные и&nbsp;нефункциональные требования, расписать модель данных, спроектировать API, нарисовать схему, поговорить про&nbsp;масштабирование и&nbsp;глубоко разобрать узкие места. <span class="pf">И&nbsp;ты&nbsp;в&nbsp;итоге банально можешь не&nbsp;успеть решить задачу.</span></p>
+            </div>
+          </div>
+        </div><!-- ===== БЛОК 2 · Кинулся вслепую = боль 2 · картинка справа ===== -->
+        <div class="block fade-up">
+          <div class="block__head">
+            <span class="block__num">05</span>
+            <h3 class="block__title">Нет чёткого понимания, с&nbsp;чего начать</h3>
+          </div>
+          <div class="block__media">
+            <figure class="slot">
+              <video class="slot__gif" autoplay loop muted playsinline preload="metadata" poster="sit-05-poster.jpg" role="img" aria-label="Кинулся проектировать вслепую">
+                <source src="sit-05.webm" type="video/webm">
+                <source src="sit-05.mp4" type="video/mp4">
+              </video>
+              <div class="slot__ph">
+                <svg class="scene" viewBox="0 0 48 48" aria-hidden="true">
+                  <rect class="ln" x="7" y="10" width="12" height="9" rx="2"></rect>
+                  <rect class="ln" x="27" y="9" width="13" height="9" rx="2"></rect>
+                  <rect class="ln" x="18" y="24" width="13" height="9" rx="2"></rect>
+                  <path class="ln" d="M19 15h7"></path>
+                  <path class="ln" d="M33 18v3l-8 3"></path>
+                  <path class="ln-c" d="M9 40c6-1 12-4 15-8"></path>
+                  <path class="ln-c" d="M8 34c2 2 3 4 1 6"></path>
+                </svg>
+                <span class="slot__tag">GIF · сюда мем</span>
+              </div>
+            </figure>
+          </div>
+          <div class="block__body">
+            <div class="sit-pain">
+              <p class="pain__text">Услышал "спроектируй ленту" и&nbsp;сразу кинулся рисовать базы и&nbsp;сервисы. А&nbsp;через пять минут понял, что не&nbsp;спросил ни&nbsp;про пользователей, ни&nbsp;про нагрузку, ни&nbsp;что вообще важно. <span class="pf">А&nbsp;время уже не&nbsp;вернуть.</span></p>
+            </div>
           </div>
         </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6. ПОЧЕМУ ТЫ ВАЛИШЬ СЕКЦИЮ (светлый островок — смысловое ядро) ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="mech fade-up">
+        <h2 class="mech__title">Почему не&nbsp;получается пройти сисдиз</h2>
+        <!-- ⚠️ хронометраж "6 минут" — плейсхолдер, сверить -->
+        <p class="mech__lead mech__lead--tight">Кажется, что на&nbsp;System Design валят непонятно за&nbsp;что и&nbsp;всё решает везение: какая попадётся задача и&nbsp;какой интервьюер.</p>
+        <p class="mech__lead">Человеческий фактор тут есть, глупо это отрицать: и&nbsp;задача может попасться неудобная, и&nbsp;интервьюер разный бывает. Но&nbsp;большая часть того, чем закончится секция, всё равно зависит от&nbsp;тебя: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор. И&nbsp;ошибки тут повторяются из&nbsp;собеса в&nbsp;собес&nbsp;— самые частые разобрал в&nbsp;ролике за&nbsp;6&nbsp;минут.</p>
+
+        <!-- ⚠️ видеопродажник: заглушка-обложка, реальный ролик подставить (ссылка/встройка) -->
+        <div class="video v1-video">
+          <div class="yt__thumb">
+            <span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
+            <div class="video__cap">За&nbsp;6&nbsp;минут: почему валят SD и&nbsp;как перестать плыть</div>
+          </div>
+        </div>
+
+        <blockquote class="mech__quote">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</blockquote>
       </div>
     </div>
   </section>
@@ -1766,8 +2153,10 @@
   <!-- ===== 8. ПРОГРАММА ПО НЕДЕЛЯМ ===== -->
   <section class="section" id="programma">
     <div class="container">
-      <div class="section__head section__head--center fade-up">
-        <h2 class="section__title">Программа по&nbsp;неделям</h2>
+      <div class="prog-head fade-up">
+        <span class="prog-head__pill"><span class="prog-head__dot" aria-hidden="true"></span>программа</span>
+        <h2 class="prog-head__title"><b>5&nbsp;недель.</b> От&nbsp;базовых основ до&nbsp;практических кейсов.</h2>
+        <p class="prog-head__sub">В&nbsp;программу включил всё нужное, чтобы пройти секцию сисдиза.<br>А&nbsp;в&nbsp;практике <em>сделал упор на&nbsp;популярные системы</em>: их&nbsp;чаще всего и&nbsp;дают на&nbsp;собесах, а&nbsp;внутри каждой столько всего, что на&nbsp;одной задаче применяешь половину курса.</p>
       </div>
 
       <div class="program">
@@ -1780,11 +2169,11 @@
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
-            <p class="program__promise">К&nbsp;концу недели у&nbsp;тебя есть каркас, по&nbsp;которому раскладывается любая задача, и&nbsp;понимание, из&nbsp;чего вообще собирается вход в&nbsp;любую систему.</p>
+            <p class="program__promise">К&nbsp;концу недели у&nbsp;тебя есть каркас, по&nbsp;которому раскладывается любая задача, и&nbsp;понимание, с&nbsp;чего вообще начинается проектирование любой системы.</p>
             <div class="program__block">
               <span class="program__label">Модуль 1 · Алгоритм SD-интервью</span>
               <ul class="program__list">
-                <li><b>01. Как устроено SD-интервью.</b> Три формата секции и&nbsp;как разложить 45-минутный слот.</li>
+                <li><b>01. Как устроено SD-интервью.</b> Три формата секции и&nbsp;как разложить 50-минутный слот.</li>
                 <li><b>02. Что оценивает интервьюер.</b> Восемь ходов, которые работают в&nbsp;плюс, и&nbsp;что портит впечатление.</li>
                 <li><b>03. Пять шагов разбора задачи.</b> Что происходит на&nbsp;каждом шаге и&nbsp;какими фразами переходить между ними.</li>
                 <li><b>04. Уточняющие вопросы.</b> Десять вопросов на&nbsp;старте и&nbsp;пять тем, которые легко пропустить.</li>
@@ -1804,8 +2193,12 @@
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label program__label--result">Домашка недели</span>
+              <span class="program__label">Домашка недели</span>
               <p class="program__result">Экстренная выкатка обновления на&nbsp;50&nbsp;млн устройств.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">У&nbsp;тебя есть 5-шаговый алгоритм разбора: заходишь на&nbsp;любую задачу по&nbsp;понятному порядку и&nbsp;знаешь первый шаг, а&nbsp;не&nbsp;тупишь над чистым листом.</p>
             </div>
           </div>
         </details>
@@ -1819,7 +2212,7 @@
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
-            <p class="program__promise">Самая плотная неделя, зато одна сквозная тема: от&nbsp;того, как база кладёт байты на&nbsp;диск, до&nbsp;того, что теряешь, когда данные перестают влезать в&nbsp;один узел.</p>
+            <p class="program__promise">Самая большая неделя курса, одиннадцать уроков: базы данных насквозь&nbsp;— страницы и&nbsp;журнал на&nbsp;диске, индексы, транзакции и&nbsp;уровни изоляции, репликация, консенсус, шардирование. Именно на&nbsp;этих вопросах на&nbsp;секции сыпется большинство, поэтому здесь и&nbsp;уроков больше всего.</p>
             <div class="program__block">
               <span class="program__label">Модуль 3 · Хранение данных</span>
               <ul class="program__list">
@@ -1837,8 +2230,12 @@
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label program__label--result">Домашка недели</span>
+              <span class="program__label">Домашка недели</span>
               <p class="program__result">Ядро БД: выбор хранилища, индексы под запросы, уровень изоляции.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Умеешь выбрать хранилище под задачу и&nbsp;объяснить, почему такая база, а&nbsp;не&nbsp;называть наугад.</p>
             </div>
           </div>
         </details>
@@ -1873,8 +2270,12 @@
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label program__label--result">Домашка недели</span>
+              <span class="program__label">Домашка недели</span>
               <p class="program__result">Устойчивость: проблемы кэша, сага на&nbsp;три сервиса, rate limiting.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Знаешь паттерны отказоустойчивости&nbsp;— retry, circuit breaker, rate limiting, деградация&nbsp;— и&nbsp;не&nbsp;впадаешь в&nbsp;ступор, когда начинают копать вопросами.</p>
             </div>
           </div>
         </details>
@@ -1900,8 +2301,12 @@
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label program__label--result">Домашка недели</span>
+              <span class="program__label">Домашка недели</span>
               <p class="program__result">Боевой кейс: лента Avito от&nbsp;монолита до&nbsp;гибридной схемы для&nbsp;звёзд.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Прогнал пять реальных систем от&nbsp;требований до&nbsp;глубокого разбора, есть с&nbsp;чем сверить свой ход мысли на&nbsp;боевом кейсе.</p>
             </div>
           </div>
         </details>
@@ -1915,7 +2320,7 @@
             <span class="program__toggle" aria-hidden="true">+</span>
           </summary>
           <div class="program__body">
-            <p class="program__promise">Три самых злых кейса, где ломаются даже те, кто дошёл сюда уверенно, и&nbsp;отдельный блок про&nbsp;то, как себя вести в&nbsp;45-минутном слоте.</p>
+            <p class="program__promise">Три самых злых кейса, где ломаются даже те, кто дошёл сюда уверенно, и&nbsp;отдельный блок про&nbsp;то, как себя вести в&nbsp;50-минутном слоте.</p>
             <div class="program__block">
               <span class="program__label">Модуль 7 · Боевые кейсы: конкуренция, поиск, гео</span>
               <ul class="program__list">
@@ -1932,8 +2337,12 @@
               </ul>
             </div>
             <div class="program__block">
-              <span class="program__label program__label--result">Домашка недели</span>
+              <span class="program__label">Домашка недели</span>
               <p class="program__result">Финал: Яндекс Афиша с&nbsp;double booking и&nbsp;пробное интервью.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Знаешь, что вытянуть в&nbsp;первые 5&nbsp;минут слота, и&nbsp;ведёшь секцию сам. System Design перестаёт быть чёрным ящиком.</p>
             </div>
           </div>
         </details>
@@ -1950,6 +2359,299 @@
 
       <div class="section__cta fade-up">
         <a class="btn btn--primary btn--lg" href="#tarify" data-goal="programma">Записаться на&nbsp;поток</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 9. КАК УСТРОЕНО ОБУЧЕНИЕ (паттерн "Как всё устроено") ===== -->
+  <section class="section" id="kak-uchimsya">
+    <div class="container">
+      <div class="section__head section__head--center fade-up">
+        <h2 class="section__title">Как устроено обучение</h2>
+      </div>
+
+      <div class="chatload fade-up">
+        <div class="chatload__avatar">
+          <img src="oleg-chat.webp" alt="Олег Козырев" loading="lazy">
+        </div>
+        <div class="chatload__bubble">
+          <div class="chatload__name">Олег</div>
+          <div class="chatload__text">Я&nbsp;собрал нагрузку так, чтобы ты&nbsp;успевал проходить курс, <span class="hl-soft">совмещая&nbsp;с&nbsp;работой</span>, по&nbsp;<span class="hl">5–6&nbsp;часов в&nbsp;неделю</span> в&nbsp;своём&nbsp;темпе.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+
+        <!-- ряд 1 — уроки + живой Q&A -->
+        <div class="row fade-up">
+          <div class="row__body">
+            <div class="row__label">Шаг 01</div>
+            <h3 class="row__title">Смотришь уроки и&nbsp;ходишь на&nbsp;живые разборы</h3>
+            <div class="row__text">
+              <p>Каждую неделю открывается несколько видеоуроков по&nbsp;теме, плюс живой Q&amp;A, где задаёшь любой вопрос по&nbsp;материалу и&nbsp;собесам. Проходить можешь в&nbsp;комфортном темпе, без горящих дедлайнов.</p>
+            </div>
+          </div>
+          <div class="row__visual">
+            <!-- схематичная иллюстрация: доска с 5-шаговым алгоритмом (не скрин продукта) -->
+            <div class="visual">
+              <div class="visual__cap">5-шаговый разбор задачи</div>
+              <div class="steps">
+                <div class="steps__row"><span class="steps__num">1</span><span class="steps__name">Требования и&nbsp;уточняющие вопросы</span></div>
+                <div class="steps__row"><span class="steps__num">2</span><span class="steps__name">Оценка нагрузки: RPS, storage</span></div>
+                <div class="steps__row"><span class="steps__num">3</span><span class="steps__name">Верхнеуровневая схема</span></div>
+                <div class="steps__row"><span class="steps__num">4</span><span class="steps__name">Deep dive в&nbsp;узел системы</span></div>
+                <div class="steps__row"><span class="steps__num">5</span><span class="steps__name">Узкие места и&nbsp;trade-offs</span></div>
+              </div>
+              <div class="steps__bar" aria-hidden="true"></div>
+              <div class="steps__time"><span>00:00</span><span>50:00</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ряд 2 — ДЗ на реальных задачах -->
+        <div class="row row--flip fade-up">
+          <div class="row__body">
+            <div class="row__label">Шаг 02</div>
+            <h3 class="row__title">Делаешь практическое задание с&nbsp;упором на&nbsp;реальную практику</h3>
+            <div class="row__text">
+              <p>После того как ты&nbsp;посмотрел уроки, тебе открываются задания по&nbsp;пройденному материалу, которые полностью моделируют задания на&nbsp;реальном сисдизе, чтобы ты&nbsp;закреплял материал и&nbsp;практиковался.</p>
+            </div>
+          </div>
+          <div class="row__visual">
+            <!-- схематичная иллюстрация: на чём тренируешься (кейсы из программы) + мини-схема системы -->
+            <div class="visual">
+              <div class="visual__cap">На&nbsp;чём тренируешься</div>
+              <div class="cases">
+                <div class="cases__item"><b>Мессенджер</b>Telegram</div>
+                <div class="cases__item"><b>Лента</b>Avito Объявления</div>
+                <div class="cases__item"><b>Видеоплатформа</b>YouTube</div>
+                <div class="cases__item"><b>Билеты</b>Яндекс Афиша</div>
+                <div class="cases__item"><b>Поиск</b>Яндекс / Google</div>
+                <div class="cases__item"><b>Ride-sharing</b>Яндекс Такси</div>
+              </div>
+              <div class="arch" style="margin-top:16px">
+                <div class="arch__flow">
+                  <div class="arch__node">client</div>
+                  <div class="arch__node">gateway</div>
+                  <div class="arch__node">feed&nbsp;svc</div>
+                  <div class="arch__node">db</div>
+                </div>
+                <div class="arch__arrows" aria-hidden="true"><span></span><span>→</span><span>→</span><span>→</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ряд 3 — живой разбор ДЗ куратором (тариф "С проверкой и практикой") -->
+        <div class="row fade-up">
+          <div class="row__body">
+            <div class="row__label row__label--premium">С&nbsp;проверкой и&nbsp;практикой</div>
+            <h3 class="row__title">Твоё решение разбирает живой ментор</h3>
+            <div class="row__text">
+              <p>Ментор лично разбирает твоё решение и&nbsp;показывает, где ошибся, что можно было спроектировать правильнее или лучше.</p>
+            </div>
+          </div>
+          <div class="row__visual">
+            <!-- схематичная иллюстрация: разбор архитектуры с пометками ментора (не скрин PR) -->
+            <div class="visual">
+              <div class="visual__cap">Разбор твоего решения</div>
+              <div class="arch">
+                <div class="arch__flow">
+                  <div class="arch__node">client</div>
+                  <div class="arch__node">gateway</div>
+                  <div class="arch__node arch__node--hot">service</div>
+                  <div class="arch__node">db</div>
+                </div>
+                <div class="arch__arrows" aria-hidden="true"><span></span><span>→</span><span>→</span><span>→</span></div>
+                <div class="note note--warn"><span class="note__ava">ОК</span><span>Здесь узкое место: один сервис пишет и&nbsp;читает. Что будет при ×10&nbsp;нагрузке?</span></div>
+                <div class="note"><span class="note__ava">ОК</span><span>Кэш поставил, а&nbsp;инвалидацию не&nbsp;описал&nbsp;— на&nbsp;собесе за&nbsp;это копают.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ряд 4 — групповая практика под давлением (тариф "С проверкой и практикой") -->
+        <div class="row row--flip fade-up">
+          <div class="row__body">
+            <div class="row__label row__label--premium">С&nbsp;проверкой и&nbsp;практикой</div>
+            <h3 class="row__title">Проходишь групповую практику</h3>
+            <div class="row__text">
+              <p>Каждую неделю команда по&nbsp;трое проектирует задание по&nbsp;пройденной теме, ментор подключается к&nbsp;группе и&nbsp;направляет по&nbsp;ходу решения. А&nbsp;потом ты&nbsp;вслух защищаешь решение под вопросами, <b>как на&nbsp;реальном собесе</b>.</p>
+            </div>
+          </div>
+          <div class="row__visual">
+            <!-- схематичная иллюстрация: команды по трое + защита вслух -->
+            <div class="visual">
+              <div class="visual__cap">Команды по&nbsp;трое</div>
+              <div class="teams">
+                <div class="teams__row teams__row--active">
+                  <span class="teams__avas"><span class="teams__ava">А</span><span class="teams__ava">М</span><span class="teams__ava">Д</span></span>
+                  <span class="teams__name">Команда 1 · проектирует</span>
+                </div>
+                <div class="teams__row">
+                  <span class="teams__avas"><span class="teams__ava">С</span><span class="teams__ava">И</span><span class="teams__ava">Р</span></span>
+                  <span class="teams__name">Команда 2 · ментор в&nbsp;комнате</span>
+                </div>
+                <div class="teams__row">
+                  <span class="teams__avas"><span class="teams__ava">К</span><span class="teams__ava">П</span><span class="teams__ava">Н</span></span>
+                  <span class="teams__name">Команда 3 · защита через 15&nbsp;мин</span>
+                </div>
+                <div class="teams__bubble">Защищаешь решение вслух под&nbsp;вопросами</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ряд 5 — допматериалы -->
+        <div class="row fade-up">
+          <div class="row__body">
+            <div class="row__label">Шаг 03</div>
+            <h3 class="row__title">Читаешь допматериалы</h3>
+            <div class="row__text">
+              <p>Забугорные курсы, статейки, видосики, короче, не&nbsp;заскучаешь!</p>
+            </div>
+          </div>
+          <div class="row__visual">
+            <!-- схематичная иллюстрация: подборка внешних материалов -->
+            <div class="visual">
+              <div class="visual__cap">Что почитать и&nbsp;посмотреть</div>
+              <div class="cases">
+                <div class="cases__item"><b>Книга</b>DDIA (Kleppmann)</div>
+                <div class="cases__item"><b>Гайд</b>System Design Primer</div>
+                <div class="cases__item"><b>Инженерные блоги</b>Netflix, Uber, Discord</div>
+                <div class="cases__item"><b>Видео</b>разборы с&nbsp;YouTube</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- чатик потока — мокап телефона со скринами чата слева, текст справа -->
+      <div class="row row--flip row--chat fade-up">
+        <div class="row__body">
+          <div class="row__label">Атмосфера потока</div>
+          <h3 class="row__title">А&nbsp;ещё у&nbsp;нас полный комфортик в&nbsp;чатике и&nbsp;на&nbsp;лекциях :)</h3>
+          <div class="row__text">
+            <p>Обсуждаем задания и&nbsp;болтаем за&nbsp;жизнь без духоты и&nbsp;формальностей.</p>
+            <p>У&nbsp;нас учатся парни и&nbsp;крутые гошницы, и&nbsp;мы&nbsp;просто кайфуем в&nbsp;течение всего потока :)</p>
+          </div>
+        </div>
+        <div class="row__visual">
+          <div class="chatphone">
+            <div class="phone">
+              <div class="phone__screen">
+                <!-- сюда реальный скриншот чата: <img src="chat-1.png" alt="Переписка в чате потока"> -->
+                <div class="phone__ph" aria-hidden="true">
+                  <div class="phone__ico">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  </div>
+                  <div class="phone__tag">[СКРИНЫ ЧАТА]</div>
+                  <div class="phone__note">Скриншоты чата,<br>добавим позже</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- врезка-крючок к лид-магниту -->
+    </div>
+  </section>
+
+  <!-- ===== 7. ЧТО ТЫ ПОЛУЧИШЬ ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section__head section__head--center section__head--road fade-up">
+        <h2 class="section__title">Что ты&nbsp;будешь уметь после курса</h2>
+      </div>
+      <!-- лента-путь: 1–6 — этапы по ходу собеса, 7 — терминальный блок (что остаётся после) -->
+      <div class="road-outer">
+        <div class="road" id="road">
+          <div class="road__rail" aria-hidden="true"><i></i></div>
+
+          <svg class="road__svg" viewBox="0 0 1240 1420" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="roadGrad" x1="0" y1="0" x2="0.4" y2="1">
+                <stop offset="0%"   stop-color="#DFDF41"/>
+                <stop offset="62%"  stop-color="#DFDF41"/>
+                <stop offset="100%" stop-color="#FF8562"/>
+              </linearGradient>
+              <pattern id="roadHatchPattern" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(26)">
+                <line x1="0" y1="0" x2="0" y2="10" stroke="#10171A" stroke-opacity=".26" stroke-width="2.6"/>
+              </pattern>
+              <filter id="roadWobble" x="-6%" y="-6%" width="112%" height="112%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+              </filter>
+            </defs>
+
+            <path class="road__trackline" d="M 120 260 H 1120 C 1205 260 1205 630 1120 630 H 120 C 35 630 35 1000 120 1000 H 1120 C 1205 1000 1205 1290 1120 1290 H 330"/>
+            <path class="road__track"     d="M 120 260 H 1120 C 1205 260 1205 630 1120 630 H 120 C 35 630 35 1000 120 1000 H 1120 C 1205 1000 1205 1290 1120 1290 H 330"/>
+            <path class="road__fill"  id="roadFill"  d="M 120 260 H 1120 C 1205 260 1205 630 1120 630 H 120 C 35 630 35 1000 120 1000 H 1120 C 1205 1000 1205 1290 1120 1290 H 330"/>
+            <path class="road__hatch" id="roadHatch" d="M 120 260 H 1120 C 1205 260 1205 630 1120 630 H 120 C 35 630 35 1000 120 1000 H 1120 C 1205 1000 1205 1290 1120 1290 H 330"/>
+          </svg>
+
+          <ol class="road__steps">
+            <li class="road__step road__step--above" style="--x:340; --y:260">
+              <div class="road__dot" aria-hidden="true"></div>
+              <div class="road__card">
+                <div class="road__num" aria-hidden="true"><b>01</b><i>.</i></div>
+                <p class="road__body">Заходишь на&nbsp;любую задачу по&nbsp;понятному порядку, даже если видишь её&nbsp;впервые.</p>
+              </div>
+            </li>
+
+            <li class="road__step road__step--above" style="--x:900; --y:260">
+              <div class="road__dot" aria-hidden="true"></div>
+              <div class="road__card">
+                <div class="road__num" aria-hidden="true"><b>02</b><i>.</i></div>
+                <p class="road__body">За&nbsp;первые минуты вытягиваешь, что вообще нужно построить, и&nbsp;не&nbsp;уносишься решать не&nbsp;ту&nbsp;задачу.</p>
+              </div>
+            </li>
+
+            <li class="road__step road__step--above" style="--x:900; --y:630">
+              <div class="road__dot" aria-hidden="true"></div>
+              <div class="road__card">
+                <div class="road__num" aria-hidden="true"><b>03</b><i>.</i></div>
+                <p class="road__body">Объясняешь, почему выбрал такую базу или подход, а&nbsp;не&nbsp;называешь наугад и&nbsp;не&nbsp;молчишь.</p>
+              </div>
+            </li>
+
+            <li class="road__step road__step--above" style="--x:340; --y:630">
+              <div class="road__dot" aria-hidden="true"></div>
+              <div class="road__card">
+                <div class="road__num" aria-hidden="true"><b>04</b><i>.</i></div>
+                <p class="road__body">Когда начинают копать вопросами, отвечаешь по&nbsp;делу, а&nbsp;не&nbsp;впадаешь в&nbsp;ступор.</p>
+              </div>
+            </li>
+
+            <li class="road__step road__step--above" style="--x:340; --y:1000">
+              <div class="road__dot" aria-hidden="true"></div>
+              <div class="road__card">
+                <div class="road__num" aria-hidden="true"><b>05</b><i>.</i></div>
+                <p class="road__body">Успеваешь за&nbsp;50&nbsp;минут и&nbsp;ведёшь собес сам, а&nbsp;не&nbsp;интервьюер тащит тебя за&nbsp;руку.</p>
+              </div>
+            </li>
+
+            <li class="road__step road__step--above" style="--x:900; --y:1000">
+              <div class="road__dot" aria-hidden="true"></div>
+              <div class="road__card">
+                <div class="road__num" aria-hidden="true"><b>06</b><i>.</i></div>
+                <p class="road__body">Спокойно рассуждаешь вслух, и&nbsp;по&nbsp;тебе видно инженера, который понимает, что делает.</p>
+              </div>
+            </li>
+
+            <li class="road__step road__step--end" style="--x:330; --y:1290">
+              <div class="road__dot" aria-hidden="true"></div>
+              <div class="road__card">
+                <div class="road__end">
+                  <div class="road__end-num">07 · от&nbsp;паники к&nbsp;алгоритму</div>
+                  <p class="road__end-text">И&nbsp;главное, больше никакой паники на&nbsp;собесе. Вместо неё у&nbsp;тебя алгоритм и&nbsp;спокойная уверенность, что секцию ты&nbsp;пройдёшь.</p>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
       </div>
     </div>
   </section>
@@ -2032,7 +2734,7 @@
     <div class="container">
       <div class="section__head section__head--center fade-up">
         <h2 class="section__title">Тарифы</h2>
-        <p class="section__sub">Материал курса в обоих тарифах одинаковый, все 42 урока и все разборы. Разница одна: проверяет ли твои решения живой человек и успеешь ли ты потренироваться защищать их вслух до собеса.</p>
+        <p class="section__sub">Материал курса в обоих тарифах одинаковый, все 42 урока и все разборы. Разница в&nbsp;проверке домашек от&nbsp;ментора и&nbsp;в&nbsp;живой практике по&nbsp;пройденному материалу каждую неделю.</p>
       </div>
 
       <div class="pricing__scarcity fade-up">
@@ -2070,10 +2772,10 @@
           <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;499&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
           <ul class="tier__list">
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>42 урока: видео плюс подробный текстовый конспект.</b> Алгоритм интервью, сеть и&nbsp;доставка, хранение данных, кэш и&nbsp;очереди, устойчивость под нагрузкой, поведение на&nbsp;секции</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>8 систем, разобранных целиком:</b> Telegram, лента Avito, фото-соцсеть со&nbsp;Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с&nbsp;автодополнением, Яндекс Такси. Каждая идёт как секция: требования, прикидка нагрузки, наивная версия, что в&nbsp;ней ломается на&nbsp;росте, куда копнёт интервьюер</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Разбираем и&nbsp;то, как это ломалось в&nbsp;проде.</b> Не&nbsp;только как правильно: откат Amazon Prime Video обратно в&nbsp;монолит, 140&nbsp;микросервисов Segment, которые собрали назад</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Домашка каждую неделю.</b> Не&nbsp;тесты, а&nbsp;задачи в&nbsp;формате секции: посчитать RPS под свою нагрузку, выбрать ключ шардирования и&nbsp;объяснить, почему дата заказа тут плохой ключ, собрать saga для&nbsp;заказа через три сервиса</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Живой еженедельный Q&amp;A с&nbsp;Олегом.</b> Разбираем то, что не&nbsp;зашло, отвечаю на&nbsp;вопросы по&nbsp;материалу и&nbsp;по&nbsp;собесам, иногда проектируем кейс прямо у&nbsp;доски</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>8 систем, разобранных целиком:</b> Telegram, лента Avito, фото-соцсеть со&nbsp;Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с&nbsp;автодополнением, Яндекс Такси. Каждую систему разбираем как на&nbsp;собесе: требования, нагрузка, узкие места, куда копнёт интервьюер</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Разбираем и&nbsp;то, как это ломалось в&nbsp;проде:</b> откат Amazon Prime Video обратно в&nbsp;монолит, 140&nbsp;микросервисов Segment, которые собрали назад</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Домашка каждую неделю.</b> Задачи в&nbsp;формате секции: посчитать RPS под свою нагрузку, выбрать ключ шардирования и&nbsp;объяснить, почему дата заказа тут плохой ключ, собрать saga для&nbsp;заказа через три сервиса</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Живой еженедельный Q&amp;A с&nbsp;Олегом.</b> Разбираем все непонятные аспекты, отвечаю на&nbsp;вопросы по&nbsp;материалу и&nbsp;по&nbsp;собесам, иногда проектируем кейс прямо у&nbsp;доски</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Доступ к&nbsp;общему чатику потока</li>
             <li class="tier__off"><span class="tier__cross" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2.7 2.7l4.6 4.6M7.3 2.7l-4.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><s>Разбор твоих домашек ментором</s><span class="tier__only">есть в&nbsp;тарифе с&nbsp;практикой</span></li>
             <li class="tier__off"><span class="tier__cross" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2.7 2.7l4.6 4.6M7.3 2.7l-4.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><s>Групповая практика и&nbsp;защита решения вслух</s><span class="tier__only">есть в&nbsp;тарифе с&nbsp;практикой</span></li>
@@ -2088,7 +2790,7 @@
 
         <div class="tier tier--light fade-up">
           <span class="tier__badge">Рекомендую</span>
-          <div class="tier__label">Практика с&nbsp;ментором</div>
+          <div class="tier__label">С&nbsp;проверкой и&nbsp;практикой</div>
           <div class="tier__tagline">Всё то&nbsp;же самое, плюс проверка твоих решений и&nbsp;репетиция собеса</div>
           <div class="tier__price"><b>89 990 ₽</b></div>
           <div class="tier__price-full">или <b>80 990&nbsp;₽</b>, если оплатить сразу целиком</div>
@@ -2119,7 +2821,6 @@
         <div class="pricing__pay-title">Как можно оплатить</div>
         <ul class="paylist">
           <li><b>Рассрочка до&nbsp;12 месяцев</b>4&nbsp;499&nbsp;₽/мес за&nbsp;Стандарт и&nbsp;7&nbsp;499&nbsp;₽/мес за&nbsp;тариф с&nbsp;практикой. Срок можно взять и&nbsp;короче. Если платишь сразу целиком, цена ниже</li>
-          <li><b>Налоговый вычет 13%</b>Часть стоимости вернёшь через налоговую, документы для&nbsp;этого пришлю</li>
           <li><b>Оплата от&nbsp;компании</b>Многие работодатели оплачивают обучение сотрудникам. Напиши в&nbsp;<a href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">телеграм</a>, и&nbsp;я&nbsp;пришлю счёт и&nbsp;документы на&nbsp;юрлицо</li>
           <li><b>Оплата из&nbsp;другой страны</b>Иностранной картой и&nbsp;не&nbsp;только рублями. Рассрочка работает в&nbsp;том числе для&nbsp;Беларуси и&nbsp;Казахстана</li>
         </ul>
@@ -2134,6 +2835,111 @@
           <div class="honest__title">Чего мы&nbsp;не&nbsp;обещаем</div>
           <p class="honest__text">Оффер. System Design это лишь один этап найма, и&nbsp;решение принимает не&nbsp;курс. Обещаем другое: ты&nbsp;перестанешь плыть на&nbsp;этой секции и&nbsp;будешь понимать, что делаешь и&nbsp;почему.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 13. YOUTUBE / TG (перенос с лендинга менторства) ===== -->
+<section class="section" aria-labelledby="yt-title">
+    <div class="container">
+      <div class="yt__head fade-up">
+        <h2 class="yt__title" id="yt-title">Кстати, я&nbsp;веду YouTube<br>и&nbsp;ламповый TG-канальчик</h2>
+        <p class="section__sub" style="margin-top:14px;max-width:680px">Хочешь заценить, как я&nbsp;подаю информацию, посмотри обучающие ролики на&nbsp;моём YouTube-канале.</p>
+      </div>
+
+      <div class="yt__grid">
+        <a class="yt__card fade-up" href="https://youtu.be/HPXUE28R8ZI" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <picture><source srcset="yt-01-roadmap.webp" type="image/webp"><img src="yt-01-roadmap.jpg" alt="Гайд: почему 87% Go Roadmap учат не тому" loading="lazy" width="1280" height="720"></picture>
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+          <div class="yt__name">Почему 87% Go Roadmap учат не&nbsp;тому</div>
+        </a>
+        <a class="yt__card fade-up" href="https://youtu.be/lc3ATNxWQbI" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <picture><source srcset="yt-02-architecture.webp" type="image/webp"><img src="yt-02-architecture.jpg" alt="Чистая архитектура Golang: гайд на реальном проекте" loading="lazy" width="1280" height="720"></picture>
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+          <div class="yt__name">Чистая АРХИТЕКТУРА GOLANG: ультимативный гайд на&nbsp;реальном проекте</div>
+        </a>
+        <a class="yt__card fade-up" href="https://youtu.be/2cxmJUJ2Ge0" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <picture><source srcset="yt-03-context.webp" type="image/webp"><img src="yt-03-context.jpg" alt="Context в Go: всё, что нужно знать разработчику" loading="lazy" width="1280" height="720"></picture>
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+          <div class="yt__name">Context в&nbsp;Go: всё, что нужно знать разработчику</div>
+        </a>
+      </div>
+
+      <div class="yt__actions fade-up">
+        <a class="btn btn--dark btn--lg" href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"></path></svg>
+          Смотреть больше видео
+        </a>
+        <a class="btn btn--dark btn--lg" href="https://t.me/olezhek28go" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3l-3.3 15.6c-.25 1.1-.9 1.37-1.83.85l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1 .5l.36-5.13L18 5.65c.4-.36-.1-.56-.62-.2L6.27 12.6 1.3 11c-1.08-.34-1.1-1.08.23-1.6L20.5 2.7c.9-.33 1.68.2 1.4 1.6z"></path></svg>
+          Перейти в&nbsp;TG-канал
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 14. FAQ ===== -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section__head section__head--center fade-up">
+        <h2 class="section__title">FAQ&nbsp;— заблуждения и&nbsp;частые вопросы</h2>
+      </div>
+      <div class="faq">
+        <details class="faq__item fade-up">
+          <summary>Кажется, System Design это сложно, я&nbsp;ещё не&nbsp;дорос до&nbsp;такого уровня<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">System Design сейчас спрашивают почти в&nbsp;каждой крупной компании, и&nbsp;это не&nbsp;отдельная вселенная. Если ты&nbsp;уже пишешь сервисы и&nbsp;понимаешь свой стек, базы тебе хватит. Мы&nbsp;идём поэтапно, от&nbsp;простого к&nbsp;сложному: сначала алгоритм и&nbsp;первый слой архитектуры, потом базы, кэш, очереди, боевые кейсы. И&nbsp;на&nbsp;каждом шаге можно задать любой вопрос в&nbsp;чате или на&nbsp;живой встрече. Дорастать заранее не&nbsp;нужно, для этого и&nbsp;есть курс)</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Какой уровень нужен, чтобы пройти курс?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Комфортно будет с&nbsp;middle и&nbsp;выше: ты&nbsp;уже пишешь сервисы, понимаешь, как ходят запросы по&nbsp;сети, и&nbsp;работал с&nbsp;базой данных. А&nbsp;вот конкретный язык не&nbsp;важен, System Design не&nbsp;про синтаксис&nbsp;— к&nbsp;нам одинаково заходят с&nbsp;Go, Java, Python и&nbsp;C#.</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>А&nbsp;я&nbsp;точно смогу применить это на&nbsp;реальном собесе?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Да, каждую неделю ты&nbsp;сам будешь решать задачи с&nbsp;реальных собесов по&nbsp;сисдизу. Поэтому после курса, к&nbsp;моменту реального собеса, у&nbsp;тебя будет навык, который ты&nbsp;отработал руками, и&nbsp;понимание, что и&nbsp;как работает. В&nbsp;итоге секция перестанет вызывать хоть какие-то проблемы.</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Кажется, к&nbsp;System Design вообще нельзя подготовиться, это лотерея<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">System Design только кажется чёрным ящиком, где непонятно, что спросят и&nbsp;как оценивают. Никакой лотереи нет: есть понятная причина, почему валятся, и&nbsp;способ это починить. Ты&nbsp;не&nbsp;угадываешь, что у&nbsp;интервьюера в&nbsp;голове, а&nbsp;берёшь понятный порядок разбора и&nbsp;понимаешь, как эти системы устроены. Тогда даже незнакомая задача раскладывается по&nbsp;шагам)</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Чем тариф "С&nbsp;проверкой и&nbsp;практикой" отличается от&nbsp;Стандарта?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">На&nbsp;Стандарте у&nbsp;тебя все уроки, доп&nbsp;материалы, живой Q&amp;A и&nbsp;общий чат. На&nbsp;тарифе "С&nbsp;проверкой и&nbsp;практикой" добавляется главное: ментор разбирает каждое твоё ДЗ лично, и&nbsp;каждую неделю ты&nbsp;проходишь групповую практику&nbsp;— командой по&nbsp;трое проектируете задание, а&nbsp;потом вслух защищаете решение под вопросами, как на&nbsp;настоящем собесе)</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Сколько нужно уделять времени? Смогу совмещать с&nbsp;работой?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Каждую неделю тебе открываются новые видеоуроки с&nbsp;практическим заданием, плюс раз в&nbsp;неделю мы&nbsp;всё разбираем на&nbsp;живой Q&amp;A-встрече. В&nbsp;среднем уходит около 5–6&nbsp;часов в&nbsp;неделю. Я&nbsp;специально сделал такой формат, чтобы курс легко совмещался с&nbsp;работой: жёстких дедлайнов нет, а&nbsp;записи остаются с&nbsp;тобой, проходишь в&nbsp;удобном темпе)
+            <!-- ⚠️ placeholder: сверить — срок доступа к записям -->
+          </div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Что делать, если не&nbsp;успеваю за&nbsp;потоком или пропущу неделю?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Ничего страшного. Записи остаются, и&nbsp;ты&nbsp;спокойно догоняешь в&nbsp;своём темпе.
+            <!-- ⚠️ placeholder: сверить — доп. срок на сдачу / "академ" -->
+          </div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Можно вернуть деньги, если курс не&nbsp;подойдёт / передумаю?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Да. Если в&nbsp;первую неделю после старта поймёшь, что курс тебе не&nbsp;подходит, я&nbsp;верну всю стоимость. Если решишь уйти позже&nbsp;— пересчитаем и&nbsp;вернём остаток за&nbsp;непройденную часть)</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Я&nbsp;не&nbsp;из&nbsp;России. Можно оплатить иностранной картой / валютой?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Да, на&nbsp;сайте подключена платёжная система, которая позволяет оплатить курс в&nbsp;любой валюте и&nbsp;из&nbsp;любой страны)</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Можно оформить налоговый вычет 13%?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Нет, за&nbsp;этот курс вычет оформить не&nbsp;получится: услуги информационно-консультационные, это не&nbsp;образовательная деятельность. Зато есть рассрочка до&nbsp;12&nbsp;месяцев и&nbsp;оплата от&nbsp;компании&nbsp;— и&nbsp;то, и&nbsp;другое расписано в&nbsp;блоке тарифов.</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>Я&nbsp;юрлицо. Можно оплатить курс своему сотруднику?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Конечно! Чтобы оплатить курс от&nbsp;лица компании, напиши мне в&nbsp;Telegram&nbsp;— отвечу сразу, как увижу сообщение) → <a href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">Написать в&nbsp;Telegram</a>
+          </div>
+        </details>
       </div>
     </div>
   </section>
@@ -2170,9 +2976,9 @@
     <!-- верхний блок: &quot;Есть вопрос?&quot; + телеграм-плитка (поддержка) -->
     <div class="footer__top">
       <div class="footer__ask">
-        <div class="footer__ask-title">Есть вопрос?</div>
+        <h2 class="footer__ask-title">Есть вопрос?</h2>
         <div class="footer__ask-rule" aria-hidden="true"></div>
-        <a class="footer__ask-note" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">Пиши в&nbsp;телеграм, отвечу сразу, как увижу сообщение:)</a>
+        <a class="footer__ask-note" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">Пиши в&nbsp;телеграм&nbsp;— отвечу сразу, как увижу сообщение:)</a>
       </div>
       <a class="footer__tg" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener" aria-label="Написать в поддержку в Telegram">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"></path></svg>
@@ -2211,6 +3017,7 @@
           <a href="agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
           <a href="marketing-agree.html" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
           <a href="policy.html" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+          <a href="/system_design_oferta/" target="_blank" rel="noopener">Публичная оферта</a>
         </div>
       </nav>
     </div>
@@ -2233,12 +3040,33 @@
       }
     });
 
-    // ===== "Знакомая ситуация": обратный отсчёт циферблата 45:00 → 00:00 =====
+    // ===== мем-ролики вместо гифок =====
+    // preload="metadata" держит трафик низким, но с ним Chrome не всегда сам
+    // запускает отложенный автоплей — крутим ролик сами, пока он в кадре.
+    // При prefers-reduced-motion не запускаем вовсе: остаётся первый кадр.
+    (function () {
+      var memes = Array.prototype.slice.call(document.querySelectorAll('video.slot__gif'));
+      if (!memes.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        memes.forEach(function (v) { v.autoplay = false; v.loop = false; v.pause(); });
+        return;
+      }
+      if (!('IntersectionObserver' in window)) { memes.forEach(function (v) { v.play(); }); return; }
+      var memeObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { var p = e.target.play(); if (p) p.catch(function () {}); }
+          else e.target.pause();
+        });
+      }, { rootMargin: '200px 0px' });
+      memes.forEach(function (v) { memeObserver.observe(v); });
+    })();
+
+    // ===== "Знакомая ситуация": обратный отсчёт циферблата 50:00 → 00:00 =====
     // Запуск по появлению в кадре (свой IntersectionObserver, без второго слушателя скролла).
     (function () {
       var reduceClock = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var CIRC = 2 * Math.PI * 110; // 691.15
-      var TOTAL = 45 * 60;
+      var TOTAL = 50 * 60;
       function fmtClock(s) {
         var m = Math.floor(s / 60), r = Math.floor(s % 60);
         return (m < 10 ? '0' + m : m) + ':' + (r < 10 ? '0' + r : r);
@@ -2249,7 +3077,7 @@
         var ring = dial.querySelector('.ring-fg');
         if (!numEl || !ring) return;
         dial.dataset.started = '1';
-        if (reduceClock) { numEl.textContent = '45:00'; ring.style.strokeDashoffset = 0; return; }
+        if (reduceClock) { numEl.textContent = '50:00'; ring.style.strokeDashoffset = 0; return; }
         var dur = 3200, t0 = null;
         function step(ts) {
           if (t0 === null) t0 = ts;
