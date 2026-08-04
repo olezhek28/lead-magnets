@@ -2135,7 +2135,10 @@
         <h2 class="mech__title">Почему не&nbsp;получается пройти сисдиз</h2>
         <!-- ⚠️ хронометраж "6 минут" — плейсхолдер, сверить -->
         <p class="mech__lead mech__lead--tight">Кажется, что на&nbsp;System Design валят непонятно за&nbsp;что и&nbsp;всё решает везение: какая попадётся задача и&nbsp;какой интервьюер.</p>
-        <p class="mech__lead">Человеческий фактор тут есть, глупо это отрицать. Задача может попасться неудобная, да&nbsp;и&nbsp;секцию каждый ведёт по-своему: один копает в&nbsp;базы, другой в&nbsp;отказоустойчивость, третий в&nbsp;оценку нагрузки. Только повлиять на&nbsp;это ты&nbsp;не&nbsp;можешь, а&nbsp;вот на&nbsp;остальное вполне: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор, куда сам увёл разговор. Ошибок, которых можно было не&nbsp;допускать, набирается прилично, и&nbsp;каждая срезает результат. Самые частые разобрал в&nbsp;ролике за&nbsp;6&nbsp;минут.</p>
+        <p class="mech__lead mech__lead--tight">Человеческий фактор тут есть, глупо это отрицать. Задача может попасться неудобная, да&nbsp;и&nbsp;секцию каждый ведёт по-своему: один копает в&nbsp;базы, другой в&nbsp;отказоустойчивость, третий в&nbsp;оценку нагрузки.</p>
+        <p class="mech__lead mech__lead--tight">Только повлиять на&nbsp;это ты&nbsp;не&nbsp;можешь, а&nbsp;вот на&nbsp;остальное вполне: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор, куда сам увёл разговор.</p>
+        <p class="mech__lead mech__lead--tight">Ошибок, которых можно было не&nbsp;допускать, набирается прилично. Каждая портит впечатление, а&nbsp;из&nbsp;впечатления и&nbsp;складывается решение по&nbsp;секции.</p>
+        <p class="mech__lead">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;6&nbsp;минут.</p>
 
         <!-- ⚠️ видеопродажник: заглушка-обложка, реальный ролик подставить (ссылка/встройка) -->
         <div class="video v1-video">
@@ -3307,19 +3310,39 @@
     // эксклюзивный аккордеон программы: открыта всегда одна неделя.
     // Нативно это делает name="program-week"; JS — фолбэк для старых браузеров.
     var weeks = document.querySelectorAll('details.program__item[name="program-week"]');
+    // Открытие недели схлопывает предыдущую, и если та была выше, документ
+    // уезжает вверх прямо под курсором. Раскрытие ещё и анимируется 380мс,
+    // поэтому одной коррекции по rAF не хватает: высота продолжает меняться
+    // после неё. Держим кликнутую строку на месте весь кадр анимации.
+    var HEADER_H = 96;
     weeks.forEach(function (wk) {
+      var sum = wk.querySelector('summary');
+      var pinTop = null;
+      sum.addEventListener('click', function () {
+        pinTop = sum.getBoundingClientRect().top; // положение строки до перестроения
+      });
       wk.addEventListener('toggle', function () {
         if (!wk.open) return;
+        // фолбэк эксклюзивного аккордеона для браузеров без details[name]
         weeks.forEach(function (other) {
           if (other !== wk && other.open) other.open = false;
         });
-        // после схлопывания недели выше показываем начало открытой недели, а не её низ
-        requestAnimationFrame(function () {
-          var top = wk.getBoundingClientRect().top;
-          if (top < 60 || top > window.innerHeight * 0.55) {
-            wk.scrollIntoView({ block: 'start', behavior: 'smooth' });
-          }
-        });
+        if (pinTop === null) return;
+        var target = Math.max(pinTop, HEADER_H + 12); // строка не должна уехать под шапку
+        var root = document.documentElement;
+        function fix() {
+          var delta = sum.getBoundingClientRect().top - target;
+          if (Math.abs(delta) < 0.5) return;
+          var prev = root.style.scrollBehavior;
+          root.style.scrollBehavior = 'auto'; // иначе smooth дерётся с анимацией
+          window.scrollBy(0, delta);
+          root.style.scrollBehavior = prev;
+        }
+        // высота едет все 380мс, поэтому держим строку весь этот отрезок.
+        // rAF даёт плавность, таймеры страхуют, если кадры придушены.
+        var deadline = Date.now() + 560;
+        (function loop() { fix(); if (Date.now() < deadline) requestAnimationFrame(loop); })();
+        [120, 300, 480, 600].forEach(function (ms) { setTimeout(fix, ms); });
       });
     });
     measure();
