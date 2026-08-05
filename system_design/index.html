@@ -94,7 +94,7 @@
           "offers": {
             "@type": "AggregateOffer",
             "priceCurrency": "RUB",
-            "lowPrice": "53990",
+            "lowPrice": "54990",
             "highPrice": "89990",
             "offerCount": "2",
             "availability": "https://schema.org/PreOrder",
@@ -102,11 +102,11 @@
               {
                 "@type": "Offer",
                 "name": "Стандарт",
-                "price": "53990",
+                "price": "54990",
                 "priceCurrency": "RUB",
                 "priceValidUntil": "2026-08-23",
                 "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи; при оплате сразу целиком 49 990 ₽, в рассрочку 4 499 ₽/мес на 12 месяцев. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
+                "description": "Цена предзаписи; при оплате сразу целиком 49 990 ₽, в рассрочку 4 583 ₽/мес на 12 месяцев. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               },
               {
@@ -116,7 +116,7 @@
                 "priceCurrency": "RUB",
                 "priceValidUntil": "2026-08-23",
                 "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи; при оплате сразу целиком 80 990 ₽, в рассрочку 7 499 ₽/мес на 12 месяцев. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
+                "description": "Цена предзаписи; при оплате сразу целиком 79 990 ₽, в рассрочку 7 499 ₽/мес на 12 месяцев. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               }
             ]
@@ -312,8 +312,6 @@
   .btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 0 rgba(223,223,65,.35); }
   .btn--primary:hover { background: #EBEB55; transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(223,223,65,.6); }
   /* вторичные/призрачные — язык пилюль с меньшим радиусом (~30px) */
-  .btn--ghost { background: transparent; color: var(--text-h); border-color: rgba(223,223,65,.45); border-radius: 30px; }
-  .btn--ghost:hover { background: rgba(223,223,65,.09); border-color: var(--accent); transform: translateY(-2px); }
   .btn--dark { background: var(--bg-secondary); color: var(--text-h); border-color: var(--border-acc); border-radius: 30px; }
   .btn--dark:hover { background: var(--bg-tertiary); border-color: rgba(255,255,255,.28); transform: translateY(-2px); }
   .btn--lg { padding: 21px 46px; font-size: 16px; }
@@ -410,7 +408,6 @@
   /* плашка автора идёт инлайн сразу за последними словами подзаголовка,
      на той же строке — "…большие системы. [плашка]" */
   /* плашка автора — отдельной строкой по центру между заголовком и подзаголовком */
-  .hero__author-row { display: flex; justify-content: center; margin: 0 0 30px; }
   .hero__subtitle { font-size: 18.5px; font-weight: 400; line-height: 1.62; color: var(--text-mute); margin: 0 auto 52px; max-width: 660px; text-align: center; text-wrap: pretty; }
 
   /* ===== CTA-КАПСУЛА: мета · кнопка · мета в одном скруглённом контейнере ===== */
@@ -489,7 +486,6 @@
 
   /* ===== SECTION SHARED ===== */
   .section { padding: 96px 0 96px; }
-  .section--tight { padding: 84px 0 88px; }
   .section__head { margin-bottom: 56px; max-width: 780px; }
   /* сознательно ломаем "всё по центру": шапки секций живут слева, на своей оси */
   .section__head--center { margin-left: 0; margin-right: auto; text-align: left; }
@@ -503,76 +499,18 @@
      прогресса, и пересекала её при любой ширине экрана (см. 899093b) */
   .section__title b { color: var(--accent); font-weight: 700; }
   .section__sub { font-size: 17px; font-weight: 400; line-height: 1.62; color: var(--text-mute); max-width: 62ch; }
-  .eyebrow { display: inline-block; padding: 0; background: none; border: none; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent); margin-bottom: 18px; letter-spacing: .18em; text-transform: uppercase; }
   .section__cta { margin-top: 52px; }
 
   /* ===== ЭТО ПРО ТЕБЯ, ЕСЛИ… — объединённый блок (мотивация + узнавание) =====
      слева — "Почему это важно" (деньги/грейд/senior + бигтех + ловушка),
      справа — "Узнаёшь себя?" (профили и затык на интервью). Каждый тезис — один раз.
      На ≤960 колонки складываются в одну. */
-  .merge { display: grid; grid-template-columns: 1.05fr .95fr; gap: 30px; align-items: stretch; }
   /* без левой колонки — одна центрированная колонка узнавания */
-  .merge--solo { grid-template-columns: 1fr; max-width: 760px; margin: 0 auto; }
   /* левая колонка — мотивация (не используется после удаления, оставлено на всякий) */
-  .merge__why {
-    background:
-      linear-gradient(160deg, rgba(223,223,65,.08), rgba(223,223,65,.015) 55%, transparent),
-      var(--bg-card);
-    border: 1px solid rgba(223,223,65,.2); border-radius: var(--r-xl);
-    padding: 44px 42px 40px; display: flex; flex-direction: column;
-  }
-  .merge__kick {
-    font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 22px;
-  }
-  .merge__lead { font-size: 17.5px; line-height: 1.62; color: var(--text-body); text-wrap: pretty; }
-  .merge__lead b { color: var(--text-h); font-weight: 600; }
-  .merge__lead p + p { margin-top: 18px; }
   /* строка с компаниями — реестр бигтеха */
-  .merge__big { color: var(--text-mute); }
-  .merge__big em { font-style: normal; color: var(--text-h); font-weight: 500; }
   /* ловушка — денежный вывод, коралловая отсечка */
-  .merge__trap {
-    margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border-card);
-    font-family: var(--display); font-size: 18px; font-weight: 500; line-height: 1.4;
-    letter-spacing: -0.015em; color: var(--text-h);
-  }
-  .merge__trap span { color: var(--coral); }
   /* правая колонка — узнавание */
-  .merge__who {
-    position: relative; overflow: hidden;
-    background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl);
-    padding: 40px 38px; display: flex; flex-direction: column; gap: 0;
-    transition: border-color .3s var(--ease), transform .3s var(--ease);
-  }
   /* подсветка под курсором — переиспользует общий обработчик --mx/--my */
-  .merge__who::before {
-    content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; opacity: 0;
-    background: radial-gradient(340px circle at var(--mx,50%) var(--my,0%), rgba(223,223,65,.12), transparent 62%);
-    transition: opacity .35s var(--ease);
-  }
-  .merge__who:hover { border-color: rgba(223,223,65,.24); }
-  .merge__who:hover::before { opacity: 1; }
-  .merge__who-kick {
-    position: relative;
-    font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--text-faint); margin-bottom: 8px;
-  }
-  .merge__profile {
-    position: relative;
-    display: grid; grid-template-columns: 34px 1fr; gap: 18px; align-items: start;
-    padding: 24px 0; border-bottom: 1px solid var(--border-card);
-  }
-  .merge__profile:last-child { border-bottom: none; padding-bottom: 4px; }
-  .merge__profile:first-of-type { padding-top: 20px; }
-  .merge__ico {
-    width: 34px; height: 34px; border-radius: var(--r-sm); flex-shrink: 0;
-    background: rgba(223,223,65,.10); border: 1px solid rgba(223,223,65,.24); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .merge__ico svg { width: 18px; height: 18px; }
-  .merge__ptext { font-size: 15.5px; line-height: 1.62; color: var(--text-mute); text-wrap: pretty; }
-  .merge__ptext b { color: var(--text-h); font-weight: 600; }
 
   /* ===== "Это про тебя" — лента с узлами (roadmap-мотив) ===== */
   .v1 { position: relative; max-width: 860px; }
@@ -675,7 +613,6 @@
     font-variant-numeric: tabular-nums; letter-spacing: .04em;
   }
   .block__title { font-family: var(--display); font-size: clamp(21px,2.5vw,27px); font-weight: 600; color: var(--text-h); letter-spacing: -0.02em; line-height: 1.1; }
-  .block__tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); }
   .block__media { grid-area: media; min-width: 0; position: sticky; top: 28px; }
   /* текст боли короткий, а мем-слот высокий: без выравнивания по центру
      справа от картинки оставалась дыра в половину блока */
@@ -703,7 +640,6 @@
     mask-image: radial-gradient(ellipse at 80% 0%, #000 0%, transparent 70%);
   }
   .mech > * { position: relative; }
-  .mech__eyebrow { display: inline-block; padding: 0; background: none; border: none; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--light-faint); letter-spacing: .18em; text-transform: uppercase; margin-bottom: 20px; }
   .mech__title { font-family: var(--display); font-size: clamp(24px, 3.4vw, 42px); font-weight: 500; line-height: 1.05; letter-spacing: -0.04em; color: var(--light-ink); margin-bottom: 24px; white-space: nowrap; }
   /* подводка-лид под заголовком — короткий заход к видео */
   .mech__lead { font-size: 17px; line-height: 1.7; color: var(--light-mute); max-width: 68ch; text-wrap: pretty; margin-bottom: 34px; }
@@ -714,11 +650,6 @@
   .video__cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 48px 24px 20px; background: linear-gradient(transparent, rgba(0,0,0,.72)); color: var(--text-h); font-family: var(--display); font-weight: 500; font-size: clamp(15px, 1.8vw, 19px); line-height: 1.3; letter-spacing: -0.012em; }
   .v1-video { max-width: 760px; margin: 0 auto 36px; }
   /* тезисы — скимабельный остов аргумента для тех, кто не смотрит видео */
-  .theses { list-style: none; display: grid; gap: 12px; }
-  .theses--row { grid-template-columns: repeat(3, 1fr); }
-  .thesis { position: relative; background: var(--light-card); border: 1px solid rgba(16,23,26,.08); border-radius: var(--r-md); padding: 20px 22px 22px 28px; font-size: 14.5px; line-height: 1.62; color: var(--light-mute); text-wrap: pretty; }
-  .thesis::before { content: ''; position: absolute; left: 14px; top: 22px; bottom: 22px; width: 3px; border-radius: 2px; background: var(--accent); }
-  .thesis b { display: block; font-family: var(--display); font-weight: 600; font-size: 15.5px; letter-spacing: -0.012em; color: var(--light-ink); margin-bottom: 7px; }
   .mech__quote {
     margin-top: 34px; padding: 4px 0 4px 26px; border-left: 2px solid var(--accent);
     font-family: var(--display); font-size: clamp(15px, 1.9vw, 23px); line-height: 1.34;
@@ -893,17 +824,6 @@
   }
 
   /* ===== PROGRAM ===== */
-  .program__lead {
-    max-width: 1080px; margin: 0 0 40px;
-    background: linear-gradient(100deg, rgba(223,223,65,.10), rgba(223,223,65,.02) 60%, transparent);
-    border: 1px solid rgba(223,223,65,.24); border-radius: var(--r-lg);
-    padding: 34px 38px; display: block;
-  }
-  .program__lead-icon { width: 48px; height: 48px; border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px -14px rgba(223,223,65,.6); }
-  .program__lead-icon svg { width: 24px; height: 24px; }
-  .program__lead-text { font-size: 16.5px; line-height: 1.68; color: var(--text-body); text-wrap: pretty; }
-  .program__lead-text b { color: var(--text-h); font-weight: 600; }
-  .program__lead-note { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(223,223,65,.18); font-size: 14px; color: var(--text-mute); line-height: 1.6; }
 
   /* ===== Шапка секции "Программа" (эйброу + конкретика) ===== */
   .prog-head { text-align: center; max-width: 900px; margin: 0 auto 44px; }
@@ -919,40 +839,8 @@
   @media (prefers-reduced-motion: reduce) { .prog-head__dot { animation: none; } }
 
   /* ===== Результат недели: чип в шапке + строка внизу (вариант C) ===== */
-  .week-chip {
-    display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
-    font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .08em;
-    text-transform: uppercase; color: var(--accent);
-    background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28);
-    padding: 6px 13px 6px 10px; border-radius: 999px;
-  }
-  .week-chip svg { width: 13px; height: 13px; flex-shrink: 0; }
   .program__item:not([open]) .week-chip { display: none; }
-  .week-strip {
-    margin-top: 32px; display: flex; align-items: center; gap: 18px;
-    padding: 16px 20px; background: var(--bg-primary);
-    border: 1px solid var(--border-card); border-left: 2px solid var(--accent); border-radius: var(--r-md);
-  }
-  .week-strip__thumb { width: 60px; height: 42px; flex-shrink: 0; padding: 8px; }
-  .week-strip__text { font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
-  .week-strip__text b { color: var(--text-h); font-weight: 600; }
   /* мини-мокапы артефактов */
-  .art-mock { border-radius: var(--r-md); background: linear-gradient(160deg, rgba(255,255,255,.05) 0%, rgba(0,0,0,.25) 100%); border: 1px solid var(--border-mid); padding: 14px; display: flex; flex-direction: column; gap: 7px; overflow: hidden; }
-  .art-mock__line { height: 4px; border-radius: 2px; background: rgba(255,255,255,.08); }
-  .mock-step { display: flex; align-items: center; gap: 6px; }
-  .mock-step .art-mock__line { flex: 1; }
-  .mock-step:nth-child(2) .art-mock__line { max-width: 84%; }
-  .mock-step:nth-child(3) .art-mock__line { max-width: 66%; }
-  .mock-step:nth-child(4) .art-mock__line { max-width: 78%; }
-  .mock-tree { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-  .mock-tree__root { width: 38%; height: 8px; border-radius: 3px; background: var(--accent); }
-  .mock-tree__row { display: flex; gap: 8px; width: 100%; }
-  .mock-tree__leaf { flex: 1; height: 8px; border-radius: 3px; background: rgba(255,255,255,.09); border: 1px solid var(--border-mid); }
-  .mock-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 5px; }
-  .mock-grid span { border-radius: 4px; background: rgba(255,255,255,.07); border: 1px solid var(--border-mid); }
-  .mock-grid span:nth-child(2) { background: rgba(223,223,65,.3); border-color: rgba(223,223,65,.5); }
-  .mock-grid span:nth-child(6) { background: rgba(255,133,98,.22); border-color: rgba(255,133,98,.45); }
-  @media (max-width: 640px) { .week-strip { flex-direction: column; align-items: flex-start; gap: 12px; } }
 
   /* аккордеон недель: серые скруглённые карточки, плашки-лейблы внутри.
      Секция намеренно спокойная — жёлтого минимум (только плашка "Результат
@@ -1019,24 +907,7 @@
   .program__extra-text b { color: var(--text-h); font-weight: 600; }
 
   /* ===== HOW (паттерн "Как всё устроено" — чередующиеся ряды) ===== */
-  .how__format {
-    max-width: 1080px; margin: 0 0 56px; padding: 24px 30px;
-    background: linear-gradient(100deg, rgba(223,223,65,.12), rgba(223,223,65,.02) 65%, transparent);
-    border: 1px solid rgba(223,223,65,.26); border-radius: var(--r-lg);
-    display: flex; align-items: center; gap: 22px;
-  }
-  .how__format-icon { width: 52px; height: 52px; border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 12px 32px -14px rgba(223,223,65,.6); }
-  .how__format-icon svg { width: 26px; height: 26px; }
-  .how__format-text { font-family: var(--display); font-size: 17px; line-height: 1.45; letter-spacing: -0.02em; color: var(--text-h); font-weight: 500; }
   /* нагрузка — инлайн акцент-строка (вариант 3) */
-  .load-inline { max-width: 760px; display: flex; align-items: flex-start; gap: 15px; padding: 4px 0; }
-  .load-inline__icon { flex-shrink: 0; width: 34px; height: 34px; margin-top: 2px; display: flex; align-items: center; justify-content: center;
-    color: var(--accent); border: 1px solid rgba(223,223,65,.28); border-radius: 999px; background: rgba(223,223,65,.06); }
-  .load-inline__icon svg { width: 18px; height: 18px; stroke-width: 1.8; }
-  .load-inline__text { font-family: var(--display); font-size: 19px; line-height: 1.5; letter-spacing: -0.015em; color: var(--text-body); font-weight: 400; text-wrap: pretty; }
-  .load-inline__text b { color: var(--accent); font-weight: 600; }
-  .load-inline__text em { font-style: normal; color: var(--text-h); font-weight: 500; }
-  @media (max-width: 640px) { .load-inline__text { font-size: 17px; } }
 
   .rows { display: flex; flex-direction: column; gap: 96px; }
   .row { display: grid; grid-template-columns: 1fr 1.08fr; gap: 72px; align-items: center; }
@@ -1049,7 +920,6 @@
   .row__text { font-size: 16px; line-height: 1.72; color: var(--text-mute); max-width: 56ch; text-wrap: pretty; }
   .row__text p + p { margin-top: 14px; }
   .row__text b { color: var(--text-h); font-weight: 600; }
-  .row__cta { margin-top: 28px; }
 
   .visual {
     position: relative; background: var(--bg-card); border: 1px solid var(--border-card);
@@ -1102,83 +972,22 @@
   .cases__item b { display: block; color: var(--text-h); font-weight: 600; font-size: 13px; margin-bottom: 3px; }
 
   /* врезка-крючок к лид-магниту */
-  .hook {
-    position: relative; overflow: hidden;
-    margin-top: 48px; padding: 30px 34px;
-    background: linear-gradient(100deg, rgba(223,223,65,.13) 0%, rgba(223,223,65,.03) 60%, transparent 100%);
-    border: 1px solid rgba(223,223,65,.3); border-radius: var(--r-lg);
-    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-  }
-  .hook::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent);
-  }
-  .hook__icon { width: 52px; height: 52px; border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 12px 32px -14px rgba(223,223,65,.6); }
-  .hook__icon svg { width: 25px; height: 25px; }
-  .hook__body { flex: 1; min-width: 240px; }
-  .hook__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; color: var(--accent); letter-spacing: .18em; text-transform: uppercase; margin-bottom: 8px; }
-  .hook__title { font-size: 16px; font-weight: 400; color: var(--text-body); line-height: 1.5; text-wrap: pretty; }
 
   /* ===== RESULT (с чем уходишь) ===== */
   .result { display: grid; grid-template-columns: 1.15fr 1fr; gap: 72px; align-items: center; }
-  .result__title { font-family: var(--display); font-size: clamp(24px, 3vw, 38px); font-weight: 500; color: var(--text-h); line-height: 1.1; letter-spacing: -0.035em; margin-bottom: 24px; text-wrap: balance; }
-  .result__text { font-size: 16px; line-height: 1.72; color: var(--text-mute); max-width: 60ch; text-wrap: pretty; }
-  .result__text p + p { margin-top: 16px; }
-  .result__text b { color: var(--text-h); font-weight: 600; }
 
   /* дерево решений (визуал) */
-  .tree { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .tree__node { padding: 11px 20px; border-radius: var(--r-sm); background: rgba(255,255,255,.02); border: 1px solid var(--border-acc); font-size: 13px; font-family: var(--mono); color: var(--text-body); text-align: center; }
-  .tree__node--root { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 500; }
-  .tree__branch { display: flex; gap: 16px; width: 100%; }
-  .tree__col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-  .tree__edge { font-size: 10.5px; color: var(--text-faint); font-family: var(--mono); letter-spacing: .04em; }
-  .tree__leaf { width: 100%; padding: 9px 8px; border-radius: 5px; background: var(--bg-secondary); border: 1px solid var(--border-mid); font-size: 11.5px; font-family: var(--mono); color: var(--text-mute); text-align: center; }
 
   /* витрина методичек: ровный ряд с общей базовой линией.
      "лесенка" ломала выравнивание названий и делала блок неопрятным */
-  .artifacts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 64px; margin-bottom: 0; }
-  .artifact {
-    background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg);
-    padding: 20px 20px 24px; position: relative; overflow: hidden;
-    display: flex; flex-direction: column;
-    transition: border-color .3s var(--ease), transform .3s var(--ease), background .3s var(--ease);
-  }
-  .artifact:hover { border-color: rgba(223,223,65,.35); background: var(--bg-secondary); transform: translateY(-4px); }
-  .artifact__mock { height: 96px; border-radius: var(--r-md); background: linear-gradient(160deg, rgba(255,255,255,.05) 0%, rgba(0,0,0,.25) 100%); border: 1px solid var(--border-mid); margin-bottom: 18px; padding: 14px; display: flex; flex-direction: column; gap: 7px; overflow: hidden; }
-  .artifact__mock-line { height: 4px; border-radius: 2px; background: rgba(255,255,255,.08); }
 
   /* мокап 1 — 5-шаговый алгоритм: пронумерованные шаги, первый уже пройден */
-  .mock-step { display: flex; align-items: center; gap: 9px; }
-  .mock-step__n { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; border: 1px solid var(--border-acc); }
-  .mock-step:first-child .mock-step__n { background: var(--accent); border-color: var(--accent); }
-  .mock-step .artifact__mock-line { flex: 1; }
-  .mock-step:nth-child(2) .artifact__mock-line { max-width: 84%; }
-  .mock-step:nth-child(3) .artifact__mock-line { max-width: 66%; }
-  .mock-step:nth-child(4) .artifact__mock-line { max-width: 78%; }
-  .mock-step:nth-child(5) .artifact__mock-line { max-width: 54%; }
 
   /* мокап 2 — памятка: часть пунктов уже отмечена */
-  .mock-check { display: flex; align-items: center; gap: 9px; }
-  .mock-check__box { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; border: 1px solid var(--border-acc); }
-  .mock-check:nth-child(-n+2) .mock-check__box { background: var(--accent); border-color: var(--accent); }
-  .mock-check .artifact__mock-line { flex: 1; }
-  .mock-check:nth-child(2) .artifact__mock-line { max-width: 72%; }
-  .mock-check:nth-child(4) .artifact__mock-line { max-width: 60%; }
 
   /* мокап 3 — дерево решений: корень и две ветки */
-  .mock-tree { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-  .mock-tree__root { width: 38%; height: 10px; border-radius: 3px; background: var(--accent); }
-  .mock-tree__stem { width: 2px; flex: 0 0 8px; border-radius: 1px; background: var(--border-acc); }
-  .mock-tree__row { display: flex; gap: 10px; width: 100%; }
-  .mock-tree__leaf { flex: 1; height: 9px; border-radius: 3px; background: rgba(255,255,255,.09); border: 1px solid var(--border-mid); }
 
   /* мокап 4 — сетка паттернов: один рабочий, один отказавший */
-  .mock-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 6px; }
-  .mock-grid span { border-radius: 4px; background: rgba(255,255,255,.07); border: 1px solid var(--border-mid); }
-  .mock-grid span:nth-child(2) { background: rgba(223,223,65,.3); border-color: rgba(223,223,65,.5); }
-  .mock-grid span:nth-child(6) { background: rgba(255,133,98,.22); border-color: rgba(255,133,98,.45); }
-  .artifact__name { font-family: var(--display); font-size: 15.5px; font-weight: 500; color: var(--text-h); line-height: 1.28; letter-spacing: -0.02em; margin-bottom: 12px; text-wrap: balance; }
-  .artifact__why { font-size: 13.5px; line-height: 1.58; color: var(--text-faint); margin-top: auto; }
 
   /* ===== TEACHER ===== */
   .teacher__grid { display: grid; grid-template-columns: 1fr 360px; gap: 72px; align-items: start; }
@@ -1287,7 +1096,6 @@
   /* .78 → 6.1:1; на 12px моно этого мало для комфортного чтения — поднято до 7.3:1 */
   .final__hint { margin-top: 20px; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: rgba(0,45,37,.85); font-weight: 400; max-width: 42ch; margin-left: auto; margin-right: auto; text-wrap: pretty; }
 
-
   .footer { padding: 90px 0 80px; border-top: 1px solid var(--border-card); }
 
   /* верхний блок: карточка "Есть вопрос?" + телеграм-плитка */
@@ -1373,22 +1181,17 @@
     .cta-capsule__meta { padding: 0 20px; min-width: 112px; }
     .cta-capsule .btn { padding: 20px 34px; font-size: 15.5px; }
     /* объединённый блок: колонки складываются в одну */
-    .merge { grid-template-columns: 1fr; gap: 22px; }
     .block, .block--flip { grid-template-columns: 260px 1fr; column-gap: 34px; }
     .block__media { position: static; }
     .mech { padding: 48px 34px; border-radius: var(--r-lg); }
     .mech__title { max-width: none; }
     /* тезисы в столбик, видео на всю ширину островка */
-    .theses--row { grid-template-columns: 1fr; }
     .v1-video { max-width: none; }
     .row, .row--flip { grid-template-columns: 1fr; gap: 30px; }
     .rows { gap: 64px; }
     .row--flip .row__body { order: 1; }
     .row--flip .row__visual { order: 2; }
     .result { grid-template-columns: 1fr; gap: 36px; }
-    .artifacts { grid-template-columns: 1fr 1fr; margin-top: 48px; }
-    .artifact:nth-child(n) { transform: none; }
-    .artifact:nth-child(n):hover { transform: translateY(-4px); }
     .teacher__grid { grid-template-columns: 1fr; gap: 38px; }
     .teacher__side { position: static; order: -1; max-width: 400px; }
     .pricing__tiers { grid-template-columns: 1fr; }
@@ -1427,7 +1230,6 @@
     .stats-row { grid-template-columns: 1fr 1fr; }
     .stats-row > :first-child { grid-column: span 2; }
     .final__card { padding: 64px 32px 58px; }
-    .merge__why, .merge__who { padding: 34px 28px; }
   }
 
   @media (max-width: 640px) {
@@ -1462,22 +1264,18 @@
     .block__media { max-width: 300px; }
     .mech { padding: 34px 22px; border-radius: var(--r-lg); }
     .mech__title { margin-bottom: 28px; }
-    .program__lead { grid-template-columns: 1fr; gap: 16px; padding: 26px 22px; }
     .program { gap: 12px; }
     .program__item summary { padding: 24px 20px; gap: 14px; }
     .program__toggle { width: 40px; height: 40px; }
     .program__body { padding: 2px 20px 26px; }
     .program__extra { grid-template-columns: 1fr; padding: 22px; }
-    .how__format { flex-direction: column; align-items: flex-start; padding: 22px; }
     .visual { padding: 24px 20px 24px; }
     .arch__flow { grid-template-columns: 1fr 1fr; }
     .arch__arrows { display: none; }
     .cases { grid-template-columns: 1fr; }
-    .artifacts { grid-template-columns: 1fr; }
     .experience__item { grid-template-columns: 1fr; gap: 10px; }
     .stats-row { grid-template-columns: 1fr; }
     .stats-row > :first-child { grid-column: auto; }
-    .merge__lead { font-size: 15.5px; }
     .footer { padding-top: 52px; }
     .footer__req, .footer__disclaimer { max-width: none; }
     .final__badges { gap: 6px; margin-bottom: 28px; }
@@ -1505,11 +1303,9 @@
     .footer__ask { padding: 34px 24px 28px; }
     .footer__tg { min-height: 190px; }
 
-    /* моноширинная мета: широкий трекинг рвал строки на узком */
-    .eyebrow, .mech__eyebrow, .mech__do-label, .program__step, .program__label,
-    .row__label, .visual__cap, .hook__label,
+    /* моноширинная мета: широкий трекинг рвал строки на узком */ .program__step, .program__label,
+    .row__label, .visual__cap,
     .tier__label, .final__badge { letter-spacing: .08em; }
-    .hook__body { min-width: 0; }
     .faq__item summary { padding: 20px 0; font-size: 15.5px; }
     .faq__answer { padding: 0 0 22px; }
     .final { padding: 50px 0 74px; }
@@ -1547,12 +1343,9 @@
 
     .section__head { margin-bottom: 30px; }
     .section__title { font-size: 27px; letter-spacing: -0.03em; }
-
-    .merge__why, .merge__who { padding: 28px 20px; }
     .stat-card, .visual { padding: 24px 20px 26px; }
     .mech { padding: 28px 18px; }
-    .mech__title { font-size: 26px; }
-    .program__lead, .program__extra { padding: 20px 18px; }
+    .mech__title { font-size: 26px; } .program__extra { padding: 20px 18px; }
     .program__item summary { padding: 20px 16px; gap: 10px; }
     .program__toggle { width: 38px; height: 38px; }
     .program__body { padding: 2px 16px 22px; }
@@ -1574,9 +1367,8 @@
     .footer__req { font-size: 11.5px; line-height: 1.75; }
     .footer__links-row { gap: 7px; }
 
-    /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */
-    .eyebrow, .mech__eyebrow, .mech__do-label, .program__step, .program__label,
-    .row__label, .visual__cap, .hook__label,
+    /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */ .program__step, .program__label,
+    .row__label, .visual__cap,
     .tier__label, .tier__badge, .final__badge { letter-spacing: 0; }
 
     /* nowrap-мета переполняла контейнер */
@@ -1646,8 +1438,6 @@
   .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
   .tier--light .tier__price { color: var(--light-ink); }
   .tier__price b { font-weight: 500; }
-  .tier__price-old { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); margin-bottom: 10px; min-height: 20px; }
-  .tier__price-old s { color: var(--text-mute); text-decoration-color: var(--coral); }
   .tier--light .tier__price-old s { color: var(--light-mute); }
   .tier--light .tier__price-old { color: var(--light-meta); }
   .tier__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; padding-top: 26px; border-top: 1px solid var(--border-acc); }
@@ -1660,7 +1450,6 @@
   .tier--light .tier__check { background: var(--accent); border-color: var(--accent); }
   .tier__check svg { width: 10px; height: 10px; color: var(--accent); }
   .tier--light .tier__check svg { color: var(--accent-ink); }
-  .tier__note { margin-top: auto; padding-top: 20px; font-size: 12.5px; color: var(--text-faint); line-height: 1.6; }
   .tier--light .tier__note { color: var(--light-faint); }
   .tier__cta { margin-top: auto; padding-top: 20px; }
   .tier--light .btn--primary { background: var(--light-ink); color: var(--accent); }
@@ -2374,7 +2163,10 @@
 
       <div class="chatload fade-up">
         <div class="chatload__avatar">
-          <img src="oleg-chat.webp" alt="Олег Козырев" loading="lazy">
+          <picture>
+            <source srcset="oleg-chat.webp" type="image/webp">
+            <img src="oleg-chat.jpg" alt="Олег Козырев" loading="lazy">
+          </picture>
         </div>
         <div class="chatload__bubble">
           <div class="chatload__name">Олег</div>
@@ -2769,9 +2561,9 @@
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
           <div class="tier__tagline">Весь материал и&nbsp;алгоритм. Готовишься сам, вопросы задаёшь на&nbsp;живых Q&amp;A</div>
-          <div class="tier__price"><b>53 990 ₽</b></div>
+          <div class="tier__price"><b>54 990 ₽</b></div>
           <div class="tier__price-full">или <b>49 990&nbsp;₽</b>, если оплатить сразу целиком</div>
-          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;499&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
+          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;583&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
           <ul class="tier__list">
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>41 урок: видео плюс подробный текстовый конспект.</b> Алгоритм интервью, сеть и&nbsp;доставка, хранение данных, кэш и&nbsp;очереди, устойчивость под нагрузкой, поведение на&nbsp;секции</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>8 систем, разобранных целиком:</b> Telegram, лента Avito, фото-соцсеть со&nbsp;Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с&nbsp;автодополнением, Яндекс Такси. Каждую систему разбираем как на&nbsp;собесе: требования, нагрузка, узкие места, куда копнёт интервьюер</li>
@@ -2795,7 +2587,7 @@
           <div class="tier__label">С&nbsp;проверкой и&nbsp;практикой</div>
           <div class="tier__tagline">Всё то&nbsp;же самое, плюс проверка твоих решений и&nbsp;репетиция собеса</div>
           <div class="tier__price"><b>89 990 ₽</b></div>
-          <div class="tier__price-full">или <b>80 990&nbsp;₽</b>, если оплатить сразу целиком</div>
+          <div class="tier__price-full">или <b>79 990&nbsp;₽</b>, если оплатить сразу целиком</div>
           <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;499&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
           <ul class="tier__list">
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Всё, что есть в&nbsp;Стандарте:</b> 41&nbsp;урок, 8&nbsp;разобранных систем, домашки, живой Q&amp;A и&nbsp;чат потока</li>
@@ -2822,7 +2614,7 @@
       <div class="pricing__pay fade-up">
         <div class="pricing__pay-title">Как можно оплатить</div>
         <ul class="paylist">
-          <li><b>Рассрочка до&nbsp;12 месяцев</b>4&nbsp;499&nbsp;₽/мес за&nbsp;Стандарт и&nbsp;7&nbsp;499&nbsp;₽/мес за&nbsp;тариф с&nbsp;практикой. Срок можно взять и&nbsp;короче. Если платишь сразу целиком, цена ниже</li>
+          <li><b>Рассрочка до&nbsp;12 месяцев</b>4&nbsp;583&nbsp;₽/мес за&nbsp;Стандарт и&nbsp;7&nbsp;499&nbsp;₽/мес за&nbsp;тариф с&nbsp;практикой. Срок можно взять и&nbsp;короче. Если платишь сразу целиком, цена ниже</li>
           <li><b>Оплата от&nbsp;компании</b>Многие работодатели оплачивают обучение сотрудникам. Напиши в&nbsp;<a href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">телеграм</a>, и&nbsp;я&nbsp;пришлю счёт и&nbsp;документы на&nbsp;юрлицо</li>
           <li><b>Оплата из&nbsp;другой страны</b>Иностранной картой и&nbsp;не&nbsp;только рублями. Рассрочка работает в&nbsp;том числе для&nbsp;Беларуси и&nbsp;Казахстана</li>
         </ul>
@@ -3162,45 +2954,6 @@
     if (road && roadFill && roadHatch && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       roadPaint(1);
       roadStatic = true;
-    }
-
-    // ===== подсветка карточки под курсором (spotlight) =====
-    // Эффект стоит дорого: запись --mx/--my перерисовывает radial-gradient во всю карточку.
-    // Поэтому: (1) только мышь — тач и prefers-reduced-motion отключены полностью,
-    // (2) не более одной записи за кадр (throttle через rAF),
-    // (3) геометрия читается один раз на вход в карточку и переиспользуется,
-    //     пока курсор внутри — никакого getBoundingClientRect на каждое движение,
-    // (4) на скролл/resize кэш инвалидируется.
-    var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (finePointer && !reduceMotion) {
-      var spotSel = '.merge__who';
-      var spotCard = null, spotRect = null, spotX = 0, spotY = 0, spotQueued = false;
-
-      function spotFlush() {
-        spotQueued = false;
-        if (!spotCard) return;
-        if (!spotRect) spotRect = spotCard.getBoundingClientRect();
-        // курсор ушёл за пределы кэшированной геометрии — карточка сменилась/сдвинулась
-        if (spotX < spotRect.left || spotX > spotRect.right || spotY < spotRect.top || spotY > spotRect.bottom) {
-          spotCard = null; spotRect = null; return;
-        }
-        spotCard.style.setProperty('--mx', ((spotX - spotRect.left) / spotRect.width * 100).toFixed(1) + '%');
-        spotCard.style.setProperty('--my', ((spotY - spotRect.top) / spotRect.height * 100).toFixed(1) + '%');
-      }
-
-      document.addEventListener('pointermove', function (e) {
-        if (e.pointerType !== 'mouse') return;
-        spotX = e.clientX; spotY = e.clientY;
-        var card = e.target.closest ? e.target.closest(spotSel) : null;
-        if (card !== spotCard) { spotCard = card; spotRect = null; }
-        if (!spotCard || spotQueued) return;
-        spotQueued = true;
-        requestAnimationFrame(spotFlush);
-      }, { passive: true });
-
-      window.addEventListener('scroll', function () { spotRect = null; }, { passive: true });
-      window.addEventListener('resize', function () { spotRect = null; }, { passive: true });
     }
 
     // ===== счётчики =====
