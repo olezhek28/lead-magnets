@@ -384,7 +384,7 @@
     background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28); font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
   .hero__eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: heroPulse 2s infinite; }
   @keyframes heroPulse { 0% { box-shadow: 0 0 0 0 rgba(223,223,65,.5); } 70% { box-shadow: 0 0 0 7px rgba(223,223,65,0); } 100% { box-shadow: 0 0 0 0 rgba(223,223,65,0); } }
-  @media (prefers-reduced-motion: reduce) { .hero__eyebrow-dot { animation: none; } .v1__row:hover .v1__node { transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero__eyebrow-dot { animation: none; } }
   .hero::before {
     content: ''; position: absolute; top: -320px; left: 50%; transform: translateX(-50%);
     width: 1100px; height: 900px;
@@ -528,18 +528,19 @@
     transition: background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), box-shadow .35s var(--ease), transform .35s var(--ease);
   }
   .v1__node svg { width: 23px; height: 23px; }
-  .v1__row:hover .v1__node, .v1__row:focus-within .v1__node {
+  .v1__row:hover .v1__node {
     background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
     box-shadow: 0 0 0 5px rgba(223,223,65,.14), 0 0 26px -2px rgba(223,223,65,.55); transform: translateY(-1px);
   }
+  /* стоит после базового правила намеренно: выше по файлу оно проигрывало каскад */
+  @media (prefers-reduced-motion: reduce) { .v1__row:hover .v1__node { transform: none; } }
   .v1__text {
     font-family: var(--display); font-weight: 400; font-size: clamp(18px, 2.1vw, 23px); line-height: 1.42;
     letter-spacing: -0.018em; color: var(--text-mute); text-wrap: pretty; align-self: center; transition: color .3s var(--ease);
   }
-  .v1__row:hover .v1__text, .v1__row:focus-within .v1__text { color: var(--text-body); }
+  .v1__row:hover .v1__text { color: var(--text-body); }
   .v1__text b { font-weight: 600; color: var(--text-h); }
   .v1__row:hover .v1__text b { color: var(--accent); }
-  .v1__row:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-md); }
 
   /* ===== ЗНАКОМАЯ СИТУАЦИЯ (5 смысловых блоков, у каждого своя картинка) ===== */
   /* слот под гифку/мем (figure), внутри — SVG-сцена-заглушка на случай, если гиф не загрузился */
@@ -1194,9 +1195,6 @@
     .result { grid-template-columns: 1fr; gap: 36px; }
     .teacher__grid { grid-template-columns: 1fr; gap: 38px; }
     .teacher__side { position: static; order: -1; max-width: 400px; }
-    .pricing__tiers { grid-template-columns: 1fr; }
-    .tier--light { translate: none; padding-bottom: 40px; }
-    .tier__label { padding-right: 130px; min-height: 0; }
     .yt__grid { grid-template-columns: 1fr; max-width: 460px; }
     /* .faq — grid, а не multi-column: `columns: 1` здесь не действовал,
        FAQ оставался в две колонки вплоть до 320px */
@@ -1280,18 +1278,9 @@
     .footer__req, .footer__disclaimer { max-width: none; }
     .final__badges { gap: 6px; margin-bottom: 28px; }
     .final__badge { font-size: 11.5px; padding: 7px 12px; }
-    .tier { padding: 34px 24px 30px; }
-    /* бейдж из absolute — в поток: на узком он наезжал на длинный заголовок тарифа */
-    .tier__badge { position: static; align-self: flex-start; width: fit-content; display: inline-block; margin-bottom: 16px; letter-spacing: .1em; }
-    .tier__label { padding-right: 0; min-height: 0; }
 
     /* три превью 16:9 стопкой давали ~3 экрана пустой фактуры —
        переводим карточку в горизонтальный формат */
-    .yt__grid { max-width: none; gap: 10px; }
-    .yt__card { display: grid; grid-template-columns: 132px minmax(0,1fr); align-items: stretch; }
-    .yt__name { border-top: none; border-left: 1px solid var(--border-mid); padding: 14px 16px; display: flex; align-items: center; }
-    .yt__play-btn { width: 40px; height: 40px; }
-    .yt__play-btn svg { width: 15px; height: 15px; }
     .yt__actions .btn { width: 100%; justify-content: center; }
 
     /* тач-цели ≥44px и перенос длинных реквизитов/ссылок */
@@ -1305,7 +1294,7 @@
 
     /* моноширинная мета: широкий трекинг рвал строки на узком */ .program__step, .program__label,
     .row__label, .visual__cap,
-    .tier__label, .final__badge { letter-spacing: .08em; }
+    .final__badge { letter-spacing: .08em; }
     .faq__item summary { padding: 20px 0; font-size: 15.5px; }
     .faq__answer { padding: 0 0 22px; }
     .final { padding: 50px 0 74px; }
@@ -1352,12 +1341,6 @@
     .program__list li { font-size: 14.5px; }
 
     .arch__flow { grid-template-columns: minmax(0,1fr); }
-    .tier { padding: 28px 18px 26px; }
-    .tier__price { font-size: 32px; }
-    .yt__card { grid-template-columns: 104px minmax(0,1fr); }
-    .yt__name { padding: 12px 13px; font-size: 12.5px; }
-    .yt__play-btn { width: 34px; height: 34px; }
-    .yt__play-btn svg { width: 13px; height: 13px; }
 
     .faq__item summary { font-size: 15px; gap: 12px; }
     .final__card { padding: 38px 18px 36px; }
@@ -1369,7 +1352,7 @@
 
     /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */ .program__step, .program__label,
     .row__label, .visual__cap,
-    .tier__label, .tier__badge, .final__badge { letter-spacing: 0; }
+    .final__badge { letter-spacing: 0; }
 
     /* nowrap-мета переполняла контейнер */
     .experience__company-name, .stat-card__number, .experience__badge { white-space: normal; }
@@ -1644,6 +1627,43 @@
     .fact { padding: 13px 15px; }
     .fact__value { font-size: 15.5px; }
   }
+
+  /* ===== RESPONSIVE: тарифы и YouTube-блок =====
+     Живёт в самом низу файла намеренно. Базовые стили этих двух секций
+     дописывали позже и вклеили НИЖЕ общей секции RESPONSIVE, поэтому при
+     равной специфичности они перебивали мобильные правила: карточки тарифов
+     оставались в две колонки по 155px на телефоне, бейдж "Рекомендую" висел
+     absolute поверх заголовка, YouTube-карточки не переключались в
+     горизонтальный формат. Переопределения для них должны идти после
+     базовых правил — то есть здесь. Новые мобильные правила для .tier*,
+     .pricing__tiers и .yt__* добавлять сюда, а не в секцию RESPONSIVE выше. */
+  @media (max-width: 960px) {
+    .pricing__tiers { grid-template-columns: 1fr; }
+    .tier__label { padding-right: 130px; min-height: 0; }
+  }
+  @media (max-width: 640px) {
+    .tier { padding: 34px 24px 30px; }
+    /* бейдж из absolute — в поток: на узком он наезжал на длинный заголовок тарифа */
+    .tier__badge { position: static; align-self: flex-start; width: fit-content; display: inline-block; margin-bottom: 16px; letter-spacing: .1em; }
+    .tier__label { padding-right: 0; min-height: 0; letter-spacing: .08em; }
+    /* три превью 16:9 стопкой давали ~3 экрана пустой фактуры —
+       переводим карточку в горизонтальный формат */
+    .yt__grid { gap: 10px; }
+    .yt__card { display: grid; grid-template-columns: 132px minmax(0,1fr); align-items: stretch; }
+    .yt__name { border-top: none; border-left: 1px solid var(--border-mid); padding: 14px 16px; display: flex; align-items: center; }
+    .yt__play-btn { width: 40px; height: 40px; }
+    .yt__play-btn svg { width: 15px; height: 15px; }
+  }
+  @media (max-width: 400px) {
+    .tier { padding: 28px 18px 26px; }
+    .tier__price { font-size: 32px; }
+    /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */
+    .tier__label, .tier__badge { letter-spacing: 0; }
+    .yt__card { grid-template-columns: 104px minmax(0,1fr); }
+    .yt__name { padding: 12px 13px; font-size: 12.5px; }
+    .yt__play-btn { width: 34px; height: 34px; }
+    .yt__play-btn svg { width: 13px; height: 13px; }
+  }
 </style>
 </head>
 <body>
@@ -1690,10 +1710,16 @@
     <div class="container">
       <div class="hero__inner">
         <div class="hero__eyebrow fade-up"><span class="hero__eyebrow-dot" aria-hidden="true"></span>Идёт предзапись&nbsp;· до&nbsp;23 августа</div>
-        <h1 class="hero__title fade-up"><span class="hero__t1">System&nbsp;Design:</span><span class="author author--sm">
+        <!-- Плашка автора стоит внутри h1: визуально она встроена в строку заголовка,
+             и вынести её наружу без переверстки героя нельзя. Чтобы она не попадала
+             в доступное имя заголовка ("System Design: Олег Козырев автор курса Staff
+             Engineer ex-BigTech от паники к алгоритму"), помечена aria-hidden.
+             Скринридер читает чистое "System Design: от паники к алгоритму", а то же
+             самое про автора он получит из секции #avtor. -->
+        <h1 class="hero__title fade-up"><span class="hero__t1">System&nbsp;Design:</span><span class="author author--sm" aria-hidden="true">
             <picture class="author__ava">
               <source srcset="oleg-round.webp" type="image/webp">
-              <img src="oleg-round.png" alt="Олег Козырев, автор курса" width="34" height="34" decoding="async">
+              <img src="oleg-round.png" alt="" width="34" height="34" decoding="async">
             </picture>
             <span class="author__txt">
               <span class="author__role">Автор курса</span>
@@ -1729,19 +1755,19 @@
         <h2 class="section__title">Это про&nbsp;тебя, <b>если…</b></h2>
       </div>
       <div class="v1 fade-up">
-        <div class="v1__row" tabindex="0">
+        <div class="v1__row">
           <div class="v1__node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.2"></circle></svg></div>
           <div class="v1__text"><b>Метишь в&nbsp;крупный бигтех</b>: Яндекс, Озон, Т-Банк, ВК, Сбер, Авито, WB. На&nbsp;собесе почти всегда тебя будет ждать System Design.</div>
         </div>
-        <div class="v1__row" tabindex="0">
+        <div class="v1__row">
           <div class="v1__node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div>
           <div class="v1__text"><b>Хочешь перейти из&nbsp;мидла в&nbsp;senior</b>, а&nbsp;грейд как раз упирается в&nbsp;System Design.</div>
         </div>
-        <div class="v1__row" tabindex="0">
+        <div class="v1__row">
           <div class="v1__node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"></path><path d="M9 21h6"></path></svg></div>
           <div class="v1__text">На&nbsp;проектах ты&nbsp;с&nbsp;такими задачами не&nbsp;работал, и&nbsp;<b>опыту в&nbsp;System Design взяться неоткуда</b>.</div>
         </div>
-        <div class="v1__row" tabindex="0">
+        <div class="v1__row">
           <div class="v1__node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path></svg></div>
           <div class="v1__text">Хочешь не&nbsp;просто пройти секцию, а&nbsp;<b>разобраться, как всё это работает под капотом</b>.</div>
         </div>
@@ -2712,9 +2738,7 @@
         </details>
         <details class="faq__item fade-up">
           <summary>Что делать, если не&nbsp;успеваю за&nbsp;потоком или пропущу неделю?<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__answer">Ничего страшного. Записи остаются, и&nbsp;ты&nbsp;спокойно догоняешь в&nbsp;своём темпе.
-            <!-- ⚠️ placeholder: сверить — доп. срок на сдачу / "академ" -->
-          </div>
+          <div class="faq__answer">Ничего страшного, это норма: почти все проходят курс параллельно с&nbsp;работой. Дедлайнов по&nbsp;неделям нет, срок один и&nbsp;общий на&nbsp;весь курс. Уроки и&nbsp;записи живых встреч остаются с&nbsp;тобой на&nbsp;два года, так что неделю можно спокойно нагнать на&nbsp;следующей. А&nbsp;на&nbsp;тарифе с&nbsp;проверкой домашки принимаем 8&nbsp;недель, на&nbsp;три недели дольше самого курса: ушёл в&nbsp;аврал, вернулся и&nbsp;сдал, проверка никуда не&nbsp;денется)</div>
         </details>
         <details class="faq__item fade-up">
           <summary>Можно вернуть деньги, если курс не&nbsp;подойдёт / передумаю?<span class="faq__icon" aria-hidden="true"></span></summary>
@@ -3222,15 +3246,53 @@
       body.appendChild(s);
     }
 
+    // ===== Изоляция фона на время модалки =====
+    // aria-modal сам по себе фон не отключает: Tab из формы уходил на страницу
+    // под модалкой, а скринридер продолжал её читать. inert на соседях по body
+    // убирает фон и из таб-порядка, и из дерева доступности.
+    var inerted = [];
+    function backgroundInert(on) {
+      if (on) {
+        Array.prototype.forEach.call(document.body.children, function (el) {
+          if (el === modal || el.hasAttribute('inert')) return;
+          el.setAttribute('inert', '');
+          inerted.push(el);
+        });
+      } else {
+        inerted.forEach(function (el) { el.removeAttribute('inert'); });
+        inerted = [];
+      }
+    }
+
+    // Фокус-ловушка: по кругу между крестиком и формой. Когда фокус уже внутри
+    // iframe GetCourse, его keydown до нас не доходит (чужой origin) — там
+    // страховкой работает inert выше.
+    function focusables() {
+      return Array.prototype.filter.call(
+        modal.querySelectorAll('button, a[href], iframe, input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+        function (el) { return el.tagName === 'IFRAME' || el.offsetParent !== null; }
+      );
+    }
+    modal.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var f = focusables();
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+
     function open(e) {
       if (e) { e.preventDefault(); lastTrigger = e.currentTarget; }
       goal('sd_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
       modal.hidden = false; document.body.classList.add('gc-lock');
+      backgroundInert(true);
       loadWidget();
       if (closeBtn) closeBtn.focus();
     }
     function close() {
       modal.hidden = true; document.body.classList.remove('gc-lock');
+      backgroundInert(false);
       if (lastTrigger) { lastTrigger.focus(); lastTrigger = null; }
     }
     document.querySelectorAll('[data-gc-open]').forEach(function (b) { b.addEventListener('click', open); });
