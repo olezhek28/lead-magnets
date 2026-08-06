@@ -1402,20 +1402,26 @@
   .tier { border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; height: 100%; }
   .tier--dark { background: var(--bg-card); border: 1px solid var(--border-card); }
   .tier--light {
-    background: var(--light-bg); color: var(--light-ink); border: 1px solid var(--light-bg);
-    box-shadow: 0 40px 90px -46px rgba(0,0,0,.95);
+    background: var(--light-bg); color: var(--light-ink); border: 1px solid rgba(16,23,26,.22);
+    box-shadow: 0 42px 92px -44px rgba(0,0,0,.95), 0 0 0 1px rgba(223,223,65,.18);
     padding-bottom: 40px;
   }
-  .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--accent); }
+  .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--accent); }
   .tier__badge {
-    position: absolute; top: 26px; right: 26px; font-family: var(--mono);
-    font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
-    padding: 7px 12px; border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink);
+    display: flex; flex-direction: column; gap: 5px; width: fit-content; max-width: 100%; margin-bottom: 22px;
+    padding: 13px 15px 14px; border-radius: var(--r-md); background: var(--accent); color: var(--accent-ink);
+    box-shadow: 0 16px 36px -26px rgba(16,23,26,.8);
   }
   .tier--light .tier__badge { background: var(--light-ink); color: var(--accent); }
+  .tier__badge-title {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .14em; line-height: 1.2; text-transform: uppercase;
+  }
+  .tier__badge-text {
+    max-width: 320px; font-size: 13.5px; font-weight: 500; line-height: 1.35; letter-spacing: 0; text-transform: none;
+  }
   .tier__label {
     font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; line-height: 1.5;
-    margin-bottom: 20px; color: var(--text-faint); padding-right: 136px; min-height: 34px;
+    margin-bottom: 20px; color: var(--text-faint); min-height: 34px;
   }
   .tier--light .tier__label { color: var(--light-meta); }
   .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
@@ -1632,19 +1638,18 @@
      Живёт в самом низу файла намеренно. Базовые стили этих двух секций
      дописывали позже и вклеили НИЖЕ общей секции RESPONSIVE, поэтому при
      равной специфичности они перебивали мобильные правила: карточки тарифов
-     оставались в две колонки по 155px на телефоне, бейдж "Рекомендую" висел
-     absolute поверх заголовка, YouTube-карточки не переключались в
+     оставались в две колонки по 155px на телефоне, старый бейдж висел
+     поверх заголовка, YouTube-карточки не переключались в
      горизонтальный формат. Переопределения для них должны идти после
      базовых правил — то есть здесь. Новые мобильные правила для .tier*,
      .pricing__tiers и .yt__* добавлять сюда, а не в секцию RESPONSIVE выше. */
   @media (max-width: 960px) {
     .pricing__tiers { grid-template-columns: 1fr; }
-    .tier__label { padding-right: 130px; min-height: 0; }
+    .tier__label { min-height: 0; }
   }
   @media (max-width: 640px) {
     .tier { padding: 34px 24px 30px; }
-    /* бейдж из absolute — в поток: на узком он наезжал на длинный заголовок тарифа */
-    .tier__badge { position: static; align-self: flex-start; width: fit-content; display: inline-block; margin-bottom: 16px; letter-spacing: .1em; }
+    .tier__badge { width: 100%; margin-bottom: 16px; }
     .tier__label { padding-right: 0; min-height: 0; letter-spacing: .08em; }
     /* три превью 16:9 стопкой давали ~3 экрана пустой фактуры —
        переводим карточку в горизонтальный формат */
@@ -1658,7 +1663,7 @@
     .tier { padding: 28px 18px 26px; }
     .tier__price { font-size: 32px; }
     /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */
-    .tier__label, .tier__badge { letter-spacing: 0; }
+    .tier__label, .tier__badge-title { letter-spacing: 0; }
     .yt__card { grid-template-columns: 104px minmax(0,1fr); }
     .yt__name { padding: 12px 13px; font-size: 12.5px; }
     .yt__play-btn { width: 34px; height: 34px; }
@@ -2609,9 +2614,12 @@
         </div>
 
         <div class="tier tier--light fade-up">
-          <span class="tier__badge">Рекомендую</span>
+          <div class="tier__badge">
+            <span class="tier__badge-title">Лучший выбор</span>
+            <span class="tier__badge-text">Если хочешь сразу закреплять материал с&nbsp;обратной связью и&nbsp;тренироваться в&nbsp;условиях, близких к&nbsp;собесу</span>
+          </div>
           <div class="tier__label">С&nbsp;проверкой и&nbsp;практикой</div>
-          <div class="tier__tagline">Всё то&nbsp;же самое, плюс проверка твоих решений и&nbsp;репетиция собеса</div>
+          <div class="tier__tagline">Всё то&nbsp;же самое, плюс обратная связь по&nbsp;твоим решениям и&nbsp;репетиция собеса</div>
           <div class="tier__price"><b>89 990 ₽</b></div>
           <div class="tier__price-full">или <b>79 990&nbsp;₽</b>, если оплатить сразу целиком</div>
           <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;499&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
