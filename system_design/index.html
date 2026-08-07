@@ -102,21 +102,21 @@
               {
                 "@type": "Offer",
                 "name": "Стандарт",
-                "price": "54990",
+                "price": "52990",
                 "priceCurrency": "RUB",
                 "priceValidUntil": "2026-08-23",
                 "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи; при оплате сразу целиком 49 990 ₽, в рассрочку 4 583 ₽/мес на 12 месяцев. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
+                "description": "Цена предзаписи до 23 августа 2026, обычная цена 57 990 ₽. Цена не зависит от способа оплаты: в рассрочку 4 416 ₽/мес на 12 месяцев, сумма та же. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               },
               {
                 "@type": "Offer",
                 "name": "С проверкой и практикой",
-                "price": "89990",
+                "price": "84990",
                 "priceCurrency": "RUB",
                 "priceValidUntil": "2026-08-23",
                 "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи; при оплате сразу целиком 79 990 ₽, в рассрочку 7 499 ₽/мес на 12 месяцев. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
+                "description": "Цена предзаписи до 23 августа 2026, обычная цена 92 990 ₽. Цена не зависит от способа оплаты: в рассрочку 7 083 ₽/мес на 12 месяцев, сумма та же. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               }
             ]
@@ -1407,17 +1407,29 @@
     padding-bottom: 40px;
   }
   .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--accent); }
+  /* бейдж стоит ПОД блоком цены, а не над карточкой: над ценой он сдвигал
+     весь контент правой карточки на свою высоту и цены двух тарифов
+     переставали читаться на одной линии */
   .tier__badge {
-    display: flex; flex-direction: column; gap: 5px; width: fit-content; max-width: 100%; margin-bottom: 22px;
-    padding: 13px 15px 14px; border-radius: var(--r-md); background: var(--accent); color: var(--accent-ink);
+    --badge-gap: 26px;
+    position: relative;
+    display: flex; flex-direction: column; gap: 5px; max-width: 100%; margin: var(--badge-gap) 0;
+    padding: 16px 20px 17px; border-radius: var(--r-md); background: var(--accent); color: var(--accent-ink);
     box-shadow: 0 16px 36px -26px rgba(16,23,26,.8);
   }
+  /* разделитель списка перерисовываем НАД бейджем: иначе линейка правой
+     карточки уезжает вниз на его высоту и снова расходится с левой */
+  .tier__badge::before {
+    content: ''; position: absolute; left: 0; right: 0; top: calc(var(--badge-gap) * -1);
+    height: 1px; background: rgba(16,23,26,.12);
+  }
+  .tier__badge + .tier__list { border-top: none; padding-top: 0; }
   .tier--light .tier__badge { background: var(--light-ink); color: var(--accent); }
   .tier__badge-title {
     font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .14em; line-height: 1.2; text-transform: uppercase;
   }
   .tier__badge-text {
-    max-width: 320px; font-size: 13.5px; font-weight: 500; line-height: 1.35; letter-spacing: 0; text-transform: none;
+    font-size: 13.5px; font-weight: 500; line-height: 1.35; letter-spacing: 0; text-transform: none;
   }
   .tier__label {
     font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; line-height: 1.5;
@@ -1427,8 +1439,17 @@
   .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
   .tier--light .tier__price { color: var(--light-ink); }
   .tier__price b { font-weight: 500; }
+  /* зачёркнутая базовая цена рядом с ценой предзаписи. Скидка привязана
+     к сроку, а не к способу оплаты: п. 4.1 ст. 16.1 ЗоЗПП с 01.04.2026
+     запрещает разные цены в зависимости от того, платит человек сразу
+     или в рассрочку. Базовая цена должна быть настоящей — после
+     23 августа продаём именно по ней, иначе это недостоверная реклама */
+  .tier__price-old { margin-left: 12px; font-size: .44em; letter-spacing: -0.02em; color: var(--text-deco); white-space: nowrap; }
+  .tier__price-old s { text-decoration-thickness: 1px; }
   .tier--light .tier__price-old s { color: var(--light-mute); }
   .tier--light .tier__price-old { color: var(--light-meta); }
+  /* текст только для скринридеров: зачёркнутую цену иначе читают подряд с текущей */
+  .vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
   .tier__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; padding-top: 26px; border-top: 1px solid var(--border-acc); }
   .tier--light .tier__list { border-top-color: rgba(16,23,26,.12); }
   .tier__list li { position: relative; padding-left: 32px; font-size: 15px; line-height: 1.58; color: var(--text-mute); }
@@ -1456,8 +1477,8 @@
   /* позиционная строка тарифа: чем этот тариф отличается по сути, а не по списку пунктов */
   .tier__tagline { font-family: var(--display); font-size: 18px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; color: var(--text-h); margin-bottom: 22px; min-height: 48px; }
   .tier--light .tier__tagline { color: var(--light-ink); }
-  /* по закону основная цена — та, что с рассрочкой; полная оплата показывается
-     как скидка к ней, а не рассрочка как наценка */
+  /* цена одна для всех способов оплаты (п. 4.1 ст. 16.1 ЗоЗПП), поэтому
+     под ценой идёт не сравнение способов оплаты, а срок действия скидки */
   .tier__price-full { font-size: 14.5px; line-height: 1.5; color: var(--text-mute); margin-bottom: 12px; }
   .tier__price-full b { color: var(--accent); font-weight: 600; }
   .tier--light .tier__price-full { color: var(--light-mute); }
@@ -1649,7 +1670,7 @@
   }
   @media (max-width: 640px) {
     .tier { padding: 34px 24px 30px; }
-    .tier__badge { width: 100%; margin-bottom: 16px; }
+    .tier__badge { --badge-gap: 22px; padding: 14px 16px 15px; }
     .tier__label { padding-right: 0; min-height: 0; letter-spacing: .08em; }
     /* три превью 16:9 стопкой давали ~3 экрана пустой фактуры —
        переводим карточку в горизонтальный формат */
@@ -2592,9 +2613,9 @@
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
           <div class="tier__tagline">Весь материал и&nbsp;алгоритм. Готовишься сам, вопросы задаёшь на&nbsp;живых Q&amp;A</div>
-          <div class="tier__price"><b>54 990 ₽</b></div>
-          <div class="tier__price-full">или <b>49 990&nbsp;₽</b>, если оплатить сразу целиком</div>
-          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;583&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
+          <div class="tier__price"><b>52 990 ₽</b><span class="tier__price-old"><span class="vh">обычная цена </span><s>57 990&nbsp;₽</s></span></div>
+          <div class="tier__price-full">цена предзаписи, действует до&nbsp;<b>23 августа</b></div>
+          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;416&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
           <ul class="tier__list">
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>41 урок: видео плюс подробный текстовый конспект.</b> Алгоритм интервью, сеть и&nbsp;доставка, хранение данных, кэш и&nbsp;очереди, устойчивость под нагрузкой, поведение на&nbsp;секции</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>8 систем, разобранных целиком:</b> Telegram, лента Avito, фото-соцсеть со&nbsp;Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с&nbsp;автодополнением, Яндекс Такси. Каждую систему разбираем как на&nbsp;собесе: требования, нагрузка, узкие места, куда копнёт интервьюер</li>
@@ -2614,15 +2635,15 @@
         </div>
 
         <div class="tier tier--light fade-up">
+          <div class="tier__label">С&nbsp;проверкой и&nbsp;практикой</div>
+          <div class="tier__tagline">Всё то&nbsp;же самое, плюс обратная связь по&nbsp;твоим решениям и&nbsp;репетиция собеса</div>
+          <div class="tier__price"><b>84 990 ₽</b><span class="tier__price-old"><span class="vh">обычная цена </span><s>92 990&nbsp;₽</s></span></div>
+          <div class="tier__price-full">цена предзаписи, действует до&nbsp;<b>23 августа</b></div>
+          <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;083&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
           <div class="tier__badge">
             <span class="tier__badge-title">Лучший выбор</span>
             <span class="tier__badge-text">Если хочешь сразу закреплять материал с&nbsp;обратной связью и&nbsp;тренироваться в&nbsp;условиях, близких к&nbsp;собесу</span>
           </div>
-          <div class="tier__label">С&nbsp;проверкой и&nbsp;практикой</div>
-          <div class="tier__tagline">Всё то&nbsp;же самое, плюс обратная связь по&nbsp;твоим решениям и&nbsp;репетиция собеса</div>
-          <div class="tier__price"><b>89 990 ₽</b></div>
-          <div class="tier__price-full">или <b>79 990&nbsp;₽</b>, если оплатить сразу целиком</div>
-          <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;499&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>цена предзаписи, действует до&nbsp;23&nbsp;августа</div>
           <ul class="tier__list">
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Всё, что есть в&nbsp;Стандарте:</b> 41&nbsp;урок, 8&nbsp;разобранных систем, домашки, живой Q&amp;A и&nbsp;чат потока</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Ментор разбирает каждую твою домашку.</b> Читает схему и&nbsp;твои обоснования и&nbsp;пишет подробный разбор: где решение поедет под нагрузкой, какой выбор не&nbsp;объяснён, что на&nbsp;секции спросят следом</li>
@@ -2648,7 +2669,7 @@
       <div class="pricing__pay fade-up">
         <div class="pricing__pay-title">Как можно оплатить</div>
         <ul class="paylist">
-          <li><b>Рассрочка до&nbsp;12 месяцев</b>4&nbsp;583&nbsp;₽/мес за&nbsp;Стандарт и&nbsp;7&nbsp;499&nbsp;₽/мес за&nbsp;тариф с&nbsp;практикой. Срок можно взять и&nbsp;короче. Если платишь сразу целиком, цена ниже</li>
+          <li><b>Рассрочка до&nbsp;12 месяцев</b>4&nbsp;416&nbsp;₽/мес за&nbsp;Стандарт и&nbsp;7&nbsp;083&nbsp;₽/мес за&nbsp;тариф с&nbsp;практикой. Срок можно взять и&nbsp;короче. Сумма та&nbsp;же, что при оплате целиком: цена курса не&nbsp;зависит от&nbsp;способа оплаты</li>
           <li><b>Оплата от&nbsp;компании</b>Многие работодатели оплачивают обучение сотрудникам. Напиши в&nbsp;<a href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">телеграм</a>, и&nbsp;я&nbsp;пришлю счёт и&nbsp;документы на&nbsp;юрлицо</li>
           <li><b>Оплата из&nbsp;другой страны</b>Иностранной картой и&nbsp;не&nbsp;только рублями. Рассрочка работает в&nbsp;том числе для&nbsp;Беларуси и&nbsp;Казахстана</li>
         </ul>
