@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+      ym(96022201, 'init', {webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/96022201" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  <!-- TGTrack: Откуда Подписки -->
+  <script src="https://api.tgtrack.ru/API/landing_script/v1/?linkID=682732c86bc8d9&type=ya&counterID=96022201" type="text/javascript" defer></script>
+  <title>Как успешно завалить System Design собес за 40 минут - бесплатный разбор</title>
+  <meta name="description" content="Разбор провального System Design собеса: 7 самых частых ошибок, за которые снижают оценку, и список, чтобы проверить себя. Бесплатно.">
+  <meta name="keywords" content="system design, систем дизайн, собеседование, system design interview, подготовка к собесу, авито, лента объявлений, шардирование, кэш, архитектура, backend">
+  <meta name="author" content="Олег Козырев">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://guide.olezhek28.courses/sd-anatomy/">
+  <meta property="og:title" content="Как успешно завалить System Design собес за 40 минут">
+  <meta property="og:description" content="Разбор провального собеса: 7 самых частых ошибок, за которые снижают оценку, и список, чтобы проверить себя. Бесплатно.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://guide.olezhek28.courses/sd-anatomy/">
+  <meta property="og:image" content="https://guide.olezhek28.courses/sd-anatomy/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Олег Козырев · Гайды">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Как успешно завалить System Design собес за 40 минут">
+  <meta name="twitter:description" content="Разбор провального собеса: 7 самых частых ошибок, за которые снижают оценку, и список, чтобы проверить себя. Бесплатно.">
+  <meta name="twitter:image" content="https://guide.olezhek28.courses/sd-anatomy/og-image.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="hero.webp" type="image/webp" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Как успешно завалить System Design собес за 40 минут",
+    "description": "Разбор провального System Design собеса: какие требования выяснить, как прикинуть нагрузку, как выглядит схема, 7 частых ошибок и список для самопроверки.",
+    "learningResourceType": "Guide",
+    "educationalLevel": "Intermediate",
+    "isAccessibleForFree": true,
+    "inLanguage": "ru",
+    "url": "https://guide.olezhek28.courses/sd-anatomy/",
+    "image": "https://guide.olezhek28.courses/sd-anatomy/og-image.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "Олег Козырев",
+      "jobTitle": "Staff Engineer",
+      "url": "https://guide.olezhek28.courses"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "RUB",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: #182023;
+      color: #ffffff;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; display: block; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== HEADER / NAV ===== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(24, 32, 35, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.3s;
+    }
+
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #dfdf41;
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nav__cta {
+      position: absolute;
+      right: 40px;
+    }
+
+    .nav__link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #c8cacc;
+      transition: color 0.2s;
+    }
+    .nav__link:hover { color: #ffffff; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .btn--primary {
+      background: #dfdf41;
+      color: #182023;
+      animation: pulse-glow 2.5s ease-in-out infinite;
+    }
+    .btn--primary:hover {
+      background: #caca18;
+      animation: none;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(223,223,65,0); }
+      50% { box-shadow: 0 0 20px 4px rgba(223,223,65,0.35); }
+    }
+
+    .btn--header {
+      padding: 10px 24px;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    /* Mobile menu toggle */
+    .nav__links-mobile {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #ffffff;
+      margin: 5px 0;
+      transition: all 0.3s;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 100px 0 60px;
+      background: #182023;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(223, 223, 65, 0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero__inner {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+
+    .hero__content {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero__image {
+      flex: 1;
+      min-width: 0;
+      max-width: 480px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .hero__image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hero__badge {
+      display: inline-block;
+      padding: 6px 20px;
+      background: rgba(223, 223, 65, 0.15);
+      color: #dfdf41;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero__title {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero__title span {
+      color: #dfdf41;
+    }
+
+    .hero__desc {
+      font-size: 16px;
+      font-weight: 500;
+      color: #b5b7b9;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    /* ===== SECTION SHARED ===== */
+    .section {
+      padding: 60px 0 48px;
+    }
+
+    .section__title {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section--light {
+      background: #e9e8ed;
+      color: #182023;
+    }
+    .section--dark {
+      background: #182023;
+      color: #ffffff;
+    }
+
+    /* ===== WHAT INSIDE ===== */
+    .inside {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .inside__item {
+      background: #22282d;
+      border: 1px solid #374246;
+      border-radius: 18px;
+      padding: 26px;
+      display: grid;
+      grid-template-columns: 164px 1fr;
+      gap: 26px;
+      align-items: center;
+      transition: border-color 0.25s;
+    }
+    .inside__item:hover { border-color: #566268; }
+
+    .inside__item--wide { grid-column: 1 / -1; }
+
+    .inside__title {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .inside__desc {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #c8cacc;
+    }
+
+    /* --- мини-инфографика --- */
+    .viz {
+      min-height: 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+    .viz__cap {
+      font-size: 12px;
+      font-weight: 600;
+      color: #8a8c8e;
+      font-style: normal;
+    }
+    .viz__cap b { color: #dfdf41; font-weight: 700; }
+
+    /* три коробочки против семи блоков */
+    .viz-boxes { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .viz-boxes__set { display: flex; gap: 4px; }
+    .viz-boxes__set i {
+      width: 13px; height: 13px; border-radius: 3px;
+      border: 1px solid #566268; display: block;
+    }
+    .viz-boxes__set--on i { border-color: #dfdf41; background: rgba(223,223,65,0.35); }
+
+    /* перекос чтения над записью */
+    .viz-load {
+      display: flex; height: 12px; border-radius: 3px;
+      overflow: hidden; background: #2b3238;
+    }
+    .viz-load__read { flex: 94; background: #dfdf41; }
+    .viz-load__write { flex: 6; background: #566268; }
+
+    /* блоки схемы */
+    .viz-nodes { display: flex; flex-wrap: wrap; gap: 5px; }
+    .viz-nodes span {
+      font-size: 10.5px; font-weight: 600; color: #c8cacc;
+      border: 1px solid #3f4a4f; border-radius: 100px;
+      padding: 3px 9px; white-space: nowrap;
+    }
+
+    /* семь частых ошибок */
+    .viz-flags { display: flex; align-items: flex-end; gap: 6px; height: 26px; }
+    .viz-flags i { width: 12px; background: #dfdf41; border-radius: 2px 2px 0 0; display: block; }
+    .viz-flags i:nth-child(1) { height: 40%; }
+    .viz-flags i:nth-child(2) { height: 62%; }
+    .viz-flags i:nth-child(3) { height: 48%; }
+    .viz-flags i:nth-child(4) { height: 100%; }
+    .viz-flags i:nth-child(5) { height: 70%; }
+    .viz-flags i:nth-child(6) { height: 55%; }
+    .viz-flags i:nth-child(7) { height: 34%; }
+
+    /* чек-лист на семь пунктов */
+    .viz-check { display: flex; gap: 5px; }
+    .viz-check i {
+      width: 15px; height: 15px; border-radius: 4px;
+      border: 1.5px solid #566268; display: block; position: relative;
+    }
+    .viz-check i.is-on { border-color: #dfdf41; background: #dfdf41; }
+    .viz-check i.is-on::after {
+      content: ''; position: absolute; left: 4px; top: 1px;
+      width: 4px; height: 7px;
+      border: solid #182023; border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    /* пять минут из сорока */
+    .viz-clock { display: flex; align-items: center; gap: 12px; }
+    .viz-clock svg { flex-shrink: 0; }
+    .viz-clock__label { font-size: 12px; font-weight: 600; color: #8a8c8e; }
+    .viz-clock__label b { display: block; color: #dfdf41; font-size: 15px; }
+
+    .section__cta {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    /* ===== FOR WHO ===== */
+    .for-who__title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .for-who__panel {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #22282d;
+      border: 1px solid #374246;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .for-who__item {
+      padding: 32px 30px;
+      border-right: 1px solid #374246;
+    }
+    .for-who__item:last-child { border-right: none; }
+
+    .for-who__stage {
+      font-size: 12px;
+      font-weight: 700;
+      color: #dfdf41;
+      margin-bottom: 14px;
+    }
+
+    .for-who__text {
+      text-wrap: balance;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.65;
+      color: #e4e6e7;
+    }
+
+
+    /* ===== TEACHER ===== */
+    .teacher__grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .teacher__photo {
+      border-radius: 24px;
+      overflow: hidden;
+      background: #31383f;
+      position: sticky;
+      top: 100px;
+    }
+    .teacher__photo img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .teacher__name {
+      font-size: 40px;
+      font-weight: 500;
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+
+    /* Experience list */
+    .experience {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .experience__item {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+      padding: 24px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      align-items: baseline;
+    }
+    .experience__item:last-child {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .experience__company {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .experience__company-name {
+      font-size: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .experience__badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #c8cacc;
+      white-space: nowrap;
+    }
+
+    .experience__desc {
+      font-size: 15px;
+      font-weight: 500;
+      color: #b5b7b9;
+      line-height: 1.5;
+    }
+
+    /* Stats cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: #31383f;
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      transition: transform 0.3s;
+    }
+    .stat-card:first-child {
+      background: #dfdf41;
+      color: #182023;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-card__number {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .stat-card__line {
+      width: 40px;
+      height: 2px;
+      background: rgba(255,255,255,0.15);
+      margin-bottom: 16px;
+    }
+    .stat-card:first-child .stat-card__line {
+      background: rgba(0,0,0,0.15);
+    }
+
+    .stat-card__desc {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .stat-card:first-child .stat-card__desc {
+      color: #182023;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: #dfdf41;
+      z-index: 1001;
+      transition: width 0.1s linear;
+      width: 0%;
+    }
+
+    /* ===== FINAL CTA ===== */
+    .final-cta {
+      padding: 48px 0 80px;
+      background: #182023;
+    }
+
+    .final-cta__card {
+      background: #dfdf41;
+      border-radius: 32px;
+      padding: 64px 48px;
+      text-align: center;
+      color: #182023;
+    }
+
+    .final-cta__badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .final-cta__badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border: 1.5px solid rgba(24, 32, 35, 0.25);
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #182023;
+    }
+
+    .final-cta__title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 48px;
+      color: #182023;
+    }
+
+    .final-cta__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px 48px;
+      background: #182023;
+      color: #ffffff;
+      border-radius: 100px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .final-cta__btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+    .final-cta__btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .final-cta__hint {
+      margin-top: 16px;
+      font-size: 14px;
+      color: rgba(24, 32, 35, 0.55);
+      font-weight: 500;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 40px 0;
+      background: #182023;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .footer__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .footer__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer__copy {
+      font-size: 14px;
+      color: #707070;
+    }
+
+    .footer__links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer__link {
+      font-size: 14px;
+      color: #707070;
+      transition: color 0.2s;
+    }
+    .footer__link:hover {
+      color: #c8cacc;
+    }
+
+    .footer__legal {
+      font-size: 13px;
+      color: #505050;
+      line-height: 1.6;
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 44px;
+      height: 44px;
+      background: #dfdf41;
+      color: #182023;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.2s;
+      z-index: 999;
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .back-to-top:hover {
+      background: #caca18;
+    }
+    .back-to-top svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ===== STICKY MOBILE CTA ===== */
+    .sticky-cta {
+      display: none;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 960px) {
+      .container { padding: 0 24px; }
+      .hero__inner { flex-direction: column; gap: 40px; }
+      .hero__content { max-width: 100%; }
+      .hero__title { font-size: 36px; }
+      .section__title { font-size: 30px; margin-bottom: 50px; }
+      .for-who__title { font-size: 30px; }
+      .teacher__name { font-size: 30px; }
+      .inside { grid-template-columns: 1fr; }
+      .teacher__grid { grid-template-columns: 1fr; gap: 40px; }
+      .teacher__photo { order: -1; max-width: 320px; position: static; }
+      .experience__item { grid-template-columns: 1fr; gap: 8px; }
+      .stats-row { grid-template-columns: repeat(3, 1fr); }
+      .section { padding: 60px 0 40px; }
+      .final-cta__card { padding: 48px 32px; }
+      .final-cta__title { font-size: 28px; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { display: none; }
+      .menu-toggle { display: block; }
+
+      .nav__links-mobile.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: #182023;
+        padding: 20px 24px;
+        gap: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .nav__links-mobile .nav__link { display: block; font-size: 16px; }
+      .nav__cta { display: none; }
+
+      .hero { padding: 120px 0 60px; }
+      .hero__title { font-size: 28px; }
+      .hero__desc { font-size: 14px; }
+
+
+      .section__title { font-size: 24px; margin-bottom: 40px; }
+      .for-who__title { font-size: 24px; }
+      .for-who__panel { grid-template-columns: 1fr; }
+      .for-who__item { border-right: none; border-bottom: 1px solid #374246; padding: 24px 22px; }
+      .for-who__item:last-child { border-bottom: none; }
+      .for-who__text { font-size: 15px; }
+      .teacher__name { font-size: 26px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-card { padding: 24px 20px; }
+      .stat-card__number { font-size: 24px; }
+      .experience__company-name { font-size: 14px; }
+      .experience__badge { font-size: 11px; }
+      .experience__desc { font-size: 13px; }
+
+      .section { padding: 40px 0 24px; }
+
+      .inside__item { grid-template-columns: 1fr; gap: 18px; padding: 24px 20px; }
+      .inside__title { font-size: 16px; }
+      .inside__desc { font-size: 14px; }
+
+
+      .final-cta { padding: 40px 0 60px; }
+      .final-cta__card { padding: 40px 24px; border-radius: 24px; }
+      .final-cta__title { font-size: 24px; }
+      .final-cta__badges { flex-wrap: wrap; }
+      .final-cta__btn { padding: 16px 32px; font-size: 16px; }
+
+      .btn { padding: 12px 24px; font-size: 14px; }
+
+      .footer__inner { flex-direction: column; gap: 16px; text-align: center; }
+      .footer { padding-bottom: 80px; }
+
+      .sticky-cta {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(24, 32, 35, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 12px 20px;
+        z-index: 998;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(100%);
+        transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+      }
+      .sticky-cta.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .sticky-cta__btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: #dfdf41;
+        color: #182023;
+        border: none;
+        border-radius: 12px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+      }
+      .back-to-top { bottom: 80px; right: 20px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progress-bar"></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">{ Олег Козырев }</a>
+      <nav class="nav">
+        <a href="#about" class="nav__link">Что внутри</a>
+        <a href="#teacher" class="nav__link">Автор</a>
+      </nav>
+      <a href="#cta" class="btn btn--primary btn--header nav__cta">Забрать разбор</a>
+      <button class="menu-toggle" onclick="this.parentElement.querySelector('.nav__links-mobile').classList.toggle('open')" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav__links-mobile">
+        <a href="#about" class="nav__link" onclick="this.parentElement.classList.remove('open')">Что внутри</a>
+        <a href="#teacher" class="nav__link" onclick="this.parentElement.classList.remove('open')">Автор</a>
+        <a href="#cta" class="btn btn--primary" style="margin-top:8px;" onclick="this.parentElement.classList.remove('open')">Забрать разбор</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__inner">
+        <div class="hero__content fade-up">
+          <div class="hero__badge">Бесплатно</div>
+          <h1 class="hero__title">Как успешно завалить System Design собес <span>за&nbsp;40&nbsp;минут?</span></h1>
+          <p class="hero__desc">На&nbsp;реальных примерах разбери ошибки, из-за которых многие валятся на&nbsp;секции систем дизайна</p>
+          <a href="#cta" class="btn btn--primary">Забрать разбор бесплатно</a>
+        </div>
+        <div class="hero__image fade-up">
+          <picture>
+            <source srcset="hero.webp" type="image/webp">
+            <img src="hero.jpg" alt="Разбор провального System Design собеса" width="1280" height="720" fetchpriority="high">
+          </picture>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR WHO -->
+  <section class="section section--dark" id="for-who">
+    <div class="container">
+      <h2 class="for-who__title fade-up">Этот разбор для&nbsp;тебя, если:</h2>
+      <ul class="for-who__panel fade-up">
+        <li class="for-who__item">
+          <div class="for-who__stage">ЕЩЁ НЕ НАЧАЛ</div>
+          <div class="for-who__text">Упёрся в&nbsp;грейд из-за сисдиза, а&nbsp;что там спрашивают, непонятно</div>
+        </li>
+        <li class="for-who__item">
+          <div class="for-who__stage">ГОТОВЛЮСЬ</div>
+          <div class="for-who__text">Готовишься к&nbsp;System Design, но&nbsp;как его проходить, не&nbsp;знаешь</div>
+        </li>
+        <li class="for-who__item">
+          <div class="for-who__stage">УЖЕ ПРОБОВАЛ</div>
+          <div class="for-who__text">Уже пробовал проходить секцию, но&nbsp;в&nbsp;итоге завалил</div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- WHAT INSIDE -->
+  <section class="section section--dark" id="about">
+    <div class="container">
+      <h2 class="section__title fade-up">Что внутри разбора</h2>
+
+      <div class="inside">
+
+        <div class="inside__item fade-up">
+          <div class="viz">
+            <div class="viz-boxes">
+              <span class="viz-boxes__set"><i></i><i></i><i></i></span>
+              <span class="viz-boxes__set viz-boxes__set--on"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            </div>
+            <em class="viz__cap">нарисовал 3 части, а&nbsp;их&nbsp;<b>больше семи</b></em>
+          </div>
+          <div>
+            <div class="inside__title">Задача в&nbsp;разы больше, чем звучит</div>
+            <div class="inside__desc">Задача звучит просто, поэтому почти все сразу начинают рисовать. В&nbsp;этом и&nbsp;ловушка: за&nbsp;короткой формулировкой прячется система в&nbsp;разы больше, чем кажется, и&nbsp;разницу видно с&nbsp;первых минут</div>
+          </div>
+        </div>
+
+        <div class="inside__item fade-up">
+          <div class="viz">
+            <div class="viz-load"><span class="viz-load__read"></span><span class="viz-load__write"></span></div>
+            <em class="viz__cap">почти вся нагрузка это&nbsp;<b>чтение</b></em>
+          </div>
+          <div>
+            <div class="inside__title">Какие требования бывают и&nbsp;как считать нагрузку</div>
+            <div class="inside__desc">Что вообще прячется в&nbsp;требованиях: время ответа, доступность, как быстро появляются свежие данные. И&nbsp;как из&nbsp;пары чисел прикинуть, какую нагрузку будет держать сервис</div>
+          </div>
+        </div>
+
+        <div class="inside__item fade-up">
+          <div class="viz">
+            <div class="viz-nodes"><span>Gateway</span><span>Feed</span><span>Кэш</span><span>Ранжир.</span><span>Поиск</span><span>CDN</span></div>
+          </div>
+          <div>
+            <div class="inside__title">Как выглядит схема, которую от&nbsp;тебя ждут</div>
+            <div class="inside__desc">Готовая схема с&nbsp;доски: из&nbsp;каких частей собирается такая система, зачем нужна каждая и&nbsp;как они связаны между собой</div>
+          </div>
+        </div>
+
+        <div class="inside__item fade-up">
+          <div class="viz">
+            <div class="viz-clock">
+            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+              <circle cx="17" cy="17" r="14" fill="none" stroke="#3f4a4f" stroke-width="4"/>
+              <circle cx="17" cy="17" r="14" fill="none" stroke="#dfdf41" stroke-width="4"
+                      stroke-dasharray="11 88" stroke-linecap="round" transform="rotate(-90 17 17)"/>
+            </svg>
+              <span class="viz-clock__label"><b>первые 5 минут</b>из сорока</span>
+            </div>
+          </div>
+          <div>
+            <div class="inside__title">Готовый скрипт на&nbsp;первые пять минут</div>
+            <div class="inside__desc">Четыре вопроса подряд, которые задаёшь до&nbsp;того, как нарисуешь первую стрелку. Порядок и&nbsp;формулировки готовые: прогоняешь на&nbsp;любой задаче, и&nbsp;интервьюер видит перед собой человека, который шарит за&nbsp;сисдиз</div>
+          </div>
+        </div>
+
+        <div class="inside__item inside__item--wide fade-up">
+          <div class="viz">
+            <div class="viz-check"><i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i></i><i></i><i></i><i></i></div>
+            <em class="viz__cap">отметил <b>3 и больше</b>, это нормально</em>
+          </div>
+          <div>
+            <div class="inside__title">Проверь, на&nbsp;чём валишься именно ты</div>
+            <div class="inside__desc">Список из&nbsp;семи пунктов, из-за которых заваливают секцию. Пройдись и&nbsp;честно отметь свои</div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="section__cta fade-up">
+        <a href="#cta" class="btn btn--primary">Забрать разбор бесплатно</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACHER -->
+  <section class="section section--dark" id="teacher">
+    <div class="container">
+      <div class="teacher__grid">
+        <div class="fade-up">
+          <h2 class="teacher__name">Автор разбора:<br>Олег Козырев</h2>
+
+          <ul class="experience">
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Т-Банк</span>
+                <span class="experience__badge">Staff Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал LLM-платформу для&nbsp;создания ИИ-продуктов внутри компании</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Авито</span>
+                <span class="experience__badge">Senior Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал внутреннюю платформу для&nbsp;сотен сервисов корпорации</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Ozon Tech</span>
+                <span class="experience__badge">Senior Engineer</span>
+              </div>
+              <div class="experience__desc">Разрабатывал сервисы логистики, модерации контента и&nbsp;мониторинга доставки</div>
+            </li>
+            <li class="experience__item">
+              <div class="experience__company">
+                <span class="experience__company-name">Route 256</span>
+                <span class="experience__badge">Преподаватель</span>
+              </div>
+              <div class="experience__desc">Менторил и&nbsp;преподавал курсы по&nbsp;построению микросервисов в&nbsp;школе Ozon Tech</div>
+            </li>
+          </ul>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="13000" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">подписчиков на&nbsp;YouTube</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">подписчиков в&nbsp;Telegram</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="8" data-suffix="+ лет">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__desc">коммерческой разработки</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="teacher__photo fade-up">
+          <picture>
+            <source srcset="oleg-portrait.webp" type="image/webp">
+            <img src="oleg-portrait.jpg" alt="Олег Козырев, автор разбора" width="720" height="960" loading="lazy">
+          </picture>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta" id="cta">
+    <div class="container">
+      <div class="final-cta__card fade-up">
+        <div class="final-cta__badges">
+          <span class="final-cta__badge">Бесплатно</span>
+        </div>
+        <h2 class="final-cta__title">Разбери чужие ошибки<br>до&nbsp;того, как наделаешь своих</h2>
+        <a href="https://t.me/olezhek28go" target="_blank" rel="noopener" class="final-cta__btn js-tg">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.41-.88.03-.24.37-.49.99-.75 3.9-1.7 6.5-2.82 7.82-3.37 3.72-1.55 4.5-1.82 5-1.83.11 0 .37.03.53.15.14.1.17.24.19.35.02.08.03.28.02.43z"/></svg>
+          Забрать разбор в Telegram
+        </a>
+        <p class="final-cta__hint">* После нажатия на кнопку откроется пост в моём Telegram-канале со ссылкой на разбор</p>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <div class="sticky-cta" id="sticky-cta">
+    <a href="https://t.me/olezhek28go" target="_blank" rel="noopener" class="sticky-cta__btn js-tg">Забрать разбор бесплатно</a>
+  </div>
+
+  <button class="back-to-top" id="back-to-top" aria-label="Наверх">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__top">
+        <div class="footer__copy">&copy; 2026 Олег Козырев</div>
+        <div class="footer__links">
+          <a href="policy.html" class="footer__link">Политика конфиденциальности</a>
+        </div>
+      </div>
+      <div class="footer__legal">
+        ИП Козырев Олег Вячеславович<br>
+        ИНН 440315249608<br>
+        ОГРНИП 324440000010534<br>
+        Дата регистрации: 25.04.2024<br>
+        Email: olezhek28.courses@yandex.ru
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // TODO: заменить на ссылку поста с разбором, когда он выйдет в канале
+    var TG_URL = 'https://t.me/olezhek28go/XXXX';
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Ссылка на пост с разбором проставляется в одном месте
+      if (TG_URL.indexOf('XXXX') === -1) {
+        document.querySelectorAll('.js-tg').forEach(function(a) { a.href = TG_URL; });
+      }
+
+      // Fade-up анимации
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.fade-up').forEach(function(el) {
+        observer.observe(el);
+      });
+
+      // Счётчики
+      var counters = document.querySelectorAll('[data-count]');
+      var counterObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !entry.target.dataset.animated) {
+            entry.target.dataset.animated = 'true';
+            var target = parseInt(entry.target.dataset.count);
+            var suffix = entry.target.dataset.suffix || '';
+            var duration = 1500;
+            var startTime = null;
+            function step(timestamp) {
+              if (!startTime) startTime = timestamp;
+              var progress = Math.min((timestamp - startTime) / duration, 1);
+              var eased = 1 - Math.pow(1 - progress, 3);
+              var current = Math.floor(eased * target);
+              entry.target.textContent = current.toLocaleString('ru-RU') + suffix;
+              if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      counters.forEach(function(el) { counterObserver.observe(el); });
+
+      // Прогресс-бар, кнопка наверх, липкий CTA
+      var progressBar = document.getElementById('progress-bar');
+      var backToTop = document.getElementById('back-to-top');
+      var stickyCta = document.getElementById('sticky-cta');
+      var finalCtaSection = document.getElementById('cta');
+      window.addEventListener('scroll', function() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var scrollPercent = (scrollTop / docHeight) * 100;
+        progressBar.style.width = scrollPercent + '%';
+        if (scrollTop > 600) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+        var ctaRect = finalCtaSection.getBoundingClientRect();
+        if (scrollTop > 400 && ctaRect.top > window.innerHeight) {
+          stickyCta.classList.add('visible');
+        } else {
+          stickyCta.classList.remove('visible');
+        }
+      }, { passive: true });
+      backToTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  </script>
+
+</body>
+</html>
