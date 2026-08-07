@@ -3198,12 +3198,15 @@
   <div class="gc-modal__backdrop" data-gc-close></div>
   <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Анкета предзаписи">
     <button type="button" class="gc-modal__close" data-gc-close aria-label="Закрыть">&#10005;</button>
-    <!-- Скрипт виджета GetCourse СПЕЦИАЛЬНО не стоит здесь в разметке: его iframe
+    <!-- Форма GetCourse СПЕЦИАЛЬНО не стоит здесь в разметке: её iframe
          (school.olezhek28.courses) отправляет собственный хит в тот же счётчик
          96022201, и при загрузке вместе со страницей это ломало аналитику —
          второй просмотр приезжал у каждого посетителя, обнуляя показатель
-         отказов и удваивая глубину просмотра. Теперь скрипт вставляется по
-         первому клику, см. loadWidget() ниже. -->
+         отказов и удваивая глубину просмотра. Поэтому iframe создаётся по
+         первому клику, см. loadWidget() ниже.
+         Пока счётчик внутри виджета общий с лендингом, предзагружать форму
+         заранее (по наведению или по скроллу к тарифам) нельзя — вернётся
+         та же поломка аналитики. -->
     <div class="gc-modal__body is-loading" id="gc-modal-body">
       <div class="gc-modal__loading" id="gc-loading" role="status">
         <span class="gc-spinner" aria-hidden="true"></span>Загружаю анкету…
@@ -3237,10 +3240,21 @@
     // Грузим форму только по первому клику. Если вставить её скрипт в разметку,
     // iframe отправит свой хит в счётчик у каждого посетителя — см. комментарий
     // у .gc-modal__body.
+    //
+    // Штатный script?id=... ничего не делает, кроме сборки iframe по
+    // предсказуемому URL и подписки на postMessage с высотой. При этом он отдаётся
+    // с Cache-Control: no-store и генерится сервером ~1 секунду, то есть каждый
+    // посетитель платит эту секунду заново, просто чтобы получить строчку с src.
+    // Поэтому iframe собираем сами теми же параметрами, а штатный скрипт держим
+    // как запасной путь на случай, если GetCourse поменяет схему URL.
     var WIDGET_ID = '899a0f68032eb1a5b3f89a1a2ce8291d864ab292';
     var WIDGET_SRC = 'https://school.olezhek28.courses/pl/lite/widget/script?id=1633267';
+    var WIDGET_ORIGIN = 'https://school.olezhek28.courses';
     var FORM_URL = 'https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267';
+    var FRAME_NAME = 'gc-sd-form';
     var widgetRequested = false;
+    var fallbackRequested = false;
+    var gotHeight = false;
 
     // идемпотентно: зовётся и по load iframe, и по страховочному таймауту
     function widgetReady() {
@@ -3254,11 +3268,54 @@
       if (ph) ph.innerHTML = 'Не удалось загрузить анкету. <a href="' + FORM_URL +
         '">Открыть её отдельной страницей</a>';
     }
-    function loadWidget() {
-      if (widgetRequested) return;
-      widgetRequested = true;
+    // те же параметры, что подставляет штатный скрипт: search нужен, чтобы
+    // в анкету доехали utm-метки, ref и loc GetCourse пишет в заявку
+    function frameSrc() {
+      var src = WIDGET_ORIGIN + '/pl/lite/widget/widget?' + window.location.search.substring(1) +
+        '&id=1633267&ref=' + encodeURIComponent(document.referrer) +
+        '&loc=' + encodeURIComponent(document.location.href);
+      try {
+        if (window.clrtQueryData) {
+          src += '&clrtQueryData=' + encodeURIComponent(JSON.stringify(window.clrtQueryData));
+        }
+      } catch (e) {}
+      return src;
+    }
+
+    // GetCourse шлёт высоту формы через postMessage. Origin проверяем сами:
+    // в их собственном обработчике проверки нет, а слушаем мы весь window.
+    window.addEventListener('message', function (e) {
+      if (e.origin !== WIDGET_ORIGIN) return;
+      var d = e.data;
+      if (!d || d.uniqName !== WIDGET_ID || !d.height) return;
+      // метрики переименовывают iframe, поэтому сравниваем по части до &
+      if (d.iframeName && d.iframeName.split('&')[0] !== FRAME_NAME) return;
+      gotHeight = true; // единственное надёжное доказательство, что внутри наша форма
+      var f = document.getElementById('gc-frame');
+      if (f) f.style.height = d.height + 'px';
+    });
+
+    // заглушку могли уже снять по load — вернём её перед запасной попыткой
+    function ensurePlaceholder() {
+      var body = document.getElementById('gc-modal-body');
+      if (!body || document.getElementById('gc-loading')) return;
+      var ph = document.createElement('div');
+      ph.className = 'gc-modal__loading';
+      ph.id = 'gc-loading';
+      ph.setAttribute('role', 'status');
+      ph.innerHTML = '<span class="gc-spinner" aria-hidden="true"></span>Загружаю анкету…';
+      body.classList.add('is-loading');
+      body.appendChild(ph);
+    }
+
+    // запасной путь: штатный скрипт GetCourse, если прямой iframe не поднялся
+    function loadWidgetViaScript() {
+      if (fallbackRequested) return;
+      fallbackRequested = true;
       var body = document.getElementById('gc-modal-body');
       if (!body) return;
+      var broken = document.getElementById('gc-frame');
+      if (broken) broken.parentNode.removeChild(broken);
       var s = document.createElement('script');
       s.id = WIDGET_ID;
       s.src = WIDGET_SRC;
@@ -3273,6 +3330,36 @@
         setTimeout(widgetReady, 8000); // не залипаем на заглушке, если load не придёт
       };
       body.appendChild(s);
+    }
+
+    function loadWidget() {
+      if (widgetRequested) return;
+      widgetRequested = true;
+      var body = document.getElementById('gc-modal-body');
+      if (!body) return;
+      var loaded = false;
+      var f = document.createElement('iframe');
+      f.id = 'gc-frame';
+      f.name = FRAME_NAME;
+      f.title = 'Анкета предзаписи';
+      f.src = frameSrc();
+      f.setAttribute('allowfullscreen', 'allowfullscreen');
+      f.addEventListener('load', function () { loaded = true; widgetReady(); });
+      f.addEventListener('error', loadWidgetViaScript);
+      body.appendChild(f);
+      // Откат по признаку «форма не отозвалась», а не «долго грузится»: живая
+      // форма присылает height за 3-4 секунды, а страница ошибки или чужая
+      // разметка по подменённому URL дадут load и промолчат. Ронять медленную,
+      // но рабочую загрузку нельзя — второй заход стоит ещё дороже.
+      setTimeout(function () {
+        if (gotHeight) return;
+        if (loaded) { ensurePlaceholder(); loadWidgetViaScript(); return; }
+        setTimeout(function () {
+          if (gotHeight) return;
+          ensurePlaceholder();
+          loadWidgetViaScript();
+        }, 10000);
+      }, 10000);
     }
 
     // ===== Изоляция фона на время модалки =====
