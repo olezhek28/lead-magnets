@@ -3332,6 +3332,68 @@
       body.appendChild(s);
     }
 
+    // ===== Прогрев статики формы =====
+    // Сам iframe заранее не создаём: он тянет за собой счётчик Метрики, который
+    // в GetCourse задаётся одним полем на весь аккаунт, и лишний просмотр
+    // испортил бы статистику лендинга (см. комментарий у .gc-modal__body).
+    // Но 70 файлов, из которых форма состоит, отдаются с max-age=10 лет — их
+    // можно просто скачать заранее. Проверено: iframe потом берёт их из кэша
+    // (fromPrefetchCache), а Метрика молчит, потому что документ формы не
+    // выполняется. Здесь 9 самых тяжёлых вендорных библиотек — 780 КБ.
+    //
+    // Только вендорные: бандлы с хэшем содержимого в имени (dictionary-gen,
+    // superlite-block, custom-form — вместе 844 КБ) прогревать бесполезно.
+    // Проверено: GetCourse пересобирает их, и к моменту открытия формы хэш уже
+    // другой, поэтому в кэш они не попадают ни разу. Не возвращать их в список.
+    //
+    // ВНИМАНИЕ: у оставшихся в адресах зашит ?v=. Когда GetCourse обновит
+    // библиотеки, прогрев тихо промахнётся: форма продолжит работать, но станет
+    // снова медленной, и никто этого не заметит. Раз в несколько месяцев стоит
+    // снять запросы со страницы формы и сверить список.
+    var GC = 'https://school.olezhek28.courses/pl/nassets/';
+    var PREFETCH = [
+      GC + '4b8ca1d0/jquery-ui.min.js?v=1765633902',
+      GC + 'de470cdd/css/all.css?v=1765633899',
+      GC + 'd142fbf/css/bootstrap.min.css?v=1777880033',
+      GC + '2b98cd16/jquery.min.js?v=1765633902',
+      GC + 'cc216a2a/select2.min.js?v=1765633902',
+      GC + 'de470cdd/css/v4-shims.css?v=1765633899',
+      GC + 'ddb7aabd/js/bootstrap-datetimepicker.min.js?v=1765633902',
+      GC + '4b8ca1d0/themes/smoothness/jquery-ui.css?v=1765633902',
+      GC + '5ff1daa/js/bootstrap-datepicker.min.js?v=1765633902'
+    ];
+    var warmed = false;
+    function warmFormAssets() {
+      if (warmed) return;
+      warmed = true;
+      // полтора мегабайта на экономном тарифе или медленной сети — не наш случай
+      var c = navigator.connection;
+      if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
+      PREFETCH.forEach(function (u) {
+        var l = document.createElement('link');
+        l.rel = 'prefetch';
+        l.as = /\.css(\?|$)/.test(u) ? 'style' : 'script';
+        l.href = u;
+        document.head.appendChild(l);
+      });
+    }
+    // греем на подходе к тарифам: до клика остаётся несколько секунд
+    var tariffs = document.getElementById('tarify');
+    if (tariffs && 'IntersectionObserver' in window) {
+      var warmObserver = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) {
+          warmFormAssets();
+          warmObserver.disconnect();
+        }
+      }, { rootMargin: '800px 0px' });
+      warmObserver.observe(tariffs);
+    }
+    // подстраховка: наведение на кнопку анкеты, если до тарифов не доскроллили
+    document.querySelectorAll('[data-gc-open]').forEach(function (b) {
+      b.addEventListener('pointerenter', warmFormAssets, { once: true });
+      b.addEventListener('touchstart', warmFormAssets, { once: true, passive: true });
+    });
+
     function loadWidget() {
       if (widgetRequested) return;
       widgetRequested = true;
