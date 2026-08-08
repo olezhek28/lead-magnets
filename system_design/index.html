@@ -153,6 +153,16 @@
 </script>
 
 <style>
+  /* ===== ФИЧА-ТОГЛЫ =====
+     Блоки, у которых ещё нет контента, помечены data-feature="<имя>" и скрываются,
+     пока фича выключена. Переключатель — объект FEATURES в <head> ниже: поменял
+     false на true, и блок вернулся на место, разметку трогать не надо.
+     Скрываем через класс на <html>, который ставится до отрисовки body, — блок
+     не успевает моргнуть. Правило работает только на выключенной фиче, поэтому
+     собственный display блока (grid у .row и т.п.) не теряется. */
+  .f-off-video-sales  [data-feature="video-sales"],
+  .f-off-chat-screens [data-feature="chat-screens"] { display: none !important; }
+
   :root {
     --bg-primary:   #10171A;
     --bg-card:      #182023;
@@ -1040,7 +1050,6 @@
   .teacher__side { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 108px; }
   .teacher__photo { display: block; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card); overflow: hidden; box-shadow: var(--sh-lift); }
   .teacher__photo img { display: block; width: 100%; height: auto; object-fit: cover; }
-  .teacher__quote { background: none; border: none; border-left: 2px solid var(--accent); border-radius: 0; padding: 6px 0 6px 22px; font-family: var(--display); font-size: 17px; line-height: 1.42; letter-spacing: -0.02em; color: var(--text-h); }
 
   /* Стили тарифов лежат ниже, в блоке "ТАРИФЫ — стили из версии Олега":
      маркетолог перенёс их в конец файла, и дубль здесь был мёртвым. */
@@ -1716,6 +1725,33 @@
     .yt__play-btn svg { width: 13px; height: 13px; }
   }
 </style>
+
+<!-- ===== ПЕРЕКЛЮЧАТЕЛЬ ФИЧА-ТОГЛОВ =====
+     Единственное место, где включаются и выключаются недоделанные блоки.
+     true — блок показывается, false — скрыт (разметка остаётся в файле).
+
+       video-sales   — видеопродажник в секции «Почему не получается пройти сисдиз»
+                       и подводка «разобрал в ролике за 6 минут».
+                       Включить, когда ролик снят и вставлена рабочая ссылка/встройка
+                       (сейчас там обложка-заглушка без обработчика клика).
+       chat-screens  — блок «А ещё у нас полный комфортик в чатике».
+                       Включить, когда в макет телефона добавлены реальные скриншоты
+                       чата (сейчас внутри плашка «СКРИНЫ ЧАТА · добавим позже»).
+
+     Скрипт стоит в <head> намеренно: класс появляется на <html> до того, как
+     браузер отрисует body, поэтому скрытый блок не мелькает при загрузке. -->
+<script>
+  var FEATURES = {
+    'video-sales':  false,
+    'chat-screens': false
+  };
+  (function () {
+    var root = document.documentElement;
+    for (var name in FEATURES) {
+      if (!FEATURES[name]) root.classList.add('f-off-' + name);
+    }
+  })();
+</script>
 </head>
 <body>
 
@@ -1999,15 +2035,17 @@
     <div class="container">
       <div class="mech fade-up">
         <h2 class="mech__title">Почему не&nbsp;получается пройти сисдиз</h2>
-        <!-- ⚠️ хронометраж "6 минут" — плейсхолдер, сверить -->
         <p class="mech__lead mech__lead--tight">Кажется, что на&nbsp;System Design валят непонятно за&nbsp;что и&nbsp;всё решает везение: какая попадётся задача и&nbsp;какой интервьюер.</p>
         <p class="mech__lead mech__lead--tight">Человеческий фактор тут есть, глупо это отрицать. Задача может попасться неудобная, да&nbsp;и&nbsp;секцию каждый ведёт по-своему: один копает в&nbsp;базы, другой в&nbsp;отказоустойчивость, третий в&nbsp;оценку нагрузки.</p>
         <p class="mech__lead mech__lead--tight">Только повлиять на&nbsp;это ты&nbsp;не&nbsp;можешь, а&nbsp;вот на&nbsp;остальное вполне: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор, куда сам увёл разговор.</p>
         <p class="mech__lead mech__lead--tight">Ошибок, которых можно было не&nbsp;допускать, набирается прилично. Каждая портит впечатление, а&nbsp;из&nbsp;впечатления и&nbsp;складывается решение по&nbsp;секции.</p>
-        <p class="mech__lead">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;6&nbsp;минут.</p>
+        <!-- подводка живёт под тем же тоглом, что и сам ролик: без видео фраза повисает.
+             ⚠️ хронометраж "6 минут" — плейсхолдер, сверить перед включением -->
+        <p class="mech__lead" data-feature="video-sales">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;6&nbsp;минут.</p>
 
-        <!-- ⚠️ видеопродажник: заглушка-обложка, реальный ролик подставить (ссылка/встройка) -->
-        <div class="video v1-video">
+        <!-- ⚠️ видеопродажник: пока обложка-заглушка без обработчика клика.
+             Перед включением тогла подставить реальный ролик (ссылка/встройка). -->
+        <div class="video v1-video" data-feature="video-sales">
           <div class="yt__thumb">
             <span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
             <div class="video__cap">За&nbsp;6&nbsp;минут: почему валят SD и&nbsp;как перестать плыть</div>
@@ -2398,8 +2436,11 @@
 
       </div>
 
-      <!-- чатик потока — мокап телефона со скринами чата слева, текст справа -->
-      <div class="row row--flip row--chat fade-up">
+      <!-- чатик потока — мокап телефона со скринами чата слева, текст справа.
+           ⚠️ внутри плашка-заглушка «СКРИНЫ ЧАТА · добавим позже»: блок обещает
+           атмосферу, но ничем её не показывает, поэтому пока под тоглом.
+           Перед включением вставить реальный скриншот в .phone__screen. -->
+      <div class="row row--flip row--chat fade-up" data-feature="chat-screens">
         <div class="row__body">
           <div class="row__label">Атмосфера потока</div>
           <h3 class="row__title">А&nbsp;ещё у&nbsp;нас полный комфортик в&nbsp;чатике и&nbsp;на&nbsp;лекциях :)</h3>
@@ -2626,9 +2667,6 @@
               <img src="oleg-portrait.jpg" alt="Олег Козырев, автор курса по System Design" width="720" height="960" loading="lazy">
             </picture>
           </div>
-<!-- Слот .teacher__quote оставлен пустым намеренно: личная цитата должна быть
-               написана самим Олегом, а не сочинена за него. Разметка под неё:
-               <blockquote class="teacher__quote">…</blockquote> -->
         </div>
       </div>
     </div>
