@@ -5,5 +5,8 @@ __pycache__/
 .mcp.json
 .idea/
 
+# git-worktree'ы Claude Code: вложенный репозиторий, в коммит попадать не должен
+.claude/worktrees/
+
 # рабочая SEO-заметка — только локально, не публикуем
 docs/seo.md
