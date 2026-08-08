@@ -72,6 +72,10 @@
     /* ===== RESET & BASE ===== */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root {
+      --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+    }
+
     html {
       scroll-behavior: smooth;
       font-size: 16px;
@@ -93,6 +97,26 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 40px;
+    }
+
+    /* ===== СЛУЖЕБНЫЙ СЛОЙ: моноширинные кикеры и метки ===== */
+    .kicker {
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #8a8c8e;
+      margin-bottom: 14px;
+    }
+    .kicker b { color: #dfdf41; font-weight: 600; }
+
+    .label {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #dfdf41;
+      margin-bottom: 10px;
     }
 
     /* ===== ANIMATIONS ===== */
@@ -162,7 +186,7 @@
       align-items: center;
       justify-content: center;
       padding: 14px 32px;
-      border-radius: 12px;
+      border-radius: 100px;
       font-family: 'Manrope', sans-serif;
       font-size: 16px;
       font-weight: 600;
@@ -192,7 +216,6 @@
     .btn--header {
       padding: 10px 24px;
       font-size: 14px;
-      border-radius: 8px;
     }
 
     /* Mobile menu toggle */
@@ -264,14 +287,16 @@
 
     .hero__badge {
       display: inline-block;
-      padding: 6px 20px;
+      padding: 6px 18px;
       background: rgba(223, 223, 65, 0.15);
       color: #dfdf41;
       border-radius: 100px;
-      font-size: 14px;
+      font-family: var(--mono);
+      font-size: 12px;
       font-weight: 600;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
     }
 
     .hero__title {
@@ -297,22 +322,32 @@
       padding: 60px 0 48px;
     }
 
+    .section__head {
+      margin-bottom: 40px;
+    }
+
     .section__title {
       font-size: 40px;
       font-weight: 700;
-      line-height: 1.2;
-      text-align: center;
-      margin-bottom: 48px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
     }
 
-    .section--light {
-      background: #e9e8ed;
-      color: #182023;
-    }
     .section--dark {
       background: #182023;
       color: #ffffff;
     }
+
+    /* Светлый островок — контрастная вставка в тёмной странице */
+    .island {
+      background: #e9e8ed;
+      color: #182023;
+      border-radius: 34px;
+      padding: 56px 48px;
+    }
+    .island .kicker { color: #5f6668; }
+    .island .kicker b { color: #182023; }
+    .island .section__head { margin-bottom: 36px; }
 
     /* ===== WHAT INSIDE ===== */
     .inside {
@@ -360,12 +395,13 @@
       gap: 8px;
     }
     .viz__cap {
-      font-size: 12px;
-      font-weight: 600;
-      color: #8a8c8e;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: #9a9ea0;
       font-style: normal;
     }
-    .viz__cap b { color: #dfdf41; font-weight: 700; }
+    .viz__cap b { color: #dfdf41; font-weight: 600; }
 
     /* три коробочки против семи блоков */
     .viz-boxes { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
@@ -429,168 +465,169 @@
     }
 
     /* ===== FOR WHO ===== */
-    .for-who__title {
-      font-size: 40px;
-      font-weight: 800;
-      line-height: 1.15;
-      color: #ffffff;
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
     .for-who__panel {
       list-style: none;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      background: #22282d;
-      border: 1px solid #374246;
-      border-radius: 22px;
-      overflow: hidden;
+      gap: 32px;
     }
 
     .for-who__item {
-      padding: 32px 30px;
-      border-right: 1px solid #374246;
+      padding-left: 28px;
+      border-left: 1px solid rgba(24, 32, 35, 0.14);
     }
-    .for-who__item:last-child { border-right: none; }
+    .for-who__item:first-child { padding-left: 0; border-left: none; }
 
     .for-who__stage {
-      font-size: 12px;
-      font-weight: 700;
-      color: #dfdf41;
-      margin-bottom: 14px;
+      display: inline-block;
+      background: #dfdf41;
+      color: #182023;
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 16px;
     }
 
     .for-who__text {
       text-wrap: balance;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 500;
-      line-height: 1.65;
-      color: #e4e6e7;
+      line-height: 1.6;
+      color: #2c3639;
     }
 
 
     /* ===== TEACHER ===== */
     .teacher__grid {
       display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 60px;
+      grid-template-columns: 280px 1fr;
+      gap: 56px;
       align-items: start;
     }
 
     .teacher__photo {
-      border-radius: 24px;
+      position: relative;
+      width: 240px;
+      aspect-ratio: 1;
+      border-radius: 50%;
       overflow: hidden;
       background: #31383f;
-      position: sticky;
-      top: 100px;
+      border: 2px solid rgba(223, 223, 65, 0.9);
+      margin-bottom: 24px;
     }
+    /* Кадрируем вертикальный портрет под круг: голова с плечами по центру */
     .teacher__photo img {
-      width: 100%;
+      position: absolute;
+      left: -55%;
+      top: -8%;
+      width: 200%;
+      max-width: none;
       height: auto;
-      display: block;
     }
 
     .teacher__name {
-      font-size: 40px;
-      font-weight: 500;
-      margin-bottom: 32px;
-      line-height: 1.2;
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 12px;
     }
 
-    /* Experience list */
-    .experience {
-      list-style: none;
-      margin-bottom: 32px;
+    .teacher__role {
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.75;
+      color: #dfdf41;
     }
 
-    .experience__item {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 16px;
-      padding: 24px 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      align-items: baseline;
-    }
-    .experience__item:last-child {
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .experience__company {
+    /* --- продовый кейс --- */
+    .case {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    .experience__company-name {
-      font-size: 16px;
+    .case__lead,
+    .case__side {
+      background: #22282d;
+      border-left: 3px solid #dfdf41;
+      border-radius: 0 16px 16px 0;
+    }
+
+    .case__lead { padding: 26px 30px 28px; }
+
+    .case__title {
+      font-size: 26px;
       font-weight: 700;
-      white-space: nowrap;
+      line-height: 1.25;
+      margin-bottom: 10px;
     }
 
-    .experience__badge {
-      display: inline-block;
-      padding: 4px 14px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 100px;
+    .case__sub {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.6;
+      color: #c8cacc;
+    }
+
+    .case__metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .case__metric {
+      background: #22282d;
+      border: 1px solid #374246;
+      border-radius: 14px;
+      padding: 18px 22px;
+    }
+
+    .case__value {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #dfdf41;
+      margin-bottom: 4px;
+    }
+
+    .case__unit {
       font-size: 13px;
       font-weight: 500;
       color: #c8cacc;
-      white-space: nowrap;
     }
 
-    .experience__desc {
-      font-size: 15px;
-      font-weight: 500;
-      color: #b5b7b9;
-      line-height: 1.5;
-    }
-
-    /* Stats cards */
-    .stats-row {
+    .case__tradeoffs {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
     }
 
-    .stat-card {
-      background: #31383f;
-      color: #ffffff;
-      border-radius: 20px;
-      padding: 32px 28px;
-      transition: transform 0.3s;
+    .case__tradeoff {
+      background: #22282d;
+      border: 1px solid #374246;
+      border-radius: 14px;
+      padding: 20px 24px;
     }
-    .stat-card:first-child {
-      background: #dfdf41;
-      color: #182023;
-    }
-    .stat-card:hover {
-      transform: translateY(-2px);
-    }
+    .case__tradeoff .label { margin-bottom: 8px; }
 
-    .stat-card__number {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .stat-card__line {
-      width: 40px;
-      height: 2px;
-      background: rgba(255,255,255,0.15);
-      margin-bottom: 16px;
-    }
-    .stat-card:first-child .stat-card__line {
-      background: rgba(0,0,0,0.15);
-    }
-
-    .stat-card__desc {
+    .case__text {
       font-size: 14px;
       font-weight: 500;
-      line-height: 1.5;
+      line-height: 1.6;
+      color: #c8cacc;
     }
-    .stat-card:first-child .stat-card__desc {
-      color: #182023;
+
+    .case__side { padding: 20px 26px 22px; }
+    .case__side .label { margin-bottom: 8px; }
+    .case__side b { color: #ffffff; font-weight: 700; }
+
+    .case__track {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.6;
+      color: #8a8c8e;
+      padding-top: 18px;
+      margin-top: 4px;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
 
     /* ===== PROGRESS BAR ===== */
@@ -628,11 +665,14 @@
 
     .final-cta__badge {
       display: inline-block;
-      padding: 8px 20px;
+      padding: 7px 18px;
       border: 1.5px solid rgba(24, 32, 35, 0.25);
       border-radius: 100px;
-      font-size: 15px;
+      font-family: var(--mono);
+      font-size: 12px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       color: #182023;
     }
 
@@ -765,14 +805,15 @@
       .hero__inner { flex-direction: column; gap: 40px; }
       .hero__content { max-width: 100%; }
       .hero__title { font-size: 36px; }
-      .section__title { font-size: 30px; margin-bottom: 50px; }
-      .for-who__title { font-size: 30px; }
-      .teacher__name { font-size: 30px; }
+      .section__title { font-size: 30px; }
+      .section__head { margin-bottom: 32px; }
+      .island { padding: 44px 36px; }
       .inside { grid-template-columns: 1fr; }
-      .teacher__grid { grid-template-columns: 1fr; gap: 40px; }
-      .teacher__photo { order: -1; max-width: 320px; position: static; }
-      .experience__item { grid-template-columns: 1fr; gap: 8px; }
-      .stats-row { grid-template-columns: repeat(3, 1fr); }
+      .teacher__grid { grid-template-columns: 1fr; gap: 32px; }
+      .teacher__intro { display: flex; align-items: center; gap: 24px; }
+      .teacher__photo { width: 132px; margin-bottom: 0; flex-shrink: 0; }
+      .teacher__name { font-size: 28px; margin-bottom: 8px; }
+      .case__title { font-size: 22px; }
       .section { padding: 60px 0 40px; }
       .final-cta__card { padding: 48px 32px; }
       .final-cta__title { font-size: 28px; }
@@ -802,19 +843,27 @@
       .hero__desc { font-size: 14px; }
 
 
-      .section__title { font-size: 24px; margin-bottom: 40px; }
-      .for-who__title { font-size: 24px; }
-      .for-who__panel { grid-template-columns: 1fr; }
-      .for-who__item { border-right: none; border-bottom: 1px solid #374246; padding: 24px 22px; }
-      .for-who__item:last-child { border-bottom: none; }
+      .section__title { font-size: 24px; }
+      .section__head { margin-bottom: 26px; }
+      .island { padding: 32px 24px; border-radius: 24px; }
+      .for-who__panel { grid-template-columns: 1fr; gap: 22px; }
+      .for-who__item { padding: 22px 0 0; border-left: none; border-top: 1px solid rgba(24, 32, 35, 0.14); }
+      .for-who__item:first-child { padding-top: 0; border-top: none; }
       .for-who__text { font-size: 15px; }
-      .teacher__name { font-size: 26px; }
-      .stats-row { grid-template-columns: 1fr; }
-      .stat-card { padding: 24px 20px; }
-      .stat-card__number { font-size: 24px; }
-      .experience__company-name { font-size: 14px; }
-      .experience__badge { font-size: 11px; }
-      .experience__desc { font-size: 13px; }
+      .teacher__intro { flex-direction: column; align-items: flex-start; gap: 18px; }
+      .teacher__photo { width: 116px; }
+      .teacher__name { font-size: 24px; }
+      .teacher__role { font-size: 13px; }
+      .case__lead { padding: 22px 22px 24px; }
+      .case__title { font-size: 20px; }
+      .case__sub { font-size: 14px; }
+      .case__metrics { grid-template-columns: 1fr; }
+      .case__metric { display: flex; align-items: baseline; gap: 10px; padding: 14px 18px; }
+      .case__value { margin-bottom: 0; }
+      .case__tradeoffs { grid-template-columns: 1fr; }
+      .case__tradeoff { padding: 18px 20px; }
+      .case__side { padding: 18px 20px 20px; }
+      .case__track { font-size: 12px; }
 
       .section { padding: 40px 0 24px; }
 
@@ -924,28 +973,36 @@
   <!-- FOR WHO -->
   <section class="section section--dark" id="for-who">
     <div class="container">
-      <h2 class="for-who__title fade-up">Этот разбор для&nbsp;тебя, если:</h2>
-      <ul class="for-who__panel fade-up">
-        <li class="for-who__item">
-          <div class="for-who__stage">ЕЩЁ НЕ НАЧАЛ</div>
-          <div class="for-who__text">Упёрся в&nbsp;грейд из-за сисдиза, а&nbsp;что там спрашивают, непонятно</div>
-        </li>
-        <li class="for-who__item">
-          <div class="for-who__stage">ГОТОВЛЮСЬ</div>
-          <div class="for-who__text">Готовишься к&nbsp;System Design, но&nbsp;как его проходить, не&nbsp;знаешь</div>
-        </li>
-        <li class="for-who__item">
-          <div class="for-who__stage">УЖЕ ПРОБОВАЛ</div>
-          <div class="for-who__text">Уже пробовал проходить секцию, но&nbsp;в&nbsp;итоге завалил</div>
-        </li>
-      </ul>
+      <div class="island fade-up">
+        <div class="section__head">
+          <div class="kicker"><b>для кого</b> // три ситуации</div>
+          <h2 class="section__title">Этот разбор для&nbsp;тебя, если:</h2>
+        </div>
+        <ul class="for-who__panel">
+          <li class="for-who__item">
+            <div class="for-who__stage label">Ещё не начал</div>
+            <div class="for-who__text">Упёрся в&nbsp;грейд из-за сисдиза, а&nbsp;что там спрашивают, непонятно</div>
+          </li>
+          <li class="for-who__item">
+            <div class="for-who__stage label">Готовлюсь</div>
+            <div class="for-who__text">Готовишься к&nbsp;System Design, но&nbsp;как его проходить, не&nbsp;знаешь</div>
+          </li>
+          <li class="for-who__item">
+            <div class="for-who__stage label">Уже пробовал</div>
+            <div class="for-who__text">Уже пробовал проходить секцию, но&nbsp;в&nbsp;итоге завалил</div>
+          </li>
+        </ul>
+      </div>
     </div>
   </section>
 
   <!-- WHAT INSIDE -->
   <section class="section section--dark" id="about">
     <div class="container">
-      <h2 class="section__title fade-up">Что внутри разбора</h2>
+      <div class="section__head fade-up">
+        <div class="kicker"><b>что внутри</b> // пять блоков разбора</div>
+        <h2 class="section__title">Что внутри разбора</h2>
+      </div>
 
       <div class="inside">
 
@@ -1022,67 +1079,63 @@
   </section>
 
   <!-- TEACHER -->
-  <section class="section section--dark" id="teacher">
+  <section class="section section--dark teacher" id="teacher" aria-labelledby="teacher-title">
     <div class="container">
+      <div class="kicker teacher__kicker fade-up"><b>автор разбора</b> // по обе стороны собеседования</div>
+
       <div class="teacher__grid">
-        <div class="fade-up">
-          <h2 class="teacher__name">Автор разбора:<br>Олег Козырев</h2>
-
-          <ul class="experience">
-            <li class="experience__item">
-              <div class="experience__company">
-                <span class="experience__company-name">Т-Банк</span>
-                <span class="experience__badge">Staff Engineer</span>
-              </div>
-              <div class="experience__desc">Разрабатывал LLM-платформу для&nbsp;создания ИИ-продуктов внутри компании</div>
-            </li>
-            <li class="experience__item">
-              <div class="experience__company">
-                <span class="experience__company-name">Авито</span>
-                <span class="experience__badge">Senior Engineer</span>
-              </div>
-              <div class="experience__desc">Разрабатывал внутреннюю платформу для&nbsp;сотен сервисов корпорации</div>
-            </li>
-            <li class="experience__item">
-              <div class="experience__company">
-                <span class="experience__company-name">Ozon Tech</span>
-                <span class="experience__badge">Senior Engineer</span>
-              </div>
-              <div class="experience__desc">Разрабатывал сервисы логистики, модерации контента и&nbsp;мониторинга доставки</div>
-            </li>
-            <li class="experience__item">
-              <div class="experience__company">
-                <span class="experience__company-name">Route 256</span>
-                <span class="experience__badge">Преподаватель</span>
-              </div>
-              <div class="experience__desc">Менторил и&nbsp;преподавал курсы по&nbsp;построению микросервисов в&nbsp;школе Ozon Tech</div>
-            </li>
-          </ul>
-
-          <div class="stats-row">
-            <div class="stat-card">
-              <div class="stat-card__number" data-count="13000" data-suffix="+">0</div>
-              <div class="stat-card__line"></div>
-              <div class="stat-card__desc">подписчиков на&nbsp;YouTube</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
-              <div class="stat-card__line"></div>
-              <div class="stat-card__desc">подписчиков в&nbsp;Telegram</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card__number" data-count="8" data-suffix="+ лет">0</div>
-              <div class="stat-card__line"></div>
-              <div class="stat-card__desc">коммерческой разработки</div>
-            </div>
+        <div class="teacher__intro fade-up">
+          <div class="teacher__photo">
+            <picture>
+              <source srcset="oleg-portrait.webp" type="image/webp">
+              <img src="oleg-portrait.jpg" alt="Олег Козырев, автор разбора" width="720" height="960" loading="lazy">
+            </picture>
+          </div>
+          <div>
+            <h2 class="teacher__name" id="teacher-title">Олег Козырев</h2>
+            <div class="teacher__role">// Staff Engineer · ex-BigTech<br>// автор разбора</div>
           </div>
         </div>
 
-        <div class="teacher__photo fade-up">
-          <picture>
-            <source srcset="oleg-portrait.webp" type="image/webp">
-            <img src="oleg-portrait.jpg" alt="Олег Козырев, автор разбора" width="720" height="960" loading="lazy">
-          </picture>
+        <div class="case fade-up">
+          <div class="case__lead">
+            <div class="label">Реальный продовый кейс</div>
+            <div class="case__title">Два года отвечал за&nbsp;платформу аутентификации для&nbsp;150 внутренних сервисов</div>
+            <div class="case__sub">От&nbsp;ADR и&nbsp;моделей данных до&nbsp;согласований с&nbsp;ИБ и&nbsp;разработки в&nbsp;проде</div>
+          </div>
+
+          <div class="case__metrics">
+            <div class="case__metric">
+              <div class="case__value">150</div>
+              <div class="case__unit">внутренних сервисов</div>
+            </div>
+            <div class="case__metric">
+              <div class="case__value">99.9%</div>
+              <div class="case__unit">SLA платформы</div>
+            </div>
+            <div class="case__metric">
+              <div class="case__value">тысячи</div>
+              <div class="case__unit">RPS на&nbsp;проверке сессии</div>
+            </div>
+          </div>
+
+          <div class="case__tradeoffs">
+            <div class="case__tradeoff">
+              <div class="label">Второй фактор</div>
+              <div class="case__text">Разменивал безопасность на&nbsp;сроки: Google Authenticator не&nbsp;подходит сервисам с&nbsp;общими аккаунтами</div>
+            </div>
+            <div class="case__tradeoff">
+              <div class="label">Персональные данные</div>
+              <div class="case__text">Разменивал изоляцию ПДн на&nbsp;задержку: данные лежат отдельно, а&nbsp;сессию проверять надо быстро</div>
+            </div>
+          </div>
+
+          <div class="case__side">
+            <div class="label">И вторая сторона</div>
+            <div class="case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе.</b> Разбор собран из&nbsp;того, что работает на&nbsp;этих собеседованиях, а&nbsp;не&nbsp;из&nbsp;книг</div>
+          </div>
+
+          <div class="case__track">Т-Банк · Авито · Ozon Tech · Route 256 · 8+ лет коммерческой разработки</div>
         </div>
       </div>
     </div>
@@ -1156,31 +1209,6 @@
       document.querySelectorAll('.fade-up').forEach(function(el) {
         observer.observe(el);
       });
-
-      // Счётчики
-      var counters = document.querySelectorAll('[data-count]');
-      var counterObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting && !entry.target.dataset.animated) {
-            entry.target.dataset.animated = 'true';
-            var target = parseInt(entry.target.dataset.count);
-            var suffix = entry.target.dataset.suffix || '';
-            var duration = 1500;
-            var startTime = null;
-            function step(timestamp) {
-              if (!startTime) startTime = timestamp;
-              var progress = Math.min((timestamp - startTime) / duration, 1);
-              var eased = 1 - Math.pow(1 - progress, 3);
-              var current = Math.floor(eased * target);
-              entry.target.textContent = current.toLocaleString('ru-RU') + suffix;
-              if (progress < 1) requestAnimationFrame(step);
-            }
-            requestAnimationFrame(step);
-          }
-        });
-      }, { threshold: 0.3 });
-
-      counters.forEach(function(el) { counterObserver.observe(el); });
 
       // Прогресс-бар, кнопка наверх, липкий CTA
       var progressBar = document.getElementById('progress-bar');
