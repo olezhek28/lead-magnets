@@ -614,20 +614,6 @@
       color: #c8cacc;
     }
 
-    .case__tradeoffs {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .case__tradeoff {
-      background: #22282d;
-      border: 1px solid #374246;
-      border-radius: 14px;
-      padding: 20px 24px;
-    }
-    .case__tradeoff .label { margin-bottom: 8px; }
-
     .case__text {
       font-size: 14px;
       font-weight: 500;
@@ -636,6 +622,12 @@
     }
 
     .case__side { padding: 20px 26px 22px; }
+    /* плашка стоит первой и держит связку «кейс -> секция», поэтому заметнее остального */
+    .case__side--top {
+      background: rgba(223,223,65,0.07);
+      border-left-color: #dfdf41;
+      box-shadow: inset 0 0 0 1px rgba(223,223,65,0.22);
+    }
     .case__side .label { margin-bottom: 8px; }
     .case__side b { color: #ffffff; font-weight: 700; }
 
@@ -891,8 +883,6 @@
       .case__metrics { grid-template-columns: 1fr; }
       .case__metric { display: flex; align-items: baseline; gap: 10px; padding: 14px 18px; }
       .case__value { margin-bottom: 0; }
-      .case__tradeoffs { grid-template-columns: 1fr; }
-      .case__tradeoff { padding: 18px 20px; }
       .case__side { padding: 18px 20px 20px; }
       .case__track { font-size: 12px; }
 
@@ -1135,6 +1125,11 @@
         </div>
 
         <div class="case fade-up">
+          <div class="case__side case__side--top">
+            <div class="label">Почему я знаю, за&nbsp;что там снижают</div>
+            <div class="case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе.</b> И&nbsp;провожу их&nbsp;как интервьюер: вижу обе стороны стола</div>
+          </div>
+
           <div class="case__lead">
             <div class="label">Реальный продовый кейс</div>
             <div class="case__title">Два года отвечал за&nbsp;платформу аутентификации для&nbsp;150 внутренних сервисов</div>
@@ -1154,22 +1149,6 @@
               <div class="case__value">тысячи</div>
               <div class="case__unit">RPS на&nbsp;проверке сессии</div>
             </div>
-          </div>
-
-          <div class="case__tradeoffs">
-            <div class="case__tradeoff">
-              <div class="label">Второй фактор</div>
-              <div class="case__text">Разменивал безопасность на&nbsp;сроки: Google Authenticator не&nbsp;подходит сервисам с&nbsp;общими аккаунтами</div>
-            </div>
-            <div class="case__tradeoff">
-              <div class="label">Персональные данные</div>
-              <div class="case__text">Разменивал изоляцию ПДн на&nbsp;задержку: данные лежат отдельно, а&nbsp;сессию проверять надо быстро</div>
-            </div>
-          </div>
-
-          <div class="case__side">
-            <div class="label">И вторая сторона</div>
-            <div class="case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе.</b> И&nbsp;провожу их&nbsp;как интервьюер</div>
           </div>
 
           <div class="case__track">Т-Банк · Авито · Ozon Tech · Route 256 · 8+ лет коммерческой разработки</div>
