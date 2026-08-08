@@ -5,5 +5,8 @@ __pycache__/
 .mcp.json
 .idea/
 
+# рабочие git worktree'ы Claude Code
+.claude/worktrees/
+
 # рабочая SEO-заметка — только локально, не публикуем
 docs/seo.md
