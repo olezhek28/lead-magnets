@@ -993,6 +993,28 @@
   /* ===== TEACHER ===== */
   .teacher__grid { display: grid; grid-template-columns: 1fr 360px; gap: 72px; align-items: start; }
   .teacher__name { font-family: var(--display); font-size: clamp(30px, 4vw, 52px); font-weight: 500; line-height: .98; margin-bottom: 44px; color: var(--text-h); letter-spacing: -0.04em; }
+  /* ===== Продовый кейс автора =====
+     Главный аргумент за автора — не перечень компаний, а одна система, которую
+     он реально вёл, с числами и разменами. Размены тут не для красоты: курс
+     ровно про то, как их проговаривать на секции, и блок это показывает
+     на живом примере, а не обещает. Список компаний ниже остаётся как
+     подтверждение масштаба, но первым идёт кейс. */
+  .case { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 30px 34px 32px; margin-bottom: 44px; }
+  .case__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 16px; }
+  .case__title { font-family: var(--display); font-size: clamp(20px, 2.1vw, 26px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.28; color: var(--text-h); margin-bottom: 10px; }
+  .case__sub { font-size: 15px; line-height: 1.55; color: var(--text-mute); }
+  .case__metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 28px; margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--border-card); }
+  .case__value { font-family: var(--mono); font-size: clamp(20px, 2vw, 26px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; color: var(--accent); font-variant-numeric: tabular-nums; margin-bottom: 8px; }
+  .case__unit { font-size: 13px; line-height: 1.45; color: var(--text-faint); }
+  .case__tradeoffs { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 28px; margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--border-card); }
+  .case__tradeoff-label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 9px; }
+  .case__text { font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
+  @media (max-width: 640px) {
+    .case { padding: 24px 20px 26px; }
+    .case__metrics { grid-template-columns: 1fr; gap: 18px; }
+    .case__tradeoffs { grid-template-columns: 1fr; }
+  }
+
   .experience { list-style: none; margin-bottom: 44px; }
   /* компания и роль — одна колонка в столбик: длинный бейдж больше
      не выталкивает строку и не ломает выравнивание описаний */
@@ -2509,6 +2531,38 @@
       <div class="teacher__grid">
         <div class="fade-up">
           <h2 class="teacher__name" id="teacher-title">Автор курса:<br>Олег Козырев</h2>
+
+          <div class="case">
+            <div class="case__label">Реальный продовый кейс</div>
+            <div class="case__title">Два года отвечал за&nbsp;платформу аутентификации для&nbsp;150 внутренних сервисов</div>
+            <div class="case__sub">От&nbsp;ADR и&nbsp;моделей данных до&nbsp;согласований с&nbsp;ИБ и&nbsp;разработки в&nbsp;проде</div>
+
+            <div class="case__metrics">
+              <div>
+                <div class="case__value">150</div>
+                <div class="case__unit">внутренних сервисов</div>
+              </div>
+              <div>
+                <div class="case__value">99.9%</div>
+                <div class="case__unit">SLA платформы</div>
+              </div>
+              <div>
+                <div class="case__value">тысячи</div>
+                <div class="case__unit">RPS на&nbsp;проверке сессии</div>
+              </div>
+            </div>
+
+            <div class="case__tradeoffs">
+              <div>
+                <div class="case__tradeoff-label">Второй фактор</div>
+                <div class="case__text">Разменивал безопасность на&nbsp;сроки: Google Authenticator не&nbsp;подходит сервисам с&nbsp;общими аккаунтами</div>
+              </div>
+              <div>
+                <div class="case__tradeoff-label">Персональные данные</div>
+                <div class="case__text">Разменивал изоляцию ПДн на&nbsp;задержку: данные лежат отдельно, а&nbsp;сессию проверять надо быстро</div>
+              </div>
+            </div>
+          </div>
 
           <ul class="experience">
             <li class="experience__item">
