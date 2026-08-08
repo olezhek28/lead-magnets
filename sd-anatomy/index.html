@@ -362,21 +362,26 @@
       border-radius: 18px;
       padding: 26px;
       display: grid;
-      grid-template-columns: 164px 1fr;
-      gap: 26px;
-      align-items: center;
+      grid-template-columns: 196px 1fr;
+      gap: 28px;
+      align-items: stretch;
       transition: border-color 0.25s;
     }
     .inside__item:hover { border-color: #566268; }
 
-    .inside__item--wide { grid-column: 1 / -1; }
+    /* Широкая карточка: текст слева, крупный чек-лист справа */
+    .inside__item--wide {
+      grid-column: 1 / -1;
+      grid-template-columns: 1fr 300px;
+      align-items: center;
+    }
 
     .inside__title {
-      font-size: 17px;
+      font-size: 19px;
       font-weight: 700;
-      line-height: 1.4;
+      line-height: 1.35;
       color: #ffffff;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .inside__desc {
@@ -388,11 +393,15 @@
 
     /* --- мини-инфографика --- */
     .viz {
-      min-height: 64px;
+      min-height: 104px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 8px;
+      gap: 12px;
+      padding: 16px 18px;
+      background: #1b2124;
+      border: 1px solid #2f383c;
+      border-radius: 12px;
     }
     .viz__cap {
       font-family: var(--mono);
@@ -404,28 +413,29 @@
     .viz__cap b { color: #dfdf41; font-weight: 600; }
 
     /* три коробочки против семи блоков */
-    .viz-boxes { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
-    .viz-boxes__set { display: flex; gap: 4px; }
+    .viz-boxes { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+    .viz-boxes__set { display: flex; gap: 5px; }
     .viz-boxes__set i {
-      width: 13px; height: 13px; border-radius: 3px;
+      width: 16px; height: 16px; border-radius: 4px;
       border: 1px solid #566268; display: block;
     }
     .viz-boxes__set--on i { border-color: #dfdf41; background: rgba(223,223,65,0.35); }
 
     /* перекос чтения над записью */
     .viz-load {
-      display: flex; height: 12px; border-radius: 3px;
+      display: flex; height: 16px; border-radius: 4px;
       overflow: hidden; background: #2b3238;
     }
     .viz-load__read { flex: 94; background: #dfdf41; }
     .viz-load__write { flex: 6; background: #566268; }
 
     /* блоки схемы */
-    .viz-nodes { display: flex; flex-wrap: wrap; gap: 5px; }
+    .viz-nodes { display: flex; flex-wrap: wrap; gap: 6px; }
     .viz-nodes span {
-      font-size: 10.5px; font-weight: 600; color: #c8cacc;
-      border: 1px solid #3f4a4f; border-radius: 100px;
-      padding: 3px 9px; white-space: nowrap;
+      font-family: var(--mono);
+      font-size: 11px; color: #c8cacc;
+      border: 1px solid #3f4a4f; border-radius: 6px;
+      padding: 4px 9px; white-space: nowrap;
     }
 
     /* семь частых ошибок */
@@ -440,21 +450,28 @@
     .viz-flags i:nth-child(7) { height: 34%; }
 
     /* чек-лист на семь пунктов */
-    .viz-check { display: flex; gap: 5px; }
+    .viz-check { display: flex; gap: 6px; }
     .viz-check i {
-      width: 15px; height: 15px; border-radius: 4px;
+      width: 17px; height: 17px; border-radius: 5px;
       border: 1.5px solid #566268; display: block; position: relative;
     }
     .viz-check i.is-on { border-color: #dfdf41; background: #dfdf41; }
     .viz-check i.is-on::after {
-      content: ''; position: absolute; left: 4px; top: 1px;
+      content: ''; position: absolute; left: 5px; top: 2px;
       width: 4px; height: 7px;
       border: solid #182023; border-width: 0 2px 2px 0;
       transform: rotate(45deg);
     }
 
+    /* Крупный чек-лист в широкой карточке */
+    .viz-check--lg { gap: 9px; }
+    .viz-check--lg i { width: 28px; height: 28px; border-radius: 8px; border-width: 2px; }
+    .viz-check--lg i.is-on::after {
+      left: 9px; top: 4px; width: 6px; height: 12px; border-width: 0 3px 3px 0;
+    }
+
     /* пять минут из сорока */
-    .viz-clock { display: flex; align-items: center; gap: 12px; }
+    .viz-clock { display: flex; align-items: center; gap: 14px; }
     .viz-clock svg { flex-shrink: 0; }
     .viz-clock__label { font-size: 12px; font-weight: 600; color: #8a8c8e; }
     .viz-clock__label b { display: block; color: #dfdf41; font-size: 15px; }
@@ -809,6 +826,8 @@
       .section__head { margin-bottom: 32px; }
       .island { padding: 44px 36px; }
       .inside { grid-template-columns: 1fr; }
+      .inside__item { grid-template-columns: 240px 1fr; }
+      .inside__item--wide { grid-template-columns: 1fr 300px; }
       .teacher__grid { grid-template-columns: 1fr; gap: 32px; }
       .teacher__intro { display: flex; align-items: center; gap: 24px; }
       .teacher__photo { width: 132px; margin-bottom: 0; flex-shrink: 0; }
@@ -868,8 +887,13 @@
       .section { padding: 40px 0 24px; }
 
       .inside__item { grid-template-columns: 1fr; gap: 18px; padding: 24px 20px; }
-      .inside__title { font-size: 16px; }
+      .inside__item--wide { grid-template-columns: 1fr; }
+      .inside__title { font-size: 17px; }
       .inside__desc { font-size: 14px; }
+      .viz { min-height: 0; }
+      .viz-check--lg { gap: 7px; }
+      .viz-check--lg i { width: 24px; height: 24px; border-radius: 7px; }
+      .viz-check--lg i.is-on::after { left: 7px; top: 3px; width: 5px; height: 10px; }
 
 
       .final-cta { padding: 40px 0 60px; }
@@ -1034,6 +1058,7 @@
         <div class="inside__item fade-up">
           <div class="viz">
             <div class="viz-nodes"><span>Gateway</span><span>Feed</span><span>Кэш</span><span>Ранжир.</span><span>Поиск</span><span>CDN</span></div>
+            <em class="viz__cap"><b>шесть блоков</b> и связи между ними</em>
           </div>
           <div>
             <div class="inside__title">Как выглядит схема, которую от&nbsp;тебя ждут</div>
@@ -1059,13 +1084,13 @@
         </div>
 
         <div class="inside__item inside__item--wide fade-up">
-          <div class="viz">
-            <div class="viz-check"><i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i></i><i></i><i></i><i></i></div>
-            <em class="viz__cap">отметил <b>3 и больше</b>, это нормально</em>
-          </div>
           <div>
             <div class="inside__title">Проверь, на&nbsp;чём валишься именно ты</div>
             <div class="inside__desc">Список из&nbsp;семи пунктов, из-за которых заваливают секцию. Пройдись и&nbsp;честно отметь свои</div>
+          </div>
+          <div class="viz">
+            <div class="viz-check viz-check--lg"><i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i></i><i></i><i></i><i></i></div>
+            <em class="viz__cap">отметил <b>3 и больше</b> — это нормально</em>
           </div>
         </div>
 
