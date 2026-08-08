@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <script>document.documentElement.className += ' js';</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#182023">
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
       (function(m,e,t,r,i,k,a){
@@ -18,7 +20,7 @@
   <!-- /Yandex.Metrika counter -->
   <!-- TGTrack: Откуда Подписки -->
   <script src="https://api.tgtrack.ru/API/landing_script/v1/?linkID=682732c86bc8d9&type=ya&counterID=96022201" type="text/javascript" defer></script>
-  <title>Как успешно завалить System Design собес за 40 минут - бесплатный разбор</title>
+  <title>Как успешно завалить System Design собес за 40 минут</title>
   <meta name="description" content="Разбор провального System Design собеса: 7 самых частых ошибок, за которые снижают оценку, и список, чтобы проверить себя. Бесплатно.">
   <meta name="keywords" content="system design, систем дизайн, собеседование, system design interview, подготовка к собесу, авито, лента объявлений, шардирование, кэш, архитектура, backend">
   <meta name="author" content="Олег Козырев">
@@ -91,6 +93,13 @@
     }
 
     a { color: inherit; text-decoration: none; }
+
+    :focus-visible {
+      outline: 2px solid #dfdf41;
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .island :focus-visible { outline-color: #182023; }
     img { max-width: 100%; height: auto; display: block; }
 
     .container {
@@ -120,15 +129,25 @@
     }
 
     /* ===== ANIMATIONS ===== */
-    .fade-up {
+    .js .fade-up {
       opacity: 0;
       transform: translateY(30px);
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
-    .fade-up.visible {
+    .js .fade-up.visible {
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Первый экран появляется на CSS: не ждёт JS и не тормозит LCP */
+    @keyframes hero-rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero__content { animation: hero-rise 0.6s ease both; }
+
+    /* Якоря не должны уезжать под фиксированную шапку */
+    section[id] { scroll-margin-top: 88px; }
 
     /* ===== HEADER / NAV ===== */
     .header {
@@ -166,11 +185,6 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-    }
-
-    .nav__cta {
-      position: absolute;
-      right: 40px;
     }
 
     .nav__link {
@@ -407,7 +421,6 @@
       font-size: 11.5px;
       line-height: 1.5;
       color: #9a9ea0;
-      font-style: normal;
     }
     .viz__cap b { color: #dfdf41; font-weight: 600; }
 
@@ -437,16 +450,6 @@
       padding: 4px 9px; white-space: nowrap;
     }
 
-    /* семь частых ошибок */
-    .viz-flags { display: flex; align-items: flex-end; gap: 6px; height: 26px; }
-    .viz-flags i { width: 12px; background: #dfdf41; border-radius: 2px 2px 0 0; display: block; }
-    .viz-flags i:nth-child(1) { height: 40%; }
-    .viz-flags i:nth-child(2) { height: 62%; }
-    .viz-flags i:nth-child(3) { height: 48%; }
-    .viz-flags i:nth-child(4) { height: 100%; }
-    .viz-flags i:nth-child(5) { height: 70%; }
-    .viz-flags i:nth-child(6) { height: 55%; }
-    .viz-flags i:nth-child(7) { height: 34%; }
 
     /* чек-лист на семь пунктов */
     .viz-check { display: flex; gap: 6px; }
@@ -728,7 +731,7 @@
     .final-cta__hint {
       margin-top: 16px;
       font-size: 14px;
-      color: rgba(24, 32, 35, 0.55);
+      color: rgba(24, 32, 35, 0.75);
       font-weight: 500;
     }
 
@@ -753,7 +756,7 @@
 
     .footer__copy {
       font-size: 14px;
-      color: #707070;
+      color: #9a9ea0;
     }
 
     .footer__links {
@@ -763,16 +766,16 @@
     }
     .footer__link {
       font-size: 14px;
-      color: #707070;
+      color: #9a9ea0;
       transition: color 0.2s;
     }
     .footer__link:hover {
-      color: #c8cacc;
+      color: #ffffff;
     }
 
     .footer__legal {
       font-size: 13px;
-      color: #505050;
+      color: #8a8c8e;
       line-height: 1.6;
     }
 
@@ -813,6 +816,16 @@
     /* ===== STICKY MOBILE CTA ===== */
     .sticky-cta {
       display: none;
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .js .fade-up { opacity: 1; transform: none; transition: none; }
+      .hero__content { animation: none; }
+      .btn--primary { animation: none; }
+      .btn:hover, .final-cta__btn:hover { transform: none; }
+      .back-to-top, .sticky-cta { transition: none; }
     }
 
     /* ===== RESPONSIVE ===== */
@@ -960,13 +973,13 @@
         <a href="#teacher" class="nav__link">Автор</a>
       </nav>
       <a href="#cta" class="btn btn--primary btn--header nav__cta">Забрать разбор</a>
-      <button class="menu-toggle" onclick="this.parentElement.querySelector('.nav__links-mobile').classList.toggle('open')" aria-label="Меню">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span><span></span>
       </button>
-      <div class="nav__links-mobile">
-        <a href="#about" class="nav__link" onclick="this.parentElement.classList.remove('open')">Что внутри</a>
-        <a href="#teacher" class="nav__link" onclick="this.parentElement.classList.remove('open')">Автор</a>
-        <a href="#cta" class="btn btn--primary" style="margin-top:8px;" onclick="this.parentElement.classList.remove('open')">Забрать разбор</a>
+      <div class="nav__links-mobile" id="mobile-menu">
+        <a href="#about" class="nav__link">Что внутри</a>
+        <a href="#teacher" class="nav__link">Автор</a>
+        <a href="#cta" class="btn btn--primary" style="margin-top:8px;">Забрать разбор</a>
       </div>
     </div>
   </header>
@@ -977,13 +990,13 @@
   <section class="hero">
     <div class="container">
       <div class="hero__inner">
-        <div class="hero__content fade-up">
+        <div class="hero__content">
           <div class="hero__badge">Бесплатно</div>
           <h1 class="hero__title">Как успешно завалить System Design собес <span>за&nbsp;40&nbsp;минут?</span></h1>
           <p class="hero__desc">На&nbsp;реальных примерах разбери ошибки, из-за которых многие валятся на&nbsp;секции систем дизайна</p>
           <a href="#cta" class="btn btn--primary">Забрать разбор бесплатно</a>
         </div>
-        <div class="hero__image fade-up">
+        <div class="hero__image">
           <picture>
             <source srcset="hero.webp" type="image/webp">
             <img src="hero.jpg" alt="Разбор провального System Design собеса" width="1280" height="720" fetchpriority="high">
@@ -1035,7 +1048,7 @@
               <span class="viz-boxes__set"><i></i><i></i><i></i></span>
               <span class="viz-boxes__set viz-boxes__set--on"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
             </div>
-            <em class="viz__cap">нарисовал 3 части, а&nbsp;их&nbsp;<b>больше семи</b></em>
+            <span class="viz__cap">нарисовал 3 части, а&nbsp;их&nbsp;<b>больше семи</b></span>
           </div>
           <div>
             <div class="inside__title">Задача в&nbsp;разы больше, чем звучит</div>
@@ -1046,7 +1059,7 @@
         <div class="inside__item fade-up">
           <div class="viz">
             <div class="viz-load"><span class="viz-load__read"></span><span class="viz-load__write"></span></div>
-            <em class="viz__cap">почти вся нагрузка это&nbsp;<b>чтение</b></em>
+            <span class="viz__cap">почти вся нагрузка это&nbsp;<b>чтение</b></span>
           </div>
           <div>
             <div class="inside__title">Какие требования бывают и&nbsp;как считать нагрузку</div>
@@ -1057,7 +1070,7 @@
         <div class="inside__item fade-up">
           <div class="viz">
             <div class="viz-nodes"><span>Gateway</span><span>Feed</span><span>Кэш</span><span>Ранжир.</span><span>Поиск</span><span>CDN</span></div>
-            <em class="viz__cap"><b>шесть блоков</b> и связи между ними</em>
+            <span class="viz__cap"><b>шесть блоков</b> и связи между ними</span>
           </div>
           <div>
             <div class="inside__title">Как выглядит схема, которую от&nbsp;тебя ждут</div>
@@ -1089,7 +1102,7 @@
           </div>
           <div class="viz">
             <div class="viz-check viz-check--lg"><i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i></i><i></i><i></i><i></i></div>
-            <em class="viz__cap">отметил <b>3 и больше</b> — это нормально</em>
+            <span class="viz__cap">отметил <b>3 и больше</b> — это нормально</span>
           </div>
         </div>
 
@@ -1220,6 +1233,33 @@
       if (TG_URL.indexOf('XXXX') === -1) {
         document.querySelectorAll('.js-tg').forEach(function(a) { a.href = TG_URL; });
       }
+
+      // Мобильное меню: состояние объявлено для скринридеров,
+      // закрывается по ссылке, клику вне и Esc
+      var menuToggle = document.getElementById('menu-toggle');
+      var mobileMenu = document.getElementById('mobile-menu');
+
+      function setMenu(open) {
+        mobileMenu.classList.toggle('open', open);
+        menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+
+      menuToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        setMenu(!mobileMenu.classList.contains('open'));
+      });
+      mobileMenu.addEventListener('click', function(e) {
+        if (e.target.closest('a')) setMenu(false);
+      });
+      document.addEventListener('click', function(e) {
+        if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) setMenu(false);
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+          setMenu(false);
+          menuToggle.focus();
+        }
+      });
 
       // Fade-up анимации
       var observer = new IntersectionObserver(function(entries) {
