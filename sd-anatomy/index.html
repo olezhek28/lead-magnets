@@ -324,15 +324,26 @@
       color: #dfdf41;
     }
 
-    .hero__desc span { color: #dfdf41; font-weight: 700; }
-
     .hero__desc {
       font-size: 16px;
       font-weight: 500;
       color: #b5b7b9;
       line-height: 1.7;
-      margin-bottom: 40px;
     }
+
+    /* обращение к читателю отбито от описания: это уже не рассказ
+       про разбор, а реплика в его сторону. Засечка та же, что
+       у результатов в карточках ниже */
+    .hero__you {
+      margin: 20px 0 40px;
+      padding: 2px 0 2px 18px;
+      border-left: 3px solid #dfdf41;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #ffffff;
+    }
+    .hero__you span { color: #dfdf41; font-weight: 800; }
 
     /* ===== SECTION SHARED ===== */
     .section {
@@ -901,6 +912,7 @@
       .hero { padding: 120px 0 60px; }
       .hero__title { font-size: 28px; }
       .hero__desc { font-size: 14px; }
+      .hero__you { font-size: 15px; margin: 16px 0 32px; padding-left: 14px; }
       .hero__br { display: none; }
 
 
@@ -1007,7 +1019,8 @@
         <div class="hero__content">
           <div class="hero__badge">Бесплатно</div>
           <h1 class="hero__title">Как успешно завалить System Design собес <span>за&nbsp;40&nbsp;минут?</span></h1>
-          <p class="hero__desc">На&nbsp;примере реального собеса в&nbsp;Авито разбери 7&nbsp;ошибок,<br class="hero__br"> из-за которых многие заваливают секцию.<br class="hero__br"> И&nbsp;проверь, какие из&nbsp;них совершаешь <span>ты</span></p>
+          <p class="hero__desc">На&nbsp;примере реального собеса в&nbsp;Авито разбери 7&nbsp;ошибок,<br class="hero__br"> из-за которых многие заваливают секцию</p>
+          <p class="hero__you">И&nbsp;проверь, какие из&nbsp;них совершаешь <span>ты</span></p>
           <a href="#cta" class="btn btn--primary">Забрать разбор бесплатно</a>
         </div>
         <div class="hero__image">
