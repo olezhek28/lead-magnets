@@ -36,7 +36,7 @@
 - [Курс "Архитектура Go-проекта"](https://guide.olezhek28.courses/architecture/): чистая архитектура, DDD, CQRS, ports/adapters
 - [Курс "Микросервисы на Go"](https://olezhek28.courses/microservices): сейчас в предзаписи, 5 микросервисов с нуля, gRPC, Kafka, Redis, Prometheus, Grafana, Jaeger
 - [Roadmap Go-разработчика 2026](https://guide.olezhek28.courses/roadmap-2026/)
-- [Разбор "Как успешно завалить System Design собес за 40 минут"](https://guide.olezhek28.courses/sd-anatomy/): бесплатный разбор провального SD-собеса на примере ленты объявлений Авито
+- [Разбор "Как успешно завалить System Design собес за 40 минут"](https://guide.olezhek28.courses/sd-anatomy/): бесплатный разбор реального SD-собеса по минутам: 7 ошибок, из-за которых заваливают секцию, и чек-лист для самопроверки. PDF на 8 страниц
 
 ## Контент
 

@@ -20,25 +20,30 @@
   <!-- /Yandex.Metrika counter -->
   <!-- TGTrack: Откуда Подписки -->
   <script src="https://api.tgtrack.ru/API/landing_script/v1/?linkID=682732c86bc8d9&type=ya&counterID=96022201" type="text/javascript" defer></script>
-  <title>Как успешно завалить System Design собес за 40 минут</title>
-  <meta name="description" content="Разбор провального System Design собеса: 7 самых частых ошибок, за которые снижают оценку, и список, чтобы проверить себя. Бесплатно.">
-  <meta name="keywords" content="system design, систем дизайн, собеседование, system design interview, подготовка к собесу, авито, лента объявлений, шардирование, кэш, архитектура, backend">
+  <!-- Заголовок вкладки работает на поиск: в нём запрос, по которому ищут.
+       Крючок из первого экрана живёт в og-тегах, где решает CTR в мессенджерах. -->
+  <title>Разбор System Design собеседования: 7 частых ошибок · бесплатно</title>
+  <meta name="description" content="Бесплатный разбор реального System Design собеседования по минутам: 7 ошибок, из-за которых заваливают секцию, и чек-лист для самопроверки. PDF на 8 страниц.">
+  <meta name="keywords" content="system design собеседование, разбор system design интервью, ошибки на system design, подготовка к секции system design, систем дизайн собес, system design interview на русском, чек-лист system design, capacity planning на собеседовании, backend собеседование">
   <meta name="author" content="Олег Козырев">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://guide.olezhek28.courses/sd-anatomy/">
-  <meta property="og:title" content="Как успешно завалить System Design собес за 40 минут">
-  <meta property="og:description" content="Разбор провального собеса: 7 самых частых ошибок, за которые снижают оценку, и список, чтобы проверить себя. Бесплатно.">
-  <meta property="og:type" content="website">
+  <meta property="og:title" content="Как успешно завалить System Design собес за 40 минут?">
+  <meta property="og:description" content="Разбор реального собеса в Авито по минутам: 7 ошибок, из-за которых заваливают секцию, и чек-лист проверить себя. Бесплатно.">
+  <meta property="og:type" content="article">
   <meta property="og:url" content="https://guide.olezhek28.courses/sd-anatomy/">
   <meta property="og:image" content="https://guide.olezhek28.courses/sd-anatomy/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Разбор System Design собеседования: обложка и страницы PDF">
   <meta property="og:locale" content="ru_RU">
   <meta property="og:site_name" content="Олег Козырев · Гайды">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Как успешно завалить System Design собес за 40 минут">
-  <meta name="twitter:description" content="Разбор провального собеса: 7 самых частых ошибок, за которые снижают оценку, и список, чтобы проверить себя. Бесплатно.">
+  <meta name="twitter:title" content="Как успешно завалить System Design собес за 40 минут?">
+  <meta name="twitter:description" content="Разбор реального собеса в Авито по минутам: 7 ошибок, из-за которых заваливают секцию, и чек-лист проверить себя. Бесплатно.">
   <meta name="twitter:image" content="https://guide.olezhek28.courses/sd-anatomy/og-image.jpg">
+  <meta name="twitter:image:alt" content="Разбор System Design собеседования: обложка и страницы PDF">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="hero.webp" type="image/webp" fetchpriority="high">
@@ -47,27 +52,65 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "LearningResource",
-    "name": "Как успешно завалить System Design собес за 40 минут",
-    "description": "Разбор провального System Design собеса: какие требования выяснить, как прикинуть нагрузку, как выглядит схема, 7 частых ошибок и список для самопроверки.",
-    "learningResourceType": "Guide",
-    "educationalLevel": "Intermediate",
-    "isAccessibleForFree": true,
-    "inLanguage": "ru",
-    "url": "https://guide.olezhek28.courses/sd-anatomy/",
-    "image": "https://guide.olezhek28.courses/sd-anatomy/og-image.jpg",
-    "author": {
-      "@type": "Person",
-      "name": "Олег Козырев",
-      "jobTitle": "Staff Engineer",
-      "url": "https://guide.olezhek28.courses"
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "RUB",
-      "availability": "https://schema.org/InStock"
-    }
+    "@graph": [
+      {
+        "@type": "LearningResource",
+        "@id": "https://guide.olezhek28.courses/sd-anatomy/#guide",
+        "name": "Анатомия провалённого System Design собеседования",
+        "alternateName": ["Разбор System Design собеса", "Как заваливают System Design интервью"],
+        "headline": "Как успешно завалить System Design собес за 40 минут",
+        "description": "Разбор реального System Design собеседования по минутам на задаче «спроектируй ленту объявлений»: какие требования выяснить до проектирования, как прикинуть нагрузку, как выглядит ожидаемая схема, 7 ошибок, из-за которых заваливают секцию, и чек-лист для самопроверки.",
+        "learningResourceType": "Guide",
+        "educationalLevel": "Intermediate",
+        "teaches": [
+          "Что выяснить про систему до начала проектирования",
+          "Как прикинуть нагрузку на сервис",
+          "Из каких частей собирается лента объявлений",
+          "Семь ошибок, из-за которых снижают оценку на секции System Design"
+        ],
+        "educationalAudience": {
+          "@type": "EducationalAudience",
+          "educationalRole": "student",
+          "audienceType": "Backend-разработчики уровня middle, готовящиеся к секции System Design"
+        },
+        "inLanguage": "ru",
+        "isAccessibleForFree": true,
+        "url": "https://guide.olezhek28.courses/sd-anatomy/",
+        "image": "https://guide.olezhek28.courses/sd-anatomy/og-image.jpg",
+        "encodingFormat": "application/pdf",
+        "numberOfPages": 8,
+        "author": {"@id": "https://guide.olezhek28.courses/sd-anatomy/#oleg"},
+        "publisher": {"@id": "https://guide.olezhek28.courses/sd-anatomy/#oleg"},
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "RUB",
+          "availability": "https://schema.org/InStock"
+        }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://guide.olezhek28.courses/sd-anatomy/#oleg",
+        "name": "Олег Козырев",
+        "alternateName": "Oleg Kozyrev",
+        "jobTitle": "Staff Engineer",
+        "description": "Staff-инженер с 8+ годами коммерческого опыта на Go. Работал в Т-Банке, Авито и Ozon Tech, преподавал в школе Route 256. Проходит и проводит секции System Design.",
+        "knowsAbout": ["System Design", "Go", "Микросервисы", "Архитектура сервисов", "Технические собеседования"],
+        "url": "https://guide.olezhek28.courses/",
+        "sameAs": [
+          "https://t.me/olezhek28go",
+          "https://www.youtube.com/@olezhek28go",
+          "https://www.linkedin.com/in/olezhek28"
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Гайды", "item": "https://guide.olezhek28.courses/"},
+          {"@type": "ListItem", "position": 2, "name": "Разбор System Design собеседования", "item": "https://guide.olezhek28.courses/sd-anatomy/"}
+        ]
+      }
+    ]
   }
   </script>
   <style>
@@ -378,6 +421,14 @@
       align-items: center;
     }
 
+    /* колонка текста тянется на всю высоту карточки: результаты
+       у соседей по ряду выстраиваются на одном уровне */
+    .inside__body {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
     .inside__title {
       font-size: 19px;
       font-weight: 700;
@@ -393,8 +444,8 @@
       display: flex;
       gap: 10px;
       align-items: baseline;
-      margin-top: 16px;
-      padding-top: 14px;
+      margin-top: auto;
+      padding-top: 16px;
       border-top: 1px solid rgba(223,223,65,0.28);
       font-size: 14px;
       font-weight: 600;
@@ -848,6 +899,7 @@
       .hero { padding: 120px 0 60px; }
       .hero__title { font-size: 28px; }
       .hero__desc { font-size: 14px; }
+      .hero__br { display: none; }
 
 
       .section__title { font-size: 24px; }
@@ -953,7 +1005,7 @@
         <div class="hero__content">
           <div class="hero__badge">Бесплатно</div>
           <h1 class="hero__title">Как успешно завалить System Design собес <span>за&nbsp;40&nbsp;минут?</span></h1>
-          <p class="hero__desc">На&nbsp;реальном собесе в&nbsp;Авито разбери 7&nbsp;ошибок, из-за которых многие заваливают секцию, и&nbsp;проверь, какие делаешь ты</p>
+          <p class="hero__desc">На&nbsp;примере реального собеса в&nbsp;Авито разбери 7&nbsp;ошибок, из-за которых многие заваливают секцию.<br class="hero__br"> И&nbsp;проверь, какие из&nbsp;них совершаешь ты</p>
           <a href="#cta" class="btn btn--primary">Забрать разбор бесплатно</a>
         </div>
         <div class="hero__image">
@@ -1026,7 +1078,7 @@
             </div>
             <span class="viz__cap">нарисовал 3 части, а&nbsp;их&nbsp;<b>больше семи</b></span>
           </div>
-          <div>
+          <div class="inside__body">
             <h3 class="inside__title">Почему простая на&nbsp;вид задача завалит тебя ещё на&nbsp;старте</h3>
             <div class="inside__desc">Многие сразу бегут проектировать, а&nbsp;за&nbsp;короткой формулировкой задачи может прятаться система в&nbsp;разы больше</div>
             <div class="inside__result">не&nbsp;бросаешься проектировать, не&nbsp;поняв размер задачи</div>
@@ -1042,7 +1094,7 @@
               <div><i></i>нагрузка</div>
             </div>
           </div>
-          <div>
+          <div class="inside__body">
             <h3 class="inside__title">Какие требования бывают и&nbsp;как считать нагрузку</h3>
             <div class="inside__desc">Что стоит за&nbsp;каждым требованием и&nbsp;как посчитать нагрузку, которую будет держать сервис</div>
             <div class="inside__result">считаешь нагрузку сам, а&nbsp;не&nbsp;называешь числа наугад</div>
@@ -1054,7 +1106,7 @@
             <div class="viz-nodes"><span>Gateway</span><span>Feed</span><span>Кэш</span><span>Ранжирование</span><span>Поиск</span><span>CDN</span></div>
             <span class="viz__cap"><b>шесть блоков</b> и связи между ними</span>
           </div>
-          <div>
+          <div class="inside__body">
             <h3 class="inside__title">Как выглядит схема, которую от&nbsp;тебя ждут</h3>
             <div class="inside__desc">Готовая схема с&nbsp;доски: из&nbsp;каких частей собирается такая система, зачем нужна каждая и&nbsp;как они связаны между собой</div>
             <div class="inside__result">есть с&nbsp;чем сверить свою схему</div>
@@ -1072,7 +1124,7 @@
               <span class="viz-clock__label"><b>первые 5 минут</b>из сорока</span>
             </div>
           </div>
-          <div>
+          <div class="inside__body">
             <h3 class="inside__title">Готовый скрипт на&nbsp;первые пять минут</h3>
             <div class="inside__desc">Четыре вопроса, которые надо задать до&nbsp;того, как нарисуешь первую стрелку</div>
             <div class="inside__result">знаешь, что спросить, чтобы получить эти числа</div>
@@ -1080,7 +1132,7 @@
         </div>
 
         <div class="inside__item inside__item--wide fade-up">
-          <div>
+          <div class="inside__body">
             <h3 class="inside__title">Проверь, на&nbsp;чём валишься именно ты</h3>
             <div class="inside__desc">Список из&nbsp;семи пунктов, из-за которых заваливают секцию. Пройдись и&nbsp;честно отметь свои</div>
           </div>
