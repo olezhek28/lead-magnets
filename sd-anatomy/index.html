@@ -467,13 +467,16 @@
     }
     .viz-boxes__set--on i { border-color: #dfdf41; background: rgba(223,223,65,0.35); }
 
-    /* перекос чтения над записью */
-    .viz-load {
-      display: flex; height: 16px; border-radius: 4px;
-      overflow: hidden; background: #2b3238;
+    /* четыре стороны требований: то, что называешь до того, как рисовать */
+    .viz-req { display: grid; gap: 9px; }
+    .viz-req div {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 12px; font-weight: 600; color: #c8cacc;
     }
-    .viz-load__read { flex: 94; background: #dfdf41; }
-    .viz-load__write { flex: 6; background: #566268; }
+    .viz-req i {
+      width: 7px; height: 7px; border-radius: 2px;
+      background: #dfdf41; flex-shrink: 0; display: block;
+    }
 
     /* блоки схемы */
     .viz-nodes { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1088,8 +1091,12 @@
 
         <div class="inside__item fade-up">
           <div class="viz">
-            <div class="viz-load"><span class="viz-load__read"></span><span class="viz-load__write"></span></div>
-            <span class="viz__cap">почти вся нагрузка это&nbsp;<b>чтение</b></span>
+            <div class="viz-req">
+              <div><i></i>время ответа</div>
+              <div><i></i>доступность</div>
+              <div><i></i>свежесть данных</div>
+              <div><i></i>нагрузка</div>
+            </div>
           </div>
           <div>
             <h3 class="inside__title">Какие требования бывают и&nbsp;как считать нагрузку</h3>
