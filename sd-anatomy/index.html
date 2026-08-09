@@ -178,23 +178,6 @@
       white-space: nowrap;
     }
 
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .nav__link {
-      font-size: 14px;
-      font-weight: 500;
-      color: #c8cacc;
-      transition: color 0.2s;
-    }
-    .nav__link:hover { color: #ffffff; }
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -227,25 +210,6 @@
     }
 
     /* Mobile menu toggle */
-    .nav__links-mobile {
-      display: none;
-    }
-
-    .menu-toggle {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-    }
-    .menu-toggle span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: #ffffff;
-      margin: 5px 0;
-      transition: all 0.3s;
-    }
 
     /* ===== HERO ===== */
     .hero {
@@ -878,24 +842,9 @@
     }
 
     @media (max-width: 640px) {
-      .nav { display: none; }
-      .menu-toggle { display: block; }
 
-      .nav__links-mobile.open {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 72px;
-        left: 0;
-        right: 0;
-        background: #182023;
-        padding: 20px 24px;
-        gap: 16px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-      }
-      .nav__links-mobile .nav__link { display: block; font-size: 16px; }
-      .nav__cta { display: none; }
-
+    
+      .btn--header { padding: 9px 16px; font-size: 13px; }
       .hero { padding: 120px 0 60px; }
       .hero__title { font-size: 28px; }
       .hero__desc { font-size: 14px; }
@@ -991,19 +940,7 @@
   <header class="header">
     <div class="container header__inner">
       <a href="/" class="logo">{ Олег Козырев }</a>
-      <nav class="nav">
-        <a href="#about" class="nav__link">Что внутри</a>
-        <a href="#teacher" class="nav__link">Автор</a>
-      </nav>
-      <a href="#cta" class="btn btn--primary btn--header nav__cta">Забрать разбор</a>
-      <button class="menu-toggle" id="menu-toggle" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="nav__links-mobile" id="mobile-menu">
-        <a href="#about" class="nav__link">Что внутри</a>
-        <a href="#teacher" class="nav__link">Автор</a>
-        <a href="#cta" class="btn btn--primary" style="margin-top:8px;">Забрать разбор</a>
-      </div>
+      <a href="#cta" class="btn btn--primary btn--header">Забрать разбор</a>
     </div>
   </header>
 
@@ -1234,7 +1171,7 @@
   </main>
 
   <div class="sticky-cta" id="sticky-cta">
-    <a href="https://t.me/olezhek28go" target="_blank" rel="noopener" class="sticky-cta__btn js-tg">Забрать разбор бесплатно</a>
+    <a href="#cta" class="sticky-cta__btn">Забрать разбор бесплатно</a>
   </div>
 
   <button class="back-to-top" id="back-to-top" aria-label="Наверх">
@@ -1270,33 +1207,6 @@
         document.querySelectorAll('.js-tg').forEach(function(a) { a.href = TG_URL; });
       }
 
-      // Мобильное меню: состояние объявлено для скринридеров,
-      // закрывается по ссылке, клику вне и Esc
-      var menuToggle = document.getElementById('menu-toggle');
-      var mobileMenu = document.getElementById('mobile-menu');
-
-      function setMenu(open) {
-        mobileMenu.classList.toggle('open', open);
-        menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      }
-
-      menuToggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        setMenu(!mobileMenu.classList.contains('open'));
-      });
-      mobileMenu.addEventListener('click', function(e) {
-        if (e.target.closest('a')) setMenu(false);
-      });
-      document.addEventListener('click', function(e) {
-        if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) setMenu(false);
-      });
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
-          setMenu(false);
-          menuToggle.focus();
-        }
-      });
-
       // Fade-up анимации
       var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
@@ -1310,7 +1220,7 @@
         observer.observe(el);
       });
 
-      // Прогресс-бар, кнопка наверх, липкий CTA
+      // Кнопка наверх и липкий CTA
       var backToTop = document.getElementById('back-to-top');
       var stickyCta = document.getElementById('sticky-cta');
       var finalCtaSection = document.getElementById('cta');
