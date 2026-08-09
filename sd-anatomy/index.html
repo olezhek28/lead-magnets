@@ -422,13 +422,24 @@
       margin-bottom: 10px;
     }
 
-    /* результат: что меняется у читателя, а не что лежит внутри */
+    /* результат: что меняется у читателя, а не что лежит внутри.
+       Отчёркнут линией, чтобы строку не проскакивали, но без заливки:
+       жёлтая плашка спорила бы за внимание с инфографикой слева. */
     .inside__result {
-      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(223,223,65,0.28);
       font-size: 14px;
       font-weight: 600;
       line-height: 1.5;
       color: #dfdf41;
+    }
+    .inside__result::before {
+      content: '\2192';
+      flex-shrink: 0;
     }
 
     .inside__desc {
