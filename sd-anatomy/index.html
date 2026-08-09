@@ -675,18 +675,6 @@
       border-top: 1px solid rgba(255,255,255,0.08);
     }
 
-    /* ===== PROGRESS BAR ===== */
-    .progress-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      background: #dfdf41;
-      z-index: 1001;
-      transition: width 0.1s linear;
-      width: 0%;
-    }
-
     /* ===== FINAL CTA ===== */
     .final-cta {
       padding: 48px 0 80px;
@@ -985,8 +973,6 @@
 </head>
 <body>
 
-  <div class="progress-bar" id="progress-bar"></div>
-
   <!-- HEADER -->
   <header class="header">
     <div class="container header__inner">
@@ -1094,7 +1080,7 @@
             <span class="viz__cap">нарисовал 3 части, а&nbsp;их&nbsp;<b>больше семи</b></span>
           </div>
           <div>
-            <div class="inside__title">Задача в&nbsp;разы больше, чем звучит</div>
+            <h3 class="inside__title">Задача в&nbsp;разы больше, чем звучит</h3>
             <div class="inside__desc">Задача звучит просто, поэтому почти все сразу начинают рисовать. В&nbsp;этом и&nbsp;ловушка: за&nbsp;короткой формулировкой прячется система в&nbsp;разы больше, чем кажется, и&nbsp;разницу видно с&nbsp;первых минут</div>
             <div class="inside__result">не&nbsp;бросаешься проектировать, не&nbsp;поняв размер задачи</div>
           </div>
@@ -1106,7 +1092,7 @@
             <span class="viz__cap">почти вся нагрузка это&nbsp;<b>чтение</b></span>
           </div>
           <div>
-            <div class="inside__title">Какие требования бывают и&nbsp;как считать нагрузку</div>
+            <h3 class="inside__title">Какие требования бывают и&nbsp;как считать нагрузку</h3>
             <div class="inside__desc">Что вообще прячется в&nbsp;требованиях: время ответа, доступность, как быстро появляются свежие данные. И&nbsp;как из&nbsp;пары чисел прикинуть, какую нагрузку будет держать сервис</div>
             <div class="inside__result">считаешь нагрузку сам, а&nbsp;не&nbsp;называешь числа наугад</div>
           </div>
@@ -1114,11 +1100,11 @@
 
         <div class="inside__item fade-up">
           <div class="viz">
-            <div class="viz-nodes"><span>Gateway</span><span>Feed</span><span>Кэш</span><span>Ранжир.</span><span>Поиск</span><span>CDN</span></div>
+            <div class="viz-nodes"><span>Gateway</span><span>Feed</span><span>Кэш</span><span>Ранжирование</span><span>Поиск</span><span>CDN</span></div>
             <span class="viz__cap"><b>шесть блоков</b> и связи между ними</span>
           </div>
           <div>
-            <div class="inside__title">Как выглядит схема, которую от&nbsp;тебя ждут</div>
+            <h3 class="inside__title">Как выглядит схема, которую от&nbsp;тебя ждут</h3>
             <div class="inside__desc">Готовая схема с&nbsp;доски: из&nbsp;каких частей собирается такая система, зачем нужна каждая и&nbsp;как они связаны между собой</div>
             <div class="inside__result">есть с&nbsp;чем сверить свою схему</div>
           </div>
@@ -1136,7 +1122,7 @@
             </div>
           </div>
           <div>
-            <div class="inside__title">Готовый скрипт на&nbsp;первые пять минут</div>
+            <h3 class="inside__title">Готовый скрипт на&nbsp;первые пять минут</h3>
             <div class="inside__desc">Четыре вопроса подряд, которые задаёшь до&nbsp;того, как нарисуешь первую стрелку. Порядок и&nbsp;формулировки готовые, прогоняешь на&nbsp;любой задаче</div>
             <div class="inside__result">знаешь, что спросить, чтобы получить эти числа</div>
           </div>
@@ -1144,7 +1130,7 @@
 
         <div class="inside__item inside__item--wide fade-up">
           <div>
-            <div class="inside__title">Проверь, на&nbsp;чём валишься именно ты</div>
+            <h3 class="inside__title">Проверь, на&nbsp;чём валишься именно ты</h3>
             <div class="inside__desc">Список из&nbsp;семи пунктов, из-за которых заваливают секцию. Пройдись и&nbsp;честно отметь свои</div>
           </div>
           <div class="viz">
@@ -1311,15 +1297,11 @@
       });
 
       // Прогресс-бар, кнопка наверх, липкий CTA
-      var progressBar = document.getElementById('progress-bar');
       var backToTop = document.getElementById('back-to-top');
       var stickyCta = document.getElementById('sticky-cta');
       var finalCtaSection = document.getElementById('cta');
       window.addEventListener('scroll', function() {
         var scrollTop = window.scrollY;
-        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        var scrollPercent = (scrollTop / docHeight) * 100;
-        progressBar.style.width = scrollPercent + '%';
         if (scrollTop > 600) {
           backToTop.classList.add('visible');
         } else {
