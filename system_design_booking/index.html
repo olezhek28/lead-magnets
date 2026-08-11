@@ -12,12 +12,10 @@
      Отличия от основной страницы: noindex, свои цели Метрики (sdb_*) и тексты
      CTA про оплату вместо анкеты предзаписи.
 
-     TODO ДО РАССЫЛКИ ССЫЛКИ: кнопки уже говорят «Оплатить», но технически
-     всё ещё открывают анкету предзаписи GetCourse (виджет id=1633267).
-     Заменить на платёжные ссылки в трёх местах — data-goal="tarif_standart",
-     "tarif_mentor" и "final"; остальные пять CTA якорные, ведут на #tarify.
-     Пока это не сделано, страницу в личку не отправлять: кнопка обещает
-     оплату, а откроется анкета. -->
+     Кнопки тарифов открывают формы оплаты GetCourse: у «Стандарта» и тарифа
+     с проверкой они разные (id=1639249 и id=1639252), ключ формы лежит в
+     data-gc-open, сами формы описаны в FORMS внизу файла. Остальные шесть CTA
+     якорные, ведут на #tarify: какой тариф человек выберет, они не знают. -->
 
 <!-- Даты и цены ниже унаследованы от основной страницы. Если поток или цены
      поменяются, править надо ОБЕ страницы: расхождение увидят как раз те,
@@ -1417,7 +1415,7 @@
     .footer__req, .scarcity, .program__result,
     .tier__label, .experience__company-name { overflow-wrap: anywhere; }
   }
-  /* ===== Модалка предзаписи (форма GetCourse) ===== */
+  /* ===== Модалка оплаты (формы GetCourse, своя на каждый тариф) ===== */
   .gc-modal[hidden] { display: none; }
   .gc-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: flex-start; justify-content: center;
     padding: 40px 24px 64px; overflow-y: auto; overscroll-behavior: contain; }
@@ -1432,6 +1430,7 @@
     box-shadow: 0 6px 20px -8px rgba(0,0,0,.7); }
   .gc-modal__close:hover { background: rgba(52,63,68,.95); }
   .gc-modal__body { padding: 8px clamp(8px, 3vw, 40px) clamp(16px, 3vw, 40px); }
+  .gc-modal__body iframe[hidden] { display: none; }
   .gc-modal__body iframe { display: block; width: 100% !important; min-height: 1040px; border: 0 !important; background: var(--bg-card); }
   .gc-modal__body.is-loading iframe { position: absolute; visibility: hidden; }
   .gc-modal__loading {
@@ -2747,7 +2746,7 @@
           <!-- href — фолбэк на случай, если JS не сработал или ссылку открыли в новой вкладке;
                при работающем JS клик перехватывается и форма открывается в модалке -->
           <div class="tier__cta">
-            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_standart">Оплатить по&nbsp;самой низкой цене</a>
+            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1639249" data-gc-open="standart" data-goal="tarif_standart">Оплатить по&nbsp;самой низкой цене</a>
             <p class="tier__hint">Картой или в&nbsp;рассрочку до&nbsp;12 месяцев</p>
           </div>
         </div>
@@ -2778,7 +2777,7 @@
             <div class="tier__practice-note">5&nbsp;недель курса, 5&nbsp;таких практик. К&nbsp;реальной секции тебя уже не&nbsp;первый раз гоняют вопросами по&nbsp;твоей же&nbsp;архитектуре</div>
           </div>
           <div class="tier__cta">
-            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_mentor">Оплатить по&nbsp;самой низкой цене</a>
+            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1639252" data-gc-open="mentor" data-goal="tarif_mentor">Оплатить по&nbsp;самой низкой цене</a>
             <p class="tier__hint">Картой или в&nbsp;рассрочку до&nbsp;12 месяцев</p>
           </div>
         </div>
@@ -2918,8 +2917,8 @@
           <span class="final__badge">60 мест</span>
         </div>
         <h2 class="final__title">Забирай место на&nbsp;потоке, пока держится самая низкая цена</h2>
-        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="final">Оплатить по&nbsp;самой низкой цене</a>
-        <p class="final__hint">* После нажатия откроется оплата</p>
+        <a class="final__btn" href="#tarify" data-goal="final">Оплатить по&nbsp;самой низкой цене</a>
+        <p class="final__hint">* Выбираешь тариф&nbsp;— и&nbsp;сразу к&nbsp;оплате</p>
       </div>
     </div>
   </section>
@@ -3311,7 +3310,7 @@
   });
 </script>
 
-<!-- ===== Модалка предзаписи: форма GetCourse (виджет) открывается по кнопкам &quot;Заполнить анкету&quot; ===== -->
+<!-- ===== Модалка оплаты: форма GetCourse открывается по кнопкам тарифов ===== -->
 <div class="gc-modal" id="gc-modal" hidden>
   <div class="gc-modal__backdrop" data-gc-close></div>
   <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Оплата участия">
@@ -3342,7 +3341,7 @@
       if (typeof window.ym !== 'function') return;
       window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
     }
-    // якорные CTA (ведут к #tarify); кнопки анкеты считаются отдельно, в open()
+    // якорные CTA (ведут к #tarify); кнопки оплаты считаются отдельно, в open()
     document.addEventListener('click', function (e) {
       var el = e.target.closest && e.target.closest('[data-goal]');
       if (!el || el.hasAttribute('data-gc-open')) return;
@@ -3354,7 +3353,7 @@
     var lastTrigger = null;
     var closeBtn = modal.querySelector('.gc-modal__close');
 
-    // ===== Ленивая загрузка виджета GetCourse =====
+    // ===== Ленивая загрузка форм оплаты GetCourse =====
     // Грузим форму только по первому клику. Если вставить её скрипт в разметку,
     // iframe отправит свой хит в счётчик у каждого посетителя — см. комментарий
     // у .gc-modal__body.
@@ -3365,32 +3364,73 @@
     // посетитель платит эту секунду заново, просто чтобы получить строчку с src.
     // Поэтому iframe собираем сами теми же параметрами, а штатный скрипт держим
     // как запасной путь на случай, если GetCourse поменяет схему URL.
-    var WIDGET_ID = '899a0f68032eb1a5b3f89a1a2ce8291d864ab292';
-    var WIDGET_SRC = 'https://school.olezhek28.courses/pl/lite/widget/script?id=1633267';
     var WIDGET_ORIGIN = 'https://school.olezhek28.courses';
-    var FORM_URL = 'https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267';
-    var FRAME_NAME = 'gc-sd-form';
-    var widgetRequested = false;
-    var fallbackRequested = false;
-    var gotHeight = false;
+    // У каждого тарифа своя форма оплаты, ключ приходит из data-gc-open кнопки.
+    // uniq — идентификатор, который GetCourse отдаёт вместе со скриптом виджета:
+    // этим же значением форма подписывает postMessage со своей высотой, так что
+    // менять его нельзя, иначе высота перестанет доезжать и форма схлопнется.
+    var FORMS = {
+      standart: {
+        id: '1639249',
+        uniq: '0fc18260e87bb0972214ef145a86c7ff38ba6403',
+        title: 'Оплата курса, тариф «Стандарт»'
+      },
+      mentor: {
+        id: '1639252',
+        uniq: 'd3a063da25a1211508b5f07326c62e41cab0e239',
+        title: 'Оплата курса, тариф «С проверкой и практикой»'
+      }
+    };
+    var DEFAULT_KEY = 'standart';
+    var panel = modal.querySelector('.gc-modal__panel');
+    var body = document.getElementById('gc-modal-body');
+    var activeKey = null;
 
-    // идемпотентно: зовётся и по load iframe, и по страховочному таймауту
-    function widgetReady() {
-      var body = document.getElementById('gc-modal-body');
-      var ph = document.getElementById('gc-loading');
-      if (body) body.classList.remove('is-loading');
-      if (ph && ph.parentNode) ph.parentNode.removeChild(ph);
+    // состояние держим отдельно на каждую форму: человек может открыть один
+    // тариф, закрыть и открыть второй — тогда первый iframe уже загружен, а
+    // второй ещё нет, и общие флаги показали бы готовую форму вместо заглушки
+    var state = {};
+    function st(key) {
+      if (!state[key]) state[key] = { requested: false, fallback: false, gotHeight: false, loaded: false };
+      return state[key];
     }
-    function widgetFailed() {
+    function formUrl(key) { return WIDGET_ORIGIN + '/pl/lite/widget/widget?id=' + FORMS[key].id; }
+    function frameName(key) { return 'gc-sd-form-' + key; }
+    function frameId(key) { return 'gc-frame-' + key; }
+
+    // заглушка одна на модалку: показываем, пока активная форма не отозвалась
+    function showLoading(on, html) {
+      if (!body) return;
       var ph = document.getElementById('gc-loading');
-      if (ph) ph.innerHTML = 'Не удалось загрузить оплату. <a href="' + FORM_URL +
-        '">Открыть её отдельной страницей</a>';
+      if (!on) {
+        body.classList.remove('is-loading');
+        if (ph && ph.parentNode) ph.parentNode.removeChild(ph);
+        return;
+      }
+      if (!ph) {
+        ph = document.createElement('div');
+        ph.className = 'gc-modal__loading';
+        ph.id = 'gc-loading';
+        ph.setAttribute('role', 'status');
+        body.appendChild(ph);
+      }
+      ph.innerHTML = html || '<span class="gc-spinner" aria-hidden="true"></span>Загружаю оплату…';
+      body.classList.add('is-loading');
+    }
+    function widgetReady(key) {
+      st(key).loaded = true;
+      if (key === activeKey) showLoading(false);
+    }
+    function widgetFailed(key) {
+      if (key !== activeKey) return;
+      showLoading(true, 'Не удалось загрузить оплату. <a href="' + formUrl(key) +
+        '">Открыть её отдельной страницей</a>');
     }
     // те же параметры, что подставляет штатный скрипт: search нужен, чтобы
-    // в анкету доехали utm-метки, ref и loc GetCourse пишет в заявку
-    function frameSrc() {
+    // в форму доехали utm-метки, ref и loc GetCourse пишет в заказ
+    function frameSrc(key) {
       var src = WIDGET_ORIGIN + '/pl/lite/widget/widget?' + window.location.search.substring(1) +
-        '&id=1633267&ref=' + encodeURIComponent(document.referrer) +
+        '&id=' + FORMS[key].id + '&ref=' + encodeURIComponent(document.referrer) +
         '&loc=' + encodeURIComponent(document.location.href);
       try {
         if (window.clrtQueryData) {
@@ -3405,49 +3445,42 @@
     window.addEventListener('message', function (e) {
       if (e.origin !== WIDGET_ORIGIN) return;
       var d = e.data;
-      if (!d || d.uniqName !== WIDGET_ID || !d.height) return;
+      if (!d || !d.uniqName || !d.height) return;
+      var key = null;
+      Object.keys(FORMS).forEach(function (k) { if (FORMS[k].uniq === d.uniqName) key = k; });
+      if (!key) return;
       // метрики переименовывают iframe, поэтому сравниваем по части до &
-      if (d.iframeName && d.iframeName.split('&')[0] !== FRAME_NAME) return;
-      gotHeight = true; // единственное надёжное доказательство, что внутри наша форма
-      var f = document.getElementById('gc-frame');
+      if (d.iframeName && d.iframeName.split('&')[0] !== frameName(key)) return;
+      st(key).gotHeight = true; // единственное надёжное доказательство, что внутри наша форма
+      var f = document.getElementById(frameId(key));
       if (f) f.style.height = d.height + 'px';
     });
 
-    // заглушку могли уже снять по load — вернём её перед запасной попыткой
-    function ensurePlaceholder() {
-      var body = document.getElementById('gc-modal-body');
-      if (!body || document.getElementById('gc-loading')) return;
-      var ph = document.createElement('div');
-      ph.className = 'gc-modal__loading';
-      ph.id = 'gc-loading';
-      ph.setAttribute('role', 'status');
-      ph.innerHTML = '<span class="gc-spinner" aria-hidden="true"></span>Загружаю оплату…';
-      body.classList.add('is-loading');
-      body.appendChild(ph);
-    }
-
     // запасной путь: штатный скрипт GetCourse, если прямой iframe не поднялся
-    function loadWidgetViaScript() {
-      if (fallbackRequested) return;
-      fallbackRequested = true;
-      var body = document.getElementById('gc-modal-body');
+    function loadWidgetViaScript(key) {
+      var s = st(key);
+      if (s.fallback) return;
+      s.fallback = true;
       if (!body) return;
-      var broken = document.getElementById('gc-frame');
+      var broken = document.getElementById(frameId(key));
       if (broken) broken.parentNode.removeChild(broken);
-      var s = document.createElement('script');
-      s.id = WIDGET_ID;
-      s.src = WIDGET_SRC;
-      s.onerror = widgetFailed;
-      s.onload = function () {
+      var el = document.createElement('script');
+      el.id = FORMS[key].uniq;
+      el.src = WIDGET_ORIGIN + '/pl/lite/widget/script?id=' + FORMS[key].id;
+      el.onerror = function () { widgetFailed(key); };
+      el.onload = function () {
         // DOMContentLoaded, на который виджет подписывается сам, давно прошёл,
         // поэтому дёргаем кастомное событие — на него он подписан тоже
-        document.dispatchEvent(new Event('StartWidget' + WIDGET_ID));
-        var frame = body.querySelector('iframe');
-        if (!frame) { widgetFailed(); return; }
-        frame.addEventListener('load', widgetReady);
-        setTimeout(widgetReady, 8000); // не залипаем на заглушке, если load не придёт
+        document.dispatchEvent(new Event('StartWidget' + FORMS[key].uniq));
+        // свои iframe помечены data-gc-key, так что чужой в модалке ровно один
+        var frame = body.querySelector('iframe:not([data-gc-key])');
+        if (!frame) { widgetFailed(key); return; }
+        frame.id = frameId(key);
+        frame.setAttribute('data-gc-key', key);
+        frame.addEventListener('load', function () { widgetReady(key); });
+        setTimeout(function () { widgetReady(key); }, 8000); // не залипаем на заглушке, если load не придёт
       };
-      body.appendChild(s);
+      body.appendChild(el);
     }
 
     // ===== Прогрев статики формы =====
@@ -3506,40 +3539,54 @@
       }, { rootMargin: '800px 0px' });
       warmObserver.observe(tariffs);
     }
-    // подстраховка: наведение на кнопку анкеты, если до тарифов не доскроллили
+    // подстраховка: наведение на кнопку оплаты, если до тарифов не доскроллили
     document.querySelectorAll('[data-gc-open]').forEach(function (b) {
       b.addEventListener('pointerenter', warmFormAssets, { once: true });
       b.addEventListener('touchstart', warmFormAssets, { once: true, passive: true });
     });
 
-    function loadWidget() {
-      if (widgetRequested) return;
-      widgetRequested = true;
-      var body = document.getElementById('gc-modal-body');
+    function loadWidget(key) {
+      var s = st(key);
+      if (s.requested) return;
+      s.requested = true;
       if (!body) return;
-      var loaded = false;
       var f = document.createElement('iframe');
-      f.id = 'gc-frame';
-      f.name = FRAME_NAME;
-      f.title = 'Оплата участия';
-      f.src = frameSrc();
+      f.id = frameId(key);
+      f.name = frameName(key);
+      f.title = FORMS[key].title;
+      f.src = frameSrc(key);
+      f.setAttribute('data-gc-key', key);
       f.setAttribute('allowfullscreen', 'allowfullscreen');
-      f.addEventListener('load', function () { loaded = true; widgetReady(); });
-      f.addEventListener('error', loadWidgetViaScript);
+      f.addEventListener('load', function () { widgetReady(key); });
+      f.addEventListener('error', function () { loadWidgetViaScript(key); });
       body.appendChild(f);
       // Откат по признаку «форма не отозвалась», а не «долго грузится»: живая
       // форма присылает height за 3-4 секунды, а страница ошибки или чужая
       // разметка по подменённому URL дадут load и промолчат. Ронять медленную,
       // но рабочую загрузку нельзя — второй заход стоит ещё дороже.
       setTimeout(function () {
-        if (gotHeight) return;
-        if (loaded) { ensurePlaceholder(); loadWidgetViaScript(); return; }
+        if (s.gotHeight) return;
+        if (s.loaded) { showLoading(true); loadWidgetViaScript(key); return; }
         setTimeout(function () {
-          if (gotHeight) return;
-          ensurePlaceholder();
-          loadWidgetViaScript();
+          if (s.gotHeight) return;
+          showLoading(true);
+          loadWidgetViaScript(key);
         }, 10000);
       }, 10000);
+    }
+
+    // переключение между формами тарифов: загруженный iframe не выбрасываем,
+    // а прячем — второй заход в тот же тариф открывается мгновенно
+    function showForm(key) {
+      activeKey = key;
+      if (panel) panel.setAttribute('aria-label', FORMS[key].title);
+      if (body) {
+        body.querySelectorAll('iframe[data-gc-key]').forEach(function (f) {
+          f.hidden = f.getAttribute('data-gc-key') !== key;
+        });
+      }
+      showLoading(!st(key).loaded);
+      loadWidget(key);
     }
 
     // ===== Изоляция фона на время модалки =====
@@ -3580,10 +3627,12 @@
 
     function open(e) {
       if (e) { e.preventDefault(); lastTrigger = e.currentTarget; }
+      var key = lastTrigger && lastTrigger.getAttribute('data-gc-open');
+      if (!key || !FORMS[key]) key = DEFAULT_KEY;
       goal('sdb_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
       modal.hidden = false; document.body.classList.add('gc-lock');
       backgroundInert(true);
-      loadWidget();
+      showForm(key);
       if (closeBtn) closeBtn.focus();
     }
     function close() {
