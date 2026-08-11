@@ -517,6 +517,19 @@
        а у читателя нет причины решать это сейчас, а не когда-нибудь.
        Жёлтый акцент повторяет вывод карточек «Что внутри»: у каждого
        блока страницы своя итоговая строка. */
+    .why__down {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .why__down svg { animation: chevronNudge 2.4s ease-in-out infinite; }
+
+    @keyframes chevronNudge {
+      0%, 100% { transform: translateY(-3px); opacity: 0.55; }
+      50%      { transform: translateY(4px);  opacity: 1; }
+    }
+
     .why__cost {
       max-width: 860px;
       margin: 22px auto 0;
@@ -1037,6 +1050,7 @@
       .hero__content { animation: none; }
       .btn:hover, .final-cta__btn:hover { transform: none; }
       .back-to-top, .sticky-cta { transition: none; }
+      .why__down svg { animation: none; opacity: 1; transform: none; }
     }
 
     /* ===== RESPONSIVE ===== */
@@ -1100,6 +1114,7 @@
       .why__bridge { font-size: 15px; margin: 26px auto 16px; padding-top: 20px; }
       .why__split { grid-template-columns: 1fr; gap: 14px; }
       .why__side { padding: 20px 22px; }
+      .why__down { margin-top: 24px; }
       .why__cost { font-size: 15px; }
 
 
@@ -1237,7 +1252,7 @@
         <h2 class="section__title">Дело не&nbsp;в&nbsp;том, что&nbsp;ты мало знаешь</h2>
       </div>
 
-      <p class="why__scene fade-up">Ты знаешь, что такое очередь, шардирование и&nbsp;кэш. Пишешь сервисы каждый день. А&nbsp;на&nbsp;доске, под взглядом интервьюера, это <b>почему-то не&nbsp;достаётся</b>: пауза тянется, доска пустая, и&nbsp;ты уже понимаешь, как это выглядит со&nbsp;стороны.</p>
+      <p class="why__scene fade-up">Ты знаешь, что такое очередь, шардирование и&nbsp;кэш. Пишешь сервисы каждый день. С&nbsp;секции вышел с&nbsp;ощущением, что было нормально. А&nbsp;в&nbsp;ответ — отказ, или грейд ниже, чем рассчитывал. <b>И&nbsp;непонятно, почему так произошло.</b></p>
 
       <div class="why__voices fade-up">
         <div class="why__voice">"Я&nbsp;завалил несколько собеседований, потому что мало спрашивал"</div>
@@ -1268,7 +1283,17 @@
         </div>
       </div>
 
-      <p class="why__cost fade-up">Само не&nbsp;пройдёт. Секцию можно не&nbsp;любить и&nbsp;считать несправедливой, но&nbsp;там, где её&nbsp;спрашивают, <b>грейд за&nbsp;тебя решает она</b>: на&nbsp;том же&nbsp;собесе, где по&nbsp;коду ты сильнее прочих, предложат ступень ниже и&nbsp;вилку ниже.</p>
+      <p class="why__cost fade-up">Секцию можно не&nbsp;любить и&nbsp;считать несправедливой, но&nbsp;там, где её&nbsp;спрашивают, <b>грейд за&nbsp;тебя решает она</b>. Хорошая новость: прохождение сисдиза это навык, а&nbsp;не&nbsp;талант, и&nbsp;он раскладывается по&nbsp;шагам.</p>
+
+      <!-- Переход к содержанию: взгляд уводится вниз, но тише заголовка,
+           к которому ведёт. Тот же шеврон, что в кнопке «наверх». -->
+      <div class="why__down fade-up" aria-hidden="true">
+        <svg width="26" height="34" viewBox="0 0 26 34" fill="none" stroke="#dfdf41"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 6 13 15 22 6"/>
+          <polyline points="4 19 13 28 22 19"/>
+        </svg>
+      </div>
     </div>
   </section>
 
