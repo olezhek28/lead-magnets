@@ -23,7 +23,7 @@
   <!-- Заголовок вкладки работает на поиск: в нём запрос, по которому ищут.
        Крючок из первого экрана живёт в og-тегах, где решает CTR в мессенджерах. -->
   <title>Разбор System Design собеседования: 7 частых ошибок · бесплатно</title>
-  <meta name="description" content="Бесплатный разбор реального System Design собеседования по минутам: 7 ошибок, из-за которых заваливают секцию, и чек-лист для самопроверки. PDF на 8 страниц.">
+  <meta name="description" content="Бесплатный разбор реального System Design собеседования по минутам: 7 ошибок, из-за которых заваливают секцию, и чек-лист для самопроверки. PDF на 10 страниц.">
   <meta name="keywords" content="system design собеседование, разбор system design интервью, ошибки на system design, подготовка к секции system design, систем дизайн собес, system design interview на русском, чек-лист system design, capacity planning на собеседовании, backend собеседование">
   <meta name="author" content="Олег Козырев">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -59,7 +59,7 @@
         "name": "Анатомия провалённого System Design собеседования",
         "alternateName": ["Разбор System Design собеса", "Как заваливают System Design интервью"],
         "headline": "Как успешно завалить System Design собес за 40 минут",
-        "description": "Разбор реального System Design собеседования по минутам на задаче «спроектируй ленту объявлений»: какие требования выяснить до проектирования, как прикинуть нагрузку, как выглядит ожидаемая схема, 7 ошибок, из-за которых заваливают секцию, и чек-лист для самопроверки.",
+        "description": "Разбор System Design собеседования по шагам на реальной задаче \"спроектируй ленту объявлений\": какие требования выяснить до проектирования, как прикинуть нагрузку, как выглядит ожидаемая схема, 7 ошибок, из-за которых заваливают секцию, и чек-лист для самопроверки.",
         "learningResourceType": "Guide",
         "educationalLevel": "Intermediate",
         "teaches": [
@@ -78,7 +78,7 @@
         "url": "https://guide.olezhek28.courses/sd-anatomy/",
         "image": "https://guide.olezhek28.courses/sd-anatomy/og-image.jpg?v=2",
         "encodingFormat": "application/pdf",
-        "numberOfPages": 8,
+        "numberOfPages": 10,
         "author": {"@id": "https://guide.olezhek28.courses/sd-anatomy/#oleg"},
         "publisher": {"@id": "https://guide.olezhek28.courses/sd-anatomy/#oleg"},
         "offers": {
@@ -145,6 +145,25 @@
     .island :focus-visible { outline-color: #182023; }
     img { max-width: 100%; height: auto; display: block; }
 
+    /* Пропустить шапку: видна только при переходе с клавиатуры.
+       Именно fixed, а не absolute: absolute считает top от документа,
+       и на прокрученной странице ссылка всплыла бы выше верхней границы экрана. */
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: -100px;
+      z-index: 1002;
+      padding: 12px 20px;
+      background: #dfdf41;
+      color: #182023;
+      border-radius: 0 0 12px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: top 0.2s;
+    }
+    .skip-link:focus,
+    .skip-link:focus-visible { top: 0; outline-color: #182023; }
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -190,7 +209,9 @@
     .hero__content { animation: hero-rise 0.6s ease both; }
 
     /* Якоря не должны уезжать под фиксированную шапку */
-    section[id] { scroll-margin-top: 88px; }
+    section[id], #main { scroll-margin-top: 88px; }
+    /* main получает фокус со skip-link — рамка вокруг всей страницы не нужна */
+    #main:focus { outline: none; }
 
     /* ===== HEADER / NAV ===== */
     .header {
@@ -286,10 +307,14 @@
       z-index: 1;
     }
 
-    .hero__image {
+    /* Рамка со скруглением и тенью живёт отдельно от подписи:
+       иначе overflow: hidden обрезал бы подпись вместе с картинкой. */
+    .hero__figure {
       flex: 1;
       min-width: 0;
       max-width: 400px;
+    }
+    .hero__image {
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 20px 60px rgba(0,0,0,0.4);
@@ -299,6 +324,15 @@
       height: auto;
       display: block;
     }
+    .hero__cap {
+      margin-top: 16px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #9a9ea0;
+      text-align: center;
+    }
+    .hero__cap b { color: #dfdf41; font-weight: 600; }
 
     .hero__badge {
       display: inline-block;
@@ -378,34 +412,138 @@
 
     /* ===== ПОЧЕМУ ВАЛЯТСЯ ===== */
     /* Блок снимает вину и называет внешнего врага: без него страница идёт
-       из «вот как ты валишься» сразу в «забери разбор», без единого довода. */
-    .why__list {
+       из "вот как ты валишься" сразу в "забери разбор", без единого довода. */
+    /* Сцена, в которой читатель узнаёт себя. Главная боль сегмента по
+       исследованию не «не знаю», а «знаю, но не достаю под давлением»,
+       и без этого абзаца страница объясняет, но ни разу не попадает. */
+    .why__scene {
+      max-width: 860px;
+      margin: 0 auto 30px;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #c8cacc;
+    }
+    .why__scene b { color: #ffffff; font-weight: 600; }
+
+    /* Три чужих голоса в ряд, а не столбиком: цитаты короткие, и стопкой
+       они читались как ещё один абзац той же плотности. */
+    .why__voices {
       display: grid;
-      gap: 14px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
       max-width: 860px;
       margin: 0 auto;
     }
 
-    .why__item {
-      padding: 2px 0 2px 22px;
+    .why__voice {
+      padding: 2px 0 2px 18px;
       border-left: 3px solid rgba(223,223,65,0.55);
-      font-size: 19px;
+      font-size: 16px;
       font-weight: 500;
       line-height: 1.5;
       color: #e4e6e7;
     }
 
-    .why__out {
+    .why__bridge {
       max-width: 860px;
-      margin: 34px auto 0;
+      margin: 34px auto 18px;
       padding-top: 26px;
       border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: #a7a9ab;
+    }
+    .why__bridge b { color: #ffffff; font-weight: 700; }
+
+    /* Ядро блока это противопоставление двух навыков. Прозой оно тонуло
+       четвёртым абзацем подряд, поэтому разложено на две колонки: слева
+       то, чему читателя учили, справа то, чему не учил никто. Пустой
+       маркер справа и есть мысль: источника не существует. */
+    .why__split {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .why__side {
+      display: flex;
+      flex-direction: column;
+      background: #22282d;
+      border: 1px solid #374246;
+      border-radius: 18px;
+      padding: 24px 26px;
+    }
+    .why__side .label { margin-bottom: 16px; }
+    .why__side--not .label { color: #a3a6a8; }
+
+    .why__points { list-style: none; display: grid; gap: 11px; }
+    .why__points li {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #c8cacc;
+    }
+    .why__points li::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: #dfdf41;
+      flex-shrink: 0;
+    }
+    .why__side--not .why__points li::before {
+      background: none;
+      border: 1px solid #566268;
+    }
+
+    /* прижат к низу: вердикты обеих колонок стоят на одной линии */
+    .why__verdict {
+      margin-top: auto;
+      padding-top: 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: #dfdf41;
+    }
+    .why__side--not .why__verdict { color: #a3a6a8; }
+
+    /* Цена бездействия. Без неё блок ставит диагноз и на этом замолкает,
+       а у читателя нет причины решать это сейчас, а не когда-нибудь.
+       Жёлтый акцент повторяет вывод карточек «Что внутри»: у каждого
+       блока страницы своя итоговая строка. */
+    .why__cost {
+      max-width: 860px;
+      margin: 22px auto 0;
+      padding-top: 20px;
+      border-top: 1px solid rgba(223,223,65,0.28);
       font-size: 16px;
       font-weight: 500;
       line-height: 1.75;
       color: #a7a9ab;
     }
-    .why__out b { color: #ffffff; font-weight: 700; }
+    .why__cost b { color: #dfdf41; font-weight: 700; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /* ===== WHAT INSIDE ===== */
     .inside {
@@ -517,6 +655,7 @@
       background: #dfdf41; flex-shrink: 0; display: block;
     }
 
+
     /* блоки схемы */
     .viz-nodes { display: flex; flex-wrap: wrap; gap: 6px; }
     .viz-nodes span {
@@ -551,7 +690,7 @@
     /* пять минут из сорока */
     .viz-clock { display: flex; align-items: center; gap: 14px; }
     .viz-clock svg { flex-shrink: 0; }
-    .viz-clock__label { font-size: 12px; font-weight: 600; color: #8a8c8e; }
+    .viz-clock__label { font-size: 12px; font-weight: 600; color: #a3a6a8; }
     .viz-clock__label b { display: block; color: #dfdf41; font-size: 15px; }
 
     .section__cta {
@@ -698,7 +837,7 @@
     }
 
     .case__side { padding: 20px 26px 22px; }
-    /* плашка стоит первой и держит связку «кейс -> секция», поэтому заметнее остального */
+    /* плашка стоит первой и держит связку "кейс -> секция", поэтому заметнее остального */
     .case__side--top {
       background: rgba(223,223,65,0.07);
       border-left-color: #dfdf41;
@@ -707,11 +846,28 @@
     .case__side .label { margin-bottom: 8px; }
     .case__side b { color: #ffffff; font-weight: 700; }
 
+    /* Ссылка наружу: намеренно тише кнопок, чтобы не уводила с конверсии.
+       Подчёркивание приглушённое, размер служебный, как у кикеров. */
+    .case__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: #dfdf41;
+      border-bottom: 1px solid rgba(223, 223, 65, 0.3);
+      transition: border-color 0.2s;
+    }
+    .case__link:hover { border-bottom-color: #dfdf41; }
+    .case__link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
     .case__track {
       font-family: var(--mono);
       font-size: 13px;
       line-height: 1.6;
-      color: #8a8c8e;
+      color: #a3a6a8;
       padding-top: 18px;
       margin-top: 4px;
       border-top: 1px solid rgba(255,255,255,0.08);
@@ -831,7 +987,7 @@
 
     .footer__legal {
       font-size: 13px;
-      color: #8a8c8e;
+      color: #a3a6a8;
       line-height: 1.6;
     }
 
@@ -938,6 +1094,16 @@
 
       .section { padding: 40px 0 24px; }
 
+      .why__scene { font-size: 15px; margin-bottom: 24px; }
+      .why__voices { grid-template-columns: 1fr; gap: 14px; }
+      .why__voice { font-size: 15px; padding-left: 16px; }
+      .why__bridge { font-size: 15px; margin: 26px auto 16px; padding-top: 20px; }
+      .why__split { grid-template-columns: 1fr; gap: 14px; }
+      .why__side { padding: 20px 22px; }
+      .why__cost { font-size: 15px; }
+
+
+
       .inside__item { grid-template-columns: 1fr; gap: 18px; padding: 24px 20px; }
       .inside__item--wide { grid-template-columns: 1fr; }
       .inside__title { font-size: 17px; }
@@ -1002,15 +1168,17 @@
 </head>
 <body>
 
+  <a href="#main" class="skip-link">К содержанию</a>
+
   <!-- HEADER -->
   <header class="header">
     <div class="container header__inner">
       <a href="/" class="logo">{ Олег Козырев }</a>
-      <a href="#cta" class="btn btn--primary btn--header">Забрать разбор</a>
+      <a href="#cta" class="btn btn--primary btn--header" data-goal="header">Забрать разбор</a>
     </div>
   </header>
 
-  <main>
+  <main id="main" tabindex="-1">
 
   <!-- HERO -->
   <section class="hero">
@@ -1021,14 +1189,17 @@
           <h1 class="hero__title">Как успешно завалить System Design собес <span>за&nbsp;40&nbsp;минут?</span></h1>
           <p class="hero__desc">На&nbsp;примере реального собеса в&nbsp;Авито разбери 7&nbsp;ошибок,<br class="hero__br"> из-за которых многие заваливают секцию</p>
           <p class="hero__you">И&nbsp;проверь, какие из&nbsp;них совершаешь <span>ты</span></p>
-          <a href="#cta" class="btn btn--primary">Забрать разбор бесплатно</a>
+          <a href="#cta" class="btn btn--primary" data-goal="hero">Забрать разбор бесплатно</a>
         </div>
-        <div class="hero__image">
-          <picture>
-            <source srcset="hero.webp?v=2" type="image/webp">
-            <img src="hero.jpg?v=2" alt="Разбор провального System Design собеса" width="940" height="1000" fetchpriority="high">
-          </picture>
-        </div>
+        <figure class="hero__figure">
+          <div class="hero__image">
+            <picture>
+              <source srcset="hero.webp?v=2" type="image/webp">
+              <img src="hero.jpg?v=2" alt="Разбор провального System Design собеса" width="940" height="1000" fetchpriority="high">
+            </picture>
+          </div>
+          <figcaption class="hero__cap">PDF на&nbsp;<b>10 страниц</b>: разбор задачи по&nbsp;шагам, 7&nbsp;красных флагов и&nbsp;чек-лист</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -1043,7 +1214,7 @@
         <ul class="for-who__panel">
           <li class="for-who__item">
             <div class="for-who__stage label">Ещё не начал</div>
-            <div class="for-who__text">Упёрся в&nbsp;грейд из-за сисдиза, а&nbsp;что там спрашивают, непонятно</div>
+            <div class="for-who__text">Третий год перекладываешь данные из&nbsp;базы в&nbsp;JSON, а&nbsp;рост упёрся в&nbsp;сисдиз</div>
           </li>
           <li class="for-who__item">
             <div class="for-who__stage label">Готовлюсь</div>
@@ -1066,13 +1237,38 @@
         <h2 class="section__title">Дело не&nbsp;в&nbsp;том, что&nbsp;ты мало знаешь</h2>
       </div>
 
-      <div class="why__list fade-up">
-        <div class="why__item">«Я&nbsp;завалил несколько собеседований, потому что мало спрашивал»</div>
-        <div class="why__item">«Под конец задушили низкоуровневыми вопросами»</div>
-        <div class="why__item">«Не&nbsp;успел закончить, время вышло на&nbsp;середине»</div>
+      <p class="why__scene fade-up">Ты знаешь, что такое очередь, шардирование и&nbsp;кэш. Пишешь сервисы каждый день. А&nbsp;на&nbsp;доске, под взглядом интервьюера, это <b>почему-то не&nbsp;достаётся</b>: пауза тянется, доска пустая, и&nbsp;ты уже понимаешь, как это выглядит со&nbsp;стороны.</p>
+
+      <div class="why__voices fade-up">
+        <div class="why__voice">"Я&nbsp;завалил несколько собеседований, потому что мало спрашивал"</div>
+        <div class="why__voice">"Под конец задушили низкоуровневыми вопросами"</div>
+        <div class="why__voice">"Не&nbsp;успел закончить, время вышло на&nbsp;середине"</div>
       </div>
 
-      <p class="why__out fade-up">Ни&nbsp;одна из&nbsp;этих ошибок не&nbsp;про нехватку знаний. <b>Проектировать системы и&nbsp;проходить секцию систем-дизайна это разные навыки.</b> Первому учат книги и&nbsp;работа, второму не&nbsp;учит никто: формат непрозрачный, критериев нет, обратной связи после отказа не&nbsp;дают.</p>
+      <p class="why__bridge fade-up">Ни&nbsp;одна из&nbsp;этих ошибок не&nbsp;про нехватку знаний. <b>Это два разных навыка:</b></p>
+
+      <div class="why__split fade-up">
+        <div class="why__side">
+          <div class="label">Проектировать системы</div>
+          <ul class="why__points">
+            <li>книги</li>
+            <li>работа</li>
+            <li>годы практики</li>
+          </ul>
+          <div class="why__verdict">этому тебя учили</div>
+        </div>
+        <div class="why__side why__side--not">
+          <div class="label">Пройти секцию за&nbsp;40 минут</div>
+          <ul class="why__points">
+            <li>формат непрозрачный</li>
+            <li>критериев нет</li>
+            <li>после отказа не&nbsp;объясняют</li>
+          </ul>
+          <div class="why__verdict">этому не учит никто</div>
+        </div>
+      </div>
+
+      <p class="why__cost fade-up">Само не&nbsp;пройдёт. Секцию можно не&nbsp;любить и&nbsp;считать несправедливой, но&nbsp;там, где её&nbsp;спрашивают, <b>грейд за&nbsp;тебя решает она</b>: на&nbsp;том же&nbsp;собесе, где по&nbsp;коду ты сильнее прочих, предложат ступень ниже и&nbsp;вилку ниже.</p>
     </div>
   </section>
 
@@ -1118,8 +1314,8 @@
 
         <div class="inside__item fade-up">
           <div class="viz">
-            <div class="viz-nodes"><span>Gateway</span><span>Feed</span><span>Кэш</span><span>Ранжирование</span><span>Поиск</span><span>CDN</span></div>
-            <span class="viz__cap"><b>шесть блоков</b> и связи между ними</span>
+            <div class="viz-nodes"><span>Gateway</span><span>Feed</span><span>Кэш</span><span>Ранжирование</span><span>БД</span><span>Поиск</span><span>CDN</span></div>
+            <span class="viz__cap"><b>семь блоков</b> верхнего уровня и связи</span>
           </div>
           <div class="inside__body">
             <h3 class="inside__title">Как выглядит схема, которую от&nbsp;тебя ждут</h3>
@@ -1161,7 +1357,7 @@
 
 
       <div class="section__cta fade-up">
-        <a href="#cta" class="btn btn--primary">Забрать разбор бесплатно</a>
+        <a href="#cta" class="btn btn--primary" data-goal="inside">Забрать разбор бесплатно</a>
       </div>
     </div>
   </section>
@@ -1181,19 +1377,23 @@
           </div>
           <div>
             <h2 class="teacher__name" id="teacher-title">Олег Козырев</h2>
-            <div class="teacher__role">// Staff Engineer · ex-BigTech</div>
+            <div class="teacher__role">// Staff Engineer · ex-Авито</div>
           </div>
         </div>
 
         <div class="case fade-up">
           <div class="case__side case__side--top">
-            <div class="label">Почему я знаю, за&nbsp;что там снижают</div>
-            <div class="case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе.</b> И&nbsp;провожу их&nbsp;как интервьюер: вижу обе стороны стола</div>
+            <div class="label">Опыт на&nbsp;собесах</div>
+            <div class="case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе.</b> И&nbsp;провожу их&nbsp;как интервьюер: в&nbsp;Авито сам давал эту задачу на&nbsp;собесах и&nbsp;видел, на&nbsp;чём сыпались</div>
+            <a class="case__link" href="https://youtu.be/sCmwwnW2da8" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></svg>
+              Разбор этой задачи на&nbsp;YouTube
+            </a>
           </div>
 
           <div class="case__lead">
             <div class="label">Реальный продовый кейс</div>
-            <div class="case__title">Два года отвечал за&nbsp;платформу аутентификации для&nbsp;150 внутренних сервисов</div>
+            <h3 class="case__title">Два года отвечал за&nbsp;платформу аутентификации для&nbsp;150 внутренних сервисов</h3>
             <div class="case__sub">От&nbsp;ADR и&nbsp;моделей данных до&nbsp;согласований с&nbsp;ИБ и&nbsp;разработки в&nbsp;проде</div>
           </div>
 
@@ -1226,8 +1426,8 @@
           <span class="final-cta__badge">Бесплатно</span>
         </div>
         <h2 class="final-cta__title">Разбери чужие ошибки<br>до&nbsp;того, как наделаешь своих</h2>
-        <a href="https://t.me/olezhek28_course_bot?start=sdlm" target="_blank" rel="noopener" class="final-cta__btn">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.41-.88.03-.24.37-.49.99-.75 3.9-1.7 6.5-2.82 7.82-3.37 3.72-1.55 4.5-1.82 5-1.83.11 0 .37.03.53.15.14.1.17.24.19.35.02.08.03.28.02.43z"/></svg>
+        <a href="https://t.me/olezhek28_course_bot?start=sdlm" target="_blank" rel="noopener" class="final-cta__btn" data-goal="final">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.41-.88.03-.24.37-.49.99-.75 3.9-1.7 6.5-2.82 7.82-3.37 3.72-1.55 4.5-1.82 5-1.83.11 0 .37.03.53.15.14.1.17.24.19.35.02.08.03.28.02.43z"/></svg>
           Забрать разбор в Telegram
         </a>
         <p class="final-cta__hint">* После нажатия откроется мой бот в Telegram и даст доступ к разбору</p>
@@ -1238,11 +1438,11 @@
   </main>
 
   <div class="sticky-cta" id="sticky-cta">
-    <a href="#cta" class="sticky-cta__btn">Забрать разбор бесплатно</a>
+    <a href="#cta" class="sticky-cta__btn" data-goal="sticky">Забрать разбор бесплатно</a>
   </div>
 
   <button class="back-to-top" id="back-to-top" aria-label="Наверх">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
 
   <!-- FOOTER -->
@@ -1265,6 +1465,45 @@
   </footer>
 
   <script>
+    // ===== Цель Яндекс.Метрики: SD-разбор | Клик по CTA =====
+    // Вешаем делегированно и вне DOMContentLoaded: клик по CTA должен считаться,
+    // даже если ниже по скрипту что-то упадёт. ym может отсутствовать —
+    // блокировщик или счётчик ещё не поднялся, тогда молча пропускаем.
+    //
+    // place — какая из кнопок. type разделяет якорные кнопки, которые только
+    // доводят до финальной карточки, и саму кнопку в бота: без этого цель
+    // смешала бы "доскроллил до CTA" с "ушёл за разбором" и конверсия бы врала.
+    (function() {
+      var COUNTER = 96022201;
+      function goal(name, params) {
+        if (typeof window.ym !== 'function') return;
+        window.ym(COUNTER, 'reachGoal', name, params);
+      }
+
+      document.addEventListener('click', function(e) {
+        var el = e.target.closest && e.target.closest('[data-goal]');
+        if (!el) return;
+        goal('sda_cta_click', {
+          place: el.getAttribute('data-goal'),
+          type: /^https:\/\/t\.me\//.test(el.getAttribute('href') || '') ? 'telegram' : 'anchor'
+        });
+      });
+
+      // Доскроллил до финальной карточки. Единственная кнопка в бота живёт
+      // там, и без этой цели непонятно, что именно не сработало: страница
+      // не удержала или кнопка не убедила. Считаем один раз и отключаемся.
+      document.addEventListener('DOMContentLoaded', function() {
+        var cta = document.getElementById('cta');
+        if (!cta || !('IntersectionObserver' in window)) return;
+        var obs = new IntersectionObserver(function(entries) {
+          if (!entries.some(function(x) { return x.isIntersecting; })) return;
+          obs.disconnect();
+          goal('sda_reached_cta');
+        }, { threshold: 0.3 });
+        obs.observe(cta);
+      });
+    })();
+
     document.addEventListener('DOMContentLoaded', function() {
       // Fade-up анимации
       var observer = new IntersectionObserver(function(entries) {
