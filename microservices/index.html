@@ -114,7 +114,7 @@
      контур давал бы низкий контраст — переключатель на тёмный оставлен про запас
      для будущих светлых островков (например .tier--light в тарифах) */
   :root { --focus: var(--accent); }
-  .mech, .tier--light, .final__card { --focus: var(--light-ink); }
+  .mech, .tier--light, .final__card, .jobs { --focus: var(--light-ink); }
   :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
   .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
@@ -291,6 +291,155 @@
     .footer__req { font-size: 11.5px; line-height: 1.75; }
     .footer__links-row { gap: 7px; }
   }
+  /* ===== SECTION SHARED (используют hero-соседи: segments, get, jobs) ===== */
+  .section { padding: 96px 0; }
+  .section__head { margin-bottom: 48px; max-width: 760px; }
+  .section__title {
+    font-family: var(--display); font-size: clamp(28px, 3.6vw, 44px); font-weight: 500;
+    line-height: 1.14; letter-spacing: -0.03em; color: var(--text-h); margin: 0; text-wrap: pretty;
+  }
+  .section__cta { margin-top: 48px; text-align: center; }
+
+  /* ===== HERO (rec2045225131) =====
+     hero/marquee_bg.png — тёмная бинарная текстура из ассетов Tilda, растянута
+     фоном на весь первый экран и притушена маской сверху вниз, чтобы не спорила
+     с текстом в нижней части экрана. */
+  .hero { position: relative; padding: 152px 0 88px; overflow: hidden; }
+  .hero::before {
+    content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: url('hero/marquee_bg.png') center top / cover no-repeat;
+    opacity: .6;
+    -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.92) 0%, transparent 82%);
+    mask-image: linear-gradient(180deg, rgba(0,0,0,.92) 0%, transparent 82%);
+  }
+  .hero::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(223,223,65,.35), transparent);
+  }
+  .hero__inner { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; text-align: center; }
+  .hero__title {
+    font-family: var(--display); font-size: clamp(34px, 5.2vw, 60px); font-weight: 500;
+    line-height: 1.08; letter-spacing: -0.04em; color: var(--text-h); margin: 0 0 26px;
+  }
+  /* «3.0» — прошлая версия заголовка правилась поверх этой, серый цвет достался
+     хвосту как визуальная память об этом — переносим ровно так, как на экране */
+  .hero__title-mut { color: var(--text-faint); font-weight: 400; }
+  /* Плашка автора собрана из готового PNG (avatar + пилюля-подложка одним файлом
+     из Tilda) — текст кладём поверх с отступом слева, равным высоте картинки,
+     ровно на ширину круглого аватара внутри неё. */
+  .hero__author { position: relative; display: inline-block; margin: 0 0 26px; }
+  .hero__author-img { display: block; height: 60px; width: auto; border-radius: 999px; }
+  .hero__author-txt {
+    position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
+    gap: 2px; padding: 0 22px 0 78px; text-align: left;
+  }
+  .hero__author-role { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--text-h); line-height: 1.2; }
+  .hero__author-pos { font-family: var(--font); font-size: 12px; font-weight: 400; color: var(--text-mute); line-height: 1.2; }
+  .hero__subtitle { font-size: 18px; font-weight: 400; line-height: 1.62; color: var(--text-mute); max-width: 680px; margin: 0 auto 44px; text-wrap: pretty; }
+  .hero__chip {
+    display: inline-flex; align-items: center; padding: 1px 10px; margin: 0 1px;
+    border-radius: 6px; background: rgba(223,223,65,.09); border: 1px solid rgba(223,223,65,.24);
+    color: var(--text-h); font-weight: 500; white-space: nowrap;
+  }
+  .hero__cta { display: flex; justify-content: center; }
+
+  /* ===== CTA-КАПСУЛА (мета · кнопка · мета) — общая для hero ===== */
+  .cta-capsule {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 10px; border-radius: 999px; max-width: 100%;
+    background: rgba(255,255,255,.04); border: 1px solid var(--border-card);
+    box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 26px 60px -40px rgba(0,0,0,.9);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .cta-capsule__meta { display: flex; flex-direction: column; gap: 5px; padding: 0 28px; min-width: 118px; text-align: center; }
+  .cta-capsule__label { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-mute); }
+  .cta-capsule__value { font-family: var(--display); font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: var(--text-h); white-space: nowrap; }
+  .cta-capsule__value--accent { color: var(--accent); }
+  .cta-capsule .btn { border-radius: 999px; padding: 21px 44px; font-size: 15.5px; }
+
+  /* ===== SEGMENTS — «Курс адаптирован…» (rec765399428) =====
+     kotkins_small.png выглядывает из угла последней карточки (тот же файл, что
+     Rails-порт применял для сегмента карточек), glass_figure.svg — полупрозрачная
+     волнистая подложка за шапкой секции (тот же source-хеш, что и у маскота). */
+  .who { position: relative; padding: 96px 0; overflow: hidden; }
+  .who__deco {
+    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    width: 620px; max-width: 140%; opacity: .5; pointer-events: none; z-index: 0;
+  }
+  .who .section__head, .who__grid { position: relative; z-index: 1; }
+  .who__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .who__card {
+    position: relative; padding: 34px 30px 30px; border-radius: var(--r-lg);
+    background: var(--bg-card); border: 1px solid var(--border-card);
+    display: flex; flex-direction: column; gap: 14px; overflow: hidden;
+    transition: border-color .3s var(--ease), transform .3s var(--ease);
+  }
+  .who__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  .who__title { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.32; letter-spacing: -0.015em; color: var(--text-h); }
+  .who__desc { font-size: 15px; line-height: 1.62; color: var(--text-mute); }
+  .who__mascot {
+    position: absolute; right: -6px; bottom: -4px; width: 74px; height: auto;
+    opacity: .9; pointer-events: none;
+  }
+
+  /* ===== WHAT-YOU-GET — «Вся подкапотная…» (rec765399431) =====
+     иконки steps/step_N.svg на Tilda — мини-индикатор прогресса (N закрашенных
+     квадратов из 6), переиспользуем как декоративный порядковый маркер карточки. */
+  .get { padding: 96px 0; }
+  .get__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .get__card {
+    padding: 30px 28px 28px; border-radius: var(--r-lg);
+    background: var(--bg-card); border: 1px solid var(--border-card);
+    display: flex; flex-direction: column; gap: 12px;
+    transition: border-color .3s var(--ease), transform .3s var(--ease);
+  }
+  .get__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  .get__step { height: 10px; width: auto; margin-bottom: 4px; }
+  .get__lead { font-family: var(--display); font-size: 17px; font-weight: 600; line-height: 1.4; letter-spacing: -0.01em; color: var(--text-h); }
+  /* нумерация карточек 1–6 дублирует шкалу прогресса из .get__step текстом:
+     та же лента используется на Tilda как индикатор «N из 6» */
+  .get__num { color: var(--accent); font-variant-numeric: tabular-nums; }
+  .get__desc { font-size: 15px; line-height: 1.56; color: var(--text-mute); }
+
+  /* ===== VACANCIES — светлый островок «Изучаем, что требуют…» (rec2072585811) =====
+     .jobs добавлен в правило переключения --focus (см. ~строку 117): жёлтое
+     кольцо фокуса на светлом фоне давало бы контраст ~1:1. */
+  .jobs {
+    position: relative; background: var(--light-bg); color: var(--light-ink);
+    border-radius: var(--r-xl); padding: 68px 64px; display: flex; flex-wrap: wrap;
+    align-items: flex-end; justify-content: space-between; gap: 28px 48px;
+    box-shadow: 0 40px 90px -50px rgba(0,0,0,.9);
+  }
+  .jobs__title { max-width: 420px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.03em; color: var(--light-ink); margin: 0; text-wrap: pretty; }
+  /* лид + сноска сгруппированы справа от заголовка — как на живой Tilda */
+  .jobs__aside { max-width: 360px; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 14px; }
+  .jobs__lead { font-size: 16px; line-height: 1.6; color: var(--light-mute); }
+  .jobs__note { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--light-faint); white-space: nowrap; }
+  .jobs__note-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+  @media (max-width: 960px) {
+    .hero { padding: 132px 0 72px; }
+    .who__grid, .get__grid { grid-template-columns: repeat(2, 1fr); }
+    .jobs { padding: 52px 44px; }
+  }
+  @media (max-width: 768px) {
+    .cta-capsule { flex-wrap: wrap; justify-content: center; gap: 10px; }
+  }
+  @media (max-width: 640px) {
+    .section { padding: 64px 0; }
+    .hero { padding: 116px 0 60px; }
+    .hero__author { margin-bottom: 22px; }
+    .hero__subtitle { font-size: 16px; margin-bottom: 34px; }
+    .cta-capsule { flex-direction: column; padding: 16px; border-radius: var(--r-lg); width: 100%; }
+    .cta-capsule__meta { flex-direction: row; justify-content: space-between; padding: 0; min-width: 0; width: 100%; }
+    .cta-capsule .btn { width: 100%; }
+    .who, .get { padding: 64px 0; }
+    .who__grid, .get__grid { grid-template-columns: 1fr; }
+    .who__mascot { width: 58px; }
+    .jobs { padding: 40px 26px; flex-direction: column; align-items: flex-start; border-radius: var(--r-lg); }
+    .jobs__aside { align-items: flex-start; text-align: left; max-width: none; }
+  }
+
   /* Дальнейшие задачи дописывают CSS секций main ниже этой строки. */
 </style>
 </head>
@@ -345,7 +494,131 @@
 
 <main id="top">
 
-  <!-- Секции контента вставляют следующие задачи плана. -->
+  <!-- ===== ПЕРВЫЙ ЭКРАН (hero, rec2045225131) =====
+       Рядом в артборде Tilda лежит скрытый (visibility:hidden) вариант заголовка
+       «Микросервисы, как в BigTech 2.0» — прошлая версия, в разметку не переносим.
+       Внутри видимого заголовка также был мусорный довесок «пп аыыавы» цветом
+       фона — артефакт правки редактора, тоже не переносим: невидимый текстом
+       страницы не является. -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <h1 class="hero__title fade-up">Микросервисы на&nbsp;GO <span class="hero__title-mut">3.0</span></h1>
+      <div class="hero__author fade-up">
+        <img class="hero__author-img" src="hero/instructor_photo.png" alt="Олег Козырев" width="901" height="241">
+        <span class="hero__author-txt">
+          <span class="hero__author-role">Автор курса</span>
+          <span class="hero__author-pos">Senior Engineer из BigTech</span>
+        </span>
+      </div>
+      <p class="hero__subtitle fade-up">Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в <span class="hero__chip">ВК</span> <span class="hero__chip">Yandex</span> <span class="hero__chip">OZON</span> <span class="hero__chip">СБЕР</span> <span class="hero__chip">Тинькофф</span>, и увеличь свои шансы на трудоустройство в BigTech или повышение грейда</p>
+      <div class="hero__cta fade-up">
+        <div class="cta-capsule">
+          <div class="cta-capsule__meta">
+            <span class="cta-capsule__label">Предзапись</span>
+            <span class="cta-capsule__value cta-capsule__value--accent">Осень 2026</span>
+          </div>
+          <a class="btn btn--primary" href="#tariffs" data-goal="hero">Записаться на&nbsp;курс</a>
+          <div class="cta-capsule__meta">
+            <span class="cta-capsule__label">Длительность</span>
+            <span class="cta-capsule__value">8 недель</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== КОМУ ПОДХОДИТ КУРС (segments, rec765399428) =====
+       В разметке Tilda внутри карточки описание идёт перед заголовком, на экране —
+       наоборот; здесь и в контент-файле порядок уже экранный (заголовок → описание). -->
+  <section class="who">
+    <img class="who__deco" src="course_adapted/glass_figure.svg" alt="" width="279" height="43" aria-hidden="true">
+    <div class="container">
+      <div class="section__head fade-up">
+        <h2 class="section__title">Курс адаптирован под частые проблемы backend-a,<br>которые встречаются на работе</h2>
+      </div>
+      <div class="who__grid fade-up">
+        <div class="who__card">
+          <h3 class="who__title">Перехожу на Go — хочу быстро адаптироваться и не писать как на старом языке</h3>
+          <p class="who__desc">Узнаешь все необходимое про внутрянку Go и микросервисную архитектуру: HTTP, OpenAPI, gRPC, Kafka, Redis, Postgres, Prometheus, Grafana, Jagger, Elasticsearch, Kibana, Envoy, OpenTelemetry и др., чтобы сменить стек без потери в ЗП и сразу работать на интересных проектах.</p>
+        </div>
+        <div class="who__card">
+          <h3 class="who__title">Пишу на Go, но застрял в типовых задачах — хочу расти дальше</h3>
+          <p class="who__desc">Узнаешь лучшие практики, нюансы и лайфхаки построения микросервисов, которые применяются в бигтехах, чтобы вырасти из рутины и начать решать сложные инженерные задачи.</p>
+        </div>
+        <div class="who__card">
+          <h3 class="who__title">Хочу уверенно проходить собесы и повысить свой грейд и зарплату</h3>
+          <p class="who__desc">Напишешь реальный проект из 5 микросервисов, разберёшься как всё взаимодействует между собой и сможешь уверенно отвечать на вопросы по архитектуре и технологиям на собесах в топовые компании.</p>
+          <img class="who__mascot" src="mascot/kotkins_small.png" alt="" width="607" height="1201" aria-hidden="true">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ВСЯ ПОДКАПОТНАЯ МИКРОСЕРВИСОВ (what-you-get, rec765399431) =====
+       #about-course — якорь пункта меню «О курсе», по решению плана висит на этой
+       секции, а не на пустом блоке-разделителе, как в исходной разметке Tilda. -->
+  <section class="get" id="about-course">
+    <div class="container">
+      <div class="section__head fade-up">
+        <h2 class="section__title">Вся подкапотная микросервисов в одном курсе</h2>
+      </div>
+      <div class="get__grid fade-up">
+        <div class="get__card">
+          <img class="get__step" src="steps/step_1.svg" alt="" width="88" height="13">
+          <p class="get__lead"><span class="get__num">1.</span> Разработаешь 5 микросервисов, связанных между собой через Kafka и gRPC,</p>
+          <p class="get__desc">с изоляцией от внешнего мира с помощью Envoy Gateway</p>
+        </div>
+        <div class="get__card">
+          <img class="get__step" src="steps/step_2.svg" alt="" width="88" height="13">
+          <p class="get__lead"><span class="get__num">2.</span> Обеспечишь мониторинг сервиса по стандарту OpenTelemetry с юнит-тестами,</p>
+          <p class="get__desc">чтобы исключить ошибки в работе</p>
+        </div>
+        <div class="get__card">
+          <img class="get__step" src="steps/step_3.svg" alt="" width="88" height="13">
+          <p class="get__lead"><span class="get__num">3.</span> Освоишь кеширование данных с помощью Redis</p>
+          <p class="get__desc">и асинхронное взаимодействие между микросервисами с помощью Kafka</p>
+        </div>
+        <div class="get__card">
+          <img class="get__step" src="steps/step_4.svg" alt="" width="88" height="13">
+          <p class="get__lead"><span class="get__num">4.</span> Освоишь работу с PostgreSQL,</p>
+          <p class="get__desc">напишешь свою платформенную библиотеку, упрощающую разработку</p>
+        </div>
+        <div class="get__card">
+          <img class="get__step" src="steps/step_5.svg" alt="" width="88" height="13">
+          <p class="get__lead"><span class="get__num">5.</span> Реализуешь межсервисное взаимодействие,</p>
+          <p class="get__desc">систему аутентификации и авторизации</p>
+        </div>
+        <div class="get__card">
+          <img class="get__step" src="steps/step_6.svg" alt="" width="88" height="13">
+          <p class="get__lead"><span class="get__num">6.</span> На практике научишься применять</p>
+          <p class="get__desc">архитектурные подходы построения микросервисов</p>
+        </div>
+      </div>
+      <div class="section__cta fade-up">
+        <a class="btn btn--primary" href="#tariffs" data-goal="what-you-get">Записаться на&nbsp;курс</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ЧТО ТРЕБУЮТ В ВАКАНСИЯХ (vacancies, светлый островок, rec2072585811) =====
+       Бриф Task 5, Step 4 ограничивает эту секцию заголовком и текстом под ним.
+       Три карточки со скриншотами вакансий (Ozon Tech / Wildberries / Aviasales)
+       и попапы к ним в разметку не входят: инфраструктуры попапов (.modal,
+       data-modal-open) на странице ещё нет, она появляется только в Task 7 для
+       секций steps/community/homework/project-result — ни один пункт плана
+       явно не производит попапы vacancies. Картинки vacancies/*.jpg лежат
+       в файловой системе, но здесь не использованы — см. сомнение в отчёте Task 5. -->
+  <section class="section">
+    <div class="container">
+      <div class="jobs fade-up">
+        <h2 class="jobs__title">Изучаем, что bigtech-компании требуют в вакансиях</h2>
+        <div class="jobs__aside">
+          <p class="jobs__lead">Вся программа состоит из тем, которые точно пригодятся в работе и которые часто спрашивают на собеседовании</p>
+          <p class="jobs__note"><img class="jobs__note-icon" src="icons/attention.svg" alt="" width="18" height="18">Скриншоты вакансий сделаны на hh.ru</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
 </main>
 
