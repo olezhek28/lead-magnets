@@ -404,7 +404,9 @@ JSON-LD пока не добавляем — он появится в Task 9 в�
 
 - [ ] **Step 4: Сверстать футер**
 
-По образцу `system_design/index.html:2916-2969`. Содержимое — из секции `final` контент-файла: копирайт `{ Олег Козырев }, © 2026`, ссылки на юр-страницы (`oferta.html`, `agree.html`, `marketing-agree.html`, `policy.html`), ссылка «Подготовка к собесам по Go» на `https://olezhek28.courses/gothrough`, соцсети (LinkedIn, YouTube, Telegram), ссылка на разработчика сайта `https://andrew-design.ru/?utm_source=olezhek28`.
+По образцу `system_design/index.html:2916-2969`. Содержимое — из секции `final` контент-файла: копирайт `{ Олег Козырев }, © 2026`, ссылки на юр-страницы (`oferta.html`, `agree.html`, `marketing-agree.html`, `policy.html`), ссылка «Подготовка к собесам по Go» на `https://olezhek28.courses/gothrough`, ссылка на поддержку `https://telegram.me/olezhek28_support`, ссылка на разработчика сайта `https://andrew-design.ru/?utm_source=olezhek28`.
+
+**Соцсетей в футере НЕТ.** Проверено по блоку `rec765399488` живой Tilda: LinkedIn, YouTube и Telegram живут только в плавающем виджете `rec689280064`, который относится к секции `nav`. В первой редакции плана они ошибочно попали сюда из-за порядка DOM — на Tilda блок виджета идёт последним и в дампе ссылок примыкает к футеру.
 
 Юр-ссылки ведут на локальные файлы, а не на Tilda: страницы появятся в Task 4.
 
