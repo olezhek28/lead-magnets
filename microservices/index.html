@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Cookie-баннер + Яндекс.Метрика (счётчик 96022201, общий для guide.olezhek28.courses) -->
+<script src="/consent.js" defer></script>
+
+<!-- ФАЗА 1: технический перенос с Tilda. Тексты дословно совпадают
+     с docs/контент-микросервисы.md, править их здесь нельзя — правки
+     идут в контент-файл, см. спеку 2026-08-18-microservices-tilda-migration-design.md.
+     Страница закрыта от индексации, пока боевой остаётся Tilda
+     на olezhek28.courses/microservices: два полных дубля контента
+     конкурировали бы в выдаче. -->
+
+<title>Микросервисы на GO – глубокий курс от Senior Engineer из BigTech</title>
+<meta name="description" content="Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в ВК / Yandex / OZON / СБЕР / Авито / Тинькофф, и увеличь свои шансы на трудоустройство в BigTech или повышения грейда. Преподаватель – Олег Козырев, senior инженер">
+<meta name="author" content="Олег Козырев">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Микросервисы на GO – глубокий курс от Senior Engineer из BigTech">
+<meta property="og:description" content="Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в ВК / Yandex / OZON / СБЕР / Авито / Тинькофф, и увеличь свои шансы на трудоустройство в BigTech или повышения грейда. Преподаватель – Олег Козырев, senior инженер">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Олег Козырев · Курсы">
+<meta property="og:image" content="https://guide.olezhek28.courses/microservices/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Курс по микросервисам на Go">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Микросервисы на GO – глубокий курс от Senior Engineer из BigTech">
+<meta name="twitter:description" content="Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в ВК / Yandex / OZON / СБЕР / Авито / Тинькофф, и увеличь свои шансы на трудоустройство в BigTech или повышения грейда. Преподаватель – Олег Козырев, senior инженер">
+<meta name="twitter:image" content="https://guide.olezhek28.courses/microservices/og-image.png">
+<meta name="theme-color" content="#10171A">
+<meta name="robots" content="noindex, nofollow">
+<meta name="yandex" content="none">
+<meta name="format-detection" content="telephone=no">
+<link rel="canonical" href="https://guide.olezhek28.courses/microservices/">
+<meta property="og:url" content="https://guide.olezhek28.courses/microservices/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- прогреваем соединение под анкету GetCourse: DNS+TCP+TLS делаются заранее,
+     но ничего не загружается — хит в Метрику не уходит, а форма по клику
+     открывается заметно быстрее на плохой сети -->
+<link rel="preconnect" href="https://school.olezhek28.courses">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ===== ТОКЕНЫ ===== */
+  :root {
+    --bg-primary:   #10171A;
+    --bg-card:      #182023;
+    --bg-secondary: #1E272B;
+    --bg-tertiary:  #2A353B;
+    --accent:       #DFDF41;
+    --accent-dim:   #C7C736;
+    --accent-ink:   #002D25;
+    --light-bg:     #E9E8E3;
+    --light-card:   #F5F4EF;
+    --light-ink:    #10171A;
+    --text-h:       #F5F7F6;   /* 16.8:1 на фоне */
+    --text-body:    #C4CBCA;   /* 10.0:1 на карточке */
+    --text-mute:    #98A2A2;   /*  6.3:1 на карточке */
+    --text-faint:   #8C9896;   /*  6.1:1 на фоне · 5.6:1 на карточке · 5.1:1 на bg-secondary (hover карточек) */
+    --text-deco:    #6B7674;   /* только нетекстовый декор: линии, риски, иконки-плюсы */
+    --light-mute:   #3A4347;   /*  8.3:1 на светлом островке */
+    --light-faint:  #5C6467;   /*  4.9:1 на светлом островке */
+    --light-meta:   #5D6367;   /*  5.0:1 на светлом островке · 5.5:1 на светлой карточке */
+    --coral:        #FF8562;
+    --comment:      #93A09B;   /* моно-комментарии подписей · ≈6.2:1 на базе */
+    --border-coral: rgba(255,133,98,.30);
+    --border-card:  rgba(255,255,255,.075);
+    --border-acc:   rgba(255,255,255,.15);
+    --border-mid:   rgba(255,255,255,.05);
+    --font:    'Geist', 'Manrope', system-ui, -apple-system, sans-serif;
+    --display: 'Space Grotesk', 'Geist', system-ui, sans-serif;
+    --mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --r-xl: 22px; --r-lg: 16px; --r-md: 10px; --r-sm: 6px;
+    --sh-lift: 0 26px 60px -28px rgba(0,0,0,.85), 0 2px 0 rgba(255,255,255,.03) inset;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+
+  /* ===== RESET / БАЗА ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; font-size: 16px; scroll-padding-top: 96px; overflow-x: clip; }
+  body {
+    font-family: var(--font);
+    background: var(--bg-primary);
+    color: var(--text-body);
+    line-height: 1.55;
+    font-feature-settings: "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+    /* НЕ overflow-x: hidden — на body это делает его отдельным контейнером
+       прокрутки: ломаются переходы по якорям (меню) и window.scrollY отдаёт 0.
+       clip обрезает, но скроллер не создаёт. */
+    overflow-x: clip;
+  }
+  /* фон живёт на собственном фиксированном слое: не перерисовывается при скролле */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-color: var(--bg-primary);
+    background-image:
+      radial-gradient(120% 70% at 50% -10%, rgba(223,223,65,.05) 0%, transparent 55%),
+      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size: 100% 100%, 64px 64px, 64px 64px;
+  }
+  a { color: inherit; text-decoration: none; }
+  img, svg { max-width: 100%; display: block; }
+  button { font: inherit; cursor: pointer; }
+  h1, h2, h3, .display { font-family: var(--display); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  /* фокус-кольцо наследуется вниз по дереву: на светлых поверхностях жёлтый
+     контур давал бы низкий контраст — переключатель на тёмный оставлен про запас
+     для будущих светлых островков (например .tier--light в тарифах) */
+  :root { --focus: var(--accent); }
+  .mech, .tier--light, .final__card { --focus: var(--light-ink); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+
+  .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
+
+  /* ===== АНИМАЦИИ ПРИ СКРОЛЛЕ ===== */
+  /* только opacity + transform: GPU-композит без репейнта */
+  .fade-up { transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .anim-ready .fade-up.pre { opacity: 0; transform: translate3d(0,26px,0); }
+  .anim-ready .fade-up.pre.visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .fade-up, .fade-up.pre { opacity: 1 !important; transform: none !important; filter: none !important; transition: none; } }
+  @media print { .fade-up, .fade-up.pre { opacity: 1 !important; transform: none !important; filter: none !important; } }
+
+  /* ===== КНОПКИ ===== */
+  .btn {
+    position: relative; overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 18px 40px; border-radius: 999px;
+    font-family: var(--display);
+    font-size: 14.5px; font-weight: 600; line-height: 1; letter-spacing: -0.01em;
+    border: 1px solid transparent; text-align: center;
+    transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease),
+                transform .18s var(--ease), box-shadow .25s var(--ease);
+  }
+  .btn:active { transform: translateY(1px) scale(.994); }
+  .btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 0 rgba(223,223,65,.35); }
+  .btn--primary:hover { background: #EBEB55; transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(223,223,65,.6); }
+  /* вторичные/призрачные — язык пилюль с меньшим радиусом (~30px) */
+  .btn--dark { background: var(--bg-secondary); color: var(--text-h); border-color: var(--border-acc); border-radius: 30px; }
+  .btn--dark:hover { background: var(--bg-tertiary); border-color: rgba(255,255,255,.28); transform: translateY(-2px); }
+  .btn--lg { padding: 21px 46px; font-size: 16px; }
+  .btn--block { display: flex; width: 100%; }
+  .btn__arrow { width: 14px; height: 14px; flex-shrink: 0; transition: transform .3s var(--ease); }
+  .btn--primary:hover .btn__arrow { transform: translateX(4px); }
+
+  /* ===== ШАПКА (NAV) ===== */
+  .header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(16, 23, 26, 0.74);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    box-shadow: 0 1px 0 rgba(255,255,255,.03) inset;
+    transition: background .3s var(--ease), border-color .3s var(--ease);
+  }
+  .header.is-scrolled { background: rgba(16,23,26,.92); border-bottom-color: rgba(255,255,255,.1); }
+  .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 78px; position: relative; transition: height .3s var(--ease); }
+  .header.is-scrolled .header__inner { height: 66px; }
+  .header__logo { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); letter-spacing: -0.02em; flex-shrink: 0; }
+  .header__logo b { color: var(--accent); font-weight: 700; }
+  .header__nav { display: flex; gap: 6px; }
+  .header__nav-link {
+    position: relative; font-size: 14px; font-weight: 500; color: var(--text-mute);
+    padding: 8px 12px; border-radius: var(--r-sm);
+    transition: color .2s var(--ease), background .2s var(--ease); white-space: nowrap;
+  }
+  .header__nav-link::after {
+    content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 1px;
+    background: var(--accent); transform: scaleX(0); transform-origin: left;
+    transition: transform .3s var(--ease);
+  }
+  .header__nav-link:hover, .header__nav-link:focus-visible { color: var(--text-h); }
+  .header__nav-link:hover::after, .header__nav-link:focus-visible::after { transform: scaleX(1); }
+  .header__nav-link:active { color: var(--accent); }
+  /* активная секция — обратная связь "где я"; подсветку внутри main подключит
+     задача, которая заведёт секции с этими id */
+  .header__nav-link.is-current { color: var(--accent); }
+  .header__nav-link.is-current::after { transform: scaleX(1); background: rgba(223,223,65,.55); }
+  .header__cta { padding: 12px 20px; font-size: 13px; flex-shrink: 0; }
+
+  .menu-toggle { display: none; background: none; border: none; padding: 8px; border-radius: var(--r-sm); }
+  .menu-toggle span { display: block; width: 24px; height: 2px; background: var(--text-h); margin: 5px 0; border-radius: 2px; transition: transform .3s var(--ease), opacity .2s var(--ease); }
+  .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-mobile { display: none; }
+  .nav-mobile.open {
+    display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--bg-card); border-bottom: 1px solid var(--border-acc);
+    box-shadow: 0 24px 50px -30px rgba(0,0,0,.9);
+    padding: 16px 0 22px; gap: 4px; z-index: 1001;
+  }
+  .nav-mobile .header__nav-link { font-size: 16px; padding: 13px 12px; }
+  .nav-mobile .btn { margin-top: 12px; }
+
+  /* skip-link для клавиатуры */
+  .skip-link {
+    position: absolute; left: 16px; top: -80px; z-index: 1200;
+    background: var(--accent); color: var(--accent-ink); padding: 12px 20px; border-radius: var(--r-md);
+    font-family: var(--display); font-size: 14px; font-weight: 600;
+    transition: top .2s var(--ease);
+  }
+  .skip-link:focus-visible { top: 14px; }
+
+  /* ===== ЮР-ФУТЕР =====
+     Только нижняя часть футера system_design (реквизиты + юр-ссылки):
+     верхнюю плитку "Есть вопрос?" со ссылкой в поддержку сюда не переносим —
+     это отдельная секция "Финальный CTA" внутри main, её верстает другая задача. */
+  .footer { padding: 90px 0 80px; border-top: 1px solid var(--border-card); }
+  .footer__bottom { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 48px; align-items: start; }
+  .footer__brand { display: inline-block; font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); margin-bottom: 18px; letter-spacing: -0.01em; transition: color .2s var(--ease); }
+  .footer__brand:hover { color: var(--accent); }
+  .footer__brand b { color: var(--accent); }
+  .footer__req { font-family: var(--mono); font-size: 12px; line-height: 1.85; color: var(--text-faint); max-width: 52ch; }
+  .footer__disclaimer { margin-top: 16px; font-size: 11px; color: var(--text-faint); line-height: 1.5; letter-spacing: .005em; max-width: 60ch; text-wrap: pretty; }
+  .footer__right { display: flex; flex-direction: column; align-items: flex-end; gap: 22px; }
+  .footer__links { font-size: 11px; }
+  .footer__links-row { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+  .footer__links a {
+    display: inline-block; padding: 1px 0; color: var(--text-faint); text-align: right; white-space: nowrap;
+    border-bottom: 1px solid transparent;
+    transition: color .2s var(--ease), border-color .2s var(--ease);
+  }
+  .footer__links a:hover { color: var(--accent); border-bottom-color: rgba(223,223,65,.5); }
+  .footer__links a:active { color: var(--accent-dim); }
+  .footer__links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-sm); }
+  /* соцсети: три круглые иконки-ссылки, свои у страницы — на system_design их не было */
+  .footer__social { display: flex; gap: 12px; }
+  .footer__social a { display: block; width: 36px; height: 36px; border-radius: 50%; transition: transform .2s var(--ease), box-shadow .2s var(--ease); }
+  .footer__social a:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -12px rgba(0,0,0,.6); }
+  .footer__social a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
+  .footer__social img { width: 100%; height: 100%; border-radius: 50%; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 960px) {
+    .container { padding: 0 24px; }
+    .header__nav { display: none; }
+    .menu-toggle { display: block; }
+    .footer__bottom { grid-template-columns: 1fr; gap: 32px; }
+    .footer__right { align-items: flex-start; }
+    .footer__links-row { align-items: flex-start; }
+    .footer__links a { text-align: left; white-space: normal; }
+  }
+  @media (max-width: 768px) {
+    .container { padding: 0 22px; }
+  }
+  @media (max-width: 640px) {
+    .container { padding: 0 20px; }
+    .header__inner { height: 64px; }
+    .nav-mobile.open { top: 64px; padding: 18px 20px 22px; }
+    .header__logo { font-size: 13px; }
+    .header__cta { display: none; }
+    .footer { padding: 52px 0 64px; }
+    .footer__req, .footer__disclaimer { max-width: none; }
+    .footer__links { gap: 4px; }
+    .footer__links-row { gap: 8px; }
+    .footer__links a { padding: 12px 0; min-height: 44px; display: inline-flex; align-items: center; }
+    .footer__req, .footer__disclaimer { overflow-wrap: anywhere; word-break: break-word; }
+  }
+  @media (max-width: 400px) {
+    .container { padding: 0 16px; }
+    .footer__req { font-size: 11.5px; line-height: 1.75; }
+    .footer__links-row { gap: 7px; }
+  }
+  /* Дальнейшие задачи дописывают CSS секций main ниже этой строки. */
+</style>
+</head>
+<body>
+
+<script>document.documentElement.classList.add('anim-ready');</script>
+
+<a class="skip-link" href="#top">К содержанию</a>
+
+<!-- ===== ШАПКА (sticky) ===== -->
+<header class="header" role="banner">
+  <div class="container header__inner">
+    <a href="/" class="header__logo"><b>{</b> Олег Козырев <b>}</b></a>
+    <nav class="header__nav" aria-label="Навигация">
+      <a class="header__nav-link" href="#about-course">О курсе</a>
+      <a class="header__nav-link" href="#programm">Программа</a>
+      <a class="header__nav-link" href="#education">Как всё устроено</a>
+      <a class="header__nav-link" href="#speaker">Об авторе</a>
+      <a class="header__nav-link" href="#feedback">Отзывы</a>
+      <a class="header__nav-link" href="#tariffs">Стоимость</a>
+    </nav>
+    <a class="btn btn--primary header__cta" href="#tariffs">Записаться на&nbsp;курс</a>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Меню" aria-expanded="false" aria-controls="nav-mobile">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-mobile container" id="nav-mobile">
+      <a class="header__nav-link" href="#about-course">О курсе</a>
+      <a class="header__nav-link" href="#programm">Программа</a>
+      <a class="header__nav-link" href="#education">Как всё устроено</a>
+      <a class="header__nav-link" href="#speaker">Об авторе</a>
+      <a class="header__nav-link" href="#feedback">Отзывы</a>
+      <a class="header__nav-link" href="#tariffs">Стоимость</a>
+      <a class="btn btn--primary" href="#tariffs">Записаться на&nbsp;курс</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Секции контента вставляют следующие задачи плана. -->
+
+</main>
+
+<!-- ===== ЮР-ФУТЕР ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__bottom">
+      <div>
+        <a class="footer__brand" href="/"><b>{</b> Олег Козырев <b>}</b>, © 2026</a>
+        <div class="footer__req">
+          ИП Козырев Олег Вячеславович<br>
+          ИНН 440315249608<br>
+          ОГРНИП 324440000010534<br>
+          Дата регистрации&nbsp;– 25.04.2024<br>
+          Email&nbsp;– olezhek28.courses@gmail.com
+        </div>
+        <div class="footer__disclaimer">
+          Услуги носят информационно-консультационный характер. Не&nbsp;является образовательной деятельностью, не&nbsp;подлежит лицензированию.
+        </div>
+      </div>
+      <div class="footer__right">
+        <nav class="footer__links" aria-label="Юридические документы и другие материалы">
+          <div class="footer__links-row">
+            <a href="https://olezhek28.courses/gothrough" target="_blank" rel="noopener">Подготовка к&nbsp;собесам по&nbsp;Go</a>
+            <a href="oferta.html" target="_blank" rel="noopener">Публичная оферта</a>
+            <a href="agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
+            <a href="marketing-agree.html" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
+            <a href="policy.html" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+            <a href="https://andrew-design.ru/?utm_source=olezhek28" target="_blank" rel="noopener">Разработка сайта</a>
+          </div>
+        </nav>
+        <div class="footer__social" aria-label="Я в соцсетях">
+          <a href="https://www.linkedin.com/in/olezhek28" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="icons/linkedin.svg" alt="" width="36" height="36"></a>
+          <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener" aria-label="YouTube"><img src="icons/youtube.svg" alt="" width="36" height="36"></a>
+          <a href="https://t.me/olezhek28" target="_blank" rel="noopener" aria-label="Telegram"><img src="icons/telegram.svg" alt="" width="36" height="36"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // ===== fade-up: анимируем только то, что ниже первого экрана =====
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(function (el) {
+      if (el.getBoundingClientRect().top > window.innerHeight) {
+        el.classList.add('pre');
+        observer.observe(el);
+      }
+    });
+
+    // ===== счётчики [data-count] =====
+    var counterObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting || entry.target.dataset.animated) return;
+        entry.target.dataset.animated = 'true';
+        var target = parseInt(entry.target.dataset.count, 10);
+        var suffix = entry.target.dataset.suffix || '';
+        var duration = 1500;
+        var startTime = null;
+        function step(timestamp) {
+          if (!startTime) startTime = timestamp;
+          var progress = Math.min((timestamp - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          entry.target.textContent = Math.floor(eased * target).toLocaleString('ru-RU') + suffix;
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('[data-count]').forEach(function (el) { counterObserver.observe(el); });
+
+    // ===== мобильное меню (CSS-состояния .open / aria-expanded уже описаны) =====
+    var menuToggle = document.getElementById('menu-toggle');
+    var navMobile = document.getElementById('nav-mobile');
+    function closeMenu() {
+      navMobile.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+    menuToggle.addEventListener('click', function () {
+      var open = navMobile.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navMobile.addEventListener('click', function (e) { if (e.target.closest('a')) closeMenu(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navMobile.classList.contains('open')) { closeMenu(); menuToggle.focus(); }
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 960 && navMobile.classList.contains('open')) closeMenu();
+    });
+  });
+</script>
+
+</body>
+</html>
