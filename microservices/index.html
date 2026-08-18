@@ -114,7 +114,7 @@
      контур давал бы низкий контраст — переключатель на тёмный оставлен про запас
      для будущих светлых островков (например .tier--light в тарифах) */
   :root { --focus: var(--accent); }
-  .mech, .tier--light, .final__card, .jobs { --focus: var(--light-ink); }
+  .mech, .tier--light, .final__card, .jobs, .modal { --focus: var(--light-ink); }
   :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
   .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
@@ -406,16 +406,44 @@
      кольцо фокуса на светлом фоне давало бы контраст ~1:1. */
   .jobs {
     position: relative; background: var(--light-bg); color: var(--light-ink);
-    border-radius: var(--r-xl); padding: 68px 64px; display: flex; flex-wrap: wrap;
-    align-items: flex-end; justify-content: space-between; gap: 28px 48px;
-    box-shadow: 0 40px 90px -50px rgba(0,0,0,.9);
+    border-radius: var(--r-xl); padding: 68px 64px; display: flex; flex-direction: column;
+    gap: 40px; box-shadow: 0 40px 90px -50px rgba(0,0,0,.9);
   }
+  .jobs__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
   .jobs__title { max-width: 420px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.03em; color: var(--light-ink); margin: 0; text-wrap: pretty; }
-  /* лид + сноска сгруппированы справа от заголовка — как на живой Tilda */
-  .jobs__aside { max-width: 360px; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 14px; }
+  .jobs__aside { max-width: 360px; text-align: right; }
   .jobs__lead { font-size: 16px; line-height: 1.6; color: var(--light-mute); }
-  .jobs__note { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--light-faint); white-space: nowrap; }
+  /* три карточки со скриншотами вакансий, слева направо: Ozon Tech, Wildberries,
+     Aviasales — каждая открывает попап с полным скриншотом (data-modal-open). */
+  .jobs__cards { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 20px; }
+  .jobs__card {
+    display: block; width: 100%; padding: 0; border: 1px solid rgba(16,23,26,.12);
+    border-radius: var(--r-lg); overflow: hidden; background: var(--light-card);
+    transition: border-color .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .jobs__card:hover { border-color: rgba(16,23,26,.28); transform: translateY(-3px); box-shadow: 0 20px 40px -24px rgba(16,23,26,.35); }
+  .jobs__card-img { width: 100%; height: auto; }
+  .jobs__note { align-self: flex-end; display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--light-faint); white-space: nowrap; }
   .jobs__note-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* ===== ПОПАПЫ (универсальный механизм data-modal-open/data-modal-close) =====
+     По умолчанию попап скрыт атрибутом [hidden]; JS Task 7 будет снимать/ставить
+     этот атрибут на триггере клика (data-modal-open) и закрытии (data-modal-close). */
+  .modal { position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; padding: 24px; }
+  .modal:not([hidden]) { display: flex; }
+  .modal__overlay { position: absolute; inset: 0; background: rgba(16,23,26,.82); backdrop-filter: blur(2px); }
+  .modal__dialog {
+    position: relative; z-index: 1; max-width: min(560px, 92vw); max-height: 90vh;
+    overflow: auto; border-radius: var(--r-lg); background: var(--light-card); box-shadow: var(--sh-lift);
+  }
+  .modal__close {
+    position: absolute; top: 10px; right: 10px; z-index: 2; width: 36px; height: 36px;
+    display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;
+    background: var(--light-bg); color: var(--light-ink); border: 1px solid rgba(16,23,26,.12);
+    font-size: 22px; line-height: 1; transition: background .25s var(--ease), transform .18s var(--ease);
+  }
+  .modal__close:hover { background: #fff; transform: scale(1.05); }
+  .modal__img { display: block; width: 100%; height: auto; }
 
   @media (max-width: 960px) {
     .hero { padding: 132px 0 72px; }
@@ -436,8 +464,12 @@
     .who, .get { padding: 64px 0; }
     .who__grid, .get__grid { grid-template-columns: 1fr; }
     .who__mascot { width: 58px; }
-    .jobs { padding: 40px 26px; flex-direction: column; align-items: flex-start; border-radius: var(--r-lg); }
-    .jobs__aside { align-items: flex-start; text-align: left; max-width: none; }
+    .jobs { padding: 40px 26px; gap: 32px; border-radius: var(--r-lg); }
+    .jobs__head { flex-direction: column; align-items: flex-start; }
+    .jobs__aside { text-align: left; max-width: none; }
+    .jobs__cards { grid-template-columns: 1fr; }
+    .jobs__note { align-self: flex-start; }
+    .modal { padding: 14px; }
   }
 
   /* Дальнейшие задачи дописывают CSS секций main ниже этой строки. */
@@ -601,24 +633,63 @@
   </section>
 
   <!-- ===== ЧТО ТРЕБУЮТ В ВАКАНСИЯХ (vacancies, светлый островок, rec2072585811) =====
-       Бриф Task 5, Step 4 ограничивает эту секцию заголовком и текстом под ним.
-       Три карточки со скриншотами вакансий (Ozon Tech / Wildberries / Aviasales)
-       и попапы к ним в разметку не входят: инфраструктуры попапов (.modal,
-       data-modal-open) на странице ещё нет, она появляется только в Task 7 для
-       секций steps/community/homework/project-result — ни один пункт плана
-       явно не производит попапы vacancies. Картинки vacancies/*.jpg лежат
-       в файловой системе, но здесь не использованы — см. сомнение в отчёте Task 5. -->
+       Дозаверстано следующим исполнителем: три карточки со скриншотами вакансий
+       (Ozon Tech / Wildberries / Aviasales) и попапы к ним — пробел планового
+       документа, закрытый обновлённым брифом Task 5. Попапы размечены
+       универсальным механизмом data-modal-open/data-modal-close (см. .modal
+       ниже секции): обработчик появится в Task 7, сейчас атрибуты инертны. -->
   <section class="section">
     <div class="container">
       <div class="jobs fade-up">
-        <h2 class="jobs__title">Изучаем, что bigtech-компании требуют в вакансиях</h2>
-        <div class="jobs__aside">
-          <p class="jobs__lead">Вся программа состоит из тем, которые точно пригодятся в работе и которые часто спрашивают на собеседовании</p>
-          <p class="jobs__note"><img class="jobs__note-icon" src="icons/attention.svg" alt="" width="18" height="18">Скриншоты вакансий сделаны на hh.ru</p>
+        <div class="jobs__head">
+          <h2 class="jobs__title">Изучаем, что bigtech-компании требуют в вакансиях</h2>
+          <div class="jobs__aside">
+            <p class="jobs__lead">Вся программа состоит из тем, которые точно пригодятся в работе и которые часто спрашивают на собеседовании</p>
+          </div>
         </div>
+        <div class="jobs__cards">
+          <button class="jobs__card" type="button" data-modal-open="modal-vacancy-ozon" aria-haspopup="dialog">
+            <img class="jobs__card-img" src="vacancies/ozon.jpg" alt="Скриншот вакансии Ozon Tech на hh.ru" width="441" height="238" loading="lazy">
+          </button>
+          <button class="jobs__card" type="button" data-modal-open="modal-vacancy-wildberries" aria-haspopup="dialog">
+            <img class="jobs__card-img" src="vacancies/wildberries.jpg" alt="Скриншот вакансии Wildberries на hh.ru" width="336" height="238" loading="lazy">
+          </button>
+          <button class="jobs__card" type="button" data-modal-open="modal-vacancy-aviasales" aria-haspopup="dialog">
+            <img class="jobs__card-img" src="vacancies/aviasales.jpg" alt="Скриншот вакансии Aviasales на hh.ru" width="336" height="238" loading="lazy">
+          </button>
+        </div>
+        <p class="jobs__note"><img class="jobs__note-icon" src="icons/attention.svg" alt="" width="18" height="18">Скриншоты вакансий сделаны на hh.ru</p>
       </div>
     </div>
   </section>
+
+  <!-- ===== ПОПАПЫ СКРИНШОТОВ ВАКАНСИЙ =====
+       Универсальный механизм модалок страницы: триггер несёт data-modal-open="ID",
+       сам попап — id="ID" и атрибут hidden по умолчанию, элементы закрытия — data-modal-close.
+       JS (открытие/закрытие/Esc/фокус-ловушка, снятие hidden) появится в Task 7 —
+       сейчас атрибуты инертны, разметка и CSS заложены полностью. Текста в попапах
+       нет, только картинка — по контент-файлу. -->
+  <div class="modal" id="modal-vacancy-ozon" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Ozon Tech" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <img class="modal__img" src="vacancies/ozon_full.jpg" alt="Полный скриншот вакансии Ozon Tech на hh.ru" width="1680" height="3570" loading="lazy">
+    </div>
+  </div>
+  <div class="modal" id="modal-vacancy-wildberries" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Wildberries" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <img class="modal__img" src="vacancies/wildberries_full.jpg" alt="Полный скриншот вакансии Wildberries на hh.ru" width="1680" height="3570" loading="lazy">
+    </div>
+  </div>
+  <div class="modal" id="modal-vacancy-aviasales" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Aviasales" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <img class="modal__img" src="vacancies/aviasales_full.jpg" alt="Полный скриншот вакансии Aviasales на hh.ru" width="1680" height="3570" loading="lazy">
+    </div>
+  </div>
 
 </main>
 
