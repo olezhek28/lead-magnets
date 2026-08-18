@@ -1160,9 +1160,16 @@ PY
 cd /Users/olezhek28/Documents/repos/olezhek28.courses/lead-magnets && python3 - <<'PY'
 h = open('microservices/index.html', encoding='utf-8').read()
 assert 'content="noindex, nofollow"' in h and 'name="yandex" content="none"' in h, "нет запрета индексации"
+
+# Проверяем отсутствие именно НАШЕЙ страницы, а не слова «microservices».
+# В llms.txt законно живёт ссылка на боевую Tilda — https://olezhek28.courses/microservices,
+# её трогать нельзя. Запрещено только guide.olezhek28.courses/microservices
+# и относительная ссылка на каталог.
+forbidden = ['guide.olezhek28.courses/microservices', '"/microservices/"', "'/microservices/'"]
 for f in ['sitemap.xml', 'llms.txt', 'llms-full.txt', 'index.html']:
     t = open(f, encoding='utf-8').read()
-    assert '/microservices' not in t, f"{f}: страница не должна быть здесь упомянута на фазе 1"
+    hits = [p for p in forbidden if p in t]
+    assert not hits, f"{f}: страница не должна быть здесь упомянута на фазе 1 — {hits}"
     print(f"{f:16} чисто")
 print("OK")
 PY
