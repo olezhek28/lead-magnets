@@ -158,9 +158,7 @@
     box-shadow: 0 1px 0 rgba(255,255,255,.03) inset;
     transition: background .3s var(--ease), border-color .3s var(--ease);
   }
-  .header.is-scrolled { background: rgba(16,23,26,.92); border-bottom-color: rgba(255,255,255,.1); }
   .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 78px; position: relative; transition: height .3s var(--ease); }
-  .header.is-scrolled .header__inner { height: 66px; }
   .header__logo { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); letter-spacing: -0.02em; flex-shrink: 0; }
   .header__logo b { color: var(--accent); font-weight: 700; }
   .header__nav { display: flex; gap: 6px; }
@@ -197,6 +195,38 @@
   }
   .nav-mobile .header__nav-link { font-size: 16px; padding: 13px 12px; }
   .nav-mobile .btn { margin-top: 12px; }
+  /* соцсети в выезжающем меню — как на Tilda: те же три иконки, что и в footer/
+     плавающем виджете, но со своим маленьким размером и центровкой под кнопкой */
+  .nav-mobile__social { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
+  .nav-mobile__social a { display: block; width: 32px; height: 32px; border-radius: 50%; transition: transform .2s var(--ease); }
+  .nav-mobile__social a:hover { transform: translateY(-2px); }
+  .nav-mobile__social a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
+  .nav-mobile__social img { width: 100%; height: 100%; border-radius: 50%; }
+
+  /* ===== ПЛАВАЮЩИЙ ВИДЖЕТ СОЦСЕТЕЙ =====
+     На Tilda — блок "Я в соцсетях" в правом нижнем углу поверх контента,
+     не привязан ни к одной секции (отсюда и вёрстка сразу после шапки,
+     а не внутри main). На узких экранах прячем: свободного места мало,
+     а будущие секции (капсула CTA в hero, тарифы) могут поставить туда же
+     свои элементы — фиксированный виджет поверх них создавал бы навигационную
+     ловушку и перекрывал бы кнопки на самом частом устройстве просмотра. */
+  .social-float {
+    position: fixed; right: 28px; bottom: 28px; z-index: 900;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    padding: 14px 10px; border-radius: 999px;
+    background: rgba(24,32,35,.82); border: 1px solid var(--border-acc);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--sh-lift);
+  }
+  .social-float__label {
+    writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+    font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: 2px;
+  }
+  .social-float a { display: block; width: 32px; height: 32px; border-radius: 50%; transition: transform .2s var(--ease); }
+  .social-float a:hover { transform: translateY(-2px); }
+  .social-float a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
+  .social-float img { width: 100%; height: 100%; border-radius: 50%; }
 
   /* skip-link для клавиатуры */
   .skip-link {
@@ -255,6 +285,9 @@
     .nav-mobile.open { top: 64px; padding: 18px 20px 22px; }
     .header__logo { font-size: 13px; }
     .header__cta { display: none; }
+    /* плавающий виджет прячем на мобильном — см. комментарий у .social-float:
+       рискует перекрыть контент/кнопки на самом частом устройстве просмотра */
+    .social-float { display: none; }
     .footer { padding: 52px 0 64px; }
     .footer__req, .footer__disclaimer { max-width: none; }
     .footer__links { gap: 4px; }
@@ -300,9 +333,24 @@
       <a class="header__nav-link" href="#feedback">Отзывы</a>
       <a class="header__nav-link" href="#tariffs">Стоимость</a>
       <a class="btn btn--primary" href="#tariffs">Записаться на&nbsp;курс</a>
+      <div class="nav-mobile__social" aria-label="Я в соцсетях">
+        <a href="https://t.me/olezhek28" target="_blank" rel="noopener" aria-label="Telegram"><img src="icons/telegram.svg" alt="" width="32" height="32"></a>
+        <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener" aria-label="YouTube"><img src="icons/youtube.svg" alt="" width="32" height="32"></a>
+        <a href="https://www.linkedin.com/in/olezhek28" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="icons/linkedin.svg" alt="" width="32" height="32"></a>
+      </div>
     </div>
   </div>
 </header>
+
+<!-- ===== ПЛАВАЮЩИЙ ВИДЖЕТ СОЦСЕТЕЙ (rec689280064) =====
+     Не привязан к секции на Tilda — держим его вне main, рядом с шапкой.
+     На ширинах ≤640px скрыт правилом .social-float в общем блоке стилей (см. комментарий там). -->
+<div class="social-float" aria-label="Я в соцсетях">
+  <span class="social-float__label">Я в соцсетях</span>
+  <a href="https://www.linkedin.com/in/olezhek28" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="icons/linkedin.svg" alt="" width="32" height="32"></a>
+  <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener" aria-label="YouTube"><img src="icons/youtube.svg" alt="" width="32" height="32"></a>
+  <a href="https://t.me/olezhek28" target="_blank" rel="noopener" aria-label="Telegram"><img src="icons/telegram.svg" alt="" width="32" height="32"></a>
+</div>
 
 <main id="top">
 
