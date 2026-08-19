@@ -626,7 +626,7 @@
   }
   .program__toggle::before { width: 16px; height: 1.5px; }
   .program__toggle::after  { width: 1.5px; height: 16px; }
-  .program__item:hover .program__toggle { border-color: rgba(223,223,65,.45); color: var(--accent); }
+  .program__item:hover:not(.program__item--open) .program__toggle { border-color: rgba(223,223,65,.45); color: var(--accent); }
   .program__item--open .program__toggle { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
   .program__item--open .program__toggle::before { transform: rotate(45deg); }
   .program__item--open .program__toggle::after  { transform: rotate(45deg); }
@@ -1136,7 +1136,7 @@
   }
   .faq__toggle::before { width: 14px; height: 1.5px; transform: translate(-50%, -50%); }
   .faq__toggle::after  { width: 1.5px; height: 14px; transform: translate(-50%, -50%); }
-  .faq__item:hover .faq__toggle { border-color: rgba(223,223,65,.45); color: var(--accent); }
+  .faq__item:hover:not(.faq__item--open) .faq__toggle { border-color: rgba(223,223,65,.45); color: var(--accent); }
   .faq__item--open .faq__toggle { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
   .faq__item--open .faq__toggle::before { transform: translate(-50%, -50%) rotate(45deg); }
   .faq__item--open .faq__toggle::after  { transform: translate(-50%, -50%) rotate(45deg); }
@@ -3049,7 +3049,6 @@
       </div>
       <nav class="footer__links" aria-label="Юридические документы и другие материалы">
         <div class="footer__links-row">
-          <a href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener">Пиши в&nbsp;телеграм&nbsp;— отвечу сразу, как увижу сообщение:)</a>
           <a href="https://olezhek28.courses/gothrough" target="_blank" rel="noopener">Подготовка к&nbsp;собесам по&nbsp;Go</a>
           <a href="oferta.html" target="_blank" rel="noopener">Публичная оферта</a>
           <a href="agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
