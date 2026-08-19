@@ -451,6 +451,11 @@
   .section { padding: 96px 0; }
   .section__head { margin-bottom: 48px; max-width: 760px; }
   .section__head--center { margin-left: auto; margin-right: auto; text-align: center; }
+  /* Правка (заход 7, п.9 и п.11): заголовок + пара «облачко-кот» в одну
+     строку, на одной высоте — общий модификатор для .steps и .ytch (см.
+     .steps__mascot-group/.ytch__mascot-group), одна механика на обе секции. */
+  .section__head--mascot { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: none; }
+  .section__head--mascot .section__title { margin: 0; }
   .section__title {
     font-family: var(--display); font-size: clamp(28px, 3.6vw, 44px); font-weight: 500;
     line-height: 1.14; letter-spacing: -0.03em; color: var(--text-h); margin: 0; text-wrap: pretty;
@@ -798,12 +803,17 @@
      в стопку) — все строки в один стек «картинка сверху, текст снизу»
      (column-reverse поверх того же DOM-порядка текст→картинка). */
   .steps { position: relative; }
-  /* Правка 3 (визуальное ревью): на живой Tilda кот Коткинс (noroot.png,
-     607×1201 — тот же файл, что у нас лежит как mascot/kotkins.png) выглядывает
-     из-за верхнего правого края секции. .steps__cat стоит в разметке раньше
-     .steps__list, поэтому ничего его специально не перекрывает — держится
-     на paint order и общей высоте шапки секции. */
-  .steps__cat { position: absolute; top: -22px; right: 76px; width: 128px; height: auto; pointer-events: none; }
+  /* Правка (заход 7, п.11): на живой Tilda облачко и кот — не два отдельных
+     элемента (облачко под заголовком слева, кот у угла секции), а пара:
+     оба справа от заголовка, на одной с ним высоте, кот выглядывает сразу
+     за облачком (замерено на rec765428053: облачко 198×81 при left=958/top=238,
+     кот при left=1074.6/top=212 — то есть кот перекрывает облачко примерно на
+     41% его ширины и стоит на 26px выше). Тот же приём и с той же геометрией
+     использован в секции ytch ниже (см. .ytch__mascot-group) — механика одна
+     на обе секции, а не две разные. */
+  .steps__mascot-group { position: relative; flex-shrink: 0; width: 200px; }
+  .steps__mascot-bubble { display: block; width: 100%; height: auto; }
+  .steps__cat { position: absolute; top: -22px; right: -78px; width: 100px; height: auto; pointer-events: none; }
   .steps__list { display: flex; flex-direction: column; gap: 64px; }
   .steps__row { display: flex; align-items: center; gap: 48px; }
   .steps__row:nth-child(even) { flex-direction: row-reverse; }
@@ -833,14 +843,14 @@
      это реплика из другой записи Tilda (её Tilda-хеш — Frame_335681.svg,
      который в контент-файле уже был верно указан в «Источник Tilda» этой
      секции, только «Картинки:» ошибочно ссылалась на speech_bubble_1.svg).
-     Бейдж живёт вступлением в шапке секции, а не фоном под кнопку в шаге 2 —
-     иначе накладывать текст кнопки поверх неё было бы нечитаемым оверлеем из
-     двух фраз. Кнопка «Коткинс, какие будут задания?» в шаге 2 —
-     обычный текстовый пилюля-баттон, без картинки; правкой 5 стала триггером
-     модалки #homework-modal (data-modal-open), раньше была якорной ссылкой
-     на секцию homework в потоке страницы — сама разметка кнопки не
-     менялась, .steps__mascot одинаково подходит и <a>, и <button>. */
-  .steps__mascot-bubble { width: 220px; height: auto; margin-top: 20px; }
+     Бейдж живёт вступлением в шапке секции — размер и позиция бейджа теперь
+     у .steps__mascot-group выше (правка 11). Кнопка «Коткинс, какие будут
+     задания?» в шаге 2 — обычный текстовый пилюля-баттон, без картинки;
+     правкой 5 стала триггером модалки #homework-modal (data-modal-open),
+     раньше была якорной ссылкой на секцию homework в потоке страницы — сама
+     разметка кнопки не менялась, .steps__mascot одинаково подходит и <a>,
+     и <button> (класс общий с кнопкой шага 2, но не с бейджем — тот теперь
+     .steps__mascot-bubble внутри .steps__mascot-group). */
   .steps__mascot {
     align-self: flex-start; display: inline-block; text-decoration: none;
     border: 1px solid var(--border-acc); border-radius: 999px;
@@ -853,14 +863,19 @@
   @media (max-width: 960px) {
     .steps__list { gap: 48px; }
     .steps__row, .steps__row:nth-child(even) { flex-direction: column-reverse; gap: 20px; }
-    .steps__cat { width: 96px; right: 40px; top: -14px; }
+    .steps__mascot-group { width: 150px; }
+    .steps__cat { width: 80px; right: -6px; top: -16px; }
   }
   @media (max-width: 640px) {
     .steps__list { gap: 36px; }
     .steps__title { font-size: 19px; }
     /* На ≤640px заголовок секции переносится на две строки и «Кот» перекрывал
        вторую строку («…по шагам») — легальность текста важнее декора,
-       прячем маскота на самых узких экранах. */
+       прячем маскота на самых узких экранах; пара «облачко-кот» схлопывается
+       под заголовок (.section__head--mascot в столбец), остаётся одно
+       облачко без кота. */
+    .section__head--mascot { flex-direction: column; align-items: flex-start; }
+    .steps__mascot-group { width: 180px; }
     .steps__cat { display: none; }
   }
 
@@ -1222,8 +1237,15 @@
   .carousel__arrow:hover:not(:disabled) { transform: translateY(-2px); }
   .carousel__arrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
   .carousel__arrow:disabled { opacity: .35; cursor: not-allowed; }
+  /* Правка (заход 7, п.1): overflow-x: auto без явного overflow-y CSS по
+     умолчанию превращает вторую ось не в visible, а в auto тоже (спека:
+     если одна ось не visible, соседняя тоже теряет visible) — поэтому
+     появлялась вертикальная полоса прокрутки, а верхние скругления карточек
+     срезались этим скрытым скролл-контейнером. overflow-y: hidden возвращает
+     прокрутку строго к одной оси и не обрезает скругления (высота дорожки и
+     так равна высоте самой высокой карточки). */
   .carousel__track {
-    display: flex; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory;
+    display: flex; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
     scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none;
   }
   .carousel__track::-webkit-scrollbar { display: none; }
@@ -1236,22 +1258,33 @@
   .reviews__grid > .reviews__card { flex-basis: calc((100% - 40px) / 3); }
   /* Правка 6 (визуальный заход №1): на живой Tilda подпись под скриншотом
      отзыва — на белой карточке, тёмным текстом (сам скриншот тёмный —
-     это чат/переписка, его не трогаем, светлеет только плашка подписи). */
+     это чат/переписка, его не трогаем, светлеет только плашка подписи).
+     Правка (заход 7, п.10): скриншот там не прижат к краям вплотную — лежит
+     внутри белой карточки с полем сверху и по бокам (замерено на
+     rec2078055861 покраской .t1196__item/.t1196__imgwrapper: 12px слева,
+     справа и сверху, 0 снизу — карточка 360px шириной, т.е. поле ≈ 3.3% её
+     ширины), сам скриншот при этом со скруглёнными углами (16px) и как бы
+     плавает в карточке. Здесь это padding на карточке + свой border-radius
+     на картинке (только верхние углы — снизу она flush с подписью). */
   .reviews__card {
-    margin: 0; border-radius: var(--r-lg); overflow: hidden; background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
+    margin: 0; padding: 12px 12px 0; border-radius: var(--r-lg); overflow: hidden; background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
     display: flex; flex-direction: column; transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .reviews__card:hover { border-color: rgba(16,23,26,.24); transform: translateY(-3px); }
   /* Правка (заход 6): на живой Tilda картинка отзыва не растягивается на свою
      натуральную высоту — там это отдельный imgwrapper с фиксированной высотой
-     360×640px (замерено JS-инспекцией DOM на rec2078055861), то есть отношение
-     640/360 = 9:16 ровно. Наши скриншоты (591×1279, ~2.16:1) вертикальнее
-     оригинала — там в них видна вся переписка целиком, у нас — только верхний
-     фрагмент. height: auto растягивал карточку на полную высоту скриншота,
-     из-за чего подпись уезжала за нижнюю кромку экрана. Фикс — та же техника
-     обрезки, что уже используется в .yt__thumb img (видеоотзывы): фиксируем
-     пропорцию через aspect-ratio и кадрируем object-fit: cover от верхнего
-     края (object-position: top), чтобы всегда была видна шапка переписки.
+     360×640px (замерено JS-инспекцией DOM на rec2078055861). Наши скриншоты
+     (591×1279, ~2.16:1) вертикальнее оригинала. height: auto растягивал
+     карточку на полную высоту скриншота, из-за чего подпись уезжала за
+     нижнюю кромку экрана. Фикс — та же техника обрезки, что уже используется
+     в .yt__thumb img (видеоотзывы): фиксируем пропорцию через aspect-ratio и
+     кадрируем object-fit: cover от верхнего края (object-position: top),
+     чтобы всегда была видна шапка переписки.
+     Правка (заход 7, п.10): отношение сторон видимой области скриншота
+     (не внешнего wrapper 9:16, а именно того, что видно после полей выше)
+     на оригинале — 336:628 (360px wrapper минус по 12px полей слева/справа,
+     минус 12px сверху, 0 снизу), это уже, чем было 9:16 — при том же самом
+     скриншоте показывает заметно больше переписки по вертикали.
      Ловушка: height: auto здесь обязателен, хотя кажется избыточным рядом с
      aspect-ratio — у <img> заданы HTML-атрибуты width/height (591×1279),
      браузер маппит их в CSS-хинт с приоритетом ниже авторских правил, но выше
@@ -1261,7 +1294,7 @@
      на такую высоту не влияет вообще (проверено: без этой строки высота
      картинки была ровно 1279px на любой ширине, будто aspect-ratio не
      применялся). */
-  .reviews__img { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; object-position: top; display: block; }
+  .reviews__img { width: 100%; height: auto; aspect-ratio: 336 / 628; object-fit: cover; object-position: top; display: block; border-radius: var(--r-lg) var(--r-lg) 0 0; }
   .reviews__caption { padding: 16px 18px; font-size: 14px; font-weight: 500; color: var(--light-ink); line-height: 1.4; border-top: 1px solid rgba(16,23,26,.08); }
 
   /* ---- ВИДЕООТЗЫВЫ (video-reviews) — переиспользует паттерн .yt__* из
@@ -1282,7 +1315,12 @@
   .yt__grid--7 .yt__card { flex: 0 0 calc((100% - 32px) / 3); }
   .yt__card { display: block; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border-card); background: var(--bg-card); transition: transform .3s var(--ease), border-color .3s var(--ease); }
   .yt__card:hover { transform: translateY(-3px); border-color: var(--border-acc); }
-  .yt__thumb { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--bg-secondary); }
+  /* Правка (заход 7, п.2): на живой Tilda превью видеоотзыва — горизонтальная
+     плитка, а не квадрат: замерено на оригинале через getBoundingClientRect
+     (rec2072728321) — 369×193px, отношение ≈ 1.91:1. Переносим как
+     aspect-ratio (отношение, не абсолютные пиксели), плитка остаётся ниже и
+     шире прежней квадратной. */
+  .yt__thumb { position: relative; aspect-ratio: 369/193; overflow: hidden; background: var(--bg-secondary); }
   .yt__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .yt__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(16,23,26,.18); transition: background .2s ease; }
   .yt__card:hover .yt__play { background: rgba(16,23,26,.34); }
@@ -1291,35 +1329,48 @@
   .yt__play-btn svg { width: 20px; height: 20px; color: var(--accent-ink); margin-left: 3px; }
 
   /* ---- РЕАЛЬНЫЕ ИСТОРИИ УЧАСТНИКОВ (stories) ----
-     Правка 6 (визуальный заход №1): на живой Tilda карточка светлая, текст
-     тёмный (у нас была тёмная копия карты .bg-card — цветовая ошибка).
-     Токены светлой поверхности и их контраст — те же, что уже проверены и
-     задокументированы у .tier--light/.jobs__card (--light-ink/--light-mute/
-     --light-faint на --light-card): 16.5:1 / 9.2:1 / 5.5:1 — с запасом выше
-     минимума 4.5:1. «Читать историю» раньше был --accent (жёлтый) — на
-     светлой карточке это 1.3:1, ниже порога вообще для любого текста, поэтому
-     здесь он тёмный (--light-ink, 16.5:1), как ссылка-кнопка .tier--light
-     .btn--primary тем же приёмом. Двухтоновая форма оригинала (светлая
-     плашка только под шапкой карточки, тёмный текст истории под ней на фоне
-     страницы) — структурная тонкость, не берём в этот заход (см. отчёт). */
+     Правка (заход 7, п.3): на живой Tilda карточка двухцветная — светлая
+     верхняя плашка (аватар/имя/ник/заголовок истории) и тёмная нижняя
+     (абзац + «Читать историю»), а не целиком светлая, как было. Структура
+     разбита на .stories__top-section/.stories__bottom-section, каждая со
+     своим фоном и паддингом; .stories__card теперь только рамка+radius+
+     overflow:hidden, без своих padding/gap.
+     Токены и контраст (посчитано формулой WCAG, не на глаз):
+       --light-ink   на --light-bg        14.76:1  (имя, заголовок)
+       --light-faint на --light-bg         4.93:1  (ник, чуть выше порога 4.5:1)
+       --text-h      на --bg-secondary    14.14:1  (кнопка «Читать историю»)
+       --text-body   на --bg-secondary     9.23:1  (абзац истории)
+     Все пары выше минимума 4.5:1 — тот класс ошибок (текст сливается с
+     фоном), на котором проект спотыкался уже семь раз, здесь проверен
+     цифрами, а не на глаз. */
   .stories__grid { gap: 20px; margin-bottom: 28px; }
   .stories__grid > .stories__card { flex-basis: calc((100% - 40px) / 3); }
   .stories__card {
-    display: flex; flex-direction: column; gap: 14px; padding: 26px 24px 24px;
-    border-radius: var(--r-lg); background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
+    display: flex; flex-direction: column;
+    border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(16,23,26,.1);
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .stories__card:hover { border-color: rgba(16,23,26,.24); transform: translateY(-3px); }
+  .stories__top-section { display: flex; flex-direction: column; gap: 14px; padding: 26px 24px 20px; background: var(--light-bg); }
+  /* .stories__card целиком наследует --focus: var(--light-ink) (RESET, тёмный
+     цвет для фокус-кольца на светлых островках) — но кнопка «Читать историю»
+     теперь на тёмной нижней плашке, тёмное кольцо там было бы невидимо.
+     Возвращаем --focus к акцентному жёлтому именно в этой секции. */
+  .stories__bottom-section { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 18px 24px 24px; background: var(--bg-secondary); --focus: var(--accent); }
   .stories__top { display: flex; align-items: center; gap: 14px; }
   .stories__avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
   .stories__name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--light-ink); line-height: 1.3; }
-  .stories__nick { font-family: var(--mono); font-size: 12.5px; color: var(--light-faint); margin-top: 2px; }
+  /* Правка (заход 7, п.4): ник теперь ссылка на t.me/<ник> — те же токены
+     цвета, что и раньше (div/a визуально неотличимы), только курсор и
+     hover-подчёркивание сигналят кликабельность. */
+  .stories__nick { display: inline-block; font-family: var(--mono); font-size: 12.5px; color: var(--light-faint); margin-top: 2px; }
+  .stories__nick:hover { text-decoration: underline; text-underline-offset: 2px; }
   .stories__headline { font-family: var(--display); font-size: 16.5px; font-weight: 600; line-height: 1.36; letter-spacing: -0.01em; color: var(--light-ink); }
-  .stories__excerpt { flex: 1; font-size: 14px; line-height: 1.58; color: var(--light-mute); }
+  .stories__excerpt { flex: 1; font-size: 14px; line-height: 1.58; color: var(--text-body); }
   .stories__btn {
     align-self: flex-start; margin-top: 4px; padding: 0; background: none; border: none;
     display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--light-ink);
+    font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--text-h);
     transition: gap .2s var(--ease);
   }
   .stories__btn:hover { gap: 9px; }
@@ -1354,10 +1405,19 @@
     background: var(--border-card); border: 1px solid var(--border-card);
     border-radius: var(--r-lg); overflow: hidden; margin: 8px 0 44px;
   }
-  .bigtech__cell { background: var(--bg-primary); display: flex; align-items: center; justify-content: center; padding: 30px 24px; transition: background .3s var(--ease); }
+  /* Правка (заход 7, п.5): на оригинале ячейка (LI, 294.5×118.5px при 1440)
+     держит паддинг всего 10px, а логотип упирается почти во всю доступную
+     высоту — отношение высоты логотипа к высоте ячейки ≈ 97.5/118.5 ≈ 0.82
+     (замерено getBoundingClientRect на rec766038551). У нас паддинг был
+     втрое избыточным (30/24px) при вдвое меньшей высоте логотипа (40px) —
+     отсюда мелкие, потерянные в рамке значки. Паддинг уменьшен, высота
+     логотипа увеличена — соотношение приближено к оригинальному без
+     привязки к пиксельной ширине самой сетки (она у нас другая: 4 колонки
+     через gap-фон, а не бордеры Tilda-таблицы). */
+  .bigtech__cell { background: var(--bg-primary); display: flex; align-items: center; justify-content: center; padding: 18px 20px; transition: background .3s var(--ease); }
   .bigtech__cell:hover { background: var(--bg-secondary); }
   .bigtech__logo {
-    height: 40px; width: auto; max-width: 100%; object-fit: contain;
+    height: 64px; width: auto; max-width: 100%; object-fit: contain;
     filter: grayscale(1); opacity: .72;
     transition: filter .3s var(--ease), opacity .3s var(--ease), transform .3s var(--ease);
   }
@@ -1385,8 +1445,8 @@
     .modal--story .modal__dialog { padding: 28px 22px; }
     .modal__story-head { gap: 12px; }
     .bigtech__grid { grid-template-columns: repeat(2, 1fr); }
-    .bigtech__cell { padding: 22px 18px; }
-    .bigtech__logo { height: 28px; }
+    .bigtech__cell { padding: 16px 14px; }
+    .bigtech__logo { height: 44px; }
   }
 
   /* ===== TASK 9: ТАРИФЫ (tariffs) / «УЧИТЬСЯ ОТ КОМПАНИИ» (company) =====
@@ -1411,12 +1471,10 @@
      inline-SVG чип, см. .steps__check ниже по файлу. Плодить тут третий
      файловый checkmark с тем же дефектом смысла не было — .tier__check и
      .steps__check используют одну методику на всю страницу. icons/bonus.svg
-     (тоже заливка #182023) использован — но только на светлой карточке
-     («С проверкой», --tier-light), там тёмная заливка видна нормально.
-     icons/star.svg по той же причине (тёмная заливка на тёмной плашке
-     scarcity) не использован. mascot/kotkins_small.png — растровый, цвет
-     не зависит от фона карточки, поэтому безопасно переиспользован ещё раз
-     (peek-в-угол) на карточке «Учиться от компании», как в .who__mascot. */
+     тем же способом не используется вовсе (см. правку у .tier__bonus-icon
+     ниже — это была не иконка подарка, а посторонний обрезок формы, заменён
+     на инлайновый SVG). icons/star.svg по той же причине (тёмная заливка на
+     тёмной плашке scarcity) не использован. */
   /* Правка 7 (визуальное ревью): между кнопкой bigtech__cta, плашкой
      «Начинаем осенью 2026» и карточками «Старт потока/Длительность» было
      два соседних .section с полным вертикальным паддингом (96px сверху и
@@ -1453,14 +1511,21 @@
   .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
   .fact__value--accent { color: var(--accent); }
 
-  /* Правка 8 (визуальное ревью): было align-items: stretch + .tier{height:100%} —
-     обе карточки растягивались под высоту более длинной («С проверкой», с
-     бонусным модулем), а .tier__cta{margin-top:auto} утапливал кнопку в самый
-     низ. У «Стандарта» (короче списком) это давало пустой разрыв в 250+px
-     между блоком цены и кнопкой — секция читалась дырявой. Карточки больше не
-     тянутся под соседа: каждая по своей высоте, кнопка сразу под ценой. */
-  .pricing__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
-  .tier { border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  /* Правка (заход 7, п.7): на живой Tilda обе карточки — 819px, ровно
+     поровну (замерено getBoundingClientRect на «Стандарт»/«С проверкой» —
+     560×819 у каждой), а «Ориентировочная стоимость:» в обеих стоит на
+     одной and той же высоте от верха карточки. У Tilda это достигается
+     абсолютным позиционированием на холсте зафиксированной высоты — здесь
+     нет холста, поэтому эквивалент — растянуть карточки под высоту соседа
+     (align-items: stretch + .tier{height:100%}) и прижать блок цены+кнопку
+     к низу как единую группу (margin-top: auto на .tier__price-block, а не
+     на .tier__cta — это и есть отличие от старой правки 8, которая утапливала
+     только кнопку и разрывала цену с кнопкой). У «Стандарта» (короче
+     списком) сверху блока цены останется воздух — это и есть то же самое
+     место, которое на оригинале занимает бонусный модуль во втором тарифе;
+     без бонуса воздух просто пуст, как на Tilda. */
+  .pricing__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
+  .tier { height: 100%; border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
   .tier--dark { background: var(--bg-card); border: 1px solid var(--border-card); }
   .tier--light {
     background: var(--light-bg); color: var(--light-ink); border: 1px solid rgba(16,23,26,.22);
@@ -1486,19 +1551,32 @@
   .tier__check svg { width: 10px; height: 10px; color: var(--accent); }
   .tier--light .tier__check svg { color: var(--accent-ink); }
 
-  /* «Бонусный модуль по прохождению собесов» — только в тарифе «С проверкой» */
-  .tier__bonus { margin: 8px 0; padding-top: 22px; border-top: 1px solid var(--border-acc); }
-  .tier--light .tier__bonus { border-top-color: rgba(16,23,26,.12); }
+  /* «Бонусный модуль по прохождению собесов» — только в тарифе «С проверкой».
+     Правка (заход 7, п.6): на живой Tilda это не полоса-разделитель с
+     полупрозрачной картинкой, а отдельная выделенная карточка внутри тарифа —
+     светло-лавандовая подложка (#D9D6E3, замерено getComputedStyle на
+     живой странице) со скруглением 12px и паддингом 24px, с иконкой подарка.
+     Контраст на новой подложке: --light-ink 12.66:1, --light-mute 7.08:1 —
+     оба выше требуемых 4.5:1. */
+  .tier__bonus { margin: 20px 0 8px; padding: 24px; border-radius: var(--r-lg); background: #D9D6E3; }
   .tier__bonus-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .tier__bonus-icon { width: 22px; height: auto; flex-shrink: 0; opacity: .8; }
-  /* На оригинале «Бонусный модуль по прохождению собесов» — это жирная
+  /* Старый icons/bonus.svg — не иконка подарка, а посторонний обрезок формы
+     (259×137, читался «непонятной полоской»). Иконка подарка на оригинале —
+     инлайновый SVG-путь Tilda (vector-элемент, не файл на CDN — скачивать
+     нечего), путь скопирован 1:1 и перекрашен в currentColor тем же приёмом,
+     что и .tier__check/.steps__check. */
+  .tier__bonus-icon { width: 20px; height: 22px; flex-shrink: 0; color: var(--light-ink); }
+  /* На оригинале «Бонусный модуль по прохождению собесов:» — это жирная
      строка-врезка (16px, 700, обычным начертанием на тёмных чернилах), а не
      мелкая капс-подпись. Встречается только в тарифе «С проверкой»
      (--tier-light), поэтому цвет сразу поднят до --light-ink. */
-  .tier__bonus-title { font-family: var(--font); font-size: 13px; font-weight: 700; letter-spacing: normal; color: var(--light-ink); }
+  .tier__bonus-title { font-family: var(--font); font-size: 15px; font-weight: 700; letter-spacing: normal; color: var(--light-ink); }
   .tier__bonus .tier__list { margin-bottom: 0; }
+  .tier__bonus .tier__check { background: rgba(16,23,26,.08); border-color: rgba(16,23,26,.16); }
 
-  .tier__price-block { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--border-acc); }
+  /* margin-top: auto — см. комментарий у .pricing__tiers: цена+кнопка
+     прижаты к низу карточки как единая группа, а не сама кнопка отдельно. */
+  .tier__price-block { margin-top: auto; padding-top: 22px; border-top: 1px solid var(--border-acc); }
   .tier--light .tier__price-block { border-top-color: rgba(16,23,26,.12); }
   /* На оригинале «Ориентировочная стоимость:» набрана жирным (700) без
      разрядки — держим приглушённый цвет карточки (--text-faint/--light-meta),
@@ -1510,18 +1588,9 @@
   .tier__price b { font-weight: 500; }
   .tier__pay { font-family: var(--mono); font-size: 12.5px; line-height: 1.55; color: var(--text-faint); }
   .tier--light .tier__pay { color: var(--light-meta); }
-  .tier__cta { margin-top: auto; padding-top: 28px; }
+  .tier__cta { margin-top: 28px; }
   .tier--light .btn--primary { background: var(--light-ink); color: var(--accent); }
   .tier--light .btn--primary:hover { background: #05090b; box-shadow: 0 16px 34px -18px rgba(0,0,0,.8); }
-
-  /* ---- «Учиться от компании» (company) ---- */
-  .company__card {
-    position: relative; max-width: 620px; margin: 0 auto; padding: 44px 48px; overflow: hidden;
-    border-radius: var(--r-xl); background: var(--bg-card); border: 1px solid var(--border-card);
-    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 22px;
-  }
-  .company__text { position: relative; z-index: 1; font-size: 17px; line-height: 1.55; color: var(--text-mute); max-width: 46ch; }
-  .company__cta { position: relative; z-index: 1; }
 
   @media (max-width: 960px) {
     .pricing__tiers { grid-template-columns: 1fr; }
@@ -1532,7 +1601,6 @@
     .pricing__facts { grid-template-columns: 1fr 1fr; max-width: none; }
     .tier { padding: 34px 24px 30px; }
     .pricing__cat { display: none; }
-    .company__card { padding: 34px 26px; }
   }
   @media (max-width: 400px) {
     .fact { padding: 13px 15px; }
@@ -1593,13 +1661,17 @@
      Здесь другая раскладка (3 колонки, 16:9, play поверх картинкой), общих
      классов с video-reviews быть не должно, иначе один компонент сломает другой. ---- */
   .ytch { position: relative; }
-  /* Правка 4 (визуальный заход №1): на живой Tilda кот Коткинс (mascot/kotkins.png,
-     тот же файл, что в steps) выглядывает из-за верхнего правого края этой
-     секции с репликой «Ты это… Заходи, если что» (mascot/speech_bubble_4.svg) —
-     тот же приём, что у .steps__cat/.steps__mascot-bubble. Раньше кот стоял в
-     карточке company («Учиться от компании»), где его на живой странице нет. */
-  .ytch__cat { position: absolute; top: -22px; right: 76px; width: 128px; height: auto; pointer-events: none; }
-  .ytch__mascot-bubble { width: 220px; height: auto; margin-top: 20px; }
+  /* Правка (заход 7, п.9): на живой Tilda облачко и кот Коткинс
+     (mascot/kotkins.png, тот же файл, что в steps) — пара справа от
+     заголовка, на одной с ним высоте, а не кот отдельно у угла секции и
+     облачко отдельно под заголовком слева. Замерено на живой странице:
+     облачко 167.8×35.3 при left=953/top=636, кот 164.6×172.3 при
+     left=1144.7/top=665 — кот стоит правее и чуть ниже бордюра облачка
+     (небольшой зазор ~24px, а не перекрытие, как в .steps__mascot-group —
+     геометрия у двух секций своя, приём общий). */
+  .ytch__mascot-group { position: relative; flex-shrink: 0; width: 220px; }
+  .ytch__mascot-bubble { display: block; width: 100%; height: auto; }
+  .ytch__cat { position: absolute; top: -10px; right: -84px; width: 96px; height: auto; pointer-events: none; }
   .ytch__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
   .ytch__card { display: block; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); transition: border-color .25s var(--ease), transform .25s var(--ease); }
   .ytch__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
@@ -1611,11 +1683,14 @@
   .ytch__actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
   @media (max-width: 960px) {
     .ytch__grid { grid-template-columns: 1fr 1fr; gap: 18px; }
-    .ytch__cat { width: 96px; right: 40px; top: -14px; }
+    .ytch__mascot-group { width: 170px; }
+    .ytch__cat { width: 78px; right: -24px; top: 6px; }
   }
   @media (max-width: 640px) {
     .ytch__grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 32px; }
     .ytch__actions { flex-direction: column; align-items: stretch; }
+    .section__head--mascot { flex-direction: column; align-items: flex-start; }
+    .ytch__mascot-group { width: 190px; }
     .ytch__cat { display: none; }
   }
 
@@ -2342,14 +2417,18 @@
        #homework-modal (см. конец файла) — на живой Tilda это тоже попап, а
        не блок в потоке. Кнопка «Коткинс, какие будут задания?» в шаге 2 —
        её триггер, универсальный механизм data-modal-open/data-modal-close
-       (Task 7). Правка 3: mascot/kotkins.png выглядывает из-за верхнего
-       правого угла секции — см. .steps__cat. -->
+       (Task 7). Правка (заход 7, п.11): mascot/kotkins.png выглядывает
+       из-за облачка справа от заголовка (пара .steps__mascot-group, тот же
+       приём, что у .ytch__mascot-group ниже по файлу), а не приколочен к
+       углу секции отдельно от облачка. -->
   <section class="section steps" id="education">
     <div class="container">
-      <img class="steps__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
-      <div class="section__head fade-up">
+      <div class="section__head section__head--mascot fade-up">
         <h2 class="section__title">Как всё устроено по шагам</h2>
-        <img class="steps__mascot-bubble" src="mascot/speech_bubble_2.svg" alt="Ну или по лапкам… Как удобнее" width="198" height="81" loading="lazy">
+        <div class="steps__mascot-group">
+          <img class="steps__mascot-bubble" src="mascot/speech_bubble_2.svg" alt="Ну или по лапкам… Как удобнее" width="198" height="81" loading="lazy">
+          <img class="steps__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
+        </div>
       </div>
       <div class="steps__list fade-up">
         <div class="steps__row">
@@ -3063,158 +3142,202 @@
       </div>
       <div class="stories__grid carousel__track" data-carousel-track>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_1.jpeg" alt="Алексей Соколов" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Алексей Соколов</div>
-              <div class="stories__nick">@alexs0kolov</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_1.jpeg" alt="Алексей Соколов" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Алексей Соколов</div>
+                <a class="stories__nick" href="https://t.me/alexs0kolov" target="_blank" rel="noopener">@alexs0kolov</a>
+              </div>
             </div>
+            <div class="stories__headline">Закрыл все пробелы в бекенде и перенял опыт из BigTech</div>
           </div>
-          <div class="stories__headline">Закрыл все пробелы в бекенде и перенял опыт из BigTech</div>
-          <p class="stories__excerpt">До курса работа сводилась к банальному «перекладыванию данных из базы в JSON». Был затык, роста не чувствовал. Я понимал, что одного синтаксиса языка мало, чтобы стать Senior-ом, нужна архитектура, но боялся сложных проектов с нуля - думал, всё сломается под нагрузкой</p>
-          <button type="button" class="stories__btn" data-modal-open="story-1">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">До курса работа сводилась к банальному «перекладыванию данных из базы в JSON». Был затык, роста не чувствовал. Я понимал, что одного синтаксиса языка мало, чтобы стать Senior-ом, нужна архитектура, но боялся сложных проектов с нуля - думал, всё сломается под нагрузкой</p>
+            <button type="button" class="stories__btn" data-modal-open="story-1">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_2.jpeg" alt="Валера" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Валера</div>
-              <div class="stories__nick">@MajorGaragnuy</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_2.jpeg" alt="Валера" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Валера</div>
+                <a class="stories__nick" href="https://t.me/MajorGaragnuy" target="_blank" rel="noopener">@MajorGaragnuy</a>
+              </div>
             </div>
+            <div class="stories__headline">Прокачался в понимании современных технологий и внедрил их на работе</div>
           </div>
-          <div class="stories__headline">Прокачался в понимании современных технологий и внедрил их на работе</div>
-          <p class="stories__excerpt">Делал объёмные ДЗ, получил тонну фидбэка и поддержки. Теперь знаю, как писать код по уму и внедряю OpenAPI на работе.</p>
-          <button type="button" class="stories__btn" data-modal-open="story-2">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">Делал объёмные ДЗ, получил тонну фидбэка и поддержки. Теперь знаю, как писать код по уму и внедряю OpenAPI на работе.</p>
+            <button type="button" class="stories__btn" data-modal-open="story-2">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_3.jpeg" alt="Дима" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Дима</div>
-              <div class="stories__nick">@defany</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_3.jpeg" alt="Дима" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Дима</div>
+                <a class="stories__nick" href="https://t.me/defany" target="_blank" rel="noopener">@defany</a>
+              </div>
             </div>
+            <div class="stories__headline">Прокачал Go на курсе и в 18 лет получил оффер на $2000</div>
           </div>
-          <div class="stories__headline">Прокачал Go на курсе и в 18 лет получил оффер на $2000</div>
-          <p class="stories__excerpt">До курса я уже год-полтора писал на Go, изучал язык по open source-материалам — канал Николая Тузова и другие. Хотел научиться писать код, за который не стыд...</p>
-          <button type="button" class="stories__btn" data-modal-open="story-3">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">До курса я уже год-полтора писал на Go, изучал язык по open source-материалам — канал Николая Тузова и другие. Хотел научиться писать код, за который не стыд...</p>
+            <button type="button" class="stories__btn" data-modal-open="story-3">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_4.jpeg" alt="Владимир" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Владимир</div>
-              <div class="stories__nick">@svlion</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_4.jpeg" alt="Владимир" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Владимир</div>
+                <a class="stories__nick" href="https://t.me/svlion" target="_blank" rel="noopener">@svlion</a>
+              </div>
             </div>
+            <div class="stories__headline">Свичнулся с С# на Golang и внедрил всю инфу курса на работе</div>
           </div>
-          <div class="stories__headline">Свичнулся с С# на Golang и внедрил всю инфу курса на работе</div>
-          <p class="stories__excerpt">Начну с того, что наша команда получила проект от аутсорс-компании в нерабочем состоянии, который нам пришлось приводить к жизнеспособному состоянию...</p>
-          <button type="button" class="stories__btn" data-modal-open="story-4">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">Начну с того, что наша команда получила проект от аутсорс-компании в нерабочем состоянии, который нам пришлось приводить к жизнеспособному состоянию...</p>
+            <button type="button" class="stories__btn" data-modal-open="story-4">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_5.jpeg" alt="Олег" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Олег</div>
-              <div class="stories__nick">@ac1dTrauma</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_5.jpeg" alt="Олег" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Олег</div>
+                <a class="stories__nick" href="https://t.me/ac1dTrauma" target="_blank" rel="noopener">@ac1dTrauma</a>
+              </div>
             </div>
+            <div class="stories__headline">Senior купил свой первый курс в жизни и прокачался в Go</div>
           </div>
-          <div class="stories__headline">Senior купил свой первый курс в жизни и прокачался в Go</div>
-          <p class="stories__excerpt">Изучил всю архитектуру с нуля и сэкономил месяцы самостоятельного обучения языку. Несколько подходов я забрал к себе на существующие проекты на работе, использую.</p>
-          <button type="button" class="stories__btn" data-modal-open="story-5">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">Изучил всю архитектуру с нуля и сэкономил месяцы самостоятельного обучения языку. Несколько подходов я забрал к себе на существующие проекты на работе, использую.</p>
+            <button type="button" class="stories__btn" data-modal-open="story-5">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_6.jpeg" alt="Артур" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Артур</div>
-              <div class="stories__nick">@mando_019</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_6.jpeg" alt="Артур" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Артур</div>
+                <a class="stories__nick" href="https://t.me/mando_019" target="_blank" rel="noopener">@mando_019</a>
+              </div>
             </div>
+            <div class="stories__headline">Свичнулся с PHP на Middle Go с помощью микросервисов</div>
           </div>
-          <div class="stories__headline">Свичнулся с PHP на Middle Go с помощью микросервисов</div>
-          <p class="stories__excerpt">Расскажу вкратце свою историю. До того как приобрел курс по микросервисам у Олега, я писал в основном на PHP и лишь делал небольшие фиксы в проектах на...</p>
-          <button type="button" class="stories__btn" data-modal-open="story-6">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">Расскажу вкратце свою историю. До того как приобрел курс по микросервисам у Олега, я писал в основном на PHP и лишь делал небольшие фиксы в проектах на...</p>
+            <button type="button" class="stories__btn" data-modal-open="story-6">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_7.jpeg" alt="Олег" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Олег</div>
-              <div class="stories__nick">@o_aleksandrin</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_7.jpeg" alt="Олег" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Олег</div>
+                <a class="stories__nick" href="https://t.me/o_aleksandrin" target="_blank" rel="noopener">@o_aleksandrin</a>
+              </div>
             </div>
+            <div class="stories__headline">Получил много практики и объединил хаотичные знания на одном проекте</div>
           </div>
-          <div class="stories__headline">Получил много практики и объединил хаотичные знания на одном проекте</div>
-          <p class="stories__excerpt">Эффективно попрактиковался на Go, поработал с актуальными библиотеками и объединил разрозненные знания на полноценном проекте.</p>
-          <button type="button" class="stories__btn" data-modal-open="story-7">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">Эффективно попрактиковался на Go, поработал с актуальными библиотеками и объединил разрозненные знания на полноценном проекте.</p>
+            <button type="button" class="stories__btn" data-modal-open="story-7">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_8.jpeg" alt="Антон Артиков" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Антон Артиков</div>
-              <div class="stories__nick">@mistandok</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_8.jpeg" alt="Антон Артиков" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Антон Артиков</div>
+                <a class="stories__nick" href="https://t.me/mistandok" target="_blank" rel="noopener">@mistandok</a>
+              </div>
             </div>
+            <div class="stories__headline">Свичнулся c Python на Golang и применяет инфу курса на работе</div>
           </div>
-          <div class="stories__headline">Свичнулся c Python на Golang и применяет инфу курса на работе</div>
-          <p class="stories__excerpt">Меня зовут Антон Артиков, я работаю в компании Авито. На момент старта моего участия в курсе Олега я уже работал в компании, куда пришел будучи Python...</p>
-          <button type="button" class="stories__btn" data-modal-open="story-8">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">Меня зовут Антон Артиков, я работаю в компании Авито. На момент старта моего участия в курсе Олега я уже работал в компании, куда пришел будучи Python...</p>
+            <button type="button" class="stories__btn" data-modal-open="story-8">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_9.jpeg" alt="Валентина Богданова" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Валентина Богданова</div>
-              <div class="stories__nick">@valek177</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_9.jpeg" alt="Валентина Богданова" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Валентина Богданова</div>
+                <a class="stories__nick" href="https://t.me/valek177" target="_blank" rel="noopener">@valek177</a>
+              </div>
             </div>
+            <div class="stories__headline">Во время обучения применяла инфу курса на рабочих задачах</div>
           </div>
-          <div class="stories__headline">Во время обучения применяла инфу курса на рабочих задачах</div>
-          <p class="stories__excerpt">На Go я начала писать с ноября 2023 года, а на курс Олега попала в сентябре-октябре 2024, то есть с примерно годовым опытом работы. Решила пойти на курс, чтобы....</p>
-          <button type="button" class="stories__btn" data-modal-open="story-9">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">На Go я начала писать с ноября 2023 года, а на курс Олега попала в сентябре-октябре 2024, то есть с примерно годовым опытом работы. Решила пойти на курс, чтобы....</p>
+            <button type="button" class="stories__btn" data-modal-open="story-9">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_10.jpeg" alt="Руслан" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Руслан</div>
-              <div class="stories__nick">@Nowitty1905</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_10.jpeg" alt="Руслан" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Руслан</div>
+                <a class="stories__nick" href="https://t.me/Nowitty1905" target="_blank" rel="noopener">@Nowitty1905</a>
+              </div>
             </div>
+            <div class="stories__headline">Прокачался в микросервисах, сменил работу и поднял оффер</div>
           </div>
-          <div class="stories__headline">Прокачался в микросервисах, сменил работу и поднял оффер</div>
-          <p class="stories__excerpt">Я залетел на осенний поток курса Олега Козырева по микросервисам в 2024 году. На тот момент я работал в маленькой компании, где было около 6 разработчик...</p>
-          <button type="button" class="stories__btn" data-modal-open="story-10">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">Я залетел на осенний поток курса Олега Козырева по микросервисам в 2024 году. На тот момент я работал в маленькой компании, где было около 6 разработчик...</p>
+            <button type="button" class="stories__btn" data-modal-open="story-10">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
         <div class="stories__card fade-up">
-          <div class="stories__top">
-            <img class="stories__avatar" src="student_stories/student_11.jpeg" alt="Кирилл Макаров" width="640" height="640" loading="lazy">
-            <div>
-              <div class="stories__name">Кирилл Макаров</div>
-              <div class="stories__nick">@McK03</div>
+          <div class="stories__top-section">
+            <div class="stories__top">
+              <img class="stories__avatar" src="student_stories/student_11.jpeg" alt="Кирилл Макаров" width="640" height="640" loading="lazy">
+              <div>
+                <div class="stories__name">Кирилл Макаров</div>
+                <a class="stories__nick" href="https://t.me/McK03" target="_blank" rel="noopener">@McK03</a>
+              </div>
             </div>
+            <div class="stories__headline">Изучил Go с нуля, защитил на нем диплом и устроился на работу</div>
           </div>
-          <div class="stories__headline">Изучил Go с нуля, защитил на нем диплом и устроился на работу</div>
-          <p class="stories__excerpt">Всё началось на последнем курсе магистратуры. Несмотря на IT-направление, я всё ещё оставался без работы. После бакалавриата решил стать Android...</p>
-          <button type="button" class="stories__btn" data-modal-open="story-11">Читать историю
+          <div class="stories__bottom-section">
+            <p class="stories__excerpt">Всё началось на последнем курсе магистратуры. Несмотря на IT-направление, я всё ещё оставался без работы. После бакалавриата решил стать Android...</p>
+            <button type="button" class="stories__btn" data-modal-open="story-11">Читать историю
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
+          </div>
         </div>
       </div>
       <p class="stories__footnote fade-up">*Истории участников приведены в качестве иллюстрации. Результат зависит от опыта, активности и решений работодателей. Курс не гарантирует трудоустройство, повышение грейда или рост дохода.</p>
@@ -3488,10 +3611,11 @@
        расхождение с контент-файлом задокументировано в отчёте по задаче.
        Логотипы монохромные (grayscale) с подсветкой на hover — как на Tilda.
        У каждого — осмысленный alt с названием компании (не декор, соц.
-       доказательство). Кнопка «Учиться от компании» ведёт на #company —
-       сам попап верстает Task 9 (секция tariffs), здесь только ссылка на
-       якорь без data-modal-open, тем же способом, каким project-result
-       (Task 7) уже сослался на ещё не существовавший на тот момент #tariffs. -->
+       доказательство). Правка (заход 7, п.8): раньше кнопка «Учиться от
+       компании» вела на якорь #company — отдельную секцию с текстом
+       «напиши мне в Telegram» и своей кнопкой перехода. Секция была лишним
+       промежуточным шагом (клик → скролл к карточке → второй клик), убрана
+       целиком вместе с CSS; кнопка теперь сама ведёт прямиком в Telegram. -->
   <section class="section bigtech">
     <div class="container">
       <div class="section__head section__head--center fade-up">
@@ -3508,7 +3632,7 @@
         <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/sber.png" alt="Сбербанк" width="704" height="172" loading="lazy"></div>
       </div>
       <div class="bigtech__cta fade-up">
-        <a class="btn btn--primary" href="#company" data-goal="bigtech">Учиться от компании</a>
+        <a class="btn btn--primary" href="https://t.me/olezhek28" target="_blank" rel="noopener" data-goal="bigtech">Учиться от компании</a>
       </div>
     </div>
   </section>
@@ -3584,8 +3708,8 @@
           </ul>
           <div class="tier__bonus">
             <div class="tier__bonus-head">
-              <img class="tier__bonus-icon" src="icons/bonus.svg" alt="" width="22" height="12" aria-hidden="true">
-              <div class="tier__bonus-title">Бонусный модуль по прохождению собесов</div>
+              <svg class="tier__bonus-icon" viewBox="5872.99 4947.99 20 22" fill="none" aria-hidden="true"><path fill="currentColor" d="M 5882.25 4960 C 5882.25 4963 5882.25 4966 5882.25 4969 C 5880.91 4969 5879.58 4969 5878.25 4969 C 5877.82 4969 5877.4 4968.91 5877 4968.75 C 5876.61 4968.58 5876.25 4968.34 5875.95 4968.04 C 5875.65 4967.74 5875.41 4967.38 5875.24 4966.99 C 5875.08 4966.59 5875 4966.17 5875 4965.75 C 5875 4963.83 5875 4961.91 5875 4960C 5877.41 4960 5879.83 4960 5882.25 4960Z M 5891 4960 C 5891 4961.91 5891 4963.83 5891 4965.75 C 5891 4966.17 5890.91 4966.59 5890.75 4966.99 C 5890.58 4967.38 5890.34 4967.74 5890.04 4968.04 C 5889.74 4968.34 5889.38 4968.58 5888.99 4968.75 C 5888.59 4968.91 5888.17 4969 5887.75 4969 C 5886.41 4969 5885.08 4969 5883.75 4969 C 5883.75 4966 5883.75 4963 5883.75 4960C 5886.16 4960 5888.58 4960 5891 4960Z M 5885.5 4949 C 5886.08 4948.99 5886.65 4949.15 5887.15 4949.45 C 5887.65 4949.75 5888.07 4950.17 5888.35 4950.68 C 5888.63 4951.2 5888.76 4951.77 5888.74 4952.36 C 5888.72 4952.94 5888.55 4953.51 5888.23 4954 C 5889.07 4954 5889.91 4954 5890.75 4954 C 5891.44 4954 5892 4954.46 5892 4955.04 C 5892 4956.01 5892 4956.98 5892 4957.95 C 5892 4958.53 5891.44 4959 5890.75 4959 C 5888.41 4958.99 5886.08 4958.99 5883.75 4958.99 C 5883.75 4957.33 5883.75 4955.66 5883.75 4954 C 5883.25 4954 5882.75 4954 5882.25 4954 C 5882.25 4955.66 5882.25 4957.33 5882.25 4958.99 C 5879.91 4958.99 5877.58 4958.99 5875.25 4959 C 5874.56 4959 5874 4958.53 5874 4957.95 C 5874 4956.98 5874 4956.01 5874 4955.04 C 5874 4954.46 5874.56 4954 5875.25 4954 C 5876.08 4954 5876.92 4954 5877.76 4954 C 5877.31 4953.3 5877.15 4952.46 5877.3 4951.65 C 5877.45 4950.83 5877.91 4950.11 5878.58 4949.62 C 5879.24 4949.13 5880.07 4948.92 5880.89 4949.02 C 5881.72 4949.12 5882.47 4949.53 5883 4950.17 C 5883.3 4949.8 5883.68 4949.51 5884.11 4949.3C 5884.55 4949.1 5885.02 4948.99 5885.5 4949Z M 5880.5 4950.5 C 5880.04 4950.5 5879.61 4950.67 5879.28 4950.98 C 5878.96 4951.3 5878.77 4951.72 5878.75 4952.17 C 5878.73 4952.62 5878.89 4953.06 5879.18 4953.4 C 5879.48 4953.74 5879.9 4953.95 5880.35 4953.99 C 5880.4 4953.99 5880.45 4953.99 5880.5 4954 C 5881.08 4954 5881.66 4954 5882.25 4954 C 5882.25 4953.41 5882.25 4952.83 5882.25 4952.25 C 5882.24 4952.2 5882.24 4952.15 5882.24 4952.1 C 5882.2 4951.66 5882 4951.26 5881.68 4950.96C 5881.36 4950.66 5880.93 4950.5 5880.5 4950.5Z M 5885.5 4950.5 C 5885.03 4950.5 5884.59 4950.68 5884.26 4951.01 C 5883.93 4951.34 5883.75 4951.78 5883.75 4952.25 C 5883.75 4952.83 5883.75 4953.41 5883.75 4954 C 5884.33 4954 5884.91 4954 5885.5 4954 C 5885.96 4954 5886.4 4953.81 5886.73 4953.48 C 5887.06 4953.15 5887.25 4952.71 5887.25 4952.25 C 5887.25 4951.78 5887.06 4951.34 5886.73 4951.01C 5886.4 4950.68 5885.96 4950.5 5885.5 4950.5Z"/></svg>
+              <div class="tier__bonus-title">Бонусный модуль по прохождению собесов:</div>
             </div>
             <ul class="tier__list">
               <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Разбор 60 golang задач с реальных собесов</li>
@@ -3601,28 +3725,6 @@
           <div class="tier__cta">
             <a class="btn btn--primary btn--block" href="https://olezhek28.courses/microservices#popup:register" data-goal="tariffs">Заполнить анкету предзаписи</a>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== «УЧИТЬСЯ ОТ КОМПАНИИ» (company, rec766062955) =====
-       Место назначения кнопки bigtech__cta (см. секцию bigtech выше) — обычный
-       якорь на секцию страницы, а не JS-попап универсального механизма Task 7:
-       #company в контент-файле не размечен отдельным data-modal-open, только
-       ссылкой на якорь. Заголовка тоже нет: у подраздела в контент-файле нет
-       строки «Заголовок:», есть только тело и кнопка — aria-label взят из
-       названия самого подраздела в контент-файле («Учиться от компании»).
-       Правка 4 (визуальный заход №1): mascot/kotkins_small.png убран — на
-       живой Tilda в этой карточке кота нет вовсе, он был здесь по ошибке
-       предыдущего захода (в оригинале кот с репликой «Ты это… Заходи, если
-       что» стоит в секции youtube-tg ниже, туда и перенесён). -->
-  <section class="section company" id="company" aria-label="Учиться от компании">
-    <div class="container">
-      <div class="company__card fade-up">
-        <p class="company__text">Чтобы оплатить курс от лица компании, пожалуйста, напиши мне в Telegram</p>
-        <div class="company__cta">
-          <a class="btn btn--primary" href="https://t.me/olezhek28_support" target="_blank" rel="noopener">Перейти в Telegram</a>
         </div>
       </div>
     </div>
@@ -3644,10 +3746,12 @@
        компонентов через каскад. -->
   <section class="section ytch" id="youtube-tg" aria-labelledby="ytch-title">
     <div class="container">
-      <img class="ytch__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
-      <div class="section__head fade-up">
+      <div class="section__head section__head--mascot fade-up">
         <h2 class="section__title" id="ytch-title">Кстати, Олег ведет YouTube и ламповый TG-канальчик</h2>
-        <img class="ytch__mascot-bubble" src="mascot/speech_bubble_4.svg" alt="Ты это… Заходи, если что" width="271" height="57" loading="lazy">
+        <div class="ytch__mascot-group">
+          <img class="ytch__mascot-bubble" src="mascot/speech_bubble_4.svg" alt="Ты это… Заходи, если что" width="271" height="57" loading="lazy">
+          <img class="ytch__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
+        </div>
       </div>
 
       <div class="ytch__grid">
