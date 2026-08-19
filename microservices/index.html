@@ -830,7 +830,10 @@
      Бейдж живёт вступлением в шапке секции, а не фоном под кнопку в шаге 2 —
      иначе накладывать текст кнопки поверх неё было бы нечитаемым оверлеем из
      двух фраз. Кнопка «Коткинс, какие будут задания?» в шаге 2 —
-     обычный текстовый пилюля-баттон, без картинки. */
+     обычный текстовый пилюля-баттон, без картинки; правкой 5 стала триггером
+     модалки #homework-modal (data-modal-open), раньше была якорной ссылкой
+     на секцию homework в потоке страницы — сама разметка кнопки не
+     менялась, .steps__mascot одинаково подходит и <a>, и <button>. */
   .steps__mascot-bubble { width: 220px; height: auto; margin-top: 20px; }
   .steps__mascot {
     align-self: flex-start; display: inline-block; text-decoration: none;
@@ -913,14 +916,18 @@
     .community__chats .community__chat { width: 96px; }
   }
 
-  /* ===== HOMEWORK — аккордеон из 8 ДЗ (правка 2, визуальное ревью) =====
+  /* ===== HOMEWORK — аккордеон из 8 ДЗ (правка 5, замечание владельца) =====
      На Tilda это попап (#popup:homework) со списком всех восьми домашних
-     заданий — раньше здесь была карточка+модалка с текстом только первой
-     недели (один и тот же абзац повторялся трижды на странице, считая
-     программу). Теперь — аккордеон, механика идентична .program__*/.faq__*
-     (та же кнопка с aria-expanded, тот же [hidden] на теле). Модалка
-     #homework-modal и её единственный триггер убраны как избыточные —
-     третьей реализации аккордеона на странице быть не должно. */
+     заданий, открывается кнопкой «Коткинс, какие будут задания?» в шаге 2
+     секции steps. Раньше аккордеон стоял прямо в потоке страницы (правка 2
+     предыдущего захода) — занимал много места между секциями и разошёлся с
+     оригиналом, где отдельного блока ДЗ на странице нет вовсе. Правка 5
+     вернула его в модалку #homework-modal (разметка — в конце файла, рядом
+     с остальными модалками общего механизма), не трогая саму механику
+     аккордеона: та же кнопка с aria-expanded, то же тело через
+     aria-controls, тот же [hidden]. Первый пункт (hw-1) раскрыт по
+     умолчанию — сверено с оригиналом и с тем же паттерном у первой недели
+     программы (.program__item--open на week-1). */
   .homework__list { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
   .homework__item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); transition: background .3s var(--ease), border-color .3s var(--ease); }
   .homework__item:hover { border-color: var(--border-acc); }
@@ -967,12 +974,11 @@
     .homework__a p { font-size: 14.5px; }
   }
 
-  /* ===== МОДАЛКА С ТЕКСТОМ (используется 11 модалками историй участников) =====
+  /* ===== МОДАЛКА С ТЕКСТОМ (используется 11 модалками историй участников
+     и модалкой ДЗ #homework-modal, см. .modal--homework ниже) =====
      Дополняет универсальные .modal/.modal__overlay/.modal__dialog/.modal__close
      из секции vacancies — те попапы несли только картинку, здесь же нужен
-     заголовок и текстовый блок. Раньше сюда же был привязан #homework-modal —
-     убран правкой 2 (ДЗ переехали в аккордеон на странице, отдельная модалка
-     с текстом только первой недели стала лишней). */
+     заголовок и текстовый блок. */
   .modal__dialog { padding: 40px; }
   .modal__title { font-family: var(--display); font-size: 22px; font-weight: 500; color: var(--text-h); margin: 0 0 16px; padding-right: 28px; }
   .modal__body { font-size: 15.5px; line-height: 1.62; color: var(--text-body); }
@@ -1002,6 +1008,14 @@
   .video-modal__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
   .video-modal__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
+  /* Модалка ДЗ (#homework-modal, правка 5) расширяет базовый .modal__dialog
+     тем же приёмом, что и .modal--story: внутри лежит .homework__list
+     (max-width: 880px, восемь пунктов аккордеона) — в базовых 560px тесно. */
+  .modal--homework .modal__dialog { max-width: min(760px, 92vw); padding: 40px 44px; }
+  @media (max-width: 640px) {
+    .modal--homework .modal__dialog { padding: 28px 22px; }
+  }
+
   /* ===== PROJECT-RESULT — пересборка (заход №4, визуальное ревью) =====
      Раскладка сверена с живой Tilda (rec765399450):
      — верх (.project__top) — три колонки в одну строку: заголовок / абзац /
@@ -1012,10 +1026,10 @@
        956×488 SVG прозрачный и лежит прямо на фоне страницы, узлы дышат),
        ракета — оставшуюся треть справа, крупная, по нижнему краю вровень
        со схемой.
-     Бейдж GetCourse на самой живой странице в этой секции визуально не
-     найден (проверено на 1440 и 390 — только play + «8:00 / Обзор проекта»),
-     но картинка уже объявлена в инварианте и на диске — оставлена рядом с
-     play-блоком уменьшенной, а не удалена: см. конкорды отчёта. */
+     Бейдж «Проверено GetCourse» в этой секции больше не участвует: это
+     не картинка вёрстки, а отдельный плавающий виджет стороннего скрипта
+     qr-hidden-banner.js, который сам рисует себя поверх страницы (см.
+     подключение перед </body>). */
   .project__top { display: grid; grid-template-columns: 1fr 1fr auto; gap: 32px 40px; align-items: center; margin-bottom: 48px; }
   .project__top > .section__title { max-width: 480px; }
   .project__subtitle { margin: 0; max-width: 460px; font-size: 15px; line-height: 1.6; color: var(--text-mute); }
@@ -1029,7 +1043,6 @@
   .project__video-meta { display: flex; flex-direction: column; gap: 2px; }
   .project__video-time { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); }
   .project__video-title { font-family: var(--display); font-size: 14.5px; font-weight: 500; color: var(--text-h); }
-  .project__badge { width: 52px; height: 52px; flex-shrink: 0; }
 
   /* Ракета вынута из потока (position:absolute) и подогнана по высоте под
      .project__diagram: он остаётся единственным элементом в потоке, который
@@ -2287,10 +2300,12 @@
        — наоборот; см. контент-файл, секция steps). Сторону переключает CSS
        (.steps__row:nth-child(even)), DOM-порядок в каждой строке одинаковый:
        текст, потом картинка. Звёздочка в шаге 3 ведёт на сноску под списком.
-       Правка 2: отдельной модалки ДЗ больше нет — все 8 заданий теперь
-       аккордеоном в секции homework ниже, реплика маскота в шаге 2 ведёт туда
-       обычной якорной ссылкой. Правка 3: mascot/kotkins.png выглядывает из-за
-       верхнего правого угла секции — см. .steps__cat. -->
+       Правка 5: аккордеон всех 8 ДЗ переехал с полотна страницы в модалку
+       #homework-modal (см. конец файла) — на живой Tilda это тоже попап, а
+       не блок в потоке. Кнопка «Коткинс, какие будут задания?» в шаге 2 —
+       её триггер, универсальный механизм data-modal-open/data-modal-close
+       (Task 7). Правка 3: mascot/kotkins.png выглядывает из-за верхнего
+       правого угла секции — см. .steps__cat. -->
   <section class="section steps" id="education">
     <div class="container">
       <img class="steps__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
@@ -2314,7 +2329,7 @@
             <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <h3 class="steps__title">Делаешь практическое задание с упором на реальную практику</h3>
             <p class="steps__desc">Задания полностью моделируют бизнес-таски в BigTech-компаниях. Короче, Коткинс сделал все, чтобы ты был готов к настоящей работе</p>
-            <a class="steps__mascot" href="#homework">Коткинс, какие будут задания?</a>
+            <button type="button" class="steps__mascot" data-modal-open="homework-modal" aria-haspopup="dialog">Коткинс, какие будут задания?</button>
           </div>
           <div class="steps__col steps__col--img">
             <img class="steps__img" src="learning_process/homework.png" alt="" width="1121" height="693" loading="lazy">
@@ -2400,35 +2415,41 @@
     </div>
   </section>
 
-  <!-- ===== ДЗ — АККОРДЕОН ИЗ 8 НЕДЕЛЬ (homework, rec765399448/rec2045531601/rec765399502) =====
-       Правка 2 (визуальное ревью): на Tilda это попап (#popup:homework) со
-       списком всех восьми домашних заданий. Раньше здесь была карточка+модалка
-       с текстом только первой недели — один и тот же абзац повторялся трижды
-       на странице, считая программу. Теперь — аккордеон всех 8 ДЗ, механика
-       та же, что у .program__*/.faq__* (Task 6/9): <button aria-expanded>,
-       тело через aria-controls, всё свёрнуто по умолчанию. Тексты — из
-       секции program контент-файла (там же, где и раньше, просто без
-       дублирования: program раскрывает разделы недели целиком, здесь —
-       отдельно только «Практическое задание» каждой недели). Реплика
-       маскота в шаге 2 секции steps ведёт сюда якорной ссылкой #homework. -->
-  <section class="section homework" id="homework">
-    <div class="container">
-      <div class="section__head fade-up">
-        <h2 class="section__title">Домашние задания по неделям</h2>
-      </div>
+  <!-- ===== ДЗ — АККОРДЕОН ИЗ 8 НЕДЕЛЬ, В МОДАЛКЕ (homework, rec765399448/
+       rec2045531601/rec765399502) =====
+       Правка 5 (замечание владельца): на живой Tilda этого блока в потоке
+       страницы нет вообще — это попап (#popup:homework) со списком всех
+       восьми домашних заданий, открывается кнопкой «Коткинс, какие будут
+       задания?» в шаге 2 секции steps (см. #education, data-modal-open).
+       Раньше (правка 2 предыдущего захода) аккордеон стоял прямо на
+       странице между community и project-result — занимал много места и
+       не совпадал с оригиналом; здесь просто перенесён в модалку тем же
+       универсальным механизмом data-modal-open/data-modal-close (Task 7),
+       что и попапы вакансий/истории/видео, без второй реализации. Механика
+       самого аккордеона не менялась: <button aria-expanded>, тело через
+       aria-controls, тот же JS ниже по файлу. Тексты — из секции program
+       контент-файла (program раскрывает разделы недели целиком, здесь —
+       отдельно только «Практическое задание» каждой недели). Первый пункт
+       (hw-1) раскрыт по умолчанию — как на живой Tilda и как у первой
+       недели программы (.program__item--open на week-1). -->
+  <div class="modal modal--homework" id="homework-modal" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="homework-modal-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <h2 class="modal__title" id="homework-modal-title">Домашние задания по неделям</h2>
       <div class="homework__list">
-        <div class="homework__item fade-up" id="hw-1">
+        <div class="homework__item homework__item--open" id="hw-1">
           <h3 class="homework__q">
-            <button class="homework__qbtn" type="button" id="hw-1-head" aria-expanded="false" aria-controls="hw-1-body">
+            <button class="homework__qbtn" type="button" id="hw-1-head" aria-expanded="true" aria-controls="hw-1-body">
               <span class="homework__qtext">ДЗ – неделя №1</span>
               <span class="homework__toggle" aria-hidden="true"></span>
             </button>
           </h3>
-          <div class="homework__a" id="hw-1-body" role="region" aria-labelledby="hw-1-head" hidden>
+          <div class="homework__a" id="hw-1-body" role="region" aria-labelledby="hw-1-head">
             <p>Реализовать 3 микросервиса: OrderService (HTTP), InventoryService (gRPC), PaymentService (gRPC). Связать их через gRPC-клиенты — заказ обращается к складу и платёжке.</p>
           </div>
         </div>
-        <div class="homework__item fade-up" id="hw-2">
+        <div class="homework__item" id="hw-2">
           <h3 class="homework__q">
             <button class="homework__qbtn" type="button" id="hw-2-head" aria-expanded="false" aria-controls="hw-2-body">
               <span class="homework__qtext">ДЗ – неделя №2</span>
@@ -2439,7 +2460,7 @@
             <p>Рефакторинг всех 3 сервисов в Clean Architecture. Unit-тесты с моками на сервисный и API-слой. Покрытие ≥40%.</p>
           </div>
         </div>
-        <div class="homework__item fade-up" id="hw-3">
+        <div class="homework__item" id="hw-3">
           <h3 class="homework__q">
             <button class="homework__qbtn" type="button" id="hw-3-head" aria-expanded="false" aria-controls="hw-3-body">
               <span class="homework__qtext">ДЗ – неделя №3</span>
@@ -2450,7 +2471,7 @@
             <p>Поднять PostgreSQL через Docker Compose для OrderService и InventoryService. Написать миграции, заменить хранение в памяти на реальные SQL-запросы. Интегрировать Transaction Manager для атомарного создания заказа</p>
           </div>
         </div>
-        <div class="homework__item fade-up" id="hw-4">
+        <div class="homework__item" id="hw-4">
           <h3 class="homework__q">
             <button class="homework__qbtn" type="button" id="hw-4-head" aria-expanded="false" aria-controls="hw-4-body">
               <span class="homework__qtext">ДЗ – неделя №4</span>
@@ -2461,7 +2482,7 @@
             <p>Внедрить конфигурацию и DI-контейнер во все сервисы. Создать платформенную библиотеку. Реализовать DDD: сущность Part с методами Reserve/Release, Value Objects для свойств компонентов в JSONB, сервис проверки совместимости при заказе</p>
           </div>
         </div>
-        <div class="homework__item fade-up" id="hw-5">
+        <div class="homework__item" id="hw-5">
           <h3 class="homework__q">
             <button class="homework__qbtn" type="button" id="hw-5-head" aria-expanded="false" aria-controls="hw-5-body">
               <span class="homework__qtext">ДЗ – неделя №5</span>
@@ -2472,7 +2493,7 @@
             <p>Поднять Kafka. Создать AssemblyService — новый микросервис, который слушает событие оплаты, «собирает корабль» и отправляет событие завершения сборки. OrderService публикует событие при оплате и обновляет статус при получении результата сборки. Блокировка строк для безопасного резервирования деталей.</p>
           </div>
         </div>
-        <div class="homework__item fade-up" id="hw-6">
+        <div class="homework__item" id="hw-6">
           <h3 class="homework__q">
             <button class="homework__qbtn" type="button" id="hw-6-head" aria-expanded="false" aria-controls="hw-6-body">
               <span class="homework__qtext">ДЗ – неделя №6</span>
@@ -2483,7 +2504,7 @@
             <p>Создать IAM Service — пятый микросервис: Register, Login, Logout, Whoami, GetUser. Пользователи в PostgreSQL, сессии в Redis с ограниченным временем жизни. Добавить HTTP middleware в OrderService и gRPC-интерцептор в InventoryService для проверки сессий через IAM.</p>
           </div>
         </div>
-        <div class="homework__item fade-up" id="hw-7">
+        <div class="homework__item" id="hw-7">
           <h3 class="homework__q">
             <button class="homework__qbtn" type="button" id="hw-7-head" aria-expanded="false" aria-controls="hw-7-body">
               <span class="homework__qtext">ДЗ – неделя №7</span>
@@ -2494,7 +2515,7 @@
             <p>Развернуть полный стек наблюдаемости: коллектор телеметрии, Elasticsearch + Kibana, Prometheus + Grafana, Jaeger. Настроить логи всех сервисов в Kibana. Бизнес-метрики (заказы, выручка) в Grafana. Трассировка полного пути запроса через Order → Inventory → Payment. Вынести инструменты наблюдаемости в платформенную библиотеку.</p>
           </div>
         </div>
-        <div class="homework__item fade-up" id="hw-8">
+        <div class="homework__item" id="hw-8">
           <h3 class="homework__q">
             <button class="homework__qbtn" type="button" id="hw-8-head" aria-expanded="false" aria-controls="hw-8-body">
               <span class="homework__qtext">ДЗ – неделя №8</span>
@@ -2507,7 +2528,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
   <!-- ===== РЕЗУЛЬТАТ КУРСА — СХЕМА ИЗ 5 МИКРОСЕРВИСОВ (project-result) =====
        Правка 1 (визуальное ревью): полная пересборка по раскладке живой Tilda
@@ -2526,10 +2547,10 @@
        Бейдж «Проверено GetCourse» — не картинка из rec765399450 (это ранее
        предполагалось ошибочно): на деле это сайтовый скрипт
        qr-hidden-banner.js из блока rec1820993491 (секция cookie), рисующий
-       живой SVG-виджет с фиксированным позиционированием. Гонять сторонний
-       скрипт ради статичной картинки — лишний риск и лишняя аналитика,
-       поэтому бейдж снят как статичный кадр с живой страницы и лежит
-       статикой в project/getcourse-badge.png.
+       живой кликабельный SVG-виджет с фиксированным позиционированием и
+       QR-кодом внутри. Раз виджет позиционирует себя сам, привязки к этой
+       (или любой другой) секции ему не нужно — подключён двумя строками
+       отдельным блоком перед </body>, как и на живой Tilda.
        Тултипы: восемь узлов схемы — координаты вычислены по самому файлу
        project/architecture.svg (940×488, узлы найдены по цвету заливки),
        проценты от размеров контейнера, чтобы не расползались при масштабе.
@@ -2588,7 +2609,6 @@
             <span class="project__video-time">8:00</span>
             <span class="project__video-title">Обзор проекта</span>
           </div>
-          <img class="project__badge" src="project/getcourse-badge.png" alt="Значок «Проверено GetCourse»" width="170" height="170" loading="lazy">
         </div>
       </div>
 
@@ -4242,7 +4262,9 @@
       });
     });
 
-    // ===== Правка 2: ДЗ — та же механика аккордеона, что у программы/FAQ =====
+    // ===== ДЗ (внутри #homework-modal, правка 5) — та же механика аккордеона,
+    // что у программы/FAQ; сам механизм не менялся, аккордеон просто переехал
+    // с полотна страницы в модалку =====
     document.querySelectorAll('.homework__item').forEach(function (item) {
       var btn = item.querySelector('.homework__qbtn');
       var body = item.querySelector('.homework__a');
@@ -4334,10 +4356,10 @@
 
 <!-- ===== УНИВЕРСАЛЬНЫЙ МЕХАНИЗМ МОДАЛОК (Task 7) =====
      Обслуживает три попапа вакансий (Task 5), 11 модалок историй участников
-     #story-1…#story-11 (Task 8) и модалку видео project-result (правка 1) —
-     тем же механизмом, без правок здесь: разметки атрибутами data-modal-open/
-     data-modal-close на нужный id было достаточно. #homework-modal (Task 7)
-     здесь тоже обслуживался раньше — убран правкой 2 вместе с ДЗ-аккордеоном. -->
+     #story-1…#story-11 (Task 8), модалку видео project-result (правка 1) и
+     модалку ДЗ #homework-modal (правка 5) — тем же механизмом, без правок
+     здесь: разметки атрибутами data-modal-open/data-modal-close на нужный
+     id было достаточно, второй реализации попапов заводить не пришлось. -->
 <script>
   (function () {
     var lastTrigger = null;
@@ -4390,6 +4412,21 @@
     });
   })();
 </script>
+
+<!-- ===== ШИЛЬДИК «ПРОВЕРЕНО GETCOURSE» (rec1820993491, секция cookie) =====
+     Не картинка — живой виджет GetCourse: qr-hidden-banner.js сам рисует
+     плавающий кликабельный шильдик с QR-кодом и позиционирует его поверх
+     страницы (fixed), поэтому привязка к конкретной секции ему не нужна —
+     на живой Tilda он тоже стоит отдельным блоком, а не внутри
+     project-result (см. правку 5). qualitySchoolHash — идентификатор школы
+     olezhek28.courses в GetCourse, без него скрипт не поймёт, чей шильдик
+     рисовать. Подключение безусловное, как в оригинале, — грузится у
+     каждого посетителя ещё до его решения в cookie-баннере (/consent.js в
+     <head>). При желании можно перевести на загрузку после согласия на
+     cookies — решение об этом за владельцем курса, здесь сознательно
+     сделано как на боевой Tilda. -->
+<script>window.qualitySchoolHash='afe434653a898da20044041262b3ac74'</script>
+<script src='https://getcourse.ru/public/js/qr-hidden-banner.js'></script>
 
 </body>
 </html>
