@@ -910,14 +910,14 @@
   }
   .project__node span { pointer-events: none; }
   .project__node[aria-expanded="true"] { background: var(--text-h); }
-  .project__node--iam { left: 19.5%; top: 11.9%; transform: translate(-50%, -50%); }
-  .project__node--payment { left: 49.4%; top: 8.2%; transform: translate(-50%, -50%); }
-  .project__node--assembly { left: 89.8%; top: 8.2%; transform: translate(-50%, -50%); }
-  .project__node--order { left: 49.4%; top: 50%; transform: translate(-50%, -50%); }
-  .project__node--kafka { left: 68.2%; top: 50.1%; transform: translate(-50%, -50%); }
-  .project__node--nginx { left: 19.6%; top: 50.2%; transform: translate(-50%, -50%); }
-  .project__node--observability { left: 87.3%; top: 83.2%; transform: translate(-50%, -50%); }
-  .project__node--inventory { left: 49.4%; top: 91.8%; transform: translate(-50%, -50%); }
+  .project__node--iam { left: 19.5%; top: 0%; transform: translate(-50%, -50%); }
+  .project__node--payment { left: 49.4%; top: 0%; transform: translate(-50%, -50%); }
+  .project__node--assembly { left: 89.7%; top: 0%; transform: translate(-50%, -50%); }
+  .project__node--order { left: 49.4%; top: 41.8%; transform: translate(-50%, -50%); }
+  .project__node--kafka { left: 74.6%; top: 50%; transform: translate(-50%, -50%); }
+  .project__node--nginx { left: 25.1%; top: 50.2%; transform: translate(-50%, -50%); }
+  .project__node--observability { left: 87.3%; top: 66.7%; transform: translate(-50%, -50%); }
+  .project__node--inventory { left: 49.4%; top: 83.6%; transform: translate(-50%, -50%); }
   .project__node:hover, .project__node:focus-visible { transform: translate(-50%, -50%) scale(1.15); outline: 2px solid var(--accent); outline-offset: 2px; }
 
   .project__tooltip {
@@ -928,15 +928,16 @@
   .project__tooltip[hidden] { display: none; }
   .project__tooltip-title { margin: 0 0 6px; font-family: var(--display); font-size: 13.5px; font-weight: 600; color: var(--text-h); line-height: 1.35; }
   .project__tooltip-desc { margin: 0; font-size: 13px; line-height: 1.52; color: var(--text-mute); }
-  /* позиция тултипа = позиция узла + сдвиг в свободную сторону, чтобы не вылезать за края схемы */
-  .project__tooltip--iam { left: 19.5%; top: 11.9%; transform: translate(-6px, 22px); }
-  .project__tooltip--payment { left: 49.4%; top: 8.2%; transform: translate(-50%, 22px); }
-  .project__tooltip--assembly { left: 89.8%; top: 8.2%; transform: translate(calc(-100% + 6px), 22px); }
-  .project__tooltip--order { left: 49.4%; top: 50%; transform: translate(-50%, 22px); }
-  .project__tooltip--kafka { left: 68.2%; top: 50.1%; transform: translate(-50%, 22px); }
-  .project__tooltip--nginx { left: 19.6%; top: 50.2%; transform: translate(-6px, 22px); }
-  .project__tooltip--observability { left: 87.3%; top: 83.2%; transform: translate(calc(-100% + 6px), calc(-100% - 22px)); }
-  .project__tooltip--inventory { left: 49.4%; top: 91.8%; transform: translate(-50%, calc(-100% - 22px)); }
+  /* позиция тултипа = позиция узла (см. .project__node--*) + сдвиг в свободную сторону,
+     чтобы не вылезать за края схемы */
+  .project__tooltip--iam { left: 19.5%; top: 0%; transform: translate(-6px, 22px); }
+  .project__tooltip--payment { left: 49.4%; top: 0%; transform: translate(-50%, 22px); }
+  .project__tooltip--assembly { left: 89.7%; top: 0%; transform: translate(calc(-100% + 6px), 22px); }
+  .project__tooltip--order { left: 49.4%; top: 41.8%; transform: translate(-50%, 22px); }
+  .project__tooltip--kafka { left: 74.6%; top: 50%; transform: translate(-50%, 22px); }
+  .project__tooltip--nginx { left: 25.1%; top: 50.2%; transform: translate(-6px, 22px); }
+  .project__tooltip--observability { left: 87.3%; top: 66.7%; transform: translate(calc(-100% + 6px), 22px); }
+  .project__tooltip--inventory { left: 49.4%; top: 83.6%; transform: translate(-50%, calc(-100% - 22px)); }
 
   /* Запасной текстовый список: на 640px схема нечитаема, тултипы бесполезны —
      см. отчёт о правках. Показываем только на узких экранах. */
@@ -1167,9 +1168,14 @@
   .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
   .fact__value--accent { color: var(--accent); }
 
-  /* stretch, а не start: карточки одной высоты — кнопки выстраиваются в одну линию */
-  .pricing__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
-  .tier { border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; height: 100%; }
+  /* Правка 8 (визуальное ревью): было align-items: stretch + .tier{height:100%} —
+     обе карточки растягивались под высоту более длинной («С проверкой», с
+     бонусным модулем), а .tier__cta{margin-top:auto} утапливал кнопку в самый
+     низ. У «Стандарта» (короче списком) это давало пустой разрыв в 250+px
+     между блоком цены и кнопкой — секция читалась дырявой. Карточки больше не
+     тянутся под соседа: каждая по своей высоте, кнопка сразу под ценой. */
+  .pricing__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .tier { border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
   .tier--dark { background: var(--bg-card); border: 1px solid var(--border-card); }
   .tier--light {
     background: var(--light-bg); color: var(--light-ink); border: 1px solid rgba(16,23,26,.22);
@@ -2220,7 +2226,28 @@
        нечитаема, тултипы бесполезны — показываем текстовый список dl тем
        же восемью описаниями (запасной вариант, тоже доступен для
        скринридера). Опечатка «Ngix» в подзаголовке — с живой Tilda, сохраняем
-       намеренно (см. контент-файл). -->
+       намеренно (см. контент-файл).
+       Правка 2 (визуальное ревью): позиции «плюсов» пересчитаны — раньше
+       кружки стояли в геометрическом центре узла (см. bbox-координаты выше)
+       и перекрывали иконки/подписи (Ngix — целиком, Order/Kafka — начало
+       слова). В оригинале Tilda «плюс» лежит на верхней границе карточки
+       узла, по центру её ширины, наполовину выступая наружу. Для карточных
+       узлов (IAM, Payment, Assembly, Order, Inventory) координата — верхний
+       край прямоугольника из architecture.svg, x — его горизонтальный
+       центр. У Observability роль карточки играет пунктирный бокс
+       (x=702.95 y=325.53 w=236.03 h=162.02 в исходном 940×488) — тот же
+       принцип, «плюс» на его верхней границе. У Ngix и Kafka карточки нет
+       вовсе (см. заметку выше про заливку) — «плюс» сдвинут в сторону, в
+       пустой коридор между иконкой и соседней подписью/стрелкой, а не по
+       центру иконки. Тултипы у тех же узлов передвинуты вслед за кнопками
+       (те же left/top), направление раскрытия (лево/центр/право,
+       верх/низ) пересчитано по той же логике «не вылезать за края схемы»:
+       у Observability раскрытие сменилось с «вверх» на «вниз» — при новом
+       top (верхний край бокса, а не нижний угол, как раньше) вниз теперь
+       есть место. У Inventory раскрытие осталось «вверх»: её «плюс» тоже
+       переехал на верхний край карточки, но карточка стоит у самого низа
+       схемы, и вниз тултипу уже некуда. -->
+
   <section class="section project" id="project-result">
     <div class="container">
       <div class="project__top fade-up">
