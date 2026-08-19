@@ -45,6 +45,101 @@
 <link rel="preconnect" href="https://school.olezhek28.courses">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
+<!-- Task 9: JSON-LD по образцу system_design/index.html:55-154. Все @id и url — на
+     https://guide.olezhek28.courses/microservices/: это адрес, на котором страница
+     появится сразу после переезда на боевой домен (сейчас — noindex, см. комментарий
+     в начале <head>). Цены и состав тарифов — из секции tariffs контент-файла
+     (ЭКРАННЫЕ 74 990 ₽ / 109 990 ₽, а не устаревшие 69 990 / 99 990 из JSON-LD
+     текущей Tilda). startDate сознательно не указан: ни лендинг, ни оферта не
+     называют точную дату потока, только «осень 2026» — придумывать ISO-дату нельзя.
+     По той же причине нет priceValidUntil: дедлайна цены на Tilda для этого потока нет. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Course",
+      "@id": "https://guide.olezhek28.courses/microservices/#course",
+      "name": "Микросервисы, как в BigTech 2.0",
+      "alternateName": ["Микросервисы на GO 3.0", "Микросервисы на GO – глубокий курс от Senior Engineer из BigTech"],
+      "description": "Курс по промышленной разработке микросервисов на Go для backend-разработчиков: 8 недель, боевой стек (gRPC, HTTP/REST, PostgreSQL, Docker, Kafka, Redis, OpenTelemetry, DDD) и собственный проект из 5 связанных микросервисов с изоляцией через Envoy Gateway, межсервисной аутентификацией и авторизацией, мониторингом и тестами.",
+      "url": "https://guide.olezhek28.courses/microservices/",
+      "image": "https://guide.olezhek28.courses/microservices/og-image.png",
+      "inLanguage": "ru",
+      "provider": {"@id": "https://guide.olezhek28.courses/microservices/#oleg"},
+      "audience": {
+        "@type": "EducationalAudience",
+        "audienceType": "Backend-разработчики, переходящие на Go или готовящиеся строить и поддерживать микросервисы в бигтехе",
+        "educationalRole": "Software Developer"
+      },
+      "occupationalCategory": "15-1252.00 Software Developers",
+      "timeRequired": "P8W",
+      "teaches": [
+        "Разработка микросервисов, связанных через Kafka и gRPC, с изоляцией от внешнего мира через Envoy Gateway",
+        "Мониторинг сервиса по стандарту OpenTelemetry и покрытие юнит-тестами",
+        "Кэширование данных Redis и асинхронное взаимодействие между сервисами через Kafka",
+        "Работа с PostgreSQL и написание собственной платформенной библиотеки",
+        "Межсервисное взаимодействие, аутентификация и авторизация",
+        "Архитектурные подходы построения микросервисов на практике"
+      ],
+      "hasCourseInstance": [
+        {
+          "@type": "CourseInstance",
+          "courseMode": "online",
+          "courseWorkload": "P8W",
+          "inLanguage": "ru",
+          "instructor": {"@id": "https://guide.olezhek28.courses/microservices/#oleg"},
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "RUB",
+            "lowPrice": "74990",
+            "highPrice": "109990",
+            "offerCount": "2",
+            "availability": "https://schema.org/PreOrder",
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Стандарт",
+                "price": "74990",
+                "priceCurrency": "RUB",
+                "availability": "https://schema.org/PreOrder",
+                "description": "60 практических уроков, доступ к курсу на 2 года, практические задания после лекций, итоговый проект, еженедельные встречи с ответами на вопросы по курсу и заданиям, доступ к общему чатику. Ориентировочная цена; в рассрочку на 12% дороже — от 6 999 ₽/месяц.",
+                "url": "https://guide.olezhek28.courses/microservices/#tariffs"
+              },
+              {
+                "@type": "Offer",
+                "name": "С проверкой",
+                "price": "109990",
+                "priceCurrency": "RUB",
+                "availability": "https://schema.org/PreOrder",
+                "description": "Всё, что есть в тарифе «Стандарт», плюс код-ревью практических заданий и обратная связь, возможность сдать задания в течение 1 месяца после окончания курса, эталонное решение от Олега с видео-разборами, возможность взять «академ». Бонусный модуль по прохождению собесов: разбор 60 golang-задач и 30 алгоритмических задач с реальных собесов. Ориентировочная цена; в рассрочку на 12% дороже — от 10 266 ₽/месяц.",
+                "url": "https://guide.olezhek28.courses/microservices/#tariffs"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://guide.olezhek28.courses/microservices/#oleg",
+      "name": "Олег Козырев",
+      "alternateName": "olezhek28",
+      "jobTitle": "Staff Engineer, Go",
+      "description": "Staff-инженер с 8+ годами коммерческого опыта на Go. Работал в Т-Банке (LLM-платформа для ИИ-продуктов), Авито (внутренняя платформа для сотен сервисов) и Ozon (логистика, модерация контента, мониторинг доставки), менторил и преподавал построение микросервисов в школе Route 256 (Ozon Tech).",
+      "image": "https://guide.olezhek28.courses/microservices/instructor/instructor_large.png",
+      "url": "https://guide.olezhek28.courses/microservices/",
+      "knowsAbout": ["Go", "Микросервисы", "gRPC", "PostgreSQL", "Kafka", "Redis", "Docker", "OpenTelemetry"],
+      "sameAs": [
+        "https://www.youtube.com/@olezhek28go",
+        "https://t.me/olezhek28",
+        "https://www.linkedin.com/in/olezhek28"
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   /* ===== ТОКЕНЫ ===== */
   :root {
@@ -822,6 +917,165 @@
     .bigtech__grid { gap: 28px 36px; }
     .bigtech__logo { height: 26px; }
   }
+
+  /* ===== TASK 9: ТАРИФЫ (tariffs) / «УЧИТЬСЯ ОТ КОМПАНИИ» (company) =====
+     .tier/.pricing/.fact/.scarcity — перенос system_design/index.html:483-493
+     (scarcity) и 1432-1560 (тарифы), урезан до того, что реально есть в
+     контент-файле: без бейджа «Лучший выбор», без зачёркнутых пунктов/старой
+     цены и без блока «Как оплатить» — на Tilda-странице микросервисов этого
+     текста нет, фаза 1 его не придумывает (см. решение контроллера). Порядок
+     блоков внутри карточки (список → блок цены) переставлен под порядок
+     реального контента: на Tilda цена идёт ПОСЛЕ списка, а не перед ним, как
+     в system_design.
+     Полоса фактов — .fact из system_design/index.html:2691, но с двумя
+     реальными значениями (старт потока, длительность) вместо четырёх: для
+     микросервисов на Tilda нет ни точной даты старта (только «осень 2026» —
+     придумывать ISO-дату нельзя), ни «мест на поток».
+     Иконки icons/checkmark.svg и icons/checkmark_light.svg из «Картинки»
+     контент-файла сюда сознательно НЕ добавлены: обе заливаются в #182023, а
+     .steps__check (Task 7) уже кладёт этот же checkmark.svg на карточку с
+     тем же фоном var(--bg-card) = #182023 — там иконка фактически невидима
+     (только opacity: .8 без инверсии цвета). Плодить тот же баг на новой
+     тёмной карточке тарифа смысла нет; договорка про сам checkmark.svg —
+     на ревью Task 7 или отдельную задачу фазы 2. icons/bonus.svg (тоже
+     заливка #182023) использован — но только на светлой карточке
+     («С проверкой», --tier-light), там тёмная заливка видна нормально.
+     icons/star.svg по той же причине (тёмная заливка на тёмной плашке
+     scarcity) не использован. mascot/kotkins_small.png — растровый, цвет
+     не зависит от фона карточки, поэтому безопасно переиспользован ещё раз
+     (peek-в-угол) на карточке «Учиться от компании», как в .who__mascot. */
+  .pricing__scarcity { margin: 0 0 22px; text-align: center; }
+  .scarcity {
+    display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
+    padding: 12px 22px; border-radius: var(--r-md);
+    background: rgba(223,223,65,.07); border: 1px solid rgba(223,223,65,.26);
+    font-family: var(--mono); font-size: 12.5px; font-weight: 400; color: var(--text-body);
+  }
+  .scarcity__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; animation: scarcityPulse 2.4s var(--ease) infinite; }
+  @keyframes scarcityPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(223,223,65,.55); } 60% { box-shadow: 0 0 0 8px rgba(223,223,65,0); } }
+  @media (prefers-reduced-motion: reduce) { .scarcity__dot { animation: none; } }
+
+  .pricing__facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 420px; margin: 0 auto 44px; }
+  .fact { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 15px 18px; display: flex; flex-direction: column; gap: 7px; }
+  .fact__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
+  .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
+  .fact__value--accent { color: var(--accent); }
+
+  /* stretch, а не start: карточки одной высоты — кнопки выстраиваются в одну линию */
+  .pricing__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
+  .tier { border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; height: 100%; }
+  .tier--dark { background: var(--bg-card); border: 1px solid var(--border-card); }
+  .tier--light {
+    background: var(--light-bg); color: var(--light-ink); border: 1px solid rgba(16,23,26,.22);
+    box-shadow: 0 42px 92px -44px rgba(0,0,0,.95), 0 0 0 1px rgba(223,223,65,.18);
+  }
+  .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--accent); }
+  .tier__label {
+    font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; line-height: 1.5;
+    margin-bottom: 22px; color: var(--text-faint);
+  }
+  .tier--light .tier__label { color: var(--light-meta); }
+  .tier__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin: 0 0 8px; }
+  .tier__list li { position: relative; padding-left: 32px; font-size: 15px; line-height: 1.58; color: var(--text-mute); }
+  .tier--light .tier__list li { color: var(--light-mute); }
+  .tier__check { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(223,223,65,.12); border: 1px solid rgba(223,223,65,.22); display: flex; align-items: center; justify-content: center; }
+  .tier--light .tier__check { background: var(--accent); border-color: var(--accent); }
+  .tier__check svg { width: 10px; height: 10px; color: var(--accent); }
+  .tier--light .tier__check svg { color: var(--accent-ink); }
+
+  /* «Бонусный модуль по прохождению собесов» — только в тарифе «С проверкой» */
+  .tier__bonus { margin: 8px 0; padding-top: 22px; border-top: 1px solid var(--border-acc); }
+  .tier--light .tier__bonus { border-top-color: rgba(16,23,26,.12); }
+  .tier__bonus-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .tier__bonus-icon { width: 22px; height: auto; flex-shrink: 0; opacity: .8; }
+  .tier__bonus-title { font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--light-meta); }
+  .tier__bonus .tier__list { margin-bottom: 0; }
+
+  .tier__price-block { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--border-acc); }
+  .tier--light .tier__price-block { border-top-color: rgba(16,23,26,.12); }
+  .tier__price-label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--text-faint); margin-bottom: 8px; }
+  .tier--light .tier__price-label { color: var(--light-meta); }
+  .tier__price { font-family: var(--display); font-size: clamp(30px, 3.6vw, 42px); font-weight: 500; letter-spacing: -0.03em; line-height: 1; color: var(--text-h); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+  .tier--light .tier__price { color: var(--light-ink); }
+  .tier__price b { font-weight: 500; }
+  .tier__pay { font-family: var(--mono); font-size: 12.5px; line-height: 1.55; color: var(--text-faint); }
+  .tier--light .tier__pay { color: var(--light-meta); }
+  .tier__cta { margin-top: auto; padding-top: 28px; }
+  .tier--light .btn--primary { background: var(--light-ink); color: var(--accent); }
+  .tier--light .btn--primary:hover { background: #05090b; box-shadow: 0 16px 34px -18px rgba(0,0,0,.8); }
+
+  /* ---- «Учиться от компании» (company) ---- */
+  .company__card {
+    position: relative; max-width: 620px; margin: 0 auto; padding: 44px 48px; overflow: hidden;
+    border-radius: var(--r-xl); background: var(--bg-card); border: 1px solid var(--border-card);
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 22px;
+  }
+  .company__mascot { position: absolute; right: -6px; bottom: -4px; width: 78px; height: auto; opacity: .9; pointer-events: none; }
+  .company__text { position: relative; z-index: 1; font-size: 17px; line-height: 1.55; color: var(--text-mute); max-width: 46ch; }
+  .company__cta { position: relative; z-index: 1; }
+
+  @media (max-width: 960px) {
+    .pricing__tiers { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .scarcity { font-size: 11.5px; padding: 11px 16px; }
+    .pricing__facts { grid-template-columns: 1fr 1fr; max-width: none; }
+    .tier { padding: 34px 24px 30px; }
+    .company__card { padding: 34px 26px; }
+    .company__mascot { width: 56px; }
+  }
+  @media (max-width: 400px) {
+    .fact { padding: 13px 15px; }
+    .fact__value { font-size: 15.5px; }
+  }
+
+  /* ===== TASK 9: МОДАЛКА ПРЕДЗАПИСИ — ФОРМА GETCOURSE (виджет) =====
+     Перенос system_design/index.html:1399-1430 (CSS) и 1659-1665 (спиннер)
+     дословно вместе с комментариями и селекторами — токены дизайна совпадают
+     1-в-1 (--bg-card, --border-card, --r-xl, --ease и т.д.), поэтому CSS
+     скопирован без адаптации. ВНИМАНИЕ: сейчас этот блок мёртвый код — ни на
+     одной кнопке страницы нет data-gc-open (см. заглушку фазы 1 у разметки
+     модалки ниже), поэтому .gc-modal физически никогда не получает hidden=false.
+     CSS и разметка оставлены рабочими заранее, чтобы включение при появлении
+     id формы свелось к правке трёх JS-констант и атрибутов кнопок. */
+  .gc-modal[hidden] { display: none; }
+  .gc-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 24px 64px; overflow-y: auto; overscroll-behavior: contain; }
+  .gc-modal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.8); backdrop-filter: blur(5px); }
+  .gc-modal__panel { position: relative; z-index: 1; width: min(860px, 96vw); display: flex; flex-direction: column;
+    background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl); overflow: hidden;
+    box-shadow: 0 40px 120px -30px rgba(0,0,0,.92); animation: gcPop .28s var(--ease); }
+  @keyframes gcPop { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+  .gc-modal__close { position: fixed; top: 22px; right: 26px; z-index: 3; width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(30,39,43,.9); border: 1px solid var(--border-card); color: var(--text-h); cursor: pointer;
+    font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: background .2s;
+    box-shadow: 0 6px 20px -8px rgba(0,0,0,.7); }
+  .gc-modal__close:hover { background: rgba(52,63,68,.95); }
+  .gc-modal__body { padding: 8px clamp(8px, 3vw, 40px) clamp(16px, 3vw, 40px); }
+  .gc-modal__body iframe { display: block; width: 100% !important; min-height: 1040px; border: 0 !important; background: var(--bg-card); }
+  .gc-modal__body.is-loading iframe { position: absolute; visibility: hidden; }
+  .gc-modal__loading {
+    min-height: 420px; display: flex; flex-direction: column; gap: 16px;
+    align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 13px; color: var(--text-mute); text-align: center;
+  }
+  .gc-modal__loading a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .gc-spinner {
+    width: 26px; height: 26px; border-radius: 50%; flex: none;
+    border: 2px solid var(--border-acc); border-top-color: var(--accent);
+    animation: gcSpin .8s linear infinite;
+  }
+  @keyframes gcSpin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .gc-spinner { animation-duration: 2.4s; } }
+  @media (max-width: 640px) {
+    .gc-modal { padding: 0 0 40px; overflow-x: hidden; }
+    .gc-modal__panel { width: 100%; max-width: 100vw; border-radius: 0; border: 0; min-height: 100vh; overflow-x: hidden; }
+    .gc-modal__body { padding: 6px 0 44px; overflow-x: hidden; }
+    .gc-modal__body iframe { width: 100% !important; max-width: 100vw; min-height: 1320px; }
+    .gc-modal__close { top: 12px; right: 12px; width: 46px; height: 46px; font-size: 19px; background: #1e272b; box-shadow: 0 8px 24px -6px rgba(0,0,0,.85); }
+  }
+  body.gc-lock { overflow: hidden; }
+  @media (prefers-reduced-motion: reduce) { .gc-modal__panel { animation: none; } }
 
 </style>
 </head>
@@ -2298,6 +2552,119 @@
     </div>
   </section>
 
+  <!-- ===== ТАРИФЫ (tariffs) =====
+       По образцу system_design/index.html:2675-2787 (.tier, .pricing), но без
+       заголовка «Тарифы»: у секции tariffs контент-файла нет строки «Заголовок:»
+       (в отличие от program/what-you-get, где она есть) — на живой Tilda здесь,
+       похоже, нет отдельного видимого h2, вступлением служит сама плашка
+       «Начинаем осенью 2026». Текстового заголовка не придумываем, у секции
+       вместо этого aria-label с тем текстом, которым эту точку страницы называет
+       сама навигация («Стоимость → #tariffs», см. секцию nav контент-файла).
+       Состав тарифов и цены — дословно из секции tariffs контент-файла:
+       74 990 ₽ / 109 990 ₽ (экранные), рассрочка от 6 999 ₽ и от 10 266 ₽ в
+       месяц. Расхождение по «доступу на 2 года» (обычный пункт списка тут, но
+       бонус по усмотрению исполнителя в oferta.html п. 5.4) не правим — оно
+       уже так на боевой Tilda, вопрос копирайтинга фазы 2, вынесен владельцу
+       курса. Блока «честно»/гарантий (.honest) нет: подходящего текста в
+       секции tariffs нет, гарантия возврата в контент-файле стоит под секцией
+       faq — не наш rec-список, придумывать здесь нечего. -->
+  <section class="section" id="tariffs" aria-label="Стоимость">
+    <div class="container">
+      <div class="pricing__scarcity fade-up">
+        <span class="scarcity"><span class="scarcity__dot" aria-hidden="true"></span>Начинаем осенью 2026</span>
+      </div>
+
+      <div class="pricing__facts fade-up">
+        <div class="fact">
+          <span class="fact__label">Старт потока</span>
+          <span class="fact__value fact__value--accent">Осень 2026</span>
+        </div>
+        <div class="fact">
+          <span class="fact__label">Длительность</span>
+          <span class="fact__value">8 недель</span>
+        </div>
+      </div>
+
+      <div class="pricing__tiers">
+        <div class="tier tier--dark fade-up">
+          <div class="tier__label">Стандарт</div>
+          <ul class="tier__list">
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>60 практических уроков</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Доступ к курсу на 2 года</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Практические задания после лекций</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Итоговый проект</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Еженедельные встречи с ответами на вопросы по курсу и заданиям</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Доступ к общему чатику</li>
+          </ul>
+          <div class="tier__price-block">
+            <div class="tier__price-label">Ориентировочная стоимость:</div>
+            <div class="tier__price"><b>74 990 ₽</b></div>
+            <div class="tier__pay">В рассрочку на 12% дороже, зато можно купить от 6 999 ₽/месяц</div>
+          </div>
+          <!-- ЗАГЛУШКА ФАЗЫ 1: кнопки ведут на анкету Tilda, потому что своей формы
+               GetCourse для микросервисов ещё нет. Разметка и JS модалки ниже уже
+               готовы — когда появятся id и uniq, поменять href на data-gc-open
+               и подставить значения в WIDGET_ID / WIDGET_SRC / FORM_URL. -->
+          <div class="tier__cta">
+            <a class="btn btn--primary btn--block" href="https://olezhek28.courses/microservices#popup:register" data-goal="tariffs">Заполнить анкету предзаписи</a>
+          </div>
+        </div>
+
+        <div class="tier tier--light fade-up">
+          <div class="tier__label">С проверкой</div>
+          <ul class="tier__list">
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Все, что есть в тарифе «Стандарт»</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Код-ревью практических заданий и обратная связь</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Возможность сдать практические задания в течение 1 месяца после окончания курса</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Эталонное решение практических заданий от Олега с подробными видео-разборами</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Возможность взять «академ», если пока не можешь продолжать обучение</li>
+          </ul>
+          <div class="tier__bonus">
+            <div class="tier__bonus-head">
+              <img class="tier__bonus-icon" src="icons/bonus.svg" alt="" width="22" height="12" aria-hidden="true">
+              <div class="tier__bonus-title">Бонусный модуль по прохождению собесов</div>
+            </div>
+            <ul class="tier__list">
+              <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Разбор 60 golang задач с реальных собесов</li>
+              <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Разбор 30 алгоритмических задач с реальных собесов</li>
+            </ul>
+          </div>
+          <div class="tier__price-block">
+            <div class="tier__price-label">Ориентировочная стоимость:</div>
+            <div class="tier__price"><b>109 990 ₽</b></div>
+            <div class="tier__pay">В рассрочку на 12% дороже, зато можно купить от 10 266 ₽/месяц</div>
+          </div>
+          <!-- ЗАГЛУШКА ФАЗЫ 1: см. комментарий у кнопки тарифа «Стандарт» выше. -->
+          <div class="tier__cta">
+            <a class="btn btn--primary btn--block" href="https://olezhek28.courses/microservices#popup:register" data-goal="tariffs">Заполнить анкету предзаписи</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== «УЧИТЬСЯ ОТ КОМПАНИИ» (company, rec766062955) =====
+       Место назначения кнопки bigtech__cta (см. секцию bigtech выше) — обычный
+       якорь на секцию страницы, а не JS-попап универсального механизма Task 7:
+       #company в контент-файле не размечен отдельным data-modal-open, только
+       ссылкой на якорь. Заголовка тоже нет: у подраздела в контент-файле нет
+       строки «Заголовок:», есть только тело и кнопка — aria-label взят из
+       названия самого подраздела в контент-файле («Учиться от компании»).
+       mascot/kotkins_small.png — тот же переиспользуемый декор-«облако», что и
+       в segments/project-result/youtube-tg (см. комментарий в секции segments),
+       здесь в роли peek-в-угол по образцу .who__mascot. -->
+  <section class="section company" id="company" aria-label="Учиться от компании">
+    <div class="container">
+      <div class="company__card fade-up">
+        <img class="company__mascot" src="mascot/kotkins_small.png" alt="" width="607" height="1201" loading="lazy" aria-hidden="true">
+        <p class="company__text">Чтобы оплатить курс от лица компании, пожалуйста, напиши мне в Telegram</p>
+        <div class="company__cta">
+          <a class="btn btn--primary" href="https://t.me/olezhek28_support" target="_blank" rel="noopener">Перейти в Telegram</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== ПОПАПЫ СКРИНШОТОВ ВАКАНСИЙ =====
        Универсальный механизм модалок страницы: триггер несёт атрибут data-modal-open
        со значением, равным id попапа; сам попап получает этот id и атрибут hidden
@@ -2360,6 +2727,311 @@
     </div>
   </div>
 </footer>
+
+<!-- ===== TASK 9: МОДАЛКА ПРЕДЗАПИСИ — ФОРМА GETCOURSE (виджет) =====
+     Перенос system_design/index.html:3293-3313 дословно вместе с комментариями:
+     они объясняют неочевидные решения (почему iframe создаётся лениво, почему
+     форму нельзя прогревать целиком заранее). CSS — в <style> в <head> (см.
+     блок TASK 9 там же).
+
+     ЗАГЛУШКА ФАЗЫ 1: идентификаторы формы предзаписи микросервисов ещё не
+     выданы Олегом (владельцем курса), поэтому ни на одной кнопке страницы
+     нет data-gc-open — кнопки тарифов ведут прямо на анкету Tilda (см.
+     секцию tariffs выше). Разметка и JS модалки ниже уже готовы и просто
+     не активируются: querySelectorAll('[data-gc-open]') возвращает пустой
+     список, .gc-modal остаётся hidden всегда. Когда id появятся, переключение
+     сводится к замене href на data-gc-open на кнопках тарифов и подстановке
+     значений в WIDGET_ID / WIDGET_SRC / FORM_URL ниже. Безопасно: страница
+     закрыта от индексации и на боевой домен не переключается до фазы 2. -->
+<div class="gc-modal" id="gc-modal" hidden>
+  <div class="gc-modal__backdrop" data-gc-close></div>
+  <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Анкета предзаписи">
+    <button type="button" class="gc-modal__close" data-gc-close aria-label="Закрыть">&#10005;</button>
+    <!-- Форма GetCourse СПЕЦИАЛЬНО не стоит здесь в разметке: её iframe
+         (school.olezhek28.courses) отправляет собственный хит в тот же счётчик
+         96022201, и при загрузке вместе со страницей это ломало аналитику —
+         второй просмотр приезжал у каждого посетителя, обнуляя показатель
+         отказов и удваивая глубину просмотра. Поэтому iframe создаётся по
+         первому клику, см. loadWidget() ниже.
+         Пока счётчик внутри виджета общий с лендингом, предзагружать форму
+         заранее (по наведению или по скроллу к тарифам) нельзя — вернётся
+         та же поломка аналитики. -->
+    <div class="gc-modal__body is-loading" id="gc-modal-body">
+      <div class="gc-modal__loading" id="gc-loading" role="status">
+        <span class="gc-spinner" aria-hidden="true"></span>Загружаю анкету…
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    // ===== Цели Яндекс.Метрики =====
+    // ym появляется из /consent.js и может отсутствовать: пользователь отклонил
+    // аналитику в баннере либо сработал блокировщик. Молча пропускаем.
+    var COUNTER = 96022201;
+    function goal(name, place) {
+      if (typeof window.ym !== 'function') return;
+      window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
+    }
+    // якорные CTA (герой, после программы, тарифы, bigtech и т.д.); кнопки анкеты
+    // считаются отдельно, в open() — иначе клик по ним залогировался бы дважды
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest && e.target.closest('[data-goal]');
+      if (!el || el.hasAttribute('data-gc-open')) return;
+      goal('ms_cta_click', el.getAttribute('data-goal'));
+    });
+
+    var modal = document.getElementById('gc-modal');
+    if (!modal) return;
+    var lastTrigger = null;
+    var closeBtn = modal.querySelector('.gc-modal__close');
+
+    // ===== Ленивая загрузка виджета GetCourse =====
+    // Грузим форму только по первому клику. Если вставить её скрипт в разметку,
+    // iframe отправит свой хит в счётчик у каждого посетителя — см. комментарий
+    // у .gc-modal__body.
+    //
+    // Штатный script?id=... ничего не делает, кроме сборки iframe по
+    // предсказуемому URL и подписки на postMessage с высотой. При этом он отдаётся
+    // с Cache-Control: no-store и генерится сервером ~1 секунду, то есть каждый
+    // посетитель платит эту секунду заново, просто чтобы получить строчку с src.
+    // Поэтому iframe собираем сами теми же параметрами, а штатный скрипт держим
+    // как запасной путь на случай, если GetCourse поменяет схему URL.
+    //
+    // ЗАГЛУШКА ФАЗЫ 1 (см. комментарий над разметкой .gc-modal выше): реальных
+    // id формы предзаписи микросервисов пока нет. WIDGET_ID — это значение
+    // атрибута id у выданного GetCourse тега <script>, им форма подписывает
+    // postMessage со своей высотой, самовольно его придумывать нельзя.
+    var WIDGET_ID  = 'REPLACE_ME_WIDGET_ID';
+    var WIDGET_SRC = 'https://school.olezhek28.courses/pl/lite/widget/script?id=REPLACE_ME';
+    var WIDGET_ORIGIN = 'https://school.olezhek28.courses';
+    var FORM_URL   = 'https://school.olezhek28.courses/pl/lite/widget/widget?id=REPLACE_ME';
+    var FRAME_NAME = 'gc-ms-form';
+    var widgetRequested = false;
+    var fallbackRequested = false;
+    var gotHeight = false;
+
+    // идемпотентно: зовётся и по load iframe, и по страховочному таймауту
+    function widgetReady() {
+      var body = document.getElementById('gc-modal-body');
+      var ph = document.getElementById('gc-loading');
+      if (body) body.classList.remove('is-loading');
+      if (ph && ph.parentNode) ph.parentNode.removeChild(ph);
+    }
+    function widgetFailed() {
+      var ph = document.getElementById('gc-loading');
+      if (ph) ph.innerHTML = 'Не удалось загрузить анкету. <a href="' + FORM_URL +
+        '">Открыть её отдельной страницей</a>';
+    }
+    // те же параметры, что подставляет штатный скрипт: search нужен, чтобы
+    // в анкету доехали utm-метки, ref и loc GetCourse пишет в заявку.
+    // id берём из FORM_URL, а не хардкодим отдельно вторым числом — иначе
+    // включение формы требовало бы править не 3, а 4 места в этом файле
+    function frameSrc() {
+      var src = FORM_URL + (window.location.search ? '&' + window.location.search.substring(1) : '') +
+        '&ref=' + encodeURIComponent(document.referrer) +
+        '&loc=' + encodeURIComponent(document.location.href);
+      try {
+        if (window.clrtQueryData) {
+          src += '&clrtQueryData=' + encodeURIComponent(JSON.stringify(window.clrtQueryData));
+        }
+      } catch (e) {}
+      return src;
+    }
+
+    // GetCourse шлёт высоту формы через postMessage. Origin проверяем сами:
+    // в их собственном обработчике проверки нет, а слушаем мы весь window.
+    window.addEventListener('message', function (e) {
+      if (e.origin !== WIDGET_ORIGIN) return;
+      var d = e.data;
+      if (!d || d.uniqName !== WIDGET_ID || !d.height) return;
+      // метрики переименовывают iframe, поэтому сравниваем по части до &
+      if (d.iframeName && d.iframeName.split('&')[0] !== FRAME_NAME) return;
+      gotHeight = true; // единственное надёжное доказательство, что внутри наша форма
+      var f = document.getElementById('gc-frame');
+      if (f) f.style.height = d.height + 'px';
+    });
+
+    // заглушку могли уже снять по load — вернём её перед запасной попыткой
+    function ensurePlaceholder() {
+      var body = document.getElementById('gc-modal-body');
+      if (!body || document.getElementById('gc-loading')) return;
+      var ph = document.createElement('div');
+      ph.className = 'gc-modal__loading';
+      ph.id = 'gc-loading';
+      ph.setAttribute('role', 'status');
+      ph.innerHTML = '<span class="gc-spinner" aria-hidden="true"></span>Загружаю анкету…';
+      body.classList.add('is-loading');
+      body.appendChild(ph);
+    }
+
+    // запасной путь: штатный скрипт GetCourse, если прямой iframe не поднялся
+    function loadWidgetViaScript() {
+      if (fallbackRequested) return;
+      fallbackRequested = true;
+      var body = document.getElementById('gc-modal-body');
+      if (!body) return;
+      var broken = document.getElementById('gc-frame');
+      if (broken) broken.parentNode.removeChild(broken);
+      var s = document.createElement('script');
+      s.id = WIDGET_ID;
+      s.src = WIDGET_SRC;
+      s.onerror = widgetFailed;
+      s.onload = function () {
+        // DOMContentLoaded, на который виджет подписывается сам, давно прошёл,
+        // поэтому дёргаем кастомное событие — на него он подписан тоже
+        document.dispatchEvent(new Event('StartWidget' + WIDGET_ID));
+        var frame = body.querySelector('iframe');
+        if (!frame) { widgetFailed(); return; }
+        frame.addEventListener('load', widgetReady);
+        setTimeout(widgetReady, 8000); // не залипаем на заглушке, если load не придёт
+      };
+      body.appendChild(s);
+    }
+
+    // ===== Прогрев статики формы =====
+    // Сам iframe заранее не создаём: он тянет за собой счётчик Метрики, который
+    // в GetCourse задаётся одним полем на весь аккаунт, и лишний просмотр
+    // испортил бы статистику лендинга (см. комментарий у .gc-modal__body).
+    // Но файлы, из которых форма состоит, отдаются с max-age на годы вперёд —
+    // их можно просто скачать заранее: iframe потом берёт их из кэша, а Метрика
+    // молчит, потому что документ формы не выполняется. Список конкретных
+    // вендорных файлов перенесён из system_design/index.html как есть: тот же
+    // GetCourse-аккаунт (school.olezhek28.courses) отдаёт их по тем же путям
+    // независимо от id конкретного виджета.
+    //
+    // Только вендорные: бандлы с хэшем содержимого в имени (dictionary-gen,
+    // superlite-block, custom-form) прогревать бесполезно — GetCourse
+    // пересобирает их, и к моменту открытия формы хэш уже другой, в кэш они
+    // не попадают. Не возвращать их в список.
+    var GC = 'https://school.olezhek28.courses/pl/nassets/';
+    var PREFETCH = [
+      GC + '4b8ca1d0/jquery-ui.min.js?v=1765633902',
+      GC + 'de470cdd/css/all.css?v=1765633899',
+      GC + 'd142fbf/css/bootstrap.min.css?v=1777880033',
+      GC + '2b98cd16/jquery.min.js?v=1765633902',
+      GC + 'cc216a2a/select2.min.js?v=1765633902',
+      GC + 'de470cdd/css/v4-shims.css?v=1765633899',
+      GC + 'ddb7aabd/js/bootstrap-datetimepicker.min.js?v=1765633902',
+      GC + '4b8ca1d0/themes/smoothness/jquery-ui.css?v=1765633902',
+      GC + '5ff1daa/js/bootstrap-datepicker.min.js?v=1765633902'
+    ];
+    var warmed = false;
+    function warmFormAssets() {
+      if (warmed) return;
+      warmed = true;
+      // полтора мегабайта на экономном тарифе или медленной сети — не наш случай
+      var c = navigator.connection;
+      if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
+      PREFETCH.forEach(function (u) {
+        var l = document.createElement('link');
+        l.rel = 'prefetch';
+        l.as = /\.css(\?|$)/.test(u) ? 'style' : 'script';
+        l.href = u;
+        document.head.appendChild(l);
+      });
+    }
+    // греем на подходе к тарифам: до клика остаётся несколько секунд
+    var tariffs = document.getElementById('tariffs');
+    if (tariffs && 'IntersectionObserver' in window) {
+      var warmObserver = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) {
+          warmFormAssets();
+          warmObserver.disconnect();
+        }
+      }, { rootMargin: '800px 0px' });
+      warmObserver.observe(tariffs);
+    }
+    // подстраховка: наведение на кнопку анкеты, если до тарифов не доскроллили
+    document.querySelectorAll('[data-gc-open]').forEach(function (b) {
+      b.addEventListener('pointerenter', warmFormAssets, { once: true });
+      b.addEventListener('touchstart', warmFormAssets, { once: true, passive: true });
+    });
+
+    function loadWidget() {
+      if (widgetRequested) return;
+      widgetRequested = true;
+      var body = document.getElementById('gc-modal-body');
+      if (!body) return;
+      var loaded = false;
+      var f = document.createElement('iframe');
+      f.id = 'gc-frame';
+      f.name = FRAME_NAME;
+      f.title = 'Анкета предзаписи';
+      f.src = frameSrc();
+      f.setAttribute('allowfullscreen', 'allowfullscreen');
+      f.addEventListener('load', function () { loaded = true; widgetReady(); });
+      f.addEventListener('error', loadWidgetViaScript);
+      body.appendChild(f);
+      // Откат по признаку «форма не отозвалась», а не «долго грузится»: живая
+      // форма присылает height за 3-4 секунды, а страница ошибки или чужая
+      // разметка по подменённому URL дадут load и промолчат. Ронять медленную,
+      // но рабочую загрузку нельзя — второй заход стоит ещё дороже.
+      setTimeout(function () {
+        if (gotHeight) return;
+        if (loaded) { ensurePlaceholder(); loadWidgetViaScript(); return; }
+        setTimeout(function () {
+          if (gotHeight) return;
+          ensurePlaceholder();
+          loadWidgetViaScript();
+        }, 10000);
+      }, 10000);
+    }
+
+    // ===== Изоляция фона на время модалки =====
+    // aria-modal сам по себе фон не отключает: Tab из формы уходил на страницу
+    // под модалкой, а скринридер продолжал её читать. inert на соседях по body
+    // убирает фон и из таб-порядка, и из дерева доступности.
+    var inerted = [];
+    function backgroundInert(on) {
+      if (on) {
+        Array.prototype.forEach.call(document.body.children, function (el) {
+          if (el === modal || el.hasAttribute('inert')) return;
+          el.setAttribute('inert', '');
+          inerted.push(el);
+        });
+      } else {
+        inerted.forEach(function (el) { el.removeAttribute('inert'); });
+        inerted = [];
+      }
+    }
+
+    // Фокус-ловушка: по кругу между крестиком и формой. Когда фокус уже внутри
+    // iframe GetCourse, его keydown до нас не доходит (чужой origin) — там
+    // страховкой работает inert выше.
+    function focusables() {
+      return Array.prototype.filter.call(
+        modal.querySelectorAll('button, a[href], iframe, input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+        function (el) { return el.tagName === 'IFRAME' || el.offsetParent !== null; }
+      );
+    }
+    modal.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var f = focusables();
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+
+    function open(e) {
+      if (e) { e.preventDefault(); lastTrigger = e.currentTarget; }
+      goal('ms_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
+      modal.hidden = false; document.body.classList.add('gc-lock');
+      backgroundInert(true);
+      loadWidget();
+      if (closeBtn) closeBtn.focus();
+    }
+    function close() {
+      modal.hidden = true; document.body.classList.remove('gc-lock');
+      backgroundInert(false);
+      if (lastTrigger) { lastTrigger.focus(); lastTrigger = null; }
+    }
+    document.querySelectorAll('[data-gc-open]').forEach(function (b) { b.addEventListener('click', open); });
+    modal.querySelectorAll('[data-gc-close]').forEach(function (b) { b.addEventListener('click', close); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
+  })();
+</script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
