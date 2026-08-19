@@ -3481,6 +3481,26 @@
       var open_ = document.querySelector('.modal:not([hidden])');
       if (open_) close(open_);
     });
+    // Фокус-ловушка (Task 11, приёмка): без неё Tab уводил фокус в фон под
+    // модалкой — тот же паттерн, что уже используется для попапа GetCourse
+    // (см. focusables()/keydown выше по файлу), здесь применён к любой из
+    // 16 модалок общего механизма.
+    function focusables(m) {
+      return Array.prototype.filter.call(
+        m.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+        function (el) { return el.offsetParent !== null; }
+      );
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var m = document.querySelector('.modal:not([hidden])');
+      if (!m) return;
+      var f = focusables(m);
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
   })();
 </script>
 
