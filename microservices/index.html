@@ -2774,12 +2774,11 @@
   </section>
 
   <!-- ===== TASK 10: YOUTUBE / TG (youtube-tg) =====
-       yt_thumb_1/2/3.png в youtube/ — на самом деле скриншоты чата (community),
-       а не превью роликов: похоже, при подготовке ассетов файлы перепутали
-       с community/chat_*.png. Это единственные картинки, которые контент-файл
-       называет для этой секции, поэтому используем их as is — верстка не
-       завязана на конкретное содержимое файла и подхватит правильный кадр,
-       если ассет заменят. icons/more_video.svg (а не icons/youtube.svg) —
+       Превью роликов (youtube/yt_thumb_*.jpg) — реальные кадры maxresdefault
+       соответствующих видео на YouTube (сверены по названию ролика, а не по
+       порядку в «Источник Tilda»: там подписи оказались привязаны не к тем
+       ссылкам — см. отчёт Task 10 / доп. правку ассетов). icons/more_video.svg
+       (а не icons/youtube.svg) —
        именно так называется источник Tilda для иконки на кнопке «Смотреть
        больше видео», см. Картинки в контент-файле. Классы — .ytch__*, а не
        .yt__*: namespace .yt__* уже занят video-reviews (Task 8, квадратные
@@ -2794,21 +2793,21 @@
       <div class="ytch__grid">
         <a class="ytch__card fade-up" href="https://youtu.be/2cxmJUJ2Ge0?si=SOFLB2SxjT8SgeVn" target="_blank" rel="noopener">
           <div class="ytch__thumb">
-            <img src="youtube/yt_thumb_1.png" alt="" width="1180" height="2557" loading="lazy">
+            <img src="youtube/yt_thumb_roadmap.jpg" alt="" width="1280" height="720" loading="lazy">
             <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
           </div>
           <div class="ytch__name">Почему 87% Go Roadmap учат не тому</div>
         </a>
         <a class="ytch__card fade-up" href="https://youtu.be/HPXUE28R8ZI?si=MUgiC7zHd3X2pR1O" target="_blank" rel="noopener">
           <div class="ytch__thumb">
-            <img src="youtube/yt_thumb_2.png" alt="" width="1180" height="2559" loading="lazy">
+            <img src="youtube/yt_thumb_architecture.jpg" alt="" width="1280" height="720" loading="lazy">
             <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
           </div>
           <div class="ytch__name">Чистая АРХИТЕКТУРА GOLANG — ультимативный гайд на реальном проекте [за 3 часа]</div>
         </a>
         <a class="ytch__card fade-up" href="https://youtu.be/lc3ATNxWQbI?si=JduZQAUA0WkVhY8x" target="_blank" rel="noopener">
           <div class="ytch__thumb">
-            <img src="youtube/yt_thumb_3.png" alt="" width="1180" height="2557" loading="lazy">
+            <img src="youtube/yt_thumb_context.jpg" alt="" width="1280" height="720" loading="lazy">
             <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
           </div>
           <div class="ytch__name">Context в Go: всё, что нужно знать разработчику</div>
