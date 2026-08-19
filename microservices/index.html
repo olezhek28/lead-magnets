@@ -60,8 +60,8 @@
     {
       "@type": "Course",
       "@id": "https://guide.olezhek28.courses/microservices/#course",
-      "name": "Микросервисы, как в BigTech 2.0",
-      "alternateName": ["Микросервисы на GO 3.0", "Микросервисы на GO – глубокий курс от Senior Engineer из BigTech"],
+      "name": "Микросервисы на GO 3.0",
+      "alternateName": ["Микросервисы, как в BigTech 2.0", "Микросервисы на GO – глубокий курс от Senior Engineer из BigTech"],
       "description": "Курс по промышленной разработке микросервисов на Go для backend-разработчиков: 8 недель, боевой стек (gRPC, HTTP/REST, PostgreSQL, Docker, Kafka, Redis, OpenTelemetry, DDD) и собственный проект из 5 связанных микросервисов с изоляцией через Envoy Gateway, межсервисной аутентификацией и авторизацией, мониторингом и тестами.",
       "url": "https://guide.olezhek28.courses/microservices/",
       "image": "https://guide.olezhek28.courses/microservices/og-image.png",
@@ -141,7 +141,15 @@
 </script>
 
 <style>
-  /* ===== ТОКЕНЫ ===== */
+  /* ===== ТОКЕНЫ =====
+     Ассеты Tilda нарисованы под светлые подложки и залиты плоским тёмным
+     цветом (чаще всего #182023, реже #22282D/#19232C) — эта палитра пересекается
+     с фонами тёмной темы (--bg-primary #10171A, --bg-card #182023, --bg-secondary
+     #1E272B), поэтому без обработки такие ассеты физически сливаются с фоном
+     (найдено семь раз: checkmark/star/tg_icon/glass_figure/learning_speech и др.).
+     Без обработки их безопасно класть только на светлые подложки — --accent,
+     --light-bg, --light-card. На тёмный фон — либо filter: invert(1) (см.
+     .who__deco), либо inline-SVG в var(--accent) (см. .steps__check). */
   :root {
     --bg-primary:   #10171A;
     --bg-card:      #182023;
@@ -241,8 +249,6 @@
   .btn--dark:hover { background: var(--bg-tertiary); border-color: rgba(255,255,255,.28); transform: translateY(-2px); }
   .btn--lg { padding: 21px 46px; font-size: 16px; }
   .btn--block { display: flex; width: 100%; }
-  .btn__arrow { width: 14px; height: 14px; flex-shrink: 0; transition: transform .3s var(--ease); }
-  .btn--primary:hover .btn__arrow { transform: translateX(4px); }
 
   /* ===== ШАПКА (NAV) ===== */
   .header {
@@ -456,11 +462,16 @@
   /* ===== SEGMENTS — «Курс адаптирован…» (rec765399428) =====
      kotkins_small.png выглядывает из угла последней карточки (тот же файл, что
      Rails-порт применял для сегмента карточек), glass_figure.svg — полупрозрачная
-     волнистая подложка за шапкой секции (тот же source-хеш, что и у маскота). */
+     волнистая подложка за шапкой секции (тот же source-хеш, что и у маскота).
+     Фикс финального ревью: заливка #182023 совпадает с фоном секции
+     (var(--bg-primary) = #10171A) — подложка была физически невидима (контраст
+     ~1.1:1 даже с учётом opacity: .5). filter: invert(1) переворачивает #182023
+     в ~#E7DFDC — тон, близкий к безопасному --light-bg, — подложка становится
+     видимым, но по-прежнему мягким декором, а не удаляется как разметка. */
   .who { position: relative; padding: 96px 0; overflow: hidden; }
   .who__deco {
     position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-    width: 620px; max-width: 140%; opacity: .5; pointer-events: none; z-index: 0;
+    width: 620px; max-width: 140%; opacity: .5; filter: invert(1); pointer-events: none; z-index: 0;
   }
   .who .section__head, .who__grid { position: relative; z-index: 1; }
   .who__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -717,7 +728,11 @@
      сделана на живой Tilda — заливкой фона, без картинки (см. комментарий
      у разметки секции). */
   .community__head { max-width: 640px; margin: 0 auto 40px; text-align: center; }
-  .community__tail { width: 84px; height: auto; margin: 0 auto 12px; }
+  /* Фикс финального ревью: learning_speech.svg залит в #182023 — тот же цвет,
+     что фон секции (var(--bg-primary) = #10171A), squiggle был физически
+     невидим. filter: invert(1) переворачивает заливку в ~#E7DFDC (тон,
+     близкий к --light-bg) — тот же приём и то же обоснование, что у .who__deco. */
+  .community__tail { width: 84px; height: auto; margin: 0 auto 12px; filter: invert(1); opacity: .85; }
   .community__lead { margin-top: 14px; font-size: 16px; line-height: 1.6; color: var(--text-mute); }
   .community__chats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
   .community__chat { width: 100%; height: auto; border-radius: var(--r-lg); border: 1px solid var(--border-card); }
@@ -762,18 +777,33 @@
     .modal__dialog { padding: 28px 22px; }
   }
 
+  /* ===== МОДАЛКА-КАРТИНКА (используется тремя попапами скриншотов вакансий) =====
+     Фикс финального ревью: попапы вакансий наследовали общий .modal__dialog
+     (560px, потом ещё и padding: 40px от правила выше — оно глобальное и
+     задумывалось для #homework-modal). Скриншоты 1680×3570 сжимались до ~478px
+     шириной — текст нечитаем. .modal--img расширяет диалог и снимает паддинг,
+     не трогая базовые правила — от них зависят модалка ДЗ и модалки историй. */
+  .modal--img .modal__dialog { max-width: min(1100px, 96vw); padding: 0; }
+  @media (max-width: 640px) {
+    .modal--img .modal__dialog { padding: 0; }
+  }
+
   /* ===== PROJECT-RESULT — схема из 5 микросервисов (project-result) =====
      Один блок с адаптивом вместо трёх блоков Tilda (десктоп + 2 мобильных
      дубля) — решение контроллера, см. комментарий у разметки секции. */
   .project__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 48px; margin-bottom: 40px; }
   .project__head .section__title { max-width: 560px; }
   .project__subtitle { max-width: 420px; font-size: 15px; line-height: 1.6; color: var(--text-mute); }
+  /* Фикс финального ревью: карточка раньше выглядела как кликабельный видео-
+     плеер (play-кнопка + таймкод «8:00»), но это <div> без ссылки и без
+     обработчика — по клику ничего не происходит. Контент-файл ожидает попап
+     с обзором проекта, но URL самого видео в нём не задокументирован —
+     выдумывать нельзя, попап не реализуем. Убрали play-иконку и таймкод,
+     оставили подпись как обычный текстовый ярлык, без намёка на кликабельность. */
   .project__video {
-    position: relative; display: inline-flex; align-items: center; gap: 14px; margin-bottom: 40px;
+    position: relative; display: inline-flex; align-items: center; margin-bottom: 40px;
     padding: 16px 24px; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card);
   }
-  .project__video-play { width: 32px; height: 32px; flex-shrink: 0; }
-  .project__video-time { font-family: var(--mono); font-size: 13px; color: var(--text-faint); }
   .project__video-title { font-family: var(--display); font-size: 16px; font-weight: 500; color: var(--text-h); }
   .project__schema { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: start; margin-bottom: 56px; }
   .project__schema-img { width: 100%; height: auto; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card); }
@@ -852,6 +882,13 @@
      жёлтая акцентная, а не брендовый красный YouTube — видео хостятся на RuTube,
      см. комментарий у разметки. */
   .yt__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  /* Фикс финального ревью: модификатор .yt__grid--7 стоял в разметке без
+     правила (тот же дефект, что уже был у .section__head--center) — 7 карточек
+     раскладывались обычным гридом в 4+3 с дырой справа снизу. Вместо грида —
+     flex-wrap с justify-content: center: неполная последняя строка (3 карточки
+     на десктопе, 1 на 960px) центрируется, а не повисает с пустым местом. */
+  .yt__grid--7 { display: flex; flex-wrap: wrap; justify-content: center; }
+  .yt__grid--7 .yt__card { flex: 0 1 calc(25% - 12px); }
   .yt__card { display: block; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border-card); background: var(--bg-card); transition: transform .3s var(--ease), border-color .3s var(--ease); }
   .yt__card:hover { transform: translateY(-3px); border-color: var(--border-acc); }
   .yt__thumb { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--bg-secondary); }
@@ -912,6 +949,7 @@
     .stats-row > :first-child { grid-column: span 2; }
     .reviews__grid { grid-template-columns: repeat(2, 1fr); }
     .yt__grid { grid-template-columns: repeat(3, 1fr); }
+    .yt__grid--7 .yt__card { flex-basis: calc(33.333% - 10.667px); }
     .stories__grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 640px) {
@@ -921,6 +959,7 @@
     .stats-row > :first-child { grid-column: auto; }
     .reviews__grid { grid-template-columns: 1fr; }
     .yt__grid { grid-template-columns: repeat(2, 1fr); }
+    .yt__grid--7 .yt__card { flex-basis: calc(50% - 8px); }
     .stories__grid { grid-template-columns: 1fr; }
     .modal--story .modal__dialog { padding: 28px 22px; }
     .modal__story-head { gap: 12px; }
@@ -1928,8 +1967,6 @@
       </div>
 
       <div class="project__video fade-up">
-        <img class="project__video-play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
-        <span class="project__video-time">8:00</span>
         <span class="project__video-title">Обзор проекта</span>
       </div>
 
@@ -1984,7 +2021,6 @@
           </div>
           <a class="btn btn--primary project__cta" href="#tariffs" data-goal="project-result">
             <span>Записаться на курс</span>
-            <img class="btn__arrow" src="icons/cta_arrow.svg" alt="" width="93" height="33" aria-hidden="true">
           </a>
         </div>
       </div>
@@ -3006,21 +3042,21 @@
        JS (открытие/закрытие/Esc/возврат фокуса, снятие hidden) — общий скрипт
        Task 7 в конце файла, тот же обслуживает и #homework-modal. Текста в
        попапах нет, только картинка — по контент-файлу. -->
-  <div class="modal" id="modal-vacancy-ozon" data-modal hidden>
+  <div class="modal modal--img" id="modal-vacancy-ozon" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Ozon Tech" tabindex="-1">
       <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
       <img class="modal__img" src="vacancies/ozon_full.jpg" alt="Полный скриншот вакансии Ozon Tech на hh.ru" width="1680" height="3570" loading="lazy">
     </div>
   </div>
-  <div class="modal" id="modal-vacancy-wildberries" data-modal hidden>
+  <div class="modal modal--img" id="modal-vacancy-wildberries" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Wildberries" tabindex="-1">
       <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
       <img class="modal__img" src="vacancies/wildberries_full.jpg" alt="Полный скриншот вакансии Wildberries на hh.ru" width="1680" height="3570" loading="lazy">
     </div>
   </div>
-  <div class="modal" id="modal-vacancy-aviasales" data-modal hidden>
+  <div class="modal modal--img" id="modal-vacancy-aviasales" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Aviasales" tabindex="-1">
       <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
