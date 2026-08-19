@@ -1002,43 +1002,56 @@
   .video-modal__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
   .video-modal__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
-  /* ===== PROJECT-RESULT — пересборка (правка 1, визуальное ревью) =====
-     Раскладка сверена с живой Tilda (rec765399450): слева заголовок+подзаголовок,
-     справа — ракета, под ней play-кнопка обзора проекта и бейдж GetCourse,
-     ниже на всю ширину — схема архитектуры с тултипами вместо списка dl.
-     Плашка с автором внизу остаётся как раньше, но без ракеты — та переехала
-     наверх, вместе с картинкой ушла и причина «уехавшей за экран» правой
-     колонки на 1440px. */
-  .project__top { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px 56px; align-items: start; margin-bottom: 48px; }
-  .project__intro .section__title { max-width: 520px; }
-  .project__subtitle { margin: 18px 0 0; max-width: 460px; font-size: 15px; line-height: 1.6; color: var(--text-mute); }
-  .project__hero { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; }
-  .project__rocket { width: 100%; max-width: 240px; height: auto; }
-  .project__video-row { display: flex; align-items: center; gap: 14px; width: 100%; }
+  /* ===== PROJECT-RESULT — пересборка (заход №4, визуальное ревью) =====
+     Раскладка сверена с живой Tilda (rec765399450):
+     — верх (.project__top) — три колонки в одну строку: заголовок / абзац /
+       play-блок (раньше заголовок+абзац были одной колонкой .project__intro,
+       а play вместе с ракетой уезжал в .project__hero отдельным рядом);
+     — ниже (.project__scene) — схема и ракета тоже в одну строку: схема
+       занимает ~64% слева БЕЗ тёмной подложки (на оригинале её нет вовсе —
+       956×488 SVG прозрачный и лежит прямо на фоне страницы, узлы дышат),
+       ракета — оставшуюся треть справа, крупная, по нижнему краю вровень
+       со схемой.
+     Бейдж GetCourse на самой живой странице в этой секции визуально не
+     найден (проверено на 1440 и 390 — только play + «8:00 / Обзор проекта»),
+     но картинка уже объявлена в инварианте и на диске — оставлена рядом с
+     play-блоком уменьшенной, а не удалена: см. конкорды отчёта. */
+  .project__top { display: grid; grid-template-columns: 1fr 1fr auto; gap: 32px 40px; align-items: center; margin-bottom: 48px; }
+  .project__top > .section__title { max-width: 480px; }
+  .project__subtitle { margin: 0; max-width: 460px; font-size: 15px; line-height: 1.6; color: var(--text-mute); }
+  .project__video-row { display: flex; align-items: center; gap: 14px; }
   .project__play {
-    all: unset; box-sizing: border-box; cursor: pointer; flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%;
-    display: flex; transition: transform .2s var(--ease); border-radius: 50%;
+    all: unset; box-sizing: border-box; cursor: pointer; flex-shrink: 0; width: 72px; height: 72px; border-radius: 50%;
+    display: flex; transition: transform .2s var(--ease);
   }
   .project__play:hover, .project__play:focus-visible { transform: scale(1.08); outline: 2px solid var(--accent); outline-offset: 2px; }
   .project__play img { width: 100%; height: 100%; }
   .project__video-meta { display: flex; flex-direction: column; gap: 2px; }
   .project__video-time { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); }
   .project__video-title { font-family: var(--display); font-size: 14.5px; font-weight: 500; color: var(--text-h); }
-  .project__badge { width: 68px; height: 68px; margin-left: auto; flex-shrink: 0; }
+  .project__badge { width: 52px; height: 52px; flex-shrink: 0; }
 
-  .project__diagram { position: relative; margin-bottom: 56px; }
-  .project__schema-img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card); }
-  .project__nodes { position: absolute; inset: 0; }
+  /* Ракета вынута из потока (position:absolute) и подогнана по высоте под
+     .project__diagram: он остаётся единственным элементом в потоке, который
+     и задаёт высоту .project__scene. Не сделай так — и узкая высокая
+     картинка ракеты при ширине в свою треть ряда сама оказалась бы почти
+     вдвое выше схемы и задавала бы высоту ряда вместо неё. */
+  .project__scene { position: relative; margin-bottom: 56px; }
+  .project__diagram { position: relative; width: 64%; padding-top: 20px; }
+  .project__schema-img { display: block; width: 100%; height: auto; }
+  .project__nodes { position: absolute; top: 20px; left: 0; right: 0; bottom: 0; }
+  .project__rocket { position: absolute; right: 0; bottom: 0; height: 122%; width: auto; max-width: 32%; }
+
   .project__node {
     all: unset; position: absolute; box-sizing: border-box; width: 24px; height: 24px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center; cursor: pointer;
-    background: var(--accent); color: var(--accent-ink); font-family: var(--display); font-size: 15px; font-weight: 700; line-height: 1;
+    background: var(--text-h); color: var(--bg-primary); font-family: var(--display); font-size: 15px; font-weight: 700; line-height: 1;
     box-shadow: 0 0 0 3px var(--bg-primary), 0 2px 10px rgba(0,0,0,.4);
-    transition: transform .2s var(--ease), background .2s var(--ease);
+    transition: transform .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
     z-index: 2;
   }
   .project__node span { pointer-events: none; }
-  .project__node[aria-expanded="true"] { background: var(--text-h); }
+  .project__node[aria-expanded="true"] { background: var(--accent); color: var(--accent-ink); }
   .project__node--iam { left: 19.5%; top: 0%; transform: translate(-50%, -50%); }
   .project__node--payment { left: 49.4%; top: 0%; transform: translate(-50%, -50%); }
   .project__node--assembly { left: 89.7%; top: 0%; transform: translate(-50%, -50%); }
@@ -1091,19 +1104,25 @@
 
   @media (max-width: 960px) {
     .project__top { grid-template-columns: 1fr; }
-    .project__hero { align-items: flex-start; }
-    .project__rocket { max-width: 180px; }
+    /* Ряд «схема + абсолютная ракета» узкому экрану не по силам (у ракеты
+       не остаётся места по ширине) — на планшете возвращаем обычный поток:
+       ракета встаёт над схемой, по центру, скромного размера. */
+    .project__scene { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+    .project__diagram { width: 100%; }
+    .project__rocket { order: -1; position: static; height: auto; width: 100%; max-width: 200px; }
   }
   @media (max-width: 640px) {
     /* Прячем саму картинку и оверлей «+»-кнопок (нечитаемо на узком экране),
        но не .project__diagram целиком — иначе вместе с ним исчез бы и
        вложенный в него запасной список .project__schema-list--fallback
        (скрытый родитель прячет потомков независимо от их собственного
-       display; была реальная ошибка на ревью — список не появлялся). */
+       display; была реальная ошибка на ревью — список не появлялся).
+       Ракету тоже прячем — на живой странице на 390px её нет вовсе, схема
+       и текстовый список занимают всю ширину. */
     .project__schema-img, .project__nodes { display: none; }
     .project__schema-list--fallback { display: flex; flex-direction: column; }
+    .project__rocket { display: none; }
     .project__video-row { flex-wrap: wrap; }
-    .project__badge { margin-left: 0; }
     .project__plate { padding: 28px; }
   }
 
@@ -2545,28 +2564,38 @@
 
   <section class="section project" id="project-result">
     <div class="container">
+      <!-- Правка 3 (заход №4): верх секции — три колонки в одну строку
+           (заголовок / абзац / play-блок), сверено с живой Tilda. Раньше
+           заголовок и абзац были одной колонкой .project__intro, а play
+           уезжал в .project__hero вместе с ракетой — теперь ракета переехала
+           в .project__scene к схеме (правка 2), а .project__video-row сама
+           стала третьей колонкой грида. -->
       <div class="project__top fade-up">
-        <div class="project__intro">
-          <h2 class="section__title">Результат курса — микросервисная ракета, как на проде</h2>
-          <p class="project__subtitle">API на HTTP и gRPC, PostgreSQL, Kafka и Redis, логирование, метрики, трассировка, алерты, авторизация, Ngix. Все через код, в одной архитектуре без теории ради теории</p>
-        </div>
-        <div class="project__hero">
-          <img class="project__rocket" src="project/rocket.png" alt="" width="553" height="1121" aria-hidden="true">
-          <div class="project__video-row">
-            <button type="button" class="project__play" data-modal-open="video-modal" aria-haspopup="dialog">
-              <img src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
-              <span class="sr-only">Смотреть обзор проекта</span>
-            </button>
-            <div class="project__video-meta">
-              <span class="project__video-time">8:00</span>
-              <span class="project__video-title">Обзор проекта</span>
-            </div>
-            <img class="project__badge" src="project/getcourse-badge.png" alt="Значок «Проверено GetCourse»" width="170" height="170" loading="lazy">
+        <h2 class="section__title">Результат курса — микросервисная ракета, как на проде</h2>
+        <p class="project__subtitle">API на HTTP и gRPC, PostgreSQL, Kafka и Redis, логирование, метрики, трассировка, алерты, авторизация, Ngix. Все через код, в одной архитектуре без теории ради теории</p>
+        <div class="project__video-row">
+          <button type="button" class="project__play" data-modal-open="video-modal" aria-haspopup="dialog">
+            <img src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
+            <span class="sr-only">Смотреть обзор проекта</span>
+          </button>
+          <div class="project__video-meta">
+            <span class="project__video-time">8:00</span>
+            <span class="project__video-title">Обзор проекта</span>
           </div>
+          <img class="project__badge" src="project/getcourse-badge.png" alt="Значок «Проверено GetCourse»" width="170" height="170" loading="lazy">
         </div>
       </div>
 
-      <div class="project__diagram fade-up">
+      <!-- Правка 2 (заход №4): схема и ракета — одна строка, схема ~2/3
+           слева, ракета ~1/3 справа, выровнена по нижнему краю схемы и
+           заметно крупнее прежней. .project__rocket больше не в .project__hero
+           (тот убран) — ракета абсолютно спозиционирована внутри .project__scene
+           и подгоняется по высоте под .project__diagram, который остаётся
+           единственным элементом в потоке (иначе ракета своей узкой и высокой
+           картинкой сама бы задавала высоту ряда — она в disabled-потоке
+           именно поэтому). -->
+      <div class="project__scene fade-up">
+        <div class="project__diagram">
         <img class="project__schema-img" src="project/architecture.svg" alt="Схема архитектуры проекта: Client → Nginx-шлюз → IAM/Order/Payment/Inventory-сервисы, Kafka с Assembly-сервисом, хранилища PostgreSQL/Redis, наблюдаемость через OpenTelemetry/Prometheus/Grafana/Jaeger/Kibana" width="940" height="488" loading="lazy">
         <div class="project__nodes">
           <button type="button" class="project__node project__node--iam" id="node-iam-btn" aria-expanded="false" aria-controls="node-iam"><span aria-hidden="true">+</span><span class="sr-only">IAM Service — подробнее</span></button>
@@ -2652,6 +2681,9 @@
             <dd>gRPC-сервис. Позволяет Order’у проверять существование деталей при оформлении заказа</dd>
           </div>
         </dl>
+        </div>
+
+        <img class="project__rocket" src="project/rocket.png" alt="" width="553" height="1121" aria-hidden="true">
       </div>
 
       <div class="project__plate fade-up">
