@@ -698,6 +698,130 @@
   }
 
   /* Дальнейшие задачи дописывают CSS секций main ниже этой строки. */
+
+  /* ===== TASK 8: АВТОР / ОТЗЫВЫ / ВИДЕООТЗЫВЫ / ИСТОРИИ / BIGTECH =====
+     Пяти компонентов ниже нет в system_design/index.html — верстаются с нуля,
+     в том же визуальном языке (карточки .bg-card, скругления var(--r-lg),
+     hover translateY(-3px)). Переиспользуются только .stat-card[data-count]
+     (JS-анимация уже подключена в Task 3 Step 5, здесь только CSS) и паттерн
+     .yt__thumb/.yt__play/.yt__play-btn (см. комментарий у video-reviews). */
+
+  /* ---- АВТОР (author, id="speaker") ---- */
+  .author__grid { display: grid; grid-template-columns: 1fr 360px; gap: 64px; align-items: start; }
+  .author__list { list-style: none; margin: 32px 0 36px; }
+  .author__item { display: grid; grid-template-columns: 200px 1fr; gap: 8px 24px; padding: 20px 0; border-top: 1px solid var(--border-card); align-items: start; }
+  .author__item:last-child { border-bottom: 1px solid var(--border-card); }
+  .author__company { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .author__company-name { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--text-h); white-space: nowrap; letter-spacing: -0.02em; line-height: 1.2; }
+  .author__badge { display: inline-block; padding: 4px 10px; border: 1px solid var(--border-acc); border-radius: var(--r-sm); font-family: var(--mono); font-size: 11px; color: var(--text-mute); white-space: nowrap; }
+  .author__desc { padding-top: 2px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
+  .author__photo { border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); box-shadow: var(--sh-lift); position: sticky; top: 108px; }
+  .author__photo img { display: block; width: 100%; height: auto; object-fit: cover; }
+
+  /* .stat-card переиспользован из system_design/index.html:2571-2674 (структура
+     и класс — дословно), CSS-значения адаптированы под токены этого файла. */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .stat-card { background: var(--bg-card); border: 1px solid var(--border-card); color: var(--text-h); border-radius: var(--r-lg); padding: 26px 22px 28px; transition: transform .3s var(--ease), border-color .3s var(--ease); }
+  .stat-card:first-child { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .stat-card:hover { transform: translateY(-3px); border-color: rgba(223,223,65,.35); }
+  .stat-card__number { font-family: var(--mono); font-size: clamp(24px, 2.2vw, 30px); font-weight: 500; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; margin-bottom: 14px; line-height: 1.1; white-space: nowrap; }
+  .stat-card__line { width: 26px; height: 1px; background: rgba(255,255,255,.18); margin-bottom: 12px; }
+  .stat-card:first-child .stat-card__line { background: rgba(0,45,37,.3); }
+  .stat-card__label { font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--text-mute); }
+  .stat-card:first-child .stat-card__label { color: rgba(0,45,37,.82); }
+
+  /* ---- ТЕКСТОВЫЕ ОТЗЫВЫ (reviews, id="feedback") ---- */
+  .reviews__head { max-width: 640px; margin: 0 auto 44px; text-align: center; }
+  .reviews__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .reviews__card {
+    margin: 0; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card);
+    display: flex; flex-direction: column; transition: border-color .3s var(--ease), transform .3s var(--ease);
+  }
+  .reviews__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  .reviews__img { width: 100%; height: auto; display: block; }
+  .reviews__caption { padding: 16px 18px; font-size: 14px; font-weight: 500; color: var(--text-h); line-height: 1.4; border-top: 1px solid var(--border-mid); }
+
+  /* ---- ВИДЕООТЗЫВЫ (video-reviews) — переиспользует паттерн .yt__* из
+     system_design/index.html:2788-2832 (превью + play-кнопка поверх), но кнопка
+     жёлтая акцентная, а не брендовый красный YouTube — видео хостятся на RuTube,
+     см. комментарий у разметки. */
+  .yt__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .yt__card { display: block; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border-card); background: var(--bg-card); transition: transform .3s var(--ease), border-color .3s var(--ease); }
+  .yt__card:hover { transform: translateY(-3px); border-color: var(--border-acc); }
+  .yt__thumb { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--bg-secondary); }
+  .yt__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .yt__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(16,23,26,.18); transition: background .2s ease; }
+  .yt__card:hover .yt__play { background: rgba(16,23,26,.34); }
+  .yt__play-btn { width: 52px; height: 52px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 32px -14px rgba(223,223,65,.7); transition: transform .3s var(--ease); }
+  .yt__card:hover .yt__play-btn { transform: scale(1.08); }
+  .yt__play-btn svg { width: 20px; height: 20px; color: var(--accent-ink); margin-left: 3px; }
+
+  /* ---- РЕАЛЬНЫЕ ИСТОРИИ УЧАСТНИКОВ (stories) ---- */
+  .stories__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px; }
+  .stories__card {
+    display: flex; flex-direction: column; gap: 14px; padding: 26px 24px 24px;
+    border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card);
+    transition: border-color .3s var(--ease), transform .3s var(--ease);
+  }
+  .stories__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  .stories__top { display: flex; align-items: center; gap: 14px; }
+  .stories__avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .stories__name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--text-h); line-height: 1.3; }
+  .stories__nick { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); margin-top: 2px; }
+  .stories__headline { font-family: var(--display); font-size: 16.5px; font-weight: 600; line-height: 1.36; letter-spacing: -0.01em; color: var(--text-h); }
+  .stories__excerpt { flex: 1; font-size: 14px; line-height: 1.58; color: var(--text-mute); }
+  .stories__btn {
+    align-self: flex-start; margin-top: 4px; padding: 0; background: none; border: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--accent);
+    transition: gap .2s var(--ease);
+  }
+  .stories__btn:hover { gap: 9px; }
+  .stories__btn svg { flex-shrink: 0; }
+  .stories__footnote { margin-top: 4px; font-size: 12.5px; line-height: 1.55; color: var(--text-faint); max-width: 78ch; }
+
+  /* модалка истории — расширенный вариант универсальной .modal__dialog:
+     текста много (до 11 абзацев), 560px из vacancies/homework тесноват. */
+  .modal--story .modal__dialog { max-width: min(680px, 92vw); padding: 40px 44px; }
+  .modal__story-head { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .modal__story-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .modal__story-head .modal__title { margin: 0 0 4px; }
+  .modal__story-meta { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); }
+
+  /* ---- BIGTECH — ЛОГОСЕТКА КОМПАНИЙ (bigtech) ---- */
+  .bigtech__grid { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 40px 56px; margin: 8px 0 44px; }
+  .bigtech__logo {
+    height: 32px; width: auto; max-width: 128px; object-fit: contain;
+    filter: grayscale(1); opacity: .68;
+    transition: filter .3s var(--ease), opacity .3s var(--ease), transform .3s var(--ease);
+  }
+  .bigtech__logo:hover { filter: grayscale(0); opacity: 1; transform: translateY(-2px); }
+  .bigtech__cta { text-align: center; }
+
+  @media (max-width: 960px) {
+    .author__grid { grid-template-columns: 1fr; gap: 38px; }
+    .author__side { order: -1; max-width: 400px; }
+    .author__photo { position: static; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stats-row > :first-child { grid-column: span 2; }
+    .reviews__grid { grid-template-columns: repeat(2, 1fr); }
+    .yt__grid { grid-template-columns: repeat(3, 1fr); }
+    .stories__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .author__item { grid-template-columns: 1fr; gap: 10px; }
+    .author__company-name { white-space: normal; }
+    .stats-row { grid-template-columns: 1fr; }
+    .stats-row > :first-child { grid-column: auto; }
+    .reviews__grid { grid-template-columns: 1fr; }
+    .yt__grid { grid-template-columns: repeat(2, 1fr); }
+    .stories__grid { grid-template-columns: 1fr; }
+    .modal--story .modal__dialog { padding: 28px 22px; }
+    .modal__story-head { gap: 12px; }
+    .bigtech__grid { gap: 28px 36px; }
+    .bigtech__logo { height: 26px; }
+  }
+
 </style>
 </head>
 <body>
@@ -1501,13 +1625,682 @@
           </a>
         </div>
       </div>
-      <div id="speaker"></div>
+    </div>
+  </section>
+
+  <!-- ===== АВТОР КУРСА (author, id="speaker") =====
+       По образцу system_design/index.html:2571-2674 (структура «биография +
+       полоса фактов со счётчиками»), но верстается заново: этой секции нет
+       в SD как отдельного самостоятельного блока с фото сбоку в таком виде,
+       переиспользуем только .stat-card[data-count] (см. комментарий у CSS).
+       Портрет — instructor/instructor_large.png. Числа сверены с контент-файлом
+       (8 500+ TG, 8+ лет, 11 000+ YouTube) и дополнительно сверены вживую на
+       olezhek28.courses/microservices — совпадают. -->
+  <section class="section author" id="speaker">
+    <div class="container">
+      <div class="author__grid">
+        <div class="fade-up">
+          <h2 class="section__title">Автор курса — Олег Козырев</h2>
+
+          <ul class="author__list">
+            <li class="author__item">
+              <div class="author__company">
+                <span class="author__company-name">Т-Банк</span>
+                <span class="author__badge">Staff Engineer</span>
+              </div>
+              <div class="author__desc">Разрабатывал LLM-платформу для создания ИИ продуктов внутри компании</div>
+            </li>
+            <li class="author__item">
+              <div class="author__company">
+                <span class="author__company-name">Авито</span>
+                <span class="author__badge">Senior Engineer</span>
+              </div>
+              <div class="author__desc">Разрабатывал внутреннюю платформу для сотен сервисов корпорации</div>
+            </li>
+            <li class="author__item">
+              <div class="author__company">
+                <span class="author__company-name">Озон</span>
+                <span class="author__badge">Senior Engineer</span>
+              </div>
+              <div class="author__desc">Разрабатывал сервисы логистики, модерации контента и мониторинга доставки</div>
+            </li>
+            <li class="author__item">
+              <div class="author__company">
+                <span class="author__company-name">Route 256</span>
+                <span class="author__badge">Ex-преподаватель и тьютор</span>
+              </div>
+              <div class="author__desc">Менторил и преподавал курсы по построению микросервисов в школе Ozon Tech</div>
+            </li>
+          </ul>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="8500" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__label">Подписчиков в Telegram-канале</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="8" data-suffix="+ лет">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__label">Коммерческой разработки</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
+              <div class="stat-card__line"></div>
+              <div class="stat-card__label">Подписчиков на YouTube-канале</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="author__side fade-up">
+          <div class="author__photo">
+            <img src="instructor/instructor_large.png" alt="Олег Козырев, автор курса по микросервисам" width="1089" height="1209" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ТЕКСТОВЫЕ ОТЗЫВЫ (reviews, id="feedback") =====
+       Компонента нет в SD, верстаем с нуля. На Tilda это карусель из 6 карточек
+       со скриншотами (rec2078055861/rec2078055871), на 640px требуется грид
+       в одну колонку (Step 2 брифа) — делаем статичным CSS-гридом без JS-слайдера,
+       как и остальные карусели Tilda в этом переносе (см. решение Task 2 по
+       icons/arrow_left.svg/arrow_right.svg — эти два ассета подготовлены под
+       будущий слайдер, но статическая вёрстка Task 8 его не воспроизводит,
+       поэтому здесь не используются). У двух отзывов на Tilda есть второй
+       скриншот (4_/41_, 5_/51_) — судя по всему, альтернативная картинка на
+       hover нативного слайдера; в статичной сетке показываем первый скриншот
+       каждого отзыва (review_4.webp, review_5.png), альт-версии не задействованы. -->
+  <section class="section reviews" id="feedback">
+    <div class="container">
+      <div class="reviews__head section__head section__head--center fade-up">
+        <h2 class="section__title">Участники оценивают качество материала<br>на 4.94/5</h2>
+      </div>
+      <div class="reviews__grid">
+        <figure class="reviews__card fade-up">
+          <img class="reviews__img" src="reviews/review_1.webp" alt="Скриншот отзыва: «Курс, который реально мотивирует»" width="591" height="1279" loading="lazy">
+          <figcaption class="reviews__caption">Курс, который реально мотивирует</figcaption>
+        </figure>
+        <figure class="reviews__card fade-up">
+          <img class="reviews__img" src="reviews/review_2.webp" alt="Скриншот отзыва: «Практика, которая помогла попасть в ретейлер-тех»" width="591" height="1279" loading="lazy">
+          <figcaption class="reviews__caption">Практика, которая помогла попасть в ретейлер-тех</figcaption>
+        </figure>
+        <figure class="reviews__card fade-up">
+          <img class="reviews__img" src="reviews/review_3.webp" alt="Скриншот отзыва: «Глубокое погружение и детальные разборы»" width="591" height="1279" loading="lazy">
+          <figcaption class="reviews__caption">Глубокое погружение и детальные разборы</figcaption>
+        </figure>
+        <figure class="reviews__card fade-up">
+          <img class="reviews__img" src="reviews/review_4.webp" alt="Скриншот отзыва: «Взгляд на архитектуру под капотом»" width="591" height="1279" loading="lazy">
+          <figcaption class="reviews__caption">Взгляд на архитектуру под капотом</figcaption>
+        </figure>
+        <figure class="reviews__card fade-up">
+          <img class="reviews__img" src="reviews/review_5.png" alt="Скриншот отзыва: «Курс, на который записываются снова»" width="591" height="1279" loading="lazy">
+          <figcaption class="reviews__caption">Курс, на который записываются снова</figcaption>
+        </figure>
+        <figure class="reviews__card fade-up">
+          <img class="reviews__img" src="reviews/review_6.png" alt="Скриншот отзыва: «Полный фарш для старта микросервиса»" width="591" height="1279" loading="lazy">
+          <figcaption class="reviews__caption">Полный фарш для старта микросервиса</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ВИДЕООТЗЫВЫ (video-reviews) =====
+       Компонента нет в SD, верстаем с нуля, переиспользуя визуальный паттерн
+       .yt__thumb/.yt__play/.yt__play-btn из system_design/index.html:2788-2832
+       (превью + кнопка play поверх, без встраивания плеера).
+
+       НАХОДКА (важно): контент-файл для этой секции указывает «Ссылки: —» —
+       ссылок на видео не было задокументировано. Проверил вживую на
+       olezhek28.courses/microservices через прямую JS-инспекцию DOM (rec2072728321):
+       все 7 видео на самом деле хостятся на RuTube, а не на YouTube, как
+       предполагал бриф Task 8 («карточка ведёт на YouTube»). ID видео (32-символьные
+       rutubeid) декодированы из DOM, порядок карточек слева направо подтверждён
+       через getBoundingClientRect (x строго возрастает) и совпадает с порядком
+       постеров в контент-файле (Источник Tilda: tild3136.../tild6238.../tild6566.../
+       tild6533.../tild3365.../tild3637.../tild6432... — те же хеши в том же порядке,
+       что и здесь). Каждая ссылка https://rutube.ru/video/{id}/ проверена переходом
+       в браузере — все 7 открывают реальные опубликованные видео 5 ноября 2025 года
+       с названиями вида «Отзыв Ивана о курсе...». Т.к. видео на RuTube, а не YouTube,
+       кнопка play окрашена акцентным жёлтым сайта, а не брендовым красным YouTube
+       (как в SD) — не тот сервис, красный был бы недостоверной атрибуцией бренда.
+       Это реальный пропуск в контент-файле (ссылок не было), не молча дописан —
+       задокументирован здесь и в отчёте по задаче. -->
+  <section class="section video-reviews">
+    <div class="container">
+      <div class="section__head fade-up">
+        <h2 class="section__title">А ещё честно рассказывают о курсе на камеру</h2>
+      </div>
+      <div class="yt__grid yt__grid--7">
+        <a class="yt__card fade-up" href="https://rutube.ru/video/8a75578e64e8a24699afd448cdd35ed5/" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <img src="video_testimonials/thumb_1.jpeg" alt="Видеоотзыв участника курса №1 — смотреть на RuTube" width="640" height="640" loading="lazy">
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+        </a>
+        <a class="yt__card fade-up" href="https://rutube.ru/video/6400a2949070d0eb36f164b9bf2a5b15/" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <img src="video_testimonials/thumb_2.jpeg" alt="Видеоотзыв участника курса №2 — смотреть на RuTube" width="640" height="640" loading="lazy">
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+        </a>
+        <a class="yt__card fade-up" href="https://rutube.ru/video/0413f86667ba345a32990a9362fb7734/" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <img src="video_testimonials/thumb_3.jpeg" alt="Видеоотзыв участника курса №3 — смотреть на RuTube" width="640" height="640" loading="lazy">
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+        </a>
+        <a class="yt__card fade-up" href="https://rutube.ru/video/9be1dbb11db4c8b4e67191c11223b825/" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <img src="video_testimonials/thumb_4.jpeg" alt="Видеоотзыв участника курса №4 — смотреть на RuTube" width="640" height="640" loading="lazy">
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+        </a>
+        <a class="yt__card fade-up" href="https://rutube.ru/video/b5633a7eec59567ce92e1f3f848deecd/" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <img src="video_testimonials/thumb_5.jpg" alt="Видеоотзыв участника курса №5 — смотреть на RuTube" width="640" height="640" loading="lazy">
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+        </a>
+        <a class="yt__card fade-up" href="https://rutube.ru/video/7d5f3281aac34e104d68cb1cd332efd0/" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <img src="video_testimonials/thumb_6.jpg" alt="Видеоотзыв участника курса №6 — смотреть на RuTube" width="640" height="640" loading="lazy">
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+        </a>
+        <a class="yt__card fade-up" href="https://rutube.ru/video/e21a84c2ee5f8c4bc59d1cf981a19dc7/" target="_blank" rel="noopener">
+          <div class="yt__thumb">
+            <img src="video_testimonials/thumb_7.jpg" alt="Видеоотзыв участника курса №7 — смотреть на RuTube" width="640" height="640" loading="lazy">
+            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== РЕАЛЬНЫЕ ИСТОРИИ УЧАСТНИКОВ (stories) =====
+       Компонента нет в SD, верстаем с нуля. Ровно 11 историй (решение
+       контроллера №1 — не 12, как в первой редакции плана). Порядок карточек
+       и текст ников — как в карусели на Tilda (rec2081619121), подтверждено
+       вживую (11 ссылок a.t-card__btn с href="#ник" в том же порядке). Клик
+       открывает модалку с полным текстом — id="story-1"…"story-11" в порядке
+       карточек, универсальным механизмом Task 7 (data-modal-open/data-modal-close).
+       Навигация «Предыдущая/Следующая история» между попапами Tilda НЕ
+       переносится вовсе (решение контроллера №2 — она сломана в оригинале:
+       порядок цепочки не совпадает с порядком карточек, а у 8 из 11 историй
+       ник в карточке расходится с ником в попапе). Соответствие карточка↔попап
+       здесь установлено не по нику/анкору (они у части историй не совпадают
+       на Tilda), а по личности рассказчика — сверено по хешу аватарки: каждая
+       из 11 картинок student_stories/student_N.jpeg побайтово совпадает с
+       ровно одним конкретным аватаром, задекларированным в конкретном попапе
+       контент-файла (позиционно совпадает и список «Источник Tilda» секции).
+       В попапе #2 (Валера/@MajorGaragnuy) 5 из 6 абзацев исходного текста на
+       Tilda идут ДВАЖДY подряд — проверено вживую (клик по карточке на живой
+       странице, count() маркерной фразы в тексте попапа = 2) — это реальный
+       дубль в исходнике, а не ошибка транскрибации контент-файла, переносим
+       дословно по правилу Фазы 1. -->
+  <section class="section stories">
+    <div class="container">
+      <div class="section__head fade-up">
+        <h2 class="section__title">Реальные истории участников</h2>
+      </div>
+      <div class="stories__grid">
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_1.jpeg" alt="Алексей Соколов" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Алексей Соколов</div>
+              <div class="stories__nick">@alexs0kolov</div>
+            </div>
+          </div>
+          <div class="stories__headline">Закрыл все пробелы в бекенде и перенял опыт из BigTech</div>
+          <p class="stories__excerpt">До курса работа сводилась к банальному «перекладыванию данных из базы в JSON». Был затык, роста не чувствовал. Я понимал, что одного синтаксиса языка мало, чтобы стать Senior-ом, нужна архитектура, но боялся сложных проектов с нуля - думал, всё сломается под нагрузкой</p>
+          <button type="button" class="stories__btn" data-modal-open="story-1">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_2.jpeg" alt="Валера" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Валера</div>
+              <div class="stories__nick">@MajorGaragnuy</div>
+            </div>
+          </div>
+          <div class="stories__headline">Прокачался в понимании современных технологий и внедрил их на работе</div>
+          <p class="stories__excerpt">Делал объёмные ДЗ, получил тонну фидбэка и поддержки. Теперь знаю, как писать код по уму и внедряю OpenAPI на работе.</p>
+          <button type="button" class="stories__btn" data-modal-open="story-2">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_3.jpeg" alt="Дима" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Дима</div>
+              <div class="stories__nick">@defany</div>
+            </div>
+          </div>
+          <div class="stories__headline">Прокачал Go на курсе и в 18 лет получил оффер на $2000</div>
+          <p class="stories__excerpt">До курса я уже год-полтора писал на Go, изучал язык по open source-материалам — канал Николая Тузова и другие. Хотел научиться писать код, за который не стыд...</p>
+          <button type="button" class="stories__btn" data-modal-open="story-3">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_4.jpeg" alt="Владимир" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Владимир</div>
+              <div class="stories__nick">@svlion</div>
+            </div>
+          </div>
+          <div class="stories__headline">Свичнулся с С# на Golang и внедрил всю инфу курса на работе</div>
+          <p class="stories__excerpt">Начну с того, что наша команда получила проект от аутсорс-компании в нерабочем состоянии, который нам пришлось приводить к жизнеспособному состоянию...</p>
+          <button type="button" class="stories__btn" data-modal-open="story-4">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_5.jpeg" alt="Олег" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Олег</div>
+              <div class="stories__nick">@ac1dTrauma</div>
+            </div>
+          </div>
+          <div class="stories__headline">Senior купил свой первый курс в жизни и прокачался в Go</div>
+          <p class="stories__excerpt">Изучил всю архитектуру с нуля и сэкономил месяцы самостоятельного обучения языку. Несколько подходов я забрал к себе на существующие проекты на работе, использую.</p>
+          <button type="button" class="stories__btn" data-modal-open="story-5">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_6.jpeg" alt="Артур" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Артур</div>
+              <div class="stories__nick">@mando_019</div>
+            </div>
+          </div>
+          <div class="stories__headline">Свичнулся с PHP на Middle Go с помощью микросервисов</div>
+          <p class="stories__excerpt">Расскажу вкратце свою историю. До того как приобрел курс по микросервисам у Олега, я писал в основном на PHP и лишь делал небольшие фиксы в проектах на...</p>
+          <button type="button" class="stories__btn" data-modal-open="story-6">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_7.jpeg" alt="Олег" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Олег</div>
+              <div class="stories__nick">@o_aleksandrin</div>
+            </div>
+          </div>
+          <div class="stories__headline">Получил много практики и объединил хаотичные знания на одном проекте</div>
+          <p class="stories__excerpt">Эффективно попрактиковался на Go, поработал с актуальными библиотеками и объединил разрозненные знания на полноценном проекте.</p>
+          <button type="button" class="stories__btn" data-modal-open="story-7">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_8.jpeg" alt="Антон Артиков" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Антон Артиков</div>
+              <div class="stories__nick">@mistandok</div>
+            </div>
+          </div>
+          <div class="stories__headline">Свичнулся c Python на Golang и применяет инфу курса на работе</div>
+          <p class="stories__excerpt">Меня зовут Антон Артиков, я работаю в компании Авито. На момент старта моего участия в курсе Олега я уже работал в компании, куда пришел будучи Python...</p>
+          <button type="button" class="stories__btn" data-modal-open="story-8">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_9.jpeg" alt="Валентина Богданова" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Валентина Богданова</div>
+              <div class="stories__nick">@valek177</div>
+            </div>
+          </div>
+          <div class="stories__headline">Во время обучения применяла инфу курса на рабочих задачах</div>
+          <p class="stories__excerpt">На Go я начала писать с ноября 2023 года, а на курс Олега попала в сентябре-октябре 2024, то есть с примерно годовым опытом работы. Решила пойти на курс, чтобы....</p>
+          <button type="button" class="stories__btn" data-modal-open="story-9">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_10.jpeg" alt="Руслан" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Руслан</div>
+              <div class="stories__nick">@Nowitty1905</div>
+            </div>
+          </div>
+          <div class="stories__headline">Прокачался в микросервисах, сменил работу и поднял оффер</div>
+          <p class="stories__excerpt">Я залетел на осенний поток курса Олега Козырева по микросервисам в 2024 году. На тот момент я работал в маленькой компании, где было около 6 разработчик...</p>
+          <button type="button" class="stories__btn" data-modal-open="story-10">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="stories__card fade-up">
+          <div class="stories__top">
+            <img class="stories__avatar" src="student_stories/student_11.jpeg" alt="Кирилл Макаров" width="640" height="640" loading="lazy">
+            <div>
+              <div class="stories__name">Кирилл Макаров</div>
+              <div class="stories__nick">@McK03</div>
+            </div>
+          </div>
+          <div class="stories__headline">Изучил Go с нуля, защитил на нем диплом и устроился на работу</div>
+          <p class="stories__excerpt">Всё началось на последнем курсе магистратуры. Несмотря на IT-направление, я всё ещё оставался без работы. После бакалавриата решил стать Android...</p>
+          <button type="button" class="stories__btn" data-modal-open="story-11">Читать историю
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M8 3.5L11.5 7 8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="stories__footnote fade-up">*Истории участников приведены в качестве иллюстрации. Результат зависит от опыта, активности и решений работодателей. Курс не гарантирует трудоустройство, повышение грейда или рост дохода.</p>
+    </div>
+  </section>
+
+  <div class="modal modal--story" id="story-1" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-1-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_1.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-1-title">История / Алексея</h3>
+          <div class="modal__story-meta">Алексей Соколов · @alexs0kolov</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>До курса работа сводилась к банальному «перекладыванию данных из базы в JSON». Был затык, роста не чувствовал. Я понимал, что одного синтаксиса языка мало, чтобы стать Senior-ом, нужна архитектура, но боялся сложных проектов с нуля - думал, всё сломается под нагрузкой.</p>
+          <p>На курсе закрыл пробелы в бекенд-технологиях и посмотрел, как реально устроено Go в крупных проектах. Было круто узнать, как строятся микросервисы, разносить всё по папкам и настраивать тестирование - пилили и юнит, и интеграционные тесты сами. Сначала сомневался, хватит ли сил после основной работы, но процесс построен круто: тратил 6–8 часов в неделю - ни разу не перегорел.</p>
+          <p>Из практики: подключал Postgres и MongoDB, собирал интеграции с Telegram, прикручивал Kafka и Redis, оформлял систему с нуля. Раньше я изучал отдельные инструменты по видео, но не понимал, как собрать их в одну надежную систему. Здесь же я увидел всю цепочку общения сервисов через Kafka. А когда сам настроил мониторинг, наконец понял, как траблшутить и объяснять коллегам, почему система тормозит.</p>
+          <p>Код-ревью - отдельный кайф: ментор грамотно разбирал каждый мой “говнокод”, подробно комментировал, объяснял не только как лучше сделать, но и почему так правильно. На созвонах реально работают: разбирают страхи, собесы, помогают прокачать уверенность.</p>
+          <p>В итоге - реальный боевой опыт, закрытые пробелы, структурированное понимание архитектуры Go-проектов. Я наконец спроектировал надежную систему на работе, чувствую уверенность в своих силах и готов к повышению до Senior, чтобы самому решать, как будет работать проект. Рекомендую курс тем, кто хочет не просто послушать про тренды, а реально применить всё на практике»</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-2" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-2-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_2.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-2-title">История / Валеры</h3>
+          <div class="modal__story-meta">Валера · @MajorGaragnuy</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>Go - мой первый язык. Изучал сам через интернет и бесплатные курсы со Степика 😅. По ЗП сейчас около 200. Работаю в одной компании с самого начала, и тут беда - технологий практически нет, а хочется роста, а не просто перекладывать данные из базы в ответ.</p>
+          <p>От курса хотел получить знания современных технологий, систематизировать свои обрывочные знания в нормальную архитектуру и обязательно работать с ментором, чтобы получать фидбек по коду 😁</p>
+          <p>Материал понятный, ДЗ объёмные и интересные (подгорит не раз). Сейчас на работу затаскиваю OpenAPI и нормальный мониторинг, чтобы понимать, почему система может тормозить. Понравилось общение - его много, и ты понимаешь, что не одинок с проблемами в коде)))</p>
+          <p>По времени от 6 до 10 часов в неделю тратил. Переживал, хватит ли сил после основной работы, но втянулся. С ментором всё отлично сложилось - подтянул меня по стилистике кода, давал понятный фидбэк, был на связи.</p>
+          <p>На созвоны не всегда ходил, смотрел в записи. Много интересного общения и мотивации от Олега)))</p>
+          <p>Получил всё, что хотел, и даже больше) Появилась уверенность в своих силах, чтобы брать сложные проекты. Материалом пользуюсь в работе и планирую ещё несколько раз пересмотреть) Рекомендую однозначно 👍</p>
+          <p>От курса хотел получить знания современных технологий, систематизировать свои обрывочные знания в нормальную архитектуру и обязательно работать с ментором, чтобы получать фидбек по коду 😁</p>
+          <p>Материал понятный, ДЗ объёмные и интересные (подгорит не раз). Сейчас на работу затаскиваю OpenAPI и нормальный мониторинг, чтобы понимать, почему система может тормозить. Понравилось общение - его много, и ты понимаешь, что не одинок с проблемами в коде)))</p>
+          <p>По времени от 6 до 10 часов в неделю тратил. Переживал, хватит ли сил после основной работы, но втянулся. С ментором всё отлично сложилось - подтянул меня по стилистике кода, давал понятный фидбэк, был на связи.</p>
+          <p>На созвоны не всегда ходил, смотрел в записи. Много интересного общения и мотивации от Олега)))</p>
+          <p>Получил всё, что хотел, и даже больше) Появилась уверенность в своих силах, чтобы брать сложные проекты. Материалом пользуюсь в работе и планирую ещё несколько раз пересмотреть) Рекомендую однозначно 👍</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-3" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-3-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_3.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-3-title">История / Димы</h3>
+          <div class="modal__story-meta">Дима · @defany</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>До курса я уже год-полтора писал на Go, изучал язык по open source-материалам - канал Николая Тузова и другие. Изучал отдельные инструменты по видео, но не понимал, как собрать их все в одну надежную систему. Хотел научиться писать код, за который не стыдно, чтобы он был поддерживаемым и пригодным для работы, а не просто перекладывать данные из базы в ответ.</p>
+          <p>На Олега наткнулся случайно - вроде бы на видео. Подписался на Telegram-канал и стал следить, когда у него начинается следующий поток. Всё удачно совпало: у меня были деньги на полную оплату курса, было время и желание его проходить. Кроме того, мне понравились подходы к обучению - из того, что я видел на видео, Олег очень приятно и просто подавал информацию, которую можно было сразу применить в собственной работе.</p>
+          <p>Начало курса пролетел быстро - это были базовые темы, которые я уже знал. Зато дальше пошли реально полезные вещи: тестирование, базы данных, написание собственных утилит, библиотек и так далее. Особенно зашли темы по генерации моков и GRPC.</p>
+          <p>Не только сам по себе курс играет большую роль в обучении, но и сообщество, которое собралось у Олега. Олег изначально установил правила: мы не оскорбляем друг друга, не используем ненормативную лексику, общаемся в адекватной манере. И никто этого, в принципе, не нарушал, потому что все взрослые люди.</p>
+          <p>Еженедельные созвоны с вопросами о домашних заданиях превращались не только в обсуждение технических вопросов, но и в приятные беседы с людьми из одной области. Это было здорово, потому что некоторые участники уже работали Go-разработчиками, другие работали бэкенд-разработчиками и переходили на Go. Это давало возможность услышать разные точки зрения на решение проблем. Если тебя что-то не устраивало в собственной реализации, ты мог показать не только Олегу, но и скинуть в чат, попросив других участников посмотреть.</p>
+          <p>Были даже моменты, когда мы с Олегом дискутировали на тему того, что я хочу сделать, а что не хочу, потому что какое-то решение казалось мне странным с точки зрения моего опыта. Мы свободно рассуждали о том, что лучше. Это считаю большим плюсом, так как другие курсы, которые я видел, не предоставляют такой возможности: там ты должен делать только так, как написано по плану курса, и никак иначе, свободы слова нет. А на курсе Олега это было.</p>
+          <p>В январе я устроился Go-разработчиком, и знания с курса по тестированию, генерации моков и GRPC-сервисам помогли мне на собеседовании. Курс показывал, как правильно работать с чистой архитектурой - без этого я бы писал более посредственный код) Появилась уверенность в своих силах: теперь знаю, как проектировать с нуля, и не боюсь, что всё сломается под нагрузкой.</p>
+          <p>Курс полностью окупился. Плюс - я обзавёлся знакомствами: чат живой, можно в любой момент спросить совета, скинуть код и получить фидбэк. В итоге я, сменил место работы на Go-разработчика и поднял зарплату до 2000 долларов. Ну и надо понимать, что мне 18 лет и я считаю это хороший результат.</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-4" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-4-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_4.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-4-title">История / Владимира</h3>
+          <div class="modal__story-meta">Владимир · @svlion</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>Привет! Расскажу, что мне дал курс Олега.</p>
+          <p>Начну с того, что наша команда получила проект от аутсорс-компании в нерабочем состоянии, который нам пришлось приводить к жизнеспособному состоянию. Понятное дело - куча технического долга, необходимость перехода к микросервисам и к языку Go с C# и монолита, причем всё это требовалось делать "на ходу" и очень быстро. Было страшно, что в реальном деле всё сломается под нагрузкой, ведь мы не до конца понимали, как собрать всё это в одну надежную систему.</p>
+          <p>На момент, когда я проходил курс, в моей команде работало всего 3 человека, включая меня самого, а обслуживать приходилось 20 сервисов. Сильно сомневался, хватит ли сил на учебу после такой тяжелой основной работы, но втянулся. На текущий момент наша команда выросла до 8 человек, и в целом ситуация значительно улучшилась.</p>
+          <p>Первое, что удалось применить из курса - это встроить в CI/CD линтер и запуск тестов. Глупых ошибок и странных вещей вроде то появляющихся, то исчезающих багов в коде стало на порядок меньше. Плюс настроили мониторинг: теперь всегда можно четко объяснить коллегам, почему система тормозит.</p>
+          <p>Второе важное применение знаний с курса - это понимание, как правильно работать с моделями. Это была настоящая боль нашего проекта: расползающиеся между слоями модели создавали множество проблем. Подход, который показан на курсе, пусть и многословен, зато чистый и четко разделяет модели каждого слоя архитектуры. На практике понял, что простое знание синтаксиса языка не делает тебя Senior-разработчиком - нужна именно архитектура.</p>
+          <p>Благодаря структурированным знаниям по микросервисной архитектуре на Go и практическим навыкам, полученным на курсе, удалось существенно улучшить состояние проекта, уменьшить технический долг и организовать более эффективные процессы разработки. Теперь я полностью уверен в своих силах и сам решаю, как будет работать проект.</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-5" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-5-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_5.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-5-title">История / Олега</h3>
+          <div class="modal__story-meta">Олег · @ac1dTrauma</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>Работаю дотнет-разработчиком больше 5 лет, сейчас сеньор. Задача была получить обзор языка, подходов и архитектуры - всё решено. Хотелось уйти от легаси в современные проекты, сохранив при переходе на Go статус опытного инженера и высокую зарплату.</p>
+          <p>Было интересно, как это реализуется на Go, какие есть особенности, что предпочтительнее. Шёл практически с нулевыми знаниями, даже синтаксиса не знал, и немного боялся, что курс будет слишком простым и я зря потрачу время на изучение азов. В процессе курса попрактиковался, изучил язык и посмотрел, как на нём строить микросервисы. Поймал крутой инсайт: сложные задачи на Go решаются проще и быстрее, чем на моем предыдущем языке.</p>
+          <p>Какие-то подходы я забрал к себе на существующие проекты на работе, использую. Узнал для себя новое, что применимо не только в Go, но и в разработке в целом.</p>
+          <p>Формат обучения понравился. Сначала переживал, что лекции предзаписаны, но это нивелируется регулярными созвонами, где можно обсудить всё что угодно: домашки, переживания, рынок труда, резюме, технологии. Общения было более чем достаточно.</p>
+          <p>Изначально тратил от 2 до 5 часов в день на домашки, когда активно ими занимался. Потом, когда основные принципы стали понятны, 2-3 часа в день было достаточно.</p>
+          <p>Проверка ДЗ - один из самых существенных плюсов. Менторы смотрят очень качественно. У моего ментора было своё видение на то, как реализуются проекты. Это не просто сопоставление с эталонным решением, а личное представление о том, как лучше реализовать, наброс вариантов. Ментор замечает неочевидные вещи и показывает, как на Go пишут опытные люди: как работать с памятью и архитектурой без усложнений, чтобы перестать писать на новом языке старыми паттернами.</p>
+          <p>В целом доволен, что пошёл на курс. Я никогда до этого не ходил ни на какие курсы. Если курс качественный, если хороший ментор - это реально помогает. Я сэкономил очень много времени на поиск материалов. Когда материал сгруппирован, систематизирован, когда есть обратная связь - ты много экономишь времени. Самоучение идет медленно, и часто некому подсказать, как сделать проект профессионально, а здесь ты быстро перенимаешь практику BigTech.</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-6" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-6-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_6.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-6-title">История / Артура</h3>
+          <div class="modal__story-meta">Артур · @mando_019</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>Расскажу вкратце свою историю. До того как приобрел курс по микросервисам у Олега, я писал в основном на PHP (задачи стали скучными, устал исправлять ошибки в легаси) и лишь делал небольшие фиксы в проектах на Go. Желание перейти на Go с каждым рабочим днем становилось все сильнее: я пробовал учиться сам, но писал на Go так же, как на старом языке, что считается плохим тоном. В рамках моей компании возможности были ограничены.</p>
+          <p>В итоге мне пришлось расстаться с компанией, так как она меняла стек на Go, и из-за моих слабых знаний языка решили со мной попрощаться. Так я оказался безработным разработчиком с опытом на PHP и сильным желанием перейти на Go. Разве это не идеальное время, чтобы приобрести курс у Олега и быстро перенять опыт у практика из BigTech?</p>
+          <p>Что касается самого курса, то все было отлично. Я немного боялся, что курс будет слишком простым и я зря потрачу время на изучение азов, но здесь сразу показывают, как на Go пишут опытные люди без лишних усложнений. Знания и технологии даются актуальные, все объясняется максимально доступным языком, а если что-то непонятно, можно задать вопрос в чате или на общем созвоне.</p>
+          <p>Но для меня основной буст был в другом плане. Я прокачался ментально: узнал, как проходить собеседования, как к ним готовиться, и все в этом духе. Познакомился с "фишками" HR-ов и другими полезными приемами. Стоит отметить сам кайф от созвонов и общения с другими ребятами, когда слышишь их истории и офигеваешь от того, как бывает!</p>
+          <p>Если подвести итог, то я даже не прошел курс до конца - можно сказать, прохожу его до сих пор, периодически заглядываю и использую материалы. Я устроился на позицию middle Go-разработчика и получил все, чего хотел: повышение в зарплате, уверенность в своей востребованности на рынке еще много лет, возможность писать на стеке, который мне нравится, набрался опыта как в прохождении собеседований, так и в общении с коллегами по цеху.</p>
+          <p>Советую ли я курс? Однозначно да! Будет ли он полезен? Несомненно!</p>
+          <p>Если у кого-то будут вопросы, можете обращаться в личку.</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-7" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-7-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_7.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-7-title">История / Олега</h3>
+          <div class="modal__story-meta">Олег · @o_aleksandrin</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>Бывший фронт, 5+ лет опыта. Надоело подстраиваться под браузеры, захотелось серьезной инженерной работы - создавать ядро системы, а не только внешнюю оболочку. Захотел роста, поучил питон - не зашло. Поучил Go, устроился фулстеком.</p>
+          <p>Полгода работал с ts + python + чуть-чуть Go, в основном всё было на питоне.</p>
+          <p>От курса хотел больше практики на Go, опыт с актуальными либами и объединить разрозненные знания на полноценном проекте, чтобы получить нормальную базу и перестать бояться серверов и инфраструктуры.</p>
+          <p>Первая неделя - всё знакомое, но практика оказалась сложнее. Поначалу переживал, что бэкенд - это «высшая математика», которую я не осилю. Пришлось попотеть, особенно с организацией кода и кучей вопросов по базам данных, которые во фронтенде я раньше не решал. Возникало по 3 варианта на каждом этапе, нейронка больше запутывала) В итоге посмотрел на чужую репу, дальше на курсе всё объяснили.</p>
+          <p>Приходилось ломать голову, как решить проблему, информация приходила в следующем блоке - из-за этого припекало) Зато был кайф, когда впервые запустил свою систему из нескольких сервисов и она заработала как единое целое. Такой опыт лучше запоминается, но нервные клетки долго восстанавливаются)</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-8" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-8-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_8.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-8-title">История / Антона</h3>
+          <div class="modal__story-meta">Антон Артиков · @mistandok</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>Меня зовут Антон Артиков, я работаю в компании Авито. На момент старта моего участия в курсе Олега я уже работал в компании, куда пришел будучи Python-разработчиком. Внутри компании я начал переквалифицироваться в Go-инженера, и именно этот факт побудил меня изучать Go на более глубоком уровне. Хотелось серьезной инженерной работы - создавать ядро высоконагруженной системы, чтобы чувствовать себя настоящим бэкенд-программистом.</p>
+          <p>Я искал курсы, которые позволили бы закрыть мои потребности, а именно: как организована микросервисная разработка на Go, как происходит организация проекта, какие существуют best practices, фишки языка, стандарты, какие технологии обычно используются, как стартует проект и как он выглядит изначально. При попытке разобраться самому я сталкивался с кучей вопросов по инфраструктуре, и порой казалось, что серьезный бэкенд - это «высшая математика», которую я не смогу осилить.</p>
+          <p>Посмотрев на лендинг курса Олега, я решил, что он сможет достаточно интересно и подробно рассказать про все это. Я изучил его материалы на YouTube (до этого с ним не сталкивался) и мне понравилась его подача. Увидел курс то ли в рекламе, то ли кто-то порекомендовал - точно уже не помню.</p>
+          <p>Стоит понимать, что подача Олега не академичная - она больше похожа на общение "бро", когда человек разговаривает с тобой на равных и просто рассказывает про IT, будто в баре. Кому-то такой формат может зайти, кому-то нет. Мне лично очень понравился этот ненапряжный формат с шутками и прикольным монтажом. Это выглядит свежо и здорово в мире серьезной разработки. Ценность курса именно в понятном объяснении сложных вещей без лишней духоты.</p>
+          <p>Что касается материалов курса - кому он подойдет? По моему мнению, если вы уже хороший специалист на Go и давно с ним работаете, то курс может подойти в случае, если вы не работали в крупных компаниях с хорошими процессами. Если вы работали в маленьких конторах, где нет ревью кода и каждый пишет так, как хочет, курс поможет структурировать знания и понять, как писать хорошо на Go.</p>
+          <p>Также курс подойдет тем, кто свитчится с другого языка. Я переходил с Python на Go, и курс закрыл кучу моих вопросов буквально за первые пару недель: как организовываются проекты, как это все работает, что нужно в первую очередь знать в Go, как правильно выстроить работу с базами данных и сделать так, чтобы серверы не падали при передаче данных.</p>
+          <p>Важно отметить, что весь курс был построен на видеоматериалах - это удобно, не нужно подсоединяться к вебинарам в неудобное время. Можно спокойно смотреть в записи тот или иной материал и подчеркивать для себя нужную информацию.</p>
+          <p>Но самое главное в этом курсе - практика. Практическое задание интересное и многогранное, много чего нужно потрогать и почерпнуть. Однако нужно понимать, что на это требуется время. Если вы хотите пройти курс, но не будете делать практическое задание, то пользы не получите никакой, потому что курс полностью построен на практике. Поэтому лучше, если у вас есть возможность, проделать все руками - все, что говорит Олег и что прописано в домашних заданиях. Мой главный инсайт случился, когда я впервые запустил свою систему из нескольких сервисов, и она заработала как единое целое.</p>
+          <p>На выходе у вас получится достаточно плотный проект в портфолио, что немаловажно, особенно если вы стремитесь попасть в крупную компанию. На GitHub-профили смотрят не всегда, но частенько можно заметить, что интервьюеры на собеседовании говорят: "Посмотрел твой GitHub, было прикольно" (или не особо прикольно - это зависит от вашего наполнения).</p>
+          <p>Я рекомендую курс на 100% тем, кто переходит с другого языка. Вы не пожалеете, почерпнете много нового и избежите многих ошибок, потому что узнаете, как все делается в Go прямо здесь и сейчас, и навсегда перестанете бояться серверов и инфраструктуры. Также рекомендую людям, которые любят неформальную подачу. Если же вы приверженец академической школы и вам нравится лекционный формат, то, наверное, не зайдет.</p>
+          <p>В целом эмоции исключительно положительные. Еще очень порадовал меня чат курса - ребята были в основном заряженные, активные, было много обсуждений и драйва. Чат жив до сих пор, хотя я проходил курс примерно год назад. Мы до сих пор общаемся, затрагиваем разные темы. Комьюнити достаточно дружелюбное и, главное, заряжено на достижение результата.</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-9" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-9-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_9.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-9-title">История / Валентины</h3>
+          <div class="modal__story-meta">Валентина Богданова · @valek177</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>На Go я начала писать с ноября 2023 года, а на курс Олега попала в сентябре-октябре 2024, то есть с примерно годовым опытом работы.</p>
+          <p>Решила пойти на курс, чтобы расширить экспертизу и кругозор как разработчика. Хотелось узнать, насколько сложные вещи делают в бигтехах и насколько мне это будет полезно, чтобы в перспективе получить оффер в компанию-бренд и кратно вырасти в доходе. Изначально нашла ролик Олега на YouTube, затем перешла в его Telegram-канал и узнала про курс. Сомневалась в окупаемости - стоит ли брать курс, если можно попытаться подготовиться самой, но решилась.</p>
+          <p>Особенно хотелось побыть в Go-тусовке - на работе я была единственным Go-разработчиком, и мне буквально не с кем было поговорить на «гошные» темы. А ведь знания быстро забываются без реальной практики и натасканности на вопросы с собеседований.</p>
+          <p>После прохождения курса я определила, в какую сторону хочу развиваться, какие технологии стоит изучить дальше и что сейчас актуально. Я поняла, что больше не хочу заниматься вещами, которыми занималась много лет. Курс помог осознать, насколько неинтересна моя работа и что мне могут быть интересны другие направления.</p>
+          <p>В результате я уволилась и нашла другую работу - тоже на Go, но в другом направлении. Вышла из зоны комфорта, что стало личным ростом, хоть и непростым. Мой стек больше системный, чем прикладной, и с моим опытом и резюме не так просто найти именно желаемую вакансию (хочу больше уйти в прикладной стек). Хотя, учитывая какой странный сейчас рынок, наверное, никому не просто. Компания, в которой я сейчас работаю, небольшая (около 100 человек), не бигтех, но атмосфера отличная, мне нравится (на предыдущей работе было более грустно).</p>
+          <p>Навыки, полученные на курсе, однозначно помогли мне в работе. У меня улучшилось понимание языка, а ревью от преподавателя оказалось очень полезным. На самом деле я применяла знания с курса на работе уже во время его прохождения. Особый кайф испытала, когда на рабочей встрече по архитектуре смогла уверенно предложить решение и обосновать его.</p>
+          <p>После курса Олега я пошла еще на несколько других курсов (по Go и не только). В итоге сейчас дошла до изучения System Design для прохождения собеседований в бигтехи, чтобы уметь проходить эти сложные технические секции без паники. В изучении SD сильно помогли знания Kafka, Redis, которые мы проходили на курсе. Теперь я как минимум имею представление, что это такое за технологии и для чего они нужны, где их применять. Они сейчас актуальны и востребованы практически везде.</p>
+          <p>Атмосфера на курсе была супер, все ребята очень дружелюбные и не токсичные. Мне доводилось работать с токсичными людьми, поэтому мне есть с чем сравнить. В сообществе можно было высказать всю боль, и никто не осуждал. Гошники остались в моём сердце.</p>
+          <p>Кроме технических навыков, мне очень помогли с резюме и подготовкой к собесам на конкретных примерах. Я переосмыслила в некоторой степени всю мою рабочую деятельность и взглянула на всё под другим углом. Это повлияло на то, куда двигаться дальше.</p>
+          <p>Курс - это реально 8 недель беспощадного кодинга. Я узнала много нового, что-то сразу стала применять на работе (особенно то, что касается код-стайла), что-то с работы применила в учебном проекте. На работе я стала лучше понимать некоторые места в коде (написанные не мной), так как про них рассказывали на курсе.</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-10" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-10-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_10.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-10-title">История / Руслана</h3>
+          <div class="modal__story-meta">Руслан · @Nowitty1905</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>Я залетел на осенний поток курса Олега Козырева по микросервисам. На тот момент я работал в маленькой компании, где было около 6 разработчиков. У нас не было ни gRPC, ни микросервисов - просто огромный тупой монолит. Работал стабильно, но понимал, что в крупных компаниях за те же знания платят намного больше.</p>
+          <p>К тому времени я уже подумывал о смене работы, но синдром самозванца не позволял просто пойти на собеседования. Читал книги по архитектуре, решал алгоритмические задачи, но без реальной практики знания быстро забывались. Я понимал, что нужно пройти какие-то курсы. Нашел курс Олега и решил попробовать, тем более что я как раз хотел попасть в бигтех. Хотя поначалу сомневался в окупаемости: думал, стоит ли курс своих денег, если можно попытаться подготовиться самому.</p>
+          <p>Попав на курс и увидев все эти микросервисные штуки, я понял, что это на самом деле не так уж и сложно. Олег отлично объяснял в своих видео - всё легко, с юмором, с примерами: как что делается и зачем, какие бывают проблемы. В общем, тема была отлично разобрана.</p>
+          <p>Дальше мы улучшали сервисы, которые написали. Понятно, что они были простые, учебные, но туда напихали всё, что можно. Там была и генерация тестов с моками, и база естественно, и Kafka, и Redis. Настраивался даже весь CI/CD с авто-выкладкой на удаленный сервер, с контейнеризацией, где отдельно были миграции базы в разных контейнерах. В общем, много всяких штуковин - получился именно такой полноценный пет-проект.</p>
+          <p>Отдельно хочется упомянуть сами созвоны. У нас были еженедельные созвоны по поводу домашек и всевозможных вопросов. Поначалу казалось, что это будет просто трата времени, потому что скорее всего вопросы будут какие-то стандартные, и от Олега не ожидалось какой-то невероятной вовлеченности. Но по итогу это было просто шикарно!</p>
+          <p>На некоторых созвонах мы проводили по четыре часа. Начиналось всё с обсуждения непосредственно домашек, микросервисов, у кого какие вопросы, у кого что не получилось, пытались разобраться. А заканчивалось какими-то айтишными историями - люди рассказывали свой опыт, интересные кейсы, с которыми сталкивались, обсуждали зарплаты, грейды, библиотеки, хард-скилы... Вообще отлично было - как в баре посидели с пацанами.</p>
+          <p>Именно на этих созвонах я поделился, что хочу сменить работу, и оказалось, что я был не один такой на потоке. Олег всех подбил на то, чтобы начать ходить на собеседования прямо сейчас. Выяснились проблемы с резюме, которое было отрефакторено не один раз разными людьми в конфе, включая самого Олега, чтобы нас начали звать на собеседования. И нас действительно стали приглашать после изменений!</p>
+          <p>Дальше мы начали делиться на созвонах своими задачами с собеседований, вопросами - было очень круто. Раньше не хватало именно такой «натасканности» на вопросы интервьюеров и подготовки на конкретных примерах. Была большая мотивация, потому что делаешь это всё вместе, есть вовлеченность от коммьюнити и от Олега в частности.</p>
+          <p>Как итог, я всё-таки сменил работу и поднял зарплату. Ушел в более крупную компанию - всё еще не бигтех, но гораздо больше, чем моя предыдущая фирма. В общем, не жалею вообще ни о чем. Научился микросервисам - немножко, но для собеседований точно хватит или чтобы написать что-нибудь своё. Зато теперь я уверен, что прохожу любые интервью без паники и обязательно дойду до оффера в компанию-бренд. Нашел работу и людей, с которыми реально интересно что-то обсудить, поделиться опытом, разными источниками информации. В общем, получилось настоящее комьюнити.</p>
+          <p>Именно благодаря этой бешеной поддержке удалось сменить работу и перестать бояться происходящего. Наслушавшись разных историй о том, как люди косячат на работе или на собеседованиях, отпадают всякие синдромы самозванца, и начинаешь думать, что надо пробовать, и всё должно получиться. А когда на технической секции я смог уверенно предложить решение по архитектуре и обосновать его - случился настоящий кайф. Собственно, так и случилось. Поэтому всем советую.</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--story" id="story-11" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="story-11-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="modal__story-head">
+        <img class="modal__story-avatar" src="student_stories/student_11.jpeg" alt="" width="640" height="640" loading="lazy">
+        <div>
+          <h3 class="modal__title" id="story-11-title">История / Кирилла</h3>
+          <div class="modal__story-meta">Кирилл Макаров · @McK03</div>
+        </div>
+      </div>
+      <div class="modal__body">
+          <p>Всё началось на последнем курсе магистратуры. Несмотря на IT-направление, я всё ещё оставался без работы. После бакалавриата решил стать Android-разработчиком, защитил диплом с мобильным приложением, но выйти на рынок в 2022 году оказалось непросто из-за ухода многих IT-компаний.</p>
+          <p>Не найдя работу, я поступил в магистратуру ИТМО для углубления в мобильную разработку. Но спустя год безуспешных попыток устроиться, начал выгорать - видел, что на рынке огромная конкуренция среди новичков, и устал тратить месяцы на бесполезную рассылку резюме. Даже думал – а не бросить ли всё и не уехать на Алтай разводить коров).</p>
+          <p>Всё изменилось, когда на одном из предметов нам поставили задачу реализовать MVP продукта. В команде не нашлось желающих писать бэкенд, и я неожиданно вызвался реализовать API на .Net. Тут произошло удивительное - впервые я почувствовал настоящее удовольствие от работы, которого никогда не испытывал при создании Android-приложений.</p>
+          <p>Вскоре судьба свела меня с Go. Во время поездки я увидел, как мой двоюродный брат изучает Golang. Курс ему рекомендовал Олег Козырев - go-разработчик из бигтеха.</p>
+          <p>Я прошёл базовый курс по Go (до этого смотрел бесплатные уроки на YouTube и Stepik, но знания оставались разрозненными, и казалось, что работодателю нечего показать в портфолио) и решил использовать этот язык для магистерского диплома, хотя познакомился с ним всего пару недель назад. Создал MVP, но понимал, что проект сыроват.</p>
+          <p>Параллельно отслеживал соцсети Олега и ждал запуска нового потока курса. Меня волновало два вопроса: потяну ли материал и где взять деньги безработному студенту? Стоимость курса казалась высокой, и было страшно, что даже после обучения не найду работу без опыта. Первый обсудил с Олегом, который подтвердил, что с моим уровнем материал я пойму. Второй решился, когда пришла стипендия - понял, что её почти хватало, чтобы закрыть ежемесячный платёж, взяв рассрочку на год. Так я собственно и поступил.</p>
+          <p>По самому курсу: начав его проходить, я удивился понятности изложения материала. Увидел подробную программу и понял, что за 8 недель выучу больше, чем за год сам. Всё было хорошо структурировано и объяснено на понятных примерах, реализация крупного проекта в рамках курса мне тоже зашла (появился готовый проект мирового уровня в портфолио), а процесс ревью расставлял акценты на том, что реально важно. Созвоны - это отдельная тема. К сожалению, понял я это не сразу, так как из-за неготовой домашки и страха, что получу неодобрение как в школе - показался только на 3м, ошибку осознал и больше старался их не пропускать). Кстати, когда на курсе я сам упаковал свой код в Docker и развернул его как профессиональный разработчик - словил настоящий кайф.</p>
+          <p>На протяжении всех этих испытаний Олег оставался на связи, давал ценные советы и, в случае с сомнительными предложениями, "мягко говоря, рекомендовал ответить отказом". Его поддержка помогла не поддаться искушению принять первый попавшийся оффер и продолжать поиски достойной позиции.</p>
+          <p>Настоящий прорыв случился на следующем собеседовании, где произошла удивительная встреча - меня собирался интервьюировать Женя, парень с того же потока курса Олега, которого я видел на групповых созвонах. Это был яркий пример важности нетворкинга (как говорится – не пропускайте созвоны). Собеседование прошло в дружеской атмосфере, и вскоре HR предложила работу в Москве.</p>
+          <p>Всё закрутилось быстро: переезд, подписание договора менее чем через неделю после защиты диплома. Сегодня я работаю в компании уже почти 11 месяцев, мне нравится среда и проекты. За это время получил коммерческий опыт работы с большинством технологий, изученных на курсе. Удалось быстро стартануть в профессии и получить знания уровня Middle, чтобы на первом месте работы не быть «обузой», а сразу приносить пользу. Бывает, что даже опытные коллеги консультируются со мной.</p>
+          <p>Подводя итог: Олег - один из трёх главных людей, благодаря которым я стал Go-разработчиком. Его знания изменили мою карьеру и жизнь!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BIGTECH — ЛОГОСЕТКА КОМПАНИЙ (bigtech) =====
+       Компонента нет в SD, верстаем с нуля. Порядок логотипов — НЕ по порядку
+       перечисления в «Источник Tilda» контент-файла (тот список даёт другой
+       порядок), а по реальному визуальному порядку слева-направо/сверху-вниз,
+       подтверждённому вживую на olezhek28.courses/microservices через
+       getBoundingClientRect каждой картинки внутри rec766038551: Яндекс,
+       Совкомбанк, OZON, Авито, Wildberries, Т-Банк, VK, Сбербанк. Это
+       расхождение с контент-файлом задокументировано в отчёте по задаче.
+       Логотипы монохромные (grayscale) с подсветкой на hover — как на Tilda.
+       У каждого — осмысленный alt с названием компании (не декор, соц.
+       доказательство). Кнопка «Учиться от компании» ведёт на #company —
+       сам попап верстает Task 9 (секция tariffs), здесь только ссылка на
+       якорь без data-modal-open, тем же способом, каким project-result
+       (Task 7) уже сослался на ещё не существовавший на тот момент #tariffs. -->
+  <section class="section bigtech">
+    <div class="container">
+      <div class="section__head section__head--center fade-up">
+        <h2 class="section__title">BigTech’и, купившие этот курс своим будущим синьерам</h2>
+      </div>
+      <div class="bigtech__grid">
+        <img class="bigtech__logo fade-up" src="companies/yandex.png" alt="Яндекс" width="800" height="311" loading="lazy">
+        <img class="bigtech__logo fade-up" src="companies/sovcombank.png" alt="Совкомбанк" width="1080" height="420" loading="lazy">
+        <img class="bigtech__logo fade-up" src="companies/ozon.png" alt="OZON" width="800" height="311" loading="lazy">
+        <img class="bigtech__logo fade-up" src="companies/avito.png" alt="Авито" width="1080" height="420" loading="lazy">
+        <img class="bigtech__logo fade-up" src="companies/wildberries.png" alt="Wildberries" width="1080" height="420" loading="lazy">
+        <img class="bigtech__logo fade-up" src="companies/tbank.png" alt="Т-Банк" width="940" height="180" loading="lazy">
+        <img class="bigtech__logo fade-up" src="companies/vk.png" alt="VK" width="1092" height="136" loading="lazy">
+        <img class="bigtech__logo fade-up" src="companies/sber.png" alt="Сбербанк" width="704" height="172" loading="lazy">
+      </div>
+      <div class="bigtech__cta fade-up">
+        <a class="btn btn--dark" href="#company" data-goal="bigtech">Учиться от компании</a>
+      </div>
     </div>
   </section>
 
   <!-- ===== ПОПАПЫ СКРИНШОТОВ ВАКАНСИЙ =====
-       Универсальный механизм модалок страницы: триггер несёт data-modal-open="ID",
-       сам попап — id="ID" и атрибут hidden по умолчанию, элементы закрытия — data-modal-close.
+       Универсальный механизм модалок страницы: триггер несёт атрибут data-modal-open
+       со значением, равным id попапа; сам попап получает этот id и атрибут hidden
+       по умолчанию, элементы закрытия несут атрибут data-modal-close.
        JS (открытие/закрытие/Esc/возврат фокуса, снятие hidden) — общий скрипт
        Task 7 в конце файла, тот же обслуживает и #homework-modal. Текста в
        попапах нет, только картинка — по контент-файлу. -->
@@ -1637,9 +2430,10 @@
 </script>
 
 <!-- ===== УНИВЕРСАЛЬНЫЙ МЕХАНИЗМ МОДАЛОК (Task 7) =====
-     Обслуживает три попапа вакансий (Task 5) и #homework-modal (Task 7);
-     Task 8 добавит 11 модалок историй тем же механизмом без правок здесь —
-     достаточно разметить их data-modal-open="ID" + [id="ID"][hidden]. -->
+     Обслуживает три попапа вакансий (Task 5), #homework-modal (Task 7) и
+     11 модалок историй участников #story-1…#story-11 (Task 8) — тем же
+     механизмом, без правок здесь: разметки атрибутами data-modal-open/
+     data-modal-close на нужный id было достаточно. -->
 <script>
   (function () {
     var lastTrigger = null;
