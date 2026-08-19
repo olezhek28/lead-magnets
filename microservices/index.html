@@ -217,7 +217,7 @@
      контур давал бы низкий контраст — переключатель на тёмный оставлен про запас
      для будущих светлых островков (например .tier--light в тарифах) */
   :root { --focus: var(--accent); }
-  .mech, .tier--light, .final__card, .project__plate, .stories__card { --focus: var(--light-ink); }
+  .mech, .tier--light, .final__card, .project__plate, .stories__card, .reviews__card { --focus: var(--light-ink); }
   :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
   .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
@@ -891,11 +891,10 @@
   .phone__screen { position: relative; width: 100%; height: 100%; border-radius: 30px; overflow: hidden; background: var(--bg-primary); }
   .phone__screen img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .community__info { display: flex; flex-direction: column; gap: 16px; }
-  /* Фикс финального ревью: learning_speech.svg залит в #182023 — тот же цвет,
-     что фон секции (var(--bg-primary) = #10171A), squiggle был физически
-     невидим. filter: invert(1) переворачивает заливку в ~#E7DFDC (тон,
-     близкий к --light-bg) — тот же приём и то же обоснование, что у .who__deco. */
-  .community__tail { width: 84px; height: auto; filter: invert(1); opacity: .85; }
+  /* Правка 2 (заход 3): .community__tail (mascot/learning_speech.svg, инверсия
+     цвета) убран целиком — после filter: invert(1) волнистый «хвостик»-указатель
+     превращался в бессмысленную серую кляксу, которой в оригинале над этим
+     заголовком нет. Класс и файл сняты, см. отчёт. */
   .community__lead { font-size: 16px; line-height: 1.6; color: var(--text-mute); }
   .community__caption {
     position: relative; padding: 18px 22px; border-radius: var(--r-lg); background: var(--bg-card);
@@ -1141,9 +1140,56 @@
   .stat-card__label { font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--text-mute); }
   .stat-card:first-child .stat-card__label { color: rgba(0,45,37,.82); }
 
+  /* ---- КАРУСЕЛИ (reviews / video-reviews / stories) — общий механизм -----
+     Правка 1 (заход 3): в оригинале три горизонтальные карусели, у нас были
+     статичные сетки. Один и тот же механизм на все три — разметка
+     .carousel__head/.carousel__arrows/.carousel__arrow/.carousel__track +
+     data-carousel-* (JS в конце файла), а не три похожих, но разных
+     реализации одной задачи. Карусель ничего не прячет: .carousel__track —
+     обычный flex-контейнер c overflow-x: auto и scroll-snap, все карточки
+     остаются в DOM, доступны без JS (нативный свайп на touch, обычный Tab
+     с клавиатуры — фокус на карточке/её интерактивном элементе штатно
+     скроллит её в видимую область, это поведение браузера, отдельный код не
+     нужен). Стрелки — настоящие <button>, у края списка получают атрибут
+     disabled из JS (см. .carousel__arrow:disabled) вместо того, чтобы молча
+     ничего не делать.
+     icons/arrow_left.svg/arrow_right.svg (лежали в проекте неиспользуемыми
+     с этапа переноса ассетов) залиты #182023 — та же проблема с тёмными
+     ассетами на тёмном фоне, что описана в комментарии у токенов вверху
+     файла. Иконки уже рисуют собственный кружок, поэтому не кладём их на
+     дополнительную подложку, а инвертируем целиком, тем же приёмом, что и
+     у .who__deco: получается самодостаточная светлая круглая кнопка со
+     стрелкой, читаемая на тёмном фоне секции.
+     Важно: имена файлов не совпадают с направлением стрелки на картинке —
+     проверено вживую рендером. icons/arrow_left.svg рисует шеврон вправо (›),
+     icons/arrow_right.svg — шеврон влево (‹). Поэтому в разметке всех трёх
+     каруселей на data-carousel-prev стоит arrow_right.svg (‹, «назад»), а на
+     data-carousel-next — arrow_left.svg (›, «вперёд»): так стрелка на кнопке
+     показывает своё реальное направление, а не буквальное имя файла. */
+  .carousel__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; }
+  .carousel__head .section__head { margin-bottom: 0; }
+  .carousel__arrows { display: flex; gap: 10px; flex-shrink: 0; }
+  .carousel__arrow {
+    all: unset; box-sizing: border-box; cursor: pointer; flex-shrink: 0;
+    width: 44px; height: 45px; display: flex; border-radius: 50%;
+    transition: transform .2s var(--ease), opacity .2s var(--ease);
+  }
+  .carousel__arrow img { width: 100%; height: 100%; display: block; filter: invert(1); }
+  .carousel__arrow:hover:not(:disabled) { transform: translateY(-2px); }
+  .carousel__arrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
+  .carousel__arrow:disabled { opacity: .35; cursor: not-allowed; }
+  .carousel__track {
+    display: flex; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .carousel__track::-webkit-scrollbar { display: none; }
+  .carousel__track > * { scroll-snap-align: start; flex-shrink: 0; }
+  @media (prefers-reduced-motion: reduce) { .carousel__track { scroll-behavior: auto; } }
+
   /* ---- ТЕКСТОВЫЕ ОТЗЫВЫ (reviews, id="feedback") ---- */
-  .reviews__head { max-width: 640px; margin: 0 auto 44px; text-align: center; }
-  .reviews__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .reviews__head { max-width: 640px; }
+  .reviews__grid { gap: 20px; }
+  .reviews__grid > .reviews__card { flex-basis: calc((100% - 40px) / 3); }
   /* Правка 6 (визуальный заход №1): на живой Tilda подпись под скриншотом
      отзыва — на белой карточке, тёмным текстом (сам скриншот тёмный —
      это чат/переписка, его не трогаем, светлеет только плашка подписи). */
@@ -1159,14 +1205,18 @@
      system_design/index.html:2788-2832 (превью + play-кнопка поверх), но кнопка
      жёлтая акцентная, а не брендовый красный YouTube — видео хостятся на RuTube,
      см. комментарий у разметки. */
-  .yt__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  /* Фикс финального ревью: модификатор .yt__grid--7 стоял в разметке без
-     правила (тот же дефект, что уже был у .section__head--center) — 7 карточек
-     раскладывались обычным гридом в 4+3 с дырой справа снизу. Вместо грида —
-     flex-wrap с justify-content: center: неполная последняя строка (3 карточки
-     на десктопе, 1 на 960px) центрируется, а не повисает с пустым местом. */
-  .yt__grid--7 { display: flex; flex-wrap: wrap; justify-content: center; }
-  .yt__grid--7 .yt__card { flex: 0 1 calc(25% - 12px); }
+  /* .yt__grid задаёт только gap: display/раскладку теперь всегда берёт на себя
+     .carousel__track (в разметке класс всегда идёт вместе с ней) — раньше
+     здесь был отдельный display: grid, который в каскаде всё равно перебивался
+     .carousel__track, мёртвая декларация. */
+  .yt__grid { gap: 16px; }
+  /* Правка 1 (заход 3): .yt__grid--7 была flex-wrap-сеткой (см. историю
+     фикса ниже) — теперь она же .carousel__track: flex-wrap: nowrap и
+     overflow-x вместо wrap/justify-content, показывает по три вместо
+     четырёх. flex: 0 0 (а не 0 1, как было в сетке) — карточки не сжимаются,
+     иначе вместо горизонтальной прокрутки браузер просто ужал бы все семь
+     карточек в ширину контейнера. */
+  .yt__grid--7 .yt__card { flex: 0 0 calc((100% - 32px) / 3); }
   .yt__card { display: block; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border-card); background: var(--bg-card); transition: transform .3s var(--ease), border-color .3s var(--ease); }
   .yt__card:hover { transform: translateY(-3px); border-color: var(--border-acc); }
   .yt__thumb { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--bg-secondary); }
@@ -1189,7 +1239,8 @@
      .btn--primary тем же приёмом. Двухтоновая форма оригинала (светлая
      плашка только под шапкой карточки, тёмный текст истории под ней на фоне
      страницы) — структурная тонкость, не берём в этот заход (см. отчёт). */
-  .stories__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px; }
+  .stories__grid { gap: 20px; margin-bottom: 28px; }
+  .stories__grid > .stories__card { flex-basis: calc((100% - 40px) / 3); }
   .stories__card {
     display: flex; flex-direction: column; gap: 14px; padding: 26px 24px 24px;
     border-radius: var(--r-lg); background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
@@ -1256,20 +1307,18 @@
     .author__photo { position: static; }
     .stats-row { grid-template-columns: 1fr 1fr; }
     .stats-row > :first-child { grid-column: span 2; }
-    .reviews__grid { grid-template-columns: repeat(2, 1fr); }
-    .yt__grid { grid-template-columns: repeat(3, 1fr); }
-    .yt__grid--7 .yt__card { flex-basis: calc(33.333% - 10.667px); }
-    .stories__grid { grid-template-columns: repeat(2, 1fr); }
+    .reviews__grid > .reviews__card { flex-basis: calc((100% - 20px) / 2); }
+    .yt__grid--7 .yt__card { flex-basis: calc((100% - 32px) / 3); }
+    .stories__grid > .stories__card { flex-basis: calc((100% - 20px) / 2); }
   }
   @media (max-width: 640px) {
     .author__item { grid-template-columns: 1fr; gap: 10px; }
     .author__company-name { white-space: normal; }
     .stats-row { grid-template-columns: 1fr; }
     .stats-row > :first-child { grid-column: auto; }
-    .reviews__grid { grid-template-columns: 1fr; }
-    .yt__grid { grid-template-columns: repeat(2, 1fr); }
-    .yt__grid--7 .yt__card { flex-basis: calc(50% - 8px); }
-    .stories__grid { grid-template-columns: 1fr; }
+    .reviews__grid > .reviews__card { flex-basis: 100%; }
+    .yt__grid--7 .yt__card { flex-basis: calc((100% - 16px) / 2); }
+    .stories__grid > .stories__card { flex-basis: 100%; }
     .modal--story .modal__dialog { padding: 28px 22px; }
     .modal__story-head { gap: 12px; }
     .bigtech__grid { grid-template-columns: repeat(2, 1fr); }
@@ -2287,6 +2336,13 @@
        Подсветка «просто кайфуем» на живой странице — обычный background-color
        (#22282D), без картинки, поэтому воспроизведена CSS-классом .community__hl
        без лишнего SVG.
+       Правка 2 (заход 3): .community__tail (mascot/learning_speech.svg) убран из
+       разметки. Привязка файла была верной (сверена вживую, см. контент-файл), но
+       после единственно доступной на тёмном фоне обработки — filter: invert(1) —
+       волнистый хвостик-указатель читался не как облачко, а как бессмысленная
+       серая клякса, которой в оригинале над этим заголовком нет. Декларация файла
+       снята из контент-файла, сам файл удалён с диска — актив больше нигде в
+       проекте не используется.
        Кот в этой секции по-прежнему не стоит — файла нет в DOM этой секции на
        живой странице, его настоящее место в steps (см. правку 3 там). Реплика
        «Здарова! Я — Коткинс» (mascot/speech_bubble_1.svg), которая раньше
@@ -2311,7 +2367,6 @@
           </div>
         </div>
         <div class="community__info fade-up">
-          <img class="community__tail" src="mascot/learning_speech.svg" alt="" width="169" height="21" aria-hidden="true">
           <h2 class="section__title">А еще у нас полный комфортик в чатике и на лекциях:)</h2>
           <p class="community__lead">Обсуждаем задания и болтаем за жизнь без духоты и формальностей</p>
           <p class="community__caption">У нас учатся парни и крутые гошницы, и мы <span class="community__hl">просто кайфуем</span> в течение всего потока:)</p>
@@ -2725,44 +2780,59 @@
 
   <!-- ===== ТЕКСТОВЫЕ ОТЗЫВЫ (reviews, id="feedback") =====
        Компонента нет в SD, верстаем с нуля. На Tilda это карусель из 6 карточек
-       со скриншотами (rec2078055861/rec2078055871), на 640px требуется грид
-       в одну колонку (Step 2 брифа) — делаем статичным CSS-гридом без JS-слайдера,
-       как и остальные карусели Tilda в этом переносе (см. решение Task 2 по
-       icons/arrow_left.svg/arrow_right.svg — эти два ассета подготовлены под
-       будущий слайдер, но статическая вёрстка Task 8 его не воспроизводит,
-       поэтому здесь не используются). У двух отзывов на Tilda есть второй
-       скриншот (4_/41_, 5_/51_) — судя по всему, альтернативная картинка на
-       hover нативного слайдера; в статичной сетке показываем первый скриншот
-       каждого отзыва (review_4.webp, review_5.png), альт-версии не задействованы. -->
-  <section class="section reviews" id="feedback">
+       со скриншотами (rec2078055861/rec2078055871), стрелки стоят справа от
+       заголовка. У двух отзывов на Tilda есть второй скриншот (4_/41_, 5_/51_) —
+       судя по всему, альтернативная картинка на hover нативного слайдера; в
+       нашей карусели показываем первый скриншот каждого отзыва (review_4.webp,
+       review_5.png), альт-версии не задействованы.
+       Правка 1 (заход 3): сетка заменена на настоящую карусель — общий механизм
+       .carousel__*/data-carousel-* (см. отчёт и <script> в конце файла), один на
+       все три карусели страницы. icons/arrow_left.svg/arrow_right.svg (лежали
+       неиспользуемыми с Task 2) наконец подключены. Весь контент остаётся в DOM:
+       карусель — это горизонтальная прокрутка .reviews__grid (теперь ещё и
+       .carousel__track), а не display:none/скрытие карточек. У каждой карточки
+       нет своего интерактивного элемента (только img+figcaption), поэтому она
+       сама получает tabindex="0" и aria-labelledby на figcaption — иначе Tab
+       не долетел бы до нижних восьми отзывов из технически видимых шести. -->
+  <section class="section reviews" id="feedback" data-carousel>
     <div class="container">
-      <div class="reviews__head section__head section__head--center fade-up">
-        <h2 class="section__title">Участники оценивают качество материала<br>на 4.94/5</h2>
+      <div class="carousel__head fade-up">
+        <div class="reviews__head section__head">
+          <h2 class="section__title">Участники оценивают качество материала<br>на 4.94/5</h2>
+        </div>
+        <div class="carousel__arrows">
+          <button type="button" class="carousel__arrow" data-carousel-prev aria-label="Предыдущие отзывы">
+            <img src="icons/arrow_right.svg" alt="" width="44" height="45" loading="lazy">
+          </button>
+          <button type="button" class="carousel__arrow" data-carousel-next aria-label="Следующие отзывы">
+            <img src="icons/arrow_left.svg" alt="" width="44" height="45" loading="lazy">
+          </button>
+        </div>
       </div>
-      <div class="reviews__grid">
-        <figure class="reviews__card fade-up">
+      <div class="reviews__grid carousel__track" data-carousel-track>
+        <figure class="reviews__card fade-up" tabindex="0" aria-labelledby="review-cap-1">
           <img class="reviews__img" src="reviews/review_1.webp" alt="Скриншот отзыва: «Курс, который реально мотивирует»" width="591" height="1279" loading="lazy">
-          <figcaption class="reviews__caption">Курс, который реально мотивирует</figcaption>
+          <figcaption class="reviews__caption" id="review-cap-1">Курс, который реально мотивирует</figcaption>
         </figure>
-        <figure class="reviews__card fade-up">
+        <figure class="reviews__card fade-up" tabindex="0" aria-labelledby="review-cap-2">
           <img class="reviews__img" src="reviews/review_2.webp" alt="Скриншот отзыва: «Практика, которая помогла попасть в ретейлер-тех»" width="591" height="1279" loading="lazy">
-          <figcaption class="reviews__caption">Практика, которая помогла попасть в ретейлер-тех</figcaption>
+          <figcaption class="reviews__caption" id="review-cap-2">Практика, которая помогла попасть в ретейлер-тех</figcaption>
         </figure>
-        <figure class="reviews__card fade-up">
+        <figure class="reviews__card fade-up" tabindex="0" aria-labelledby="review-cap-3">
           <img class="reviews__img" src="reviews/review_3.webp" alt="Скриншот отзыва: «Глубокое погружение и детальные разборы»" width="591" height="1279" loading="lazy">
-          <figcaption class="reviews__caption">Глубокое погружение и детальные разборы</figcaption>
+          <figcaption class="reviews__caption" id="review-cap-3">Глубокое погружение и детальные разборы</figcaption>
         </figure>
-        <figure class="reviews__card fade-up">
+        <figure class="reviews__card fade-up" tabindex="0" aria-labelledby="review-cap-4">
           <img class="reviews__img" src="reviews/review_4.webp" alt="Скриншот отзыва: «Взгляд на архитектуру под капотом»" width="591" height="1279" loading="lazy">
-          <figcaption class="reviews__caption">Взгляд на архитектуру под капотом</figcaption>
+          <figcaption class="reviews__caption" id="review-cap-4">Взгляд на архитектуру под капотом</figcaption>
         </figure>
-        <figure class="reviews__card fade-up">
+        <figure class="reviews__card fade-up" tabindex="0" aria-labelledby="review-cap-5">
           <img class="reviews__img" src="reviews/review_5.png" alt="Скриншот отзыва: «Курс, на который записываются снова»" width="591" height="1279" loading="lazy">
-          <figcaption class="reviews__caption">Курс, на который записываются снова</figcaption>
+          <figcaption class="reviews__caption" id="review-cap-5">Курс, на который записываются снова</figcaption>
         </figure>
-        <figure class="reviews__card fade-up">
+        <figure class="reviews__card fade-up" tabindex="0" aria-labelledby="review-cap-6">
           <img class="reviews__img" src="reviews/review_6.png" alt="Скриншот отзыва: «Полный фарш для старта микросервиса»" width="591" height="1279" loading="lazy">
-          <figcaption class="reviews__caption">Полный фарш для старта микросервиса</figcaption>
+          <figcaption class="reviews__caption" id="review-cap-6">Полный фарш для старта микросервиса</figcaption>
         </figure>
       </div>
     </div>
@@ -2788,13 +2858,27 @@
        кнопка play окрашена акцентным жёлтым сайта, а не брендовым красным YouTube
        (как в SD) — не тот сервис, красный был бы недостоверной атрибуцией бренда.
        Это реальный пропуск в контент-файле (ссылок не было), не молча дописан —
-       задокументирован здесь и в отчёте по задаче. -->
-  <section class="section video-reviews">
+       задокументирован здесь и в отчёте по задаче.
+       Правка 1 (заход 3): сетка (4 в ряд) заменена на настоящую карусель, показывает
+       по три — общий механизм .carousel__*/data-carousel-* см. у секции reviews выше
+       и в <script> в конце файла. .yt__card — уже <a href>, сам по себе фокусируемый,
+       отдельный tabindex не нужен. -->
+  <section class="section video-reviews" data-carousel>
     <div class="container">
-      <div class="section__head fade-up">
-        <h2 class="section__title">А ещё честно рассказывают о курсе на камеру</h2>
+      <div class="carousel__head fade-up">
+        <div class="section__head">
+          <h2 class="section__title">А ещё честно рассказывают о курсе на камеру</h2>
+        </div>
+        <div class="carousel__arrows">
+          <button type="button" class="carousel__arrow" data-carousel-prev aria-label="Предыдущие видеоотзывы">
+            <img src="icons/arrow_right.svg" alt="" width="44" height="45" loading="lazy">
+          </button>
+          <button type="button" class="carousel__arrow" data-carousel-next aria-label="Следующие видеоотзывы">
+            <img src="icons/arrow_left.svg" alt="" width="44" height="45" loading="lazy">
+          </button>
+        </div>
       </div>
-      <div class="yt__grid yt__grid--7">
+      <div class="yt__grid yt__grid--7 carousel__track" data-carousel-track>
         <a class="yt__card fade-up" href="https://rutube.ru/video/8a75578e64e8a24699afd448cdd35ed5/" target="_blank" rel="noopener">
           <div class="yt__thumb">
             <img src="video_testimonials/thumb_1.jpeg" alt="Видеоотзыв участника курса №1 — смотреть на RuTube" width="640" height="640" loading="lazy">
@@ -2861,13 +2945,27 @@
        Tilda идут ДВАЖДY подряд — проверено вживую (клик по карточке на живой
        странице, count() маркерной фразы в тексте попапа = 2) — это реальный
        дубль в исходнике, а не ошибка транскрибации контент-файла, переносим
-       дословно по правилу Фазы 1. -->
-  <section class="section stories">
+       дословно по правилу Фазы 1.
+       Правка 1 (заход 3): сетка заменена на настоящую карусель, показывает по
+       три — общий механизм .carousel__*/data-carousel-* см. у секции reviews
+       выше и в <script> в конце файла. Кнопка «Читать историю» в каждой
+       карточке уже фокусируемая, отдельный tabindex на карточке не нужен. -->
+  <section class="section stories" data-carousel>
     <div class="container">
-      <div class="section__head fade-up">
-        <h2 class="section__title">Реальные истории участников</h2>
+      <div class="carousel__head fade-up">
+        <div class="section__head">
+          <h2 class="section__title">Реальные истории участников</h2>
+        </div>
+        <div class="carousel__arrows">
+          <button type="button" class="carousel__arrow" data-carousel-prev aria-label="Предыдущие истории">
+            <img src="icons/arrow_right.svg" alt="" width="44" height="45" loading="lazy">
+          </button>
+          <button type="button" class="carousel__arrow" data-carousel-next aria-label="Следующие истории">
+            <img src="icons/arrow_left.svg" alt="" width="44" height="45" loading="lazy">
+          </button>
+        </div>
       </div>
-      <div class="stories__grid">
+      <div class="stories__grid carousel__track" data-carousel-track>
         <div class="stories__card fade-up">
           <div class="stories__top">
             <img class="stories__avatar" src="student_stories/student_1.jpeg" alt="Алексей Соколов" width="640" height="640" loading="lazy">
@@ -3645,8 +3743,8 @@
        в Task 3 отдельно и сюда не переносится (см. комментарий у .footer в
        CSS). Класс блока НЕ final__card: этот селектор уже зарезервирован в
        токенах (см. .mech, .tier--light, .final__card, .project__plate,
-       .stories__card { --focus: var(--light-ink) } в RESET) под светлые
-       островки — здесь же тёмная
+       .stories__card, .reviews__card { --focus: var(--light-ink) } в RESET)
+       под светлые островки — здесь же тёмная
        карточка на тёмном фоне, тёмное фокус-кольцо на ней стало бы
        невидимым. icons/tg_icon.svg залит в #182023 (тёмный, под светлую
        подложку) — кладём его в жёлтый кружок var(--accent), а не прямо на
@@ -4153,6 +4251,45 @@
         if (tip) tip.hidden = true;
         btn.setAttribute('aria-expanded', 'false');
       });
+    });
+
+    // ===== Правка 1 (заход 3): карусели reviews/video-reviews/stories —
+    // один общий механизм на все три (data-carousel/-track/-prev/-next).
+    // Контент никуда не прячется: карусель — это прокрутка .carousel__track,
+    // стрелки листают её на ширину одной "страницы" (сколько карточек видно
+    // сейчас), у края списка получают disabled вместо того, чтобы молча
+    // ничего не делать. behavior для клика берётся не константой 'smooth': у
+    // .carousel__track уже есть CSS-переключатель на prefers-reduced-motion,
+    // но явный behavior в scrollBy() всегда перебивает CSS, поэтому решение
+    // дублируется и в JS — иначе пользователь с reduce motion всё равно
+    // получил бы анимацию по клику на стрелки. =====
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('[data-carousel]').forEach(function (root) {
+      var track = root.querySelector('[data-carousel-track]');
+      var prevBtn = root.querySelector('[data-carousel-prev]');
+      var nextBtn = root.querySelector('[data-carousel-next]');
+      if (!track || !prevBtn || !nextBtn) return;
+
+      function pageWidth() {
+        var item = track.children[0];
+        if (!item) return track.clientWidth;
+        var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+        return item.getBoundingClientRect().width + gap;
+      }
+      function update() {
+        var max = track.scrollWidth - track.clientWidth - 1;
+        prevBtn.disabled = track.scrollLeft <= 0;
+        nextBtn.disabled = track.scrollLeft >= max;
+      }
+      prevBtn.addEventListener('click', function () {
+        track.scrollBy({ left: -pageWidth(), behavior: reduceMotion ? 'auto' : 'smooth' });
+      });
+      nextBtn.addEventListener('click', function () {
+        track.scrollBy({ left: pageWidth(), behavior: reduceMotion ? 'auto' : 'smooth' });
+      });
+      track.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
     });
   });
 </script>
