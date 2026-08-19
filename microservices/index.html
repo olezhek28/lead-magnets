@@ -472,6 +472,92 @@
     .modal { padding: 14px; }
   }
 
+  /* ===== PROGRAM — программа курса по неделям (rec2045528841) =====
+     Компонент перенесён из system_design/index.html: та же карточная вёрстка
+     и визуальный стиль аккордеона (.program__*, .prog-head__*). Раскрытие
+     сделано на <button aria-expanded>/[aria-controls] вместо нативных
+     <details>/<summary>, как в SD, — по явному требованию доступности брифа
+     Task 6. Анимация раскрытия не переносилась (в SD она держится на
+     details::details-content, специфичном для <details>) — открытие/закрытие
+     здесь мгновенное через [hidden], визуальный стиль карточек идентичен. */
+  .prog-head { text-align: center; max-width: 900px; margin: 0 auto 44px; }
+  .prog-head__pill { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 26px;
+    padding: 9px 20px 9px 16px; border-radius: 999px; background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28);
+    font-family: var(--mono); font-size: 14px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .prog-head__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: progPulse 2.4s var(--ease) infinite; }
+  @keyframes progPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(223,223,65,.5); } 60% { box-shadow: 0 0 0 8px rgba(223,223,65,0); } }
+  .prog-head__title { font-family: var(--display); font-size: clamp(30px, 4.4vw, 52px); font-weight: 600; line-height: 1.1; letter-spacing: -0.03em; color: var(--text-h); }
+  @media (prefers-reduced-motion: reduce) { .prog-head__dot { animation: none; } }
+
+  .program { max-width: 1080px; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .program__item {
+    background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl);
+    transition: background .3s var(--ease), border-color .3s var(--ease);
+    scroll-margin-top: 84px;
+  }
+  .program__item:hover { border-color: var(--border-acc); }
+  .program__item--open { background: var(--bg-secondary); border-color: var(--border-acc); }
+  .program__head { margin: 0; }
+  .program__headbtn {
+    all: unset; box-sizing: border-box; width: 100%; cursor: pointer;
+    padding: 30px 30px 30px 34px; display: flex; align-items: center; justify-content: space-between; gap: 28px;
+    border-radius: var(--r-xl);
+  }
+  .program__headbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-md); }
+  .program__headbtn:active .program__toggle { transform: scale(.94); }
+  .program__headtext { flex: 1; min-width: 0; display: block; }
+  .program__step { display: block; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text-faint); margin-bottom: 13px; letter-spacing: .18em; text-transform: uppercase; transition: color .3s var(--ease); }
+  .program__item--open .program__step { color: var(--accent); }
+  .program__name { display: block; font-family: var(--display); font-size: clamp(20px, 2.4vw, 30px); font-weight: 500; color: var(--text-h); line-height: 1.16; letter-spacing: -0.03em; text-wrap: balance; }
+  .program__toggle {
+    position: relative; width: 46px; height: 46px; border-radius: var(--r-md);
+    background: var(--bg-primary); color: var(--text-mute); border: 1px solid var(--border-acc);
+    display: flex; align-items: center; justify-content: center; font-size: 0; line-height: 0;
+    flex-shrink: 0;
+    transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .18s var(--ease);
+  }
+  .program__toggle::before, .program__toggle::after {
+    content: ''; position: absolute; background: currentColor; border-radius: 1px;
+    transition: transform .35s var(--ease);
+  }
+  .program__toggle::before { width: 16px; height: 1.5px; }
+  .program__toggle::after  { width: 1.5px; height: 16px; }
+  .program__item:hover .program__toggle { border-color: rgba(223,223,65,.45); color: var(--accent); }
+  .program__item--open .program__toggle { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .program__item--open .program__toggle::before { transform: rotate(45deg); }
+  .program__item--open .program__toggle::after  { transform: rotate(45deg); }
+
+  .program__body { padding: 2px 34px 34px; }
+  .program__body[hidden] { display: none; }
+  .program__block + .program__block { margin-top: 34px; }
+  .program__label {
+    display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--text-h);
+    background: var(--bg-primary); border: 1px solid var(--border-card);
+    padding: 9px 16px; border-radius: var(--r-md); margin-bottom: 20px;
+  }
+  .program__label--result { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .program__block-title { font-family: var(--display); font-size: 19px; font-weight: 500; color: var(--text-h); line-height: 1.32; letter-spacing: -0.01em; margin: 0 0 14px; }
+  .program__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; }
+  .program__list li { position: relative; padding-left: 22px; font-size: 15.5px; line-height: 1.62; color: var(--text-mute); }
+  .program__list li::before { content: ''; position: absolute; left: 0; top: .68em; width: 9px; height: 1px; background: var(--accent); }
+  .program__list code, .program__result code, .program__task code { font-family: var(--mono); font-size: .92em; color: var(--text-h); background: var(--bg-primary); border: 1px solid var(--border-card); border-radius: 4px; padding: 1px 5px; }
+  .program__result, .program__task { font-size: 15.5px; line-height: 1.62; color: var(--text-body); max-width: 74ch; margin: 0; }
+  .program__result b, .program__task b { color: var(--text-h); font-weight: 600; }
+
+  @media (max-width: 960px) {
+    .program { gap: 12px; }
+    .program__headbtn { padding: 24px 20px; gap: 14px; }
+    .program__toggle { width: 40px; height: 40px; }
+    .program__body { padding: 2px 20px 26px; }
+  }
+  @media (max-width: 640px) {
+    .program__headbtn { padding: 20px 16px; gap: 10px; }
+    .program__toggle { width: 38px; height: 38px; }
+    .program__body { padding: 2px 16px 22px; }
+    .program__list li { font-size: 14.5px; }
+  }
+
   /* Дальнейшие задачи дописывают CSS секций main ниже этой строки. */
 </style>
 </head>
@@ -632,6 +718,421 @@
     </div>
   </section>
 
+  <!-- ===== ПРОГРАММА КУРСА ПО НЕДЕЛЯМ (program, rec2045528841) =====
+       Аккордеон из 8 недель. Первая неделя раскрыта по умолчанию, остальные
+       свёрнуты — как на Tilda. Компонент визуально перенесён из
+       system_design/index.html (.program__*, .prog-head__*), но раскрытие
+       сделано на <button aria-expanded>/[aria-controls] вместо нативных
+       <details>/<summary> — по явному требованию доступности брифа Task 6.
+       Якорь #programm — с двумя «m», опечатка оригинала Tilda, воспроизводим
+       намеренно: на неё уже ссылается навигация каркаса. -->
+  <section class="section" id="programm">
+    <div class="container">
+      <div class="prog-head fade-up">
+        <span class="prog-head__pill"><span class="prog-head__dot" aria-hidden="true"></span>программа</span>
+        <h2 class="prog-head__title">8 недель. 5 микросервисов. Production-ready стек.</h2>
+      </div>
+
+      <div class="program">
+        <div class="program__item program__item--open fade-up" id="week-1">
+          <h3 class="program__head">
+            <button class="program__headbtn" type="button" id="week-1-head" aria-expanded="true" aria-controls="week-1-body">
+              <span class="program__headtext">
+                <span class="program__step">Неделя 1</span>
+                <span class="program__name">HTTP и gRPC: два протокола, которые должен знать каждый Go-разработчик</span>
+              </span>
+              <span class="program__toggle" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="program__body" id="week-1-body" role="region" aria-labelledby="week-1-head">
+            <div class="program__block">
+              <span class="program__label">Блок 1</span>
+              <h4 class="program__block-title">gRPC — язык, на котором говорят микросервисы</h4>
+              <ul class="program__list">
+                <li>Protocol Buffers с нуля — описываем контракт сервиса в ".proto"-файле</li>
+                <li>buf — генерируем Go-код одной командой вместо ручной возни с <code>protoc</code></li>
+                <li>Поднимаем gRPC-сервер и клиент — полноценный CRUD для управления данными</li>
+                <li>Интерцепторы: перехватываем каждый запрос — логирование, перехват паник и кастомная логика</li>
+                <li>gRPC-Gateway + Swagger UI — один сервис, два протокола: REST снаружи, gRPC внутри</li>
+                <li>Валидация входных данных — отсекаем невалидные запросы ещё до попадания в бизнес-логику</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 2</span>
+              <h4 class="program__block-title">HTTP — REST API на промышленном уровне</h4>
+              <ul class="program__list">
+                <li>Chi — самый популярный Go-роутер — маршруты, цепочки middleware, таймауты и корректное завершение работы</li>
+                <li>Сначала контракт, потом код — описываем OpenAPI-спецификацию, получаем типизированный сервер с валидацией из коробки через Ogen</li>
+                <li>HTTP вызывает gRPC — связываем сервисы между собой: HTTP-фронтенд обращается к gRPC-бэкенду</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 3</span>
+              <h4 class="program__block-title">Go Workspace — мультимодульный проект</h4>
+              <ul class="program__list">
+                <li>go.work для нескольких сервисов — общие proto-определения, общие зависимости, единый репозиторий</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Практическое задание</span>
+              <p class="program__task">Реализовать 3 микросервиса: OrderService (HTTP), InventoryService (gRPC), PaymentService (gRPC). Связать их через gRPC-клиенты — заказ обращается к складу и платёжке.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Ты с нуля напишешь 3 работающих сервиса на двух протоколах, освоишь кодогенерацию API из контрактов и научишься связывать микросервисы между собой. Это фундамент, на котором строится всё остальное.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="program__item fade-up" id="week-2">
+          <h3 class="program__head">
+            <button class="program__headbtn" type="button" id="week-2-head" aria-expanded="false" aria-controls="week-2-body">
+              <span class="program__headtext">
+                <span class="program__step">Неделя 2</span>
+                <span class="program__name">Clean Architecture и тесты: пишем код, как в BigTech-компаниях</span>
+              </span>
+              <span class="program__toggle" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="program__body" id="week-2-body" role="region" aria-labelledby="week-2-head" hidden>
+            <div class="program__block">
+              <span class="program__label">Блок 4</span>
+              <h4 class="program__block-title">Слоистая архитектура — структура, которую поймёт любой разработчик</h4>
+              <ul class="program__list">
+                <li>API → Service → Repository → Client — чёткое разделение ответственности</li>
+                <li>Три модели данных — модель API, доменная модель, модель хранилища: зачем их разделять и как конвертировать между собой</li>
+                <li>Инверсия зависимостей — интерфейсы определяет тот, кто использует, а не тот, кто реализует</li>
+                <li>Стратегия обработки ошибок — единые ошибки-маркеры на каждом слое, понятная цепочка от базы до клиента</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 5</span>
+              <h4 class="program__block-title">Unit-тесты — от нуля до полного покрытия за 7 шагов</h4>
+              <ul class="program__list">
+                <li>Первый тест на чистом Go — <code>testing.T</code>, никаких фреймворков</li>
+                <li>Табличные тесты — один тест, десять сценариев: описываем входы и ожидаемые результаты</li>
+                <li>testify — читаемые проверки вместо ручных <code>if err != nil</code></li>
+                <li>Стабы: подменяем зависимости вручную — простая реализация в памяти вместо реальной базы</li>
+                <li>mockery — генерируем моки автоматически — задаём ожидания, проверяем вызовы</li>
+                <li>Тесты в Clean Architecture — мокаем репозиторий, тестируем бизнес-логику изолированно</li>
+                <li>Параллельные тесты — запускаем тесты одновременно и не ловим гонки</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Практическое задание</span>
+              <p class="program__task">Рефакторинг всех 3 сервисов в Clean Architecture. Unit-тесты с моками на сервисный и API-слой. Покрытие ≥40%.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Код разложен по чётким слоям — бизнес-логика отделена от транспорта и хранилища. Любой новый разработчик откроет проект и сразу поймёт, где что лежит. Тесты с моками ловят баги до продакшена, а не после</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="program__item fade-up" id="week-3">
+          <h3 class="program__head">
+            <button class="program__headbtn" type="button" id="week-3-head" aria-expanded="false" aria-controls="week-3-body">
+              <span class="program__headtext">
+                <span class="program__step">Неделя 3</span>
+                <span class="program__name">Docker и PostgreSQL: сервисы обретают настоящее хранилище</span>
+              </span>
+              <span class="program__toggle" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="program__body" id="week-3-body" role="region" aria-labelledby="week-3-head" hidden>
+            <div class="program__block">
+              <span class="program__label">Блок 6</span>
+              <h4 class="program__block-title">Docker — упаковываем сервис в контейнер</h4>
+              <ul class="program__list">
+                <li>Многоэтапная сборка Docker-образа — 800 МБ Go SDK превращаются в 10 МБ финальный образ</li>
+                <li>Запуск не от root — безопасно, как требуют в продакшене</li>
+                <li>Docker Compose — база данных, миграции и сервис поднимаются одной командой</li>
+                <li>Healthcheck и зависимости — контейнеры стартуют в правильном порядке</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 7</span>
+              <h4 class="program__block-title">PostgreSQL — SQL на Go без боли</h4>
+              <ul class="program__list">
+                <li>pgx — самый быстрый драйвер для PostgreSQL с пулом соединений (переиспользуем подключения, а не создаём новые на каждый запрос)</li>
+                <li>Squirrel — SQL-конструктор — собираем запросы программно, без склейки строк</li>
+                <li>Миграции через Goose — версионируем схему базы, накатываем изменения при деплое</li>
+                <li>Практические приёмы — получаем ID сразу при вставке, работаем с nullable-полями, избегаем SQL-инъекций</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 8</span>
+              <h4 class="program__block-title">Транзакции — атомарность без компромиссов</h4>
+              <ul class="program__list">
+                <li>Transaction Manager — оборачиваем несколько операций в транзакцию, не протаскивая объект транзакции через все слои</li>
+                <li>Прозрачные транзакции — репозиторий даже не знает, что работает внутри транзакции — всё скрыто в контексте</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Практическое задание</span>
+              <p class="program__task">Поднять PostgreSQL через Docker Compose для OrderService и InventoryService. Написать миграции, заменить хранение в памяти на реальные SQL-запросы. Интегрировать Transaction Manager для атомарного создания заказа</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Хранилище в памяти заменено на PostgreSQL. Ты умеешь поднимать инфраструктуру через Docker Compose, делать миграции, писать запросы и проектировать хранилища. Паттерн Transaction Manager — один из самых частых вопросов на собеседованиях</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="program__item fade-up" id="week-4">
+          <h3 class="program__head">
+            <button class="program__headbtn" type="button" id="week-4-head" aria-expanded="false" aria-controls="week-4-body">
+              <span class="program__headtext">
+                <span class="program__step">Неделя 4</span>
+                <span class="program__name">Конфигурация, DI-контейнер, jsonb в PostgreSQL и Domain-Driven Design</span>
+              </span>
+              <span class="program__toggle" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="program__body" id="week-4-body" role="region" aria-labelledby="week-4-head" hidden>
+            <div class="program__block">
+              <span class="program__label">Блок 9</span>
+              <h4 class="program__block-title">Конфигурация — параметры сервиса без хардкода</h4>
+              <ul class="program__list">
+                <li>YAML + переменные окружения через cleanenv — один конфиг-файл, переопределения через переменные окружения для каждого стенда</li>
+                <li>Профили: local / production / docker — переключаем поведение без изменения кода</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 10</span>
+              <h4 class="program__block-title">DI-контейнер — управление зависимостями без магии</h4>
+              <ul class="program__list">
+                <li>Ручной DI на Go — создаём зависимости лениво: только когда понадобятся</li>
+                <li>Корректное завершение работы — ресурсы закрываются в обратном порядке: что открыли последним — закрываем первым</li>
+                <li>Платформенная библиотека — проверка здоровья сервиса, логгер, менеджер закрытия ресурсов: переиспользуемые компоненты для всех сервисов</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 11</span>
+              <h4 class="program__block-title">JSONB — гибкие структуры в PostgreSQL</h4>
+              <ul class="program__list">
+                <li>JSONB-колонки — храним разнородные данные (характеристики разных типов деталей) в одной колонке без раздувания схемы</li>
+                <li>Индексы по JSON — быстрый поиск внутри JSON-структур</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 12</span>
+              <h4 class="program__block-title">Domain-Driven Design — бизнес-логика, которая сама себя защищает</h4>
+              <ul class="program__list">
+                <li>Сущности с поведением — объекты сами знают свои правила, а не просто хранят данные</li>
+                <li>Value Objects — типизированные значения (например, «прочность корпуса»), которые нельзя создать в невалидном состоянии</li>
+                <li>Агрегаты — группа связанных объектов с единой точкой входа, которая контролирует целостность данных</li>
+                <li>Доменный сервис — проверка совместимости компонентов корабля перед заказом</li>
+                <li>Резервирование деталей — Reserve/Release с защитой от невалидных состояний</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Практическое задание</span>
+              <p class="program__task">Внедрить конфигурацию и DI-контейнер во все сервисы. Создать платформенную библиотеку. Реализовать DDD: сущность Part с методами Reserve/Release, Value Objects для свойств компонентов в JSONB, сервис проверки совместимости при заказе</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Сервисы конфигурируются через YAML и переменные окружения, зависимости собираются через DI-контейнер, ресурсы корректно освобождаются при завершении. Бизнес-логика защищена доменной моделью — невалидное состояние невозможно создать в принципе. Ты строишь не просто сервисы, а <b>платформу</b> — как это делают в BigTech-компаниях</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="program__item fade-up" id="week-5">
+          <h3 class="program__head">
+            <button class="program__headbtn" type="button" id="week-5-head" aria-expanded="false" aria-controls="week-5-body">
+              <span class="program__headtext">
+                <span class="program__step">Неделя 5</span>
+                <span class="program__name">Kafka: асинхронная коммуникация между сервисами и блокировки в PostgreSQL</span>
+              </span>
+              <span class="program__toggle" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="program__body" id="week-5-body" role="region" aria-labelledby="week-5-head" hidden>
+            <div class="program__block">
+              <span class="program__label">Блок 13</span>
+              <h4 class="program__block-title">Apache Kafka — шина событий для микросервисов</h4>
+              <ul class="program__list">
+                <li>Синхронный и асинхронный продюсер — гарантия доставки каждого сообщения vs максимальная пропускная способность</li>
+                <li>Консюмер — читаем поток событий — смещения, партиции, чтение с начала или с конца</li>
+                <li>Consumer Groups — горизонтальное масштабирование — несколько экземпляров сервиса делят между собой поток сообщений, автоматически перераспределяя нагрузку</li>
+                <li>Обработка сообщений пачками — накапливаем и обрабатываем группой для производительности</li>
+                <li>Kafka в Clean Architecture — выделяем слои для асинхронных потоков так же, как для HTTP и gRPC</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 14</span>
+              <h4 class="program__block-title">SELECT FOR UPDATE — блокировки в PostgreSQL</h4>
+              <ul class="program__list">
+                <li>Блокировка строк при чтении — «заморозить» запись в базе, пока мы с ней работаем, чтобы другой запрос не изменил её параллельно</li>
+                <li>Правильный порядок блокировок — всегда блокируем строки в одном и том же порядке, чтобы два запроса не заблокировали друг друга навечно</li>
+                <li>Повторная обработка событий без последствий — даже если Kafka доставит сообщение дважды, данные не сломаются</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Практическое задание</span>
+              <p class="program__task">Поднять Kafka. Создать AssemblyService — новый микросервис, который слушает событие оплаты, «собирает корабль» и отправляет событие завершения сборки. OrderService публикует событие при оплате и обновляет статус при получении результата сборки. Блокировка строк для безопасного резервирования деталей.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Полная асинхронная цепочка: заказ → оплата → сборка → обновление статуса. Четвёртый микросервис (AssemblyService) работает через Kafka. Ты освоил событийную архитектуру — именно так обрабатывают миллионы событий в BigTech-компаниях вроде OZON, Яндекса и Тинькофф</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="program__item fade-up" id="week-6">
+          <h3 class="program__head">
+            <button class="program__headbtn" type="button" id="week-6-head" aria-expanded="false" aria-controls="week-6-body">
+              <span class="program__headtext">
+                <span class="program__step">Неделя 6</span>
+                <span class="program__name">Аутентификация: IAM-сервис и Redis</span>
+              </span>
+              <span class="program__toggle" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="program__body" id="week-6-body" role="region" aria-labelledby="week-6-head" hidden>
+            <div class="program__block">
+              <span class="program__label">Блок 15</span>
+              <h4 class="program__block-title">Redis — быстрое key-value хранилище</h4>
+              <ul class="program__list">
+                <li>Базовые операции — простые ключи, хеш-таблицы, хранение структур</li>
+                <li>Время жизни ключей (TTL) — данные автоматически удаляются через заданное время: идеально для сессий и кеша</li>
+                <li>Распределённая блокировка через Redis — когда несколько экземпляров сервиса должны по очереди работать с общим ресурсом</li>
+                <li>Защита от лавины запросов — если тысяча пользователей одновременно запросила одно и то же, в базу уходит только один запрос</li>
+                <li>Redis в Clean Architecture — кеширующий слой как отдельный репозиторий</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 16</span>
+              <h4 class="program__block-title">Аутентификация на сессиях — от логина до защиты API</h4>
+              <ul class="program__list">
+                <li>bcrypt — хешируем пароли правильно — почему md5 и sha256 для паролей использовать нельзя</li>
+                <li>Сессии в Redis с временем жизни — создание, проверка, удаление</li>
+                <li>gRPC-интерцептор для проверки сессий — список открытых методов, извлечение токена из заголовка</li>
+                <li>HTTP middleware для аутентификации — проверяем сессию через IAM, пробрасываем ID пользователя в контекст запроса</li>
+                <li>Передача информации о пользователе между сервисами — gRPC metadata для пробрасывания идентификатора через цепочку вызовов</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Практическое задание</span>
+              <p class="program__task">Создать IAM Service — пятый микросервис: Register, Login, Logout, Whoami, GetUser. Пользователи в PostgreSQL, сессии в Redis с ограниченным временем жизни. Добавить HTTP middleware в OrderService и gRPC-интерцептор в InventoryService для проверки сессий через IAM.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Пятый микросервис — полноценный IAM с регистрацией, аутентификацией и хранением сессий в Redis. Каждый запрос проходит проверку — API больше не открыт всему миру. Плюс ты освоил распределённые блокировки и защиту от лавинных запросов — паттерны, которые спрашивают на каждом Senior-собеседовании.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="program__item fade-up" id="week-7">
+          <h3 class="program__head">
+            <button class="program__headbtn" type="button" id="week-7-head" aria-expanded="false" aria-controls="week-7-body">
+              <span class="program__headtext">
+                <span class="program__step">Неделя 7</span>
+                <span class="program__name">Observability: логи, метрики и распределённые трейсы</span>
+              </span>
+              <span class="program__toggle" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="program__body" id="week-7-body" role="region" aria-labelledby="week-7-head" hidden>
+            <div class="program__block">
+              <span class="program__label">Блок 17</span>
+              <h4 class="program__block-title">Логирование — от println до Kibana</h4>
+              <ul class="program__list">
+                <li>Структурированные логи через slog + OpenTelemetry — логи отправляются в единый коллектор телеметрии</li>
+                <li>Запись сразу в два места — одновременно в консоль и в Elasticsearch, чтобы видеть логи и локально, и в централизованном хранилище</li>
+                <li>Kibana — ищем и анализируем логи всех сервисов в одном интерфейсе</li>
+                <li>Устойчивость к сбоям — если Elasticsearch упал, сервис продолжает работать и писать логи в консоль</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 18</span>
+              <h4 class="program__block-title">Метрики — Prometheus и Grafana</h4>
+              <ul class="program__list">
+                <li>Счётчики, гистограммы и другие типы метрик — считаем количество запросов, замеряем время ответа, отслеживаем текущую нагрузку</li>
+                <li>Автоматический сбор метрик gRPC — подключается в одну строку, сразу видим latency и количество ошибок</li>
+                <li>Prometheus — собирает метрики со всех сервисов через единый коллектор</li>
+                <li>Grafana-дашборды — красивые графики бизнес-метрик: заказы, выручка, время сборки</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 19</span>
+              <h4 class="program__block-title">Распределённый трейсинг — видим путь запроса насквозь</h4>
+              <ul class="program__list">
+                <li>Сквозной идентификатор запроса — один trace-id проходит через все сервисы, позволяя восстановить полный путь</li>
+                <li>Автоматический сбор трейсов для gRPC — подключается без изменения бизнес-кода</li>
+                <li>Добавляем бизнес-контекст к трейсам — видим не только «запрос прошёл», но и «какой заказ, какой пользователь»</li>
+                <li>Jaeger — визуализация полного пути запроса через все сервисы на одном таймлайне</li>
+                <li>Инструментация Redis — подключаем трейсы, метрики и логи для каждого вызова кеша через систему хуков</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Практическое задание</span>
+              <p class="program__task">Развернуть полный стек наблюдаемости: коллектор телеметрии, Elasticsearch + Kibana, Prometheus + Grafana, Jaeger. Настроить логи всех сервисов в Kibana. Бизнес-метрики (заказы, выручка) в Grafana. Трассировка полного пути запроса через Order → Inventory → Payment. Вынести инструменты наблюдаемости в платформенную библиотеку.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Полноценная система наблюдаемости: Grafana с метриками, Kibana с логами, Jaeger с трейсами. Ты видишь каждый запрос от входа до ответа через все сервисы. Это уровень, который отличает Middle от Senior.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="program__item fade-up" id="week-8">
+          <h3 class="program__head">
+            <button class="program__headbtn" type="button" id="week-8-head" aria-expanded="false" aria-controls="week-8-body">
+              <span class="program__headtext">
+                <span class="program__step">Неделя 8</span>
+                <span class="program__name">Контейнеризация, балансировка и распределённый Rate Limiting</span>
+              </span>
+              <span class="program__toggle" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="program__body" id="week-8-body" role="region" aria-labelledby="week-8-head" hidden>
+            <div class="program__block">
+              <span class="program__label">Блок 20</span>
+              <h4 class="program__block-title">Контейнеризация и Nginx — всё в Docker, балансировка нагрузки</h4>
+              <ul class="program__list">
+                <li>Многоэтапная сборка Docker-образа для каждого сервиса — сначала компилируем, затем берём только бинарник в минимальный образ</li>
+                <li>Docker Compose для всей системы — 5 сервисов + вся инфраструктура поднимаются одной командой</li>
+                <li>Nginx как балансировщик — запросы равномерно распределяются между репликами OrderService</li>
+                <li>Горизонтальное масштабирование — запускаем несколько копий сервиса, Nginx сам находит их по имени</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 21</span>
+              <h4 class="program__block-title">Паттерны отказоустойчивости — чтобы сервис выжил в продакшене</h4>
+              <ul class="program__list">
+                <li>Rate Limiter — ограничиваем количество запросов в секунду, чтобы сервис не захлебнулся под нагрузкой</li>
+                <li>Retry с нарастающей задержкой — клиент автоматически повторяет запрос при временных сбоях, каждый раз ожидая чуть дольше (плюс случайный разброс, чтобы все клиенты не повторили одновременно)</li>
+                <li>Circuit Breaker — если сервис начал падать, автоматически прекращаем к нему обращаться, даём восстановиться, затем аккуратно проверяем: заработал ли</li>
+                <li>Распределённый Rate Limiter через Redis — единый лимит на все копии сервиса, настройка лимитов отдельно для каждого метода, если Redis недоступен — пропускаем запросы, а не блокируем</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Блок 22</span>
+              <h4 class="program__block-title">Нагрузочное тестирование — проверяем, что всё работает под давлением</h4>
+              <ul class="program__list">
+                <li>vegeta — заливаем HTTP-трафиком, замеряем время ответа и пропускную способность</li>
+                <li>ghz — то же самое для gRPC, проверяем rate limiter под реальной нагрузкой</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Практическое задание</span>
+              <p class="program__task">Контейнеризировать все сервисы. Собрать единый Docker Compose со всей инфраструктурой. Настроить Nginx для балансировки OrderService на 3 реплики. Реализовать распределённый Rate Limiter через Redis — единый лимит на все экземпляры. Провести нагрузочное тестирование</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Микросервисная система полностью собрана — от API до мониторинга, от аутентификации до балансировки нагрузки. 5 сервисов в Docker-контейнерах за Nginx, распределённый rate limiter защищает от перегрузки, нагрузочные тесты подтверждают работоспособность. Это готовый проект для портфолио и уверенный ответ на любой вопрос собеседования про микросервисы.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section__cta fade-up">
+        <a class="btn btn--primary btn--lg" href="#tariffs" data-goal="program">Записаться на&nbsp;курс</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== ЧТО ТРЕБУЮТ В ВАКАНСИЯХ (vacancies, светлый островок, rec2072585811) =====
        Дозаверстано следующим исполнителем: три карточки со скриншотами вакансий
        (Ozon Tech / Wildberries / Aviasales) и попапы к ним — пробел планового
@@ -779,6 +1280,17 @@
     });
     window.addEventListener('resize', function () {
       if (window.innerWidth > 960 && navMobile.classList.contains('open')) closeMenu();
+    });
+
+    // ===== программа: аккордеон недель (каждая неделя раскрывается независимо) =====
+    document.querySelectorAll('.program__item').forEach(function (item) {
+      var btn = item.querySelector('.program__headbtn');
+      var body = item.querySelector('.program__body');
+      btn.addEventListener('click', function () {
+        var open = item.classList.toggle('program__item--open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        body.hidden = !open;
+      });
     });
   });
 </script>
