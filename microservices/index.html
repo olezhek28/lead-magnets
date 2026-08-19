@@ -1035,12 +1035,18 @@
      .project__diagram: он остаётся единственным элементом в потоке, который
      и задаёт высоту .project__scene. Не сделай так — и узкая высокая
      картинка ракеты при ширине в свою треть ряда сама оказалась бы почти
-     вдвое выше схемы и задавала бы высоту ряда вместо неё. */
+     вдвое выше схемы и задавала бы высоту ряда вместо неё.
+     Ширина схемы (75.4%) и высота/якорь ракеты (top: 20px = верх картинки
+     схемы; height: 104%) сведены с замером живой страницы: там картинка
+     схемы и ракета выровнены по верхнему краю (разница top ≈ 3px из 483px
+     высоты схемы — в пределах погрешности), а ракета ниже схемы почти на
+     9% её высоты (525px против 483px ⇒ 108.7%), а не «бок о бок по нижнему
+     краю», как предполагалось раньше. */
   .project__scene { position: relative; margin-bottom: 56px; }
-  .project__diagram { position: relative; width: 64%; padding-top: 20px; }
+  .project__diagram { position: relative; width: 75.4%; padding-top: 20px; }
   .project__schema-img { display: block; width: 100%; height: auto; }
   .project__nodes { position: absolute; top: 20px; left: 0; right: 0; bottom: 0; }
-  .project__rocket { position: absolute; right: 0; bottom: 0; height: 122%; width: auto; max-width: 32%; }
+  .project__rocket { position: absolute; right: 0; top: 20px; height: 104%; width: auto; max-width: 32%; }
 
   .project__node {
     all: unset; position: absolute; box-sizing: border-box; width: 24px; height: 24px; border-radius: 50%;
