@@ -114,7 +114,7 @@
      контур давал бы низкий контраст — переключатель на тёмный оставлен про запас
      для будущих светлых островков (например .tier--light в тарифах) */
   :root { --focus: var(--accent); }
-  .mech, .tier--light, .final__card, .jobs, .modal { --focus: var(--light-ink); }
+  .mech, .tier--light, .final__card, .jobs { --focus: var(--light-ink); }
   :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
   .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
@@ -427,22 +427,30 @@
   .jobs__note-icon { width: 16px; height: 16px; flex-shrink: 0; }
 
   /* ===== ПОПАПЫ (универсальный механизм data-modal-open/data-modal-close) =====
-     По умолчанию попап скрыт атрибутом [hidden]; JS Task 7 будет снимать/ставить
-     этот атрибут на триггере клика (data-modal-open) и закрытии (data-modal-close). */
+     По умолчанию попап скрыт атрибутом [hidden]; JS Task 7 снимает/ставит этот
+     атрибут на триггере клика (data-modal-open) и закрытии (data-modal-close).
+     Тёмная тема панели — фикс ревью Task 7: изначально .modal__dialog унаследовал
+     светлый фон jobs__card (Task 5, там попапы несли только картинку вакансии),
+     но с текстовыми модалками (#homework-modal, и 11 историй в Task 8) светлый
+     фон + токены текста под тёмный фон (--text-h/--text-body) давали контраст
+     ~1:1. Красим панель, а не текст — так же решено в system_design/index.html
+     (.gc-modal__panel: background: var(--bg-card), border: var(--border-card)),
+     это держит модалки в одной визуальной семье с эталоном. */
   .modal { position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; padding: 24px; }
   .modal:not([hidden]) { display: flex; }
   .modal__overlay { position: absolute; inset: 0; background: rgba(16,23,26,.82); backdrop-filter: blur(2px); }
   .modal__dialog {
     position: relative; z-index: 1; max-width: min(560px, 92vw); max-height: 90vh;
-    overflow: auto; border-radius: var(--r-lg); background: var(--light-card); box-shadow: var(--sh-lift);
+    overflow: auto; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card);
+    box-shadow: var(--sh-lift);
   }
   .modal__close {
     position: absolute; top: 10px; right: 10px; z-index: 2; width: 36px; height: 36px;
     display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;
-    background: var(--light-bg); color: var(--light-ink); border: 1px solid rgba(16,23,26,.12);
+    background: var(--bg-secondary); color: var(--text-h); border: 1px solid var(--border-acc);
     font-size: 22px; line-height: 1; transition: background .25s var(--ease), transform .18s var(--ease);
   }
-  .modal__close:hover { background: #fff; transform: scale(1.05); }
+  .modal__close:hover { background: var(--bg-tertiary); transform: scale(1.05); }
   .modal__img { display: block; width: 100%; height: auto; }
 
   @media (max-width: 960px) {
@@ -1355,12 +1363,15 @@
        по брифу «кот Коткинс с репликами живёт здесь» — но контроллеру стоит
        знать, что её текущее место на живой странице не подтверждено (в отличие
        от учтённого выше photo.svg — тот подтверждён однозначно).
-       speech_bubble_2.svg/speech_bubble_3.svg тоже не задействованы: как и
-       speech_bubble_1.svg в steps, они несут собственный впечатанный контуром
-       текст («Ну или по лапкам… Как удобнее» и «В предзапись не записался —
-       без микросервисов остался»), но по смыслу это не про комьюнити (первое —
-       про темп обучения, второе — про запись на курс), а какой-то ещё не
-       размеченной секции они принадлежат — не выяснено, вне периметра задачи. -->
+       speech_bubble_2.svg/speech_bubble_3.svg/speech_bubble_4.svg тоже не
+       задействованы в разметке: как и speech_bubble_1.svg в steps, все три несут
+       собственный впечатанный контуром текст («Ну или по лапкам… Как удобнее»,
+       «В предзапись не записался — без микросервисов остался», «Ты это… Заходи,
+       если что»), но по смыслу это не про комьюнити, а какой-то ещё не размеченной
+       секции они принадлежат — не выяснено, вне периметра задачи. Все три (включая
+       speech_bubble_4.svg) намеренно оставлены задекларированными в «Картинки:»
+       контент-файла как неиспользуемый ассет — по инварианту проекта «каждая
+       картинка в microservices/ задекларирована», ревью Task 7. -->
   <section class="section community">
     <div class="container">
       <div class="community__head fade-up">
