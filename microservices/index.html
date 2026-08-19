@@ -217,7 +217,7 @@
      контур давал бы низкий контраст — переключатель на тёмный оставлен про запас
      для будущих светлых островков (например .tier--light в тарифах) */
   :root { --focus: var(--accent); }
-  .mech, .tier--light, .final__card, .jobs { --focus: var(--light-ink); }
+  .mech, .tier--light, .final__card, .project__plate, .stories__card { --focus: var(--light-ink); }
   :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
   .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
@@ -253,6 +253,18 @@
   .btn--dark:hover { background: var(--bg-tertiary); border-color: rgba(255,255,255,.28); transform: translateY(-2px); }
   .btn--lg { padding: 21px 46px; font-size: 16px; }
   .btn--block { display: flex; width: 100%; }
+  /* Правка 1 (визуальный заход №1): бейдж рейтинга «★ 4.94 / 5» — тёмная пилюля
+     93×33 (icons/rating_badge.svg, переименован из вводившего в заблуждение
+     cta_arrow.svg). Раньше файл был сплющен до 14×14 в кнопке и выглядел
+     кляблой, поэтому предыдущий заход его вообще убрал (см. историю в
+     контент-файле, секция what-you-get). Сейчас — вписывается пропорционально
+     (2.8:1, только высота задаётся в CSS, ширина auto) и стоит только на трёх
+     кнопках, где он есть на живой Tilda: после «Вся подкапотная…», после
+     аккордеона программы и на кнопке карточки «Все, как на работе». */
+  .btn--rated { gap: 16px; padding-right: 10px; }
+  .btn__badge { height: 26px; width: auto; flex-shrink: 0; border-radius: 999px; }
+  .btn--lg.btn--rated { padding-right: 12px; }
+  .btn--lg .btn__badge { height: 30px; }
 
   /* ===== ШАПКА (NAV) ===== */
   .header {
@@ -507,34 +519,45 @@
   .get__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
   .get__step { height: 10px; width: auto; margin-bottom: 4px; }
   .get__lead { font-family: var(--display); font-size: 17px; font-weight: 600; line-height: 1.4; letter-spacing: -0.01em; color: var(--text-h); }
-  /* нумерация карточек 1–6 дублирует шкалу прогресса из .get__step текстом:
-     та же лента используется на Tilda как индикатор «N из 6» */
-  .get__num { color: var(--accent); font-variant-numeric: tabular-nums; }
   .get__desc { font-size: 15px; line-height: 1.56; color: var(--text-mute); }
 
-  /* ===== VACANCIES — светлый островок «Изучаем, что требуют…» (rec2072585811) =====
-     .jobs добавлен в правило переключения --focus (см. ~строку 117): жёлтое
-     кольцо фокуса на светлом фоне давало бы контраст ~1:1. */
+  /* ===== VACANCIES «Изучаем, что требуют…» (rec2072585811) =====
+     Правка 2 (визуальный заход №1): раньше секция стояла на светлом островке
+     (--light-bg) — моя ошибка планирования, паттерн перенесён с другого
+     лендинга по невнимательности. На живой Tilda секция тёмная, как остальная
+     страница, а три скриншота вакансий — крупные, на всю ширину колонки.
+     Карточка-«остров» (скруглённый паддинг-блок) сама по себе не структурная
+     ошибка — просто перекрашена под тёмную палитру страницы (--bg-card),
+     внутренний паддинг сокращён, чтобы скриншотам вакансий доставалось больше
+     ширины и текст в них читался. .jobs убран из правила переключения --focus
+     (см. ~строку 117): кольцо фокуса снова жёлтое, как на тёмном фоне везде. */
   .jobs {
-    position: relative; background: var(--light-bg); color: var(--light-ink);
-    border-radius: var(--r-xl); padding: 68px 64px; display: flex; flex-direction: column;
-    gap: 40px; box-shadow: 0 40px 90px -50px rgba(0,0,0,.9);
+    position: relative; background: var(--bg-card); color: var(--text-h);
+    border: 1px solid var(--border-card);
+    border-radius: var(--r-xl); padding: 48px 40px; display: flex; flex-direction: column;
+    gap: 40px; box-shadow: var(--sh-lift);
   }
   .jobs__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
-  .jobs__title { max-width: 420px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.03em; color: var(--light-ink); margin: 0; text-wrap: pretty; }
+  .jobs__title { max-width: 420px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.03em; color: var(--text-h); margin: 0; text-wrap: pretty; }
   .jobs__aside { max-width: 360px; text-align: right; }
-  .jobs__lead { font-size: 16px; line-height: 1.6; color: var(--light-mute); }
+  .jobs__lead { font-size: 16px; line-height: 1.6; color: var(--text-mute); }
   /* три карточки со скриншотами вакансий, слева направо: Ozon Tech, Wildberries,
      Aviasales — каждая открывает попап с полным скриншотом (data-modal-open). */
   .jobs__cards { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 20px; }
+  /* Правка 2: колонка = скриншот-кнопка + подпись под ней отдельно («Вакансия
+     Ozon Tech» и т.д., с иконкой-кружком слева) — на живой Tilda это два разных
+     элемента, а не общий caption внутри карточки. Раньше подписи не было вовсе. */
+  .jobs__col { display: flex; flex-direction: column; gap: 12px; }
   .jobs__card {
-    display: block; width: 100%; padding: 0; border: 1px solid rgba(16,23,26,.12);
-    border-radius: var(--r-lg); overflow: hidden; background: var(--light-card);
+    display: block; width: 100%; padding: 0; border: 1px solid var(--border-card);
+    border-radius: var(--r-lg); overflow: hidden; background: var(--bg-secondary);
     transition: border-color .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
   }
-  .jobs__card:hover { border-color: rgba(16,23,26,.28); transform: translateY(-3px); box-shadow: 0 20px 40px -24px rgba(16,23,26,.35); }
+  .jobs__card:hover { border-color: var(--border-acc); transform: translateY(-3px); box-shadow: 0 20px 40px -24px rgba(0,0,0,.6); }
   .jobs__card-img { width: 100%; height: auto; }
-  .jobs__note { align-self: flex-end; display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--light-faint); white-space: nowrap; }
+  .jobs__card-label { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-faint); }
+  .jobs__card-label-icon { width: 16px; height: 16px; flex-shrink: 0; border-radius: 50%; }
+  .jobs__note { align-self: flex-end; display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-faint); white-space: nowrap; }
   .jobs__note-icon { width: 16px; height: 16px; flex-shrink: 0; }
 
   /* ===== ПОПАПЫ (универсальный механизм data-modal-open/data-modal-close) =====
@@ -579,7 +602,7 @@
   @media (max-width: 960px) {
     .hero { padding: 132px 0 72px; }
     .who__grid, .get__grid { grid-template-columns: repeat(2, 1fr); }
-    .jobs { padding: 52px 44px; }
+    .jobs { padding: 36px 28px; }
   }
   @media (max-width: 768px) {
     .cta-capsule { flex-wrap: wrap; justify-content: center; gap: 10px; }
@@ -595,7 +618,7 @@
     .who, .get { padding: 64px 0; }
     .who__grid, .get__grid { grid-template-columns: 1fr; }
     .who__mascot { width: 58px; }
-    .jobs { padding: 40px 26px; gap: 32px; border-radius: var(--r-lg); }
+    .jobs { padding: 28px 20px; gap: 32px; border-radius: var(--r-lg); }
     .jobs__head { flex-direction: column; align-items: flex-start; }
     .jobs__aside { text-align: left; max-width: none; }
     .jobs__cards { grid-template-columns: 1fr; }
@@ -724,12 +747,15 @@
   .steps__desc { font-size: 15px; line-height: 1.6; color: var(--text-mute); }
   .steps__star { color: var(--accent); text-decoration: none; margin-left: 2px; }
   .steps__star:hover { text-decoration: underline; }
-  /* mascot/speech_bubble_1.svg — не пустая рамка: текст «Здарова! Я — Коткинс…»
-     впечатан в сам файл контуром (шрифт переведён в path, обычный grep по
-     <text> его не находит — обнаружено вживую при вёрстке Task 7, в
-     контент-файле реплика не была зафиксирована, теперь дописана). Живёт
-     вступлением в шапке секции, а не фоном под кнопку в шаге 2 — иначе
-     накладывать текст кнопки поверх неё было бы нечитаемым оверлеем из
+  /* mascot/speech_bubble_2.svg — не пустая рамка: текст «Ну или по лапкам…
+     Как удобнее» впечатан в сам файл контуром (шрифт переведён в path,
+     обычный grep по <text> его не находит). Правка 4 (визуальный заход №1):
+     здесь раньше стоял mascot/speech_bubble_1.svg («Здарова! Я — Коткинс…») —
+     это реплика из другой записи Tilda (её Tilda-хеш — Frame_335681.svg,
+     который в контент-файле уже был верно указан в «Источник Tilda» этой
+     секции, только «Картинки:» ошибочно ссылалась на speech_bubble_1.svg).
+     Бейдж живёт вступлением в шапке секции, а не фоном под кнопку в шаге 2 —
+     иначе накладывать текст кнопки поверх неё было бы нечитаемым оверлеем из
      двух фраз. Кнопка «Коткинс, какие будут задания?» в шаге 2 —
      обычный текстовый пилюля-баттон, без картинки. */
   .steps__mascot-bubble { width: 220px; height: auto; margin-top: 20px; }
@@ -946,15 +972,18 @@
   .project__schema-list--fallback dd { margin: 4px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--text-mute); }
   .project__schema-list--fallback div + div { margin-top: 16px; }
 
+  /* Правка 6 (визуальный заход №1): на живой Tilda карточка «Все, как на
+     работе…» светлая, почти белая, с аватаркой и жёлтой кнопкой — у нас была
+     тёмной (--bg-card). Токены и контраст те же, что у .tier--light. */
   .project__plate {
     position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 22px;
-    background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl); padding: 44px;
+    background: var(--light-card); border: 1px solid rgba(16,23,26,.1); border-radius: var(--r-xl); padding: 44px;
   }
-  .project__plate-text { font-size: 16px; line-height: 1.6; color: var(--text-body); max-width: 68ch; }
+  .project__plate-text { font-size: 16px; line-height: 1.6; color: var(--light-mute); max-width: 68ch; }
   .project__author { display: flex; align-items: center; gap: 14px; }
   .project__author-photo { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
-  .project__author-name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--text-h); }
-  .project__author-role { font-size: 13.5px; color: var(--text-faint); }
+  .project__author-name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--light-ink); }
+  .project__author-role { font-size: 13.5px; color: var(--light-meta); }
   .project__cta { align-self: flex-start; }
 
   @media (max-width: 960px) {
@@ -1011,13 +1040,16 @@
   /* ---- ТЕКСТОВЫЕ ОТЗЫВЫ (reviews, id="feedback") ---- */
   .reviews__head { max-width: 640px; margin: 0 auto 44px; text-align: center; }
   .reviews__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  /* Правка 6 (визуальный заход №1): на живой Tilda подпись под скриншотом
+     отзыва — на белой карточке, тёмным текстом (сам скриншот тёмный —
+     это чат/переписка, его не трогаем, светлеет только плашка подписи). */
   .reviews__card {
-    margin: 0; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card);
+    margin: 0; border-radius: var(--r-lg); overflow: hidden; background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
     display: flex; flex-direction: column; transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
-  .reviews__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  .reviews__card:hover { border-color: rgba(16,23,26,.24); transform: translateY(-3px); }
   .reviews__img { width: 100%; height: auto; display: block; }
-  .reviews__caption { padding: 16px 18px; font-size: 14px; font-weight: 500; color: var(--text-h); line-height: 1.4; border-top: 1px solid var(--border-mid); }
+  .reviews__caption { padding: 16px 18px; font-size: 14px; font-weight: 500; color: var(--light-ink); line-height: 1.4; border-top: 1px solid rgba(16,23,26,.08); }
 
   /* ---- ВИДЕООТЗЫВЫ (video-reviews) — переиспользует паттерн .yt__* из
      system_design/index.html:2788-2832 (превью + play-кнопка поверх), но кнопка
@@ -1041,24 +1073,35 @@
   .yt__card:hover .yt__play-btn { transform: scale(1.08); }
   .yt__play-btn svg { width: 20px; height: 20px; color: var(--accent-ink); margin-left: 3px; }
 
-  /* ---- РЕАЛЬНЫЕ ИСТОРИИ УЧАСТНИКОВ (stories) ---- */
+  /* ---- РЕАЛЬНЫЕ ИСТОРИИ УЧАСТНИКОВ (stories) ----
+     Правка 6 (визуальный заход №1): на живой Tilda карточка светлая, текст
+     тёмный (у нас была тёмная копия карты .bg-card — цветовая ошибка).
+     Токены светлой поверхности и их контраст — те же, что уже проверены и
+     задокументированы у .tier--light/.jobs__card (--light-ink/--light-mute/
+     --light-faint на --light-card): 16.5:1 / 9.2:1 / 5.5:1 — с запасом выше
+     минимума 4.5:1. «Читать историю» раньше был --accent (жёлтый) — на
+     светлой карточке это 1.3:1, ниже порога вообще для любого текста, поэтому
+     здесь он тёмный (--light-ink, 16.5:1), как ссылка-кнопка .tier--light
+     .btn--primary тем же приёмом. Двухтоновая форма оригинала (светлая
+     плашка только под шапкой карточки, тёмный текст истории под ней на фоне
+     страницы) — структурная тонкость, не берём в этот заход (см. отчёт). */
   .stories__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px; }
   .stories__card {
     display: flex; flex-direction: column; gap: 14px; padding: 26px 24px 24px;
-    border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-lg); background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
-  .stories__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  .stories__card:hover { border-color: rgba(16,23,26,.24); transform: translateY(-3px); }
   .stories__top { display: flex; align-items: center; gap: 14px; }
   .stories__avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-  .stories__name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--text-h); line-height: 1.3; }
-  .stories__nick { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); margin-top: 2px; }
-  .stories__headline { font-family: var(--display); font-size: 16.5px; font-weight: 600; line-height: 1.36; letter-spacing: -0.01em; color: var(--text-h); }
-  .stories__excerpt { flex: 1; font-size: 14px; line-height: 1.58; color: var(--text-mute); }
+  .stories__name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--light-ink); line-height: 1.3; }
+  .stories__nick { font-family: var(--mono); font-size: 12.5px; color: var(--light-faint); margin-top: 2px; }
+  .stories__headline { font-family: var(--display); font-size: 16.5px; font-weight: 600; line-height: 1.36; letter-spacing: -0.01em; color: var(--light-ink); }
+  .stories__excerpt { flex: 1; font-size: 14px; line-height: 1.58; color: var(--light-mute); }
   .stories__btn {
     align-self: flex-start; margin-top: 4px; padding: 0; background: none; border: none;
     display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--accent);
+    font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--light-ink);
     transition: gap .2s var(--ease);
   }
   .stories__btn:hover { gap: 9px; }
@@ -1078,14 +1121,29 @@
      живым инспектированием DOM: восемь <img> лежат по x∈{145,440,734,1029},
      y — двумя рядами). Раньше был flex-wrap в один ряд — при восьми логотипах
      фиксированной ширины 7 помещались в первый ряд, восьмой висел один на
-     втором, визуально кривая раскладка. */
-  .bigtech__grid { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; justify-items: center; column-gap: 40px; row-gap: 36px; margin: 8px 0 44px; }
+     втором, визуально кривая раскладка.
+     Правка 3 (визуальный заход №1): на живой Tilda между ячейками этой сетки
+     тонкие разделительные линии, а логотипы заметно крупнее наших. Дивайдеры —
+     классический приём «gap-фон»: у .bigtech__grid сплошной фон border-card,
+     у каждой ячейки .bigtech__cell — фон страницы поверх, зазор в 1px между
+     ячейками остаётся закрашен фоном грида и читается как линия. Ради этого
+     ячейка обёрнута отдельным div вокруг <img> — раньше грид-элементом был
+     сам логотип переменной ширины, из-за чего фон-в-зазоре было не сделать.
+     Кнопка «Учиться от компании» ниже — жёлтая (btn--primary) на живой Tilda,
+     раньше стояла btn--dark. */
+  .bigtech__grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--border-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-lg); overflow: hidden; margin: 8px 0 44px;
+  }
+  .bigtech__cell { background: var(--bg-primary); display: flex; align-items: center; justify-content: center; padding: 30px 24px; transition: background .3s var(--ease); }
+  .bigtech__cell:hover { background: var(--bg-secondary); }
   .bigtech__logo {
-    height: 32px; width: auto; max-width: 128px; object-fit: contain;
-    filter: grayscale(1); opacity: .68;
+    height: 40px; width: auto; max-width: 100%; object-fit: contain;
+    filter: grayscale(1); opacity: .72;
     transition: filter .3s var(--ease), opacity .3s var(--ease), transform .3s var(--ease);
   }
-  .bigtech__logo:hover { filter: grayscale(0); opacity: 1; transform: translateY(-2px); }
+  .bigtech__cell:hover .bigtech__logo { filter: grayscale(0); opacity: 1; transform: translateY(-2px); }
   .bigtech__cta { text-align: center; }
 
   @media (max-width: 960px) {
@@ -1110,8 +1168,9 @@
     .stories__grid { grid-template-columns: 1fr; }
     .modal--story .modal__dialog { padding: 28px 22px; }
     .modal__story-head { gap: 12px; }
-    .bigtech__grid { grid-template-columns: repeat(2, 1fr); column-gap: 28px; row-gap: 30px; }
-    .bigtech__logo { height: 26px; }
+    .bigtech__grid { grid-template-columns: repeat(2, 1fr); }
+    .bigtech__cell { padding: 22px 18px; }
+    .bigtech__logo { height: 28px; }
   }
 
   /* ===== TASK 9: ТАРИФЫ (tariffs) / «УЧИТЬСЯ ОТ КОМПАНИИ» (company) =====
@@ -1151,7 +1210,17 @@
      воздух между ними), плюс сжаты внутренние отступы самих блоков. */
   .section.bigtech { padding-bottom: 48px; }
   #tariffs { padding-top: 48px; }
-  .pricing__scarcity { margin: 0 0 16px; text-align: center; }
+  /* Правка 4 (визуальный заход №1): кот Коткинс (mascot/kotkins.png, тот же
+     файл, что у steps/ytch) выглядывает из-за верхнего правого края секции
+     тарифов с репликой «В предзапись не записался — без микросервисов
+     остался» (mascot/speech_bubble_3.svg) — тот же приём .steps__cat, только
+     секция называется .pricing, а не .steps. Реплика встаёт рядом с плашкой
+     «Начинаем осенью 2026» — .pricing__scarcity стала flex-строкой вместо
+     текст-центрированного блока, чтобы пилюля и облачко шли в один ряд. */
+  .pricing { position: relative; }
+  .pricing__cat { position: absolute; top: -22px; right: 76px; width: 128px; height: auto; pointer-events: none; }
+  .pricing__mascot-bubble { width: 200px; height: auto; }
+  .pricing__scarcity { margin: 0 0 16px; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
   .scarcity {
     display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
     padding: 12px 22px; border-radius: var(--r-md);
@@ -1222,19 +1291,19 @@
     border-radius: var(--r-xl); background: var(--bg-card); border: 1px solid var(--border-card);
     text-align: center; display: flex; flex-direction: column; align-items: center; gap: 22px;
   }
-  .company__mascot { position: absolute; right: -6px; bottom: -4px; width: 78px; height: auto; opacity: .9; pointer-events: none; }
   .company__text { position: relative; z-index: 1; font-size: 17px; line-height: 1.55; color: var(--text-mute); max-width: 46ch; }
   .company__cta { position: relative; z-index: 1; }
 
   @media (max-width: 960px) {
     .pricing__tiers { grid-template-columns: 1fr; }
+    .pricing__cat { width: 96px; right: 40px; top: -14px; }
   }
   @media (max-width: 640px) {
     .scarcity { font-size: 11.5px; padding: 11px 16px; }
     .pricing__facts { grid-template-columns: 1fr 1fr; max-width: none; }
     .tier { padding: 34px 24px 30px; }
+    .pricing__cat { display: none; }
     .company__card { padding: 34px 26px; }
-    .company__mascot { width: 56px; }
   }
   @media (max-width: 400px) {
     .fact { padding: 13px 15px; }
@@ -1294,6 +1363,14 @@
      (Task 8, квадратные превью отзывов с play-кружком, см. выше по файлу).
      Здесь другая раскладка (3 колонки, 16:9, play поверх картинкой), общих
      классов с video-reviews быть не должно, иначе один компонент сломает другой. ---- */
+  .ytch { position: relative; }
+  /* Правка 4 (визуальный заход №1): на живой Tilda кот Коткинс (mascot/kotkins.png,
+     тот же файл, что в steps) выглядывает из-за верхнего правого края этой
+     секции с репликой «Ты это… Заходи, если что» (mascot/speech_bubble_4.svg) —
+     тот же приём, что у .steps__cat/.steps__mascot-bubble. Раньше кот стоял в
+     карточке company («Учиться от компании»), где его на живой странице нет. */
+  .ytch__cat { position: absolute; top: -22px; right: 76px; width: 128px; height: auto; pointer-events: none; }
+  .ytch__mascot-bubble { width: 220px; height: auto; margin-top: 20px; }
   .ytch__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
   .ytch__card { display: block; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); transition: border-color .25s var(--ease), transform .25s var(--ease); }
   .ytch__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
@@ -1305,10 +1382,12 @@
   .ytch__actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
   @media (max-width: 960px) {
     .ytch__grid { grid-template-columns: 1fr 1fr; gap: 18px; }
+    .ytch__cat { width: 96px; right: 40px; top: -14px; }
   }
   @media (max-width: 640px) {
     .ytch__grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 32px; }
     .ytch__actions { flex-direction: column; align-items: stretch; }
+    .ytch__cat { display: none; }
   }
 
   /* ---- faq (та же механика раскрытия, что у .program__*, см. Task 6) ---- */
@@ -1509,37 +1588,37 @@
       <div class="get__grid fade-up">
         <div class="get__card">
           <img class="get__step" src="steps/step_1.svg" alt="" width="88" height="13">
-          <p class="get__lead"><span class="get__num">1.</span> Разработаешь 5 микросервисов, связанных между собой через Kafka и gRPC,</p>
+          <p class="get__lead">Разработаешь 5 микросервисов, связанных между собой через Kafka и gRPC,</p>
           <p class="get__desc">с изоляцией от внешнего мира с помощью Envoy Gateway</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_2.svg" alt="" width="88" height="13">
-          <p class="get__lead"><span class="get__num">2.</span> Обеспечишь мониторинг сервиса по стандарту OpenTelemetry с юнит-тестами,</p>
+          <p class="get__lead">Обеспечишь мониторинг сервиса по стандарту OpenTelemetry с юнит-тестами,</p>
           <p class="get__desc">чтобы исключить ошибки в работе</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_3.svg" alt="" width="88" height="13">
-          <p class="get__lead"><span class="get__num">3.</span> Освоишь кеширование данных с помощью Redis</p>
+          <p class="get__lead">Освоишь кеширование данных с помощью Redis</p>
           <p class="get__desc">и асинхронное взаимодействие между микросервисами с помощью Kafka</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_4.svg" alt="" width="88" height="13">
-          <p class="get__lead"><span class="get__num">4.</span> Освоишь работу с PostgreSQL,</p>
+          <p class="get__lead">Освоишь работу с PostgreSQL,</p>
           <p class="get__desc">напишешь свою платформенную библиотеку, упрощающую разработку</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_5.svg" alt="" width="88" height="13">
-          <p class="get__lead"><span class="get__num">5.</span> Реализуешь межсервисное взаимодействие,</p>
+          <p class="get__lead">Реализуешь межсервисное взаимодействие,</p>
           <p class="get__desc">систему аутентификации и авторизации</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_6.svg" alt="" width="88" height="13">
-          <p class="get__lead"><span class="get__num">6.</span> На практике научишься применять</p>
+          <p class="get__lead">На практике научишься применять</p>
           <p class="get__desc">архитектурные подходы построения микросервисов</p>
         </div>
       </div>
       <div class="section__cta fade-up">
-        <a class="btn btn--primary" href="#tariffs" data-goal="what-you-get">Записаться на&nbsp;курс</a>
+        <a class="btn btn--primary btn--rated" href="#tariffs" data-goal="what-you-get"><span>Записаться на&nbsp;курс</span><img class="btn__badge" src="icons/rating_badge.svg" alt="Рейтинг курса 4,94 из 5" width="93" height="33" loading="lazy"></a>
       </div>
     </div>
   </section>
@@ -1954,7 +2033,7 @@
       </div>
 
       <div class="section__cta fade-up">
-        <a class="btn btn--primary btn--lg" href="#tariffs" data-goal="program">Записаться на&nbsp;курс</a>
+        <a class="btn btn--primary btn--lg btn--rated" href="#tariffs" data-goal="program"><span>Записаться на&nbsp;курс</span><img class="btn__badge" src="icons/rating_badge.svg" alt="Рейтинг курса 4,94 из 5" width="93" height="33" loading="lazy"></a>
       </div>
     </div>
   </section>
@@ -1975,15 +2054,24 @@
           </div>
         </div>
         <div class="jobs__cards">
-          <button class="jobs__card" type="button" data-modal-open="modal-vacancy-ozon" aria-haspopup="dialog">
-            <img class="jobs__card-img" src="vacancies/ozon.jpg" alt="Скриншот вакансии Ozon Tech на hh.ru" width="441" height="238" loading="lazy">
-          </button>
-          <button class="jobs__card" type="button" data-modal-open="modal-vacancy-wildberries" aria-haspopup="dialog">
-            <img class="jobs__card-img" src="vacancies/wildberries.jpg" alt="Скриншот вакансии Wildberries на hh.ru" width="336" height="238" loading="lazy">
-          </button>
-          <button class="jobs__card" type="button" data-modal-open="modal-vacancy-aviasales" aria-haspopup="dialog">
-            <img class="jobs__card-img" src="vacancies/aviasales.jpg" alt="Скриншот вакансии Aviasales на hh.ru" width="336" height="238" loading="lazy">
-          </button>
+          <div class="jobs__col">
+            <button class="jobs__card" type="button" data-modal-open="modal-vacancy-ozon" aria-haspopup="dialog">
+              <img class="jobs__card-img" src="vacancies/ozon.jpg" alt="Скриншот вакансии Ozon Tech на hh.ru" width="441" height="238" loading="lazy">
+            </button>
+            <p class="jobs__card-label"><img class="jobs__card-label-icon" src="icons/attention.svg" alt="" width="16" height="16" aria-hidden="true">Вакансия Ozon Tech</p>
+          </div>
+          <div class="jobs__col">
+            <button class="jobs__card" type="button" data-modal-open="modal-vacancy-wildberries" aria-haspopup="dialog">
+              <img class="jobs__card-img" src="vacancies/wildberries.jpg" alt="Скриншот вакансии Wildberries на hh.ru" width="336" height="238" loading="lazy">
+            </button>
+            <p class="jobs__card-label"><img class="jobs__card-label-icon" src="icons/attention.svg" alt="" width="16" height="16" aria-hidden="true">Вакансия Wildberries</p>
+          </div>
+          <div class="jobs__col">
+            <button class="jobs__card" type="button" data-modal-open="modal-vacancy-aviasales" aria-haspopup="dialog">
+              <img class="jobs__card-img" src="vacancies/aviasales.jpg" alt="Скриншот вакансии Aviasales на hh.ru" width="336" height="238" loading="lazy">
+            </button>
+            <p class="jobs__card-label"><img class="jobs__card-label-icon" src="icons/attention.svg" alt="" width="16" height="16" aria-hidden="true">Вакансия Aviasales</p>
+          </div>
         </div>
         <p class="jobs__note"><img class="jobs__note-icon" src="icons/attention.svg" alt="" width="18" height="18">Скриншоты вакансий сделаны на hh.ru</p>
       </div>
@@ -2002,7 +2090,7 @@
       <img class="steps__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
       <div class="section__head fade-up">
         <h2 class="section__title">Как всё устроено по шагам</h2>
-        <img class="steps__mascot-bubble" src="mascot/speech_bubble_1.svg" alt="Здарова! Я — Коткинс. Курс ведет Олег, но главный тут я. В общем, слушай…" width="323" height="115" loading="lazy">
+        <img class="steps__mascot-bubble" src="mascot/speech_bubble_2.svg" alt="Ну или по лапкам… Как удобнее" width="198" height="81" loading="lazy">
       </div>
       <div class="steps__grid fade-up">
         <div class="steps__item">
@@ -2053,15 +2141,22 @@
        вместо жёсткой сетки одинаковых ячеек теперь CSS-масонри (columns: 2,
        .community__chat { break-inside: avoid }), картинки укладываются по
        естественной высоте без растяжения и без обрезки.
-       speech_bubble_2.svg/speech_bubble_3.svg/speech_bubble_4.svg тоже не
-       задействованы в разметке: как и speech_bubble_1.svg в steps, все три несут
-       собственный впечатанный контуром текст («Ну или по лапкам… Как удобнее»,
-       «В предзапись не записался — без микросервисов остался», «Ты это… Заходи,
-       если что»), но по смыслу это не про комьюнити, а какой-то ещё не размеченной
-       секции они принадлежат — не выяснено, вне периметра задачи. Все три (включая
-       speech_bubble_4.svg) намеренно оставлены задекларированными в «Картинки:»
-       контент-файла как неиспользуемый ассет — по инварианту проекта «каждая
-       картинка в microservices/ задекларирована», ревью Task 7. -->
+       Правка 4 (визуальный заход №1) закрывает и вопрос про speech_bubble_2/3/4:
+       все три несут собственный впечатанный контуром текст («Ну или по лапкам…
+       Как удобнее», «В предзапись не записался — без микросервисов остался»,
+       «Ты это… Заходи, если что») и на живой Tilda стоят каждая на своём месте —
+       не в комьюнити, а в steps (2), над тарифами (3) и в youtube-tg (4), там
+       и расставлены. Кот с репликой из company (mascot/kotkins_small.png +
+       по смыслу не его бейдж) убран — в оригинале кота в секции «Учиться от
+       компании» нет вовсе. mascot/speech_bubble_1.svg («Здарова! Я —
+       Коткинс…») освободился (раньше ошибочно стоял в steps вместо
+       speech_bubble_2.svg) и остаётся неиспользуемым — на живой Tilda он
+       выступает в секции segments («Кому подходит курс», кот+реплика рядом с
+       её заголовком), но добавление туда — структурная правка (новый узел
+       разметки в секции, которую не трогаем в этом заходе), не точечная,
+       поэтому вне периметра. Файл остаётся на диске и задекларирован в
+       «Картинки:» секции segments контент-файла как неиспользуемый актив —
+       по инварианту проекта «каждая картинка в microservices/ задекларирована». -->
   <section class="section community">
     <div class="container">
       <div class="community__head fade-up">
@@ -2368,8 +2463,9 @@
             <div class="project__author-role">Senior Engineer в BigTech</div>
           </div>
         </div>
-        <a class="btn btn--primary project__cta" href="#tariffs" data-goal="project-result">
+        <a class="btn btn--primary project__cta btn--rated" href="#tariffs" data-goal="project-result">
           <span>Записаться на курс</span>
+          <img class="btn__badge" src="icons/rating_badge.svg" alt="Рейтинг курса 4,94 из 5" width="93" height="33" loading="lazy">
         </a>
       </div>
     </div>
@@ -3063,17 +3159,17 @@
         <h2 class="section__title">BigTech’и, купившие этот курс своим будущим синьерам</h2>
       </div>
       <div class="bigtech__grid">
-        <img class="bigtech__logo fade-up" src="companies/yandex.png" alt="Яндекс" width="800" height="311" loading="lazy">
-        <img class="bigtech__logo fade-up" src="companies/sovcombank.png" alt="Совкомбанк" width="1080" height="420" loading="lazy">
-        <img class="bigtech__logo fade-up" src="companies/ozon.png" alt="OZON" width="800" height="311" loading="lazy">
-        <img class="bigtech__logo fade-up" src="companies/avito.png" alt="Авито" width="1080" height="420" loading="lazy">
-        <img class="bigtech__logo fade-up" src="companies/wildberries.png" alt="Wildberries" width="1080" height="420" loading="lazy">
-        <img class="bigtech__logo fade-up" src="companies/tbank.png" alt="Т-Банк" width="940" height="180" loading="lazy">
-        <img class="bigtech__logo fade-up" src="companies/vk.png" alt="VK" width="1092" height="136" loading="lazy">
-        <img class="bigtech__logo fade-up" src="companies/sber.png" alt="Сбербанк" width="704" height="172" loading="lazy">
+        <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/yandex.png" alt="Яндекс" width="800" height="311" loading="lazy"></div>
+        <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/sovcombank.png" alt="Совкомбанк" width="1080" height="420" loading="lazy"></div>
+        <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/ozon.png" alt="OZON" width="800" height="311" loading="lazy"></div>
+        <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/avito.png" alt="Авито" width="1080" height="420" loading="lazy"></div>
+        <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/wildberries.png" alt="Wildberries" width="1080" height="420" loading="lazy"></div>
+        <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/tbank.png" alt="Т-Банк" width="940" height="180" loading="lazy"></div>
+        <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/vk.png" alt="VK" width="1092" height="136" loading="lazy"></div>
+        <div class="bigtech__cell"><img class="bigtech__logo fade-up" src="companies/sber.png" alt="Сбербанк" width="704" height="172" loading="lazy"></div>
       </div>
       <div class="bigtech__cta fade-up">
-        <a class="btn btn--dark" href="#company" data-goal="bigtech">Учиться от компании</a>
+        <a class="btn btn--primary" href="#company" data-goal="bigtech">Учиться от компании</a>
       </div>
     </div>
   </section>
@@ -3094,10 +3190,12 @@
        курса. Блока «честно»/гарантий (.honest) нет: подходящего текста в
        секции tariffs нет, гарантия возврата в контент-файле стоит под секцией
        faq — не наш rec-список, придумывать здесь нечего. -->
-  <section class="section" id="tariffs" aria-label="Стоимость">
+  <section class="section pricing" id="tariffs" aria-label="Стоимость">
     <div class="container">
+      <img class="pricing__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
       <div class="pricing__scarcity fade-up">
         <span class="scarcity"><span class="scarcity__dot" aria-hidden="true"></span>Начинаем осенью 2026</span>
+        <img class="pricing__mascot-bubble" src="mascot/speech_bubble_3.svg" alt="В предзапись не записался — без микросервисов остался" width="265" height="79" loading="lazy">
       </div>
 
       <div class="pricing__facts fade-up">
@@ -3176,13 +3274,13 @@
        ссылкой на якорь. Заголовка тоже нет: у подраздела в контент-файле нет
        строки «Заголовок:», есть только тело и кнопка — aria-label взят из
        названия самого подраздела в контент-файле («Учиться от компании»).
-       mascot/kotkins_small.png — тот же переиспользуемый декор-«облако», что и
-       в segments/project-result/youtube-tg (см. комментарий в секции segments),
-       здесь в роли peek-в-угол по образцу .who__mascot. -->
+       Правка 4 (визуальный заход №1): mascot/kotkins_small.png убран — на
+       живой Tilda в этой карточке кота нет вовсе, он был здесь по ошибке
+       предыдущего захода (в оригинале кот с репликой «Ты это… Заходи, если
+       что» стоит в секции youtube-tg ниже, туда и перенесён). -->
   <section class="section company" id="company" aria-label="Учиться от компании">
     <div class="container">
       <div class="company__card fade-up">
-        <img class="company__mascot" src="mascot/kotkins_small.png" alt="" width="607" height="1201" loading="lazy" aria-hidden="true">
         <p class="company__text">Чтобы оплатить курс от лица компании, пожалуйста, напиши мне в Telegram</p>
         <div class="company__cta">
           <a class="btn btn--primary" href="https://t.me/olezhek28_support" target="_blank" rel="noopener">Перейти в Telegram</a>
@@ -3207,8 +3305,10 @@
        компонентов через каскад. -->
   <section class="section ytch" id="youtube-tg" aria-labelledby="ytch-title">
     <div class="container">
+      <img class="ytch__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
       <div class="section__head fade-up">
         <h2 class="section__title" id="ytch-title">Кстати, Олег ведет YouTube и ламповый TG-канальчик</h2>
+        <img class="ytch__mascot-bubble" src="mascot/speech_bubble_4.svg" alt="Ты это… Заходи, если что" width="271" height="57" loading="lazy">
       </div>
 
       <div class="ytch__grid">
@@ -3399,8 +3499,9 @@
        вопрос?», текст-ссылка на поддержку в Telegram. Юр-футер уже сверстан
        в Task 3 отдельно и сюда не переносится (см. комментарий у .footer в
        CSS). Класс блока НЕ final__card: этот селектор уже зарезервирован в
-       токенах (см. .mech, .tier--light, .final__card, .jobs { --focus:
-       var(--light-ink) } в RESET) под светлые островки — здесь же тёмная
+       токенах (см. .mech, .tier--light, .final__card, .project__plate,
+       .stories__card { --focus: var(--light-ink) } в RESET) под светлые
+       островки — здесь же тёмная
        карточка на тёмном фоне, тёмное фокус-кольцо на ней стало бы
        невидимым. icons/tg_icon.svg залит в #182023 (тёмный, под светлую
        подложку) — кладём его в жёлтый кружок var(--accent), а не прямо на
