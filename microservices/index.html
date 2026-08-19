@@ -1089,6 +1089,102 @@
   body.gc-lock { overflow: hidden; }
   @media (prefers-reduced-motion: reduce) { .gc-modal__panel { animation: none; } }
 
+  /* ===== TASK 10: YOUTUBE/TG (ytch) / FAQ (faq) / «ЕСТЬ ВОПРОС?» (final) ===== */
+  /* ---- ytch («ютуб-канал») — НЕ .yt__*: этот namespace уже занят video-reviews
+     (Task 8, квадратные превью отзывов с play-кружком, см. выше по файлу).
+     Здесь другая раскладка (3 колонки, 16:9, play поверх картинкой), общих
+     классов с video-reviews быть не должно, иначе один компонент сломает другой. ---- */
+  .ytch__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+  .ytch__card { display: block; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); transition: border-color .25s var(--ease), transform .25s var(--ease); }
+  .ytch__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  .ytch__card:hover .ytch__play { transform: translate(-50%,-50%) scale(1.08); }
+  .ytch__thumb { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg-secondary); }
+  .ytch__thumb img:first-child { width: 100%; height: 100%; object-fit: cover; }
+  .ytch__play { position: absolute; top: 50%; left: 50%; width: 52px; height: 52px; transform: translate(-50%,-50%); transition: transform .3s var(--ease); filter: drop-shadow(0 8px 20px rgba(0,0,0,.5)); }
+  .ytch__name { padding: 16px 18px 20px; font-family: var(--display); font-size: 15px; font-weight: 500; line-height: 1.35; color: var(--text-h); letter-spacing: -0.01em; }
+  .ytch__actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  @media (max-width: 960px) {
+    .ytch__grid { grid-template-columns: 1fr 1fr; gap: 18px; }
+  }
+  @media (max-width: 640px) {
+    .ytch__grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 32px; }
+    .ytch__actions { flex-direction: column; align-items: stretch; }
+  }
+
+  /* ---- faq (та же механика раскрытия, что у .program__*, см. Task 6) ---- */
+  .faq { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .faq__item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); transition: background .3s var(--ease), border-color .3s var(--ease); }
+  .faq__item:hover { border-color: var(--border-acc); }
+  .faq__item--open { background: var(--bg-secondary); border-color: var(--border-acc); }
+  .faq__q { margin: 0; }
+  .faq__qbtn {
+    all: unset; box-sizing: border-box; width: 100%; cursor: pointer;
+    padding: 24px 26px; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    border-radius: var(--r-lg);
+  }
+  .faq__qbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-md); }
+  .faq__qbtn:active .faq__toggle { transform: scale(.94); }
+  .faq__qtext { font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); line-height: 1.4; letter-spacing: -0.01em; text-wrap: pretty; }
+  .faq__toggle {
+    position: relative; width: 40px; height: 40px; border-radius: var(--r-md);
+    background: var(--bg-primary); color: var(--text-mute); border: 1px solid var(--border-acc);
+    flex-shrink: 0; transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .18s var(--ease);
+  }
+  .faq__toggle::before, .faq__toggle::after {
+    content: ''; position: absolute; top: 50%; left: 50%; background: currentColor; border-radius: 1px;
+    transition: transform .35s var(--ease);
+  }
+  .faq__toggle::before { width: 14px; height: 1.5px; transform: translate(-50%, -50%); }
+  .faq__toggle::after  { width: 1.5px; height: 14px; transform: translate(-50%, -50%); }
+  .faq__item:hover .faq__toggle { border-color: rgba(223,223,65,.45); color: var(--accent); }
+  .faq__item--open .faq__toggle { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .faq__item--open .faq__toggle::before { transform: translate(-50%, -50%) rotate(45deg); }
+  .faq__item--open .faq__toggle::after  { transform: translate(-50%, -50%) rotate(45deg); }
+  .faq__a { padding: 0 26px 26px; }
+  .faq__a[hidden] { display: none; }
+  .faq__a p { font-size: 15px; line-height: 1.62; color: var(--text-mute); max-width: 70ch; }
+  .faq__a p + p { margin-top: 14px; }
+  .faq__a a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .faq__a a:hover { color: var(--accent-dim); }
+  @media (max-width: 960px) {
+    .faq__qbtn { padding: 20px 20px; }
+    .faq__toggle { width: 36px; height: 36px; }
+    .faq__a { padding: 0 20px 22px; }
+  }
+  @media (max-width: 640px) {
+    .faq__qbtn { padding: 18px 16px; gap: 14px; }
+    .faq__qtext { font-size: 15.5px; }
+    .faq__toggle { width: 34px; height: 34px; }
+    .faq__toggle::before { width: 12px; }
+    .faq__toggle::after  { height: 12px; }
+    .faq__a { padding: 0 16px 20px; }
+    .faq__a p { font-size: 14.5px; }
+  }
+
+  /* ---- «Есть вопрос?» (final) ---- */
+  .final__panel {
+    max-width: 640px; margin: 0 auto; padding: 56px 48px;
+    border-radius: var(--r-xl); background: var(--bg-card); border: 1px solid var(--border-card);
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px;
+  }
+  .final__title { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); font-weight: 500; letter-spacing: -0.02em; color: var(--text-h); margin: 0; }
+  .final__link {
+    display: inline-flex; align-items: center; gap: 14px; max-width: 46ch;
+    font-size: 16px; line-height: 1.4; color: var(--text-h); text-align: left;
+  }
+  .final__icon {
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 44px; height: 44px; border-radius: 50%; background: var(--accent);
+    transition: background .2s var(--ease), transform .2s var(--ease);
+  }
+  .final__icon img { width: 20px; height: 20px; }
+  .final__link:hover .final__icon { background: var(--accent-dim); transform: scale(1.06); }
+  .final__link:hover { color: var(--accent); }
+  @media (max-width: 640px) {
+    .final__panel { padding: 40px 26px; gap: 20px; }
+    .final__link { flex-direction: column; text-align: center; gap: 12px; }
+  }
+
 </style>
 </head>
 <body>
@@ -2677,6 +2773,230 @@
     </div>
   </section>
 
+  <!-- ===== TASK 10: YOUTUBE / TG (youtube-tg) =====
+       yt_thumb_1/2/3.png в youtube/ — на самом деле скриншоты чата (community),
+       а не превью роликов: похоже, при подготовке ассетов файлы перепутали
+       с community/chat_*.png. Это единственные картинки, которые контент-файл
+       называет для этой секции, поэтому используем их as is — верстка не
+       завязана на конкретное содержимое файла и подхватит правильный кадр,
+       если ассет заменят. icons/more_video.svg (а не icons/youtube.svg) —
+       именно так называется источник Tilda для иконки на кнопке «Смотреть
+       больше видео», см. Картинки в контент-файле. Классы — .ytch__*, а не
+       .yt__*: namespace .yt__* уже занят video-reviews (Task 8, квадратные
+       превью-отзывы с play-кружком) — общее имя сломало бы один из двух
+       компонентов через каскад. -->
+  <section class="section ytch" id="youtube-tg" aria-labelledby="ytch-title">
+    <div class="container">
+      <div class="section__head fade-up">
+        <h2 class="section__title" id="ytch-title">Кстати, Олег ведет YouTube и ламповый TG-канальчик</h2>
+      </div>
+
+      <div class="ytch__grid">
+        <a class="ytch__card fade-up" href="https://youtu.be/2cxmJUJ2Ge0?si=SOFLB2SxjT8SgeVn" target="_blank" rel="noopener">
+          <div class="ytch__thumb">
+            <img src="youtube/yt_thumb_1.png" alt="" width="1180" height="2557" loading="lazy">
+            <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
+          </div>
+          <div class="ytch__name">Почему 87% Go Roadmap учат не тому</div>
+        </a>
+        <a class="ytch__card fade-up" href="https://youtu.be/HPXUE28R8ZI?si=MUgiC7zHd3X2pR1O" target="_blank" rel="noopener">
+          <div class="ytch__thumb">
+            <img src="youtube/yt_thumb_2.png" alt="" width="1180" height="2559" loading="lazy">
+            <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
+          </div>
+          <div class="ytch__name">Чистая АРХИТЕКТУРА GOLANG — ультимативный гайд на реальном проекте [за 3 часа]</div>
+        </a>
+        <a class="ytch__card fade-up" href="https://youtu.be/lc3ATNxWQbI?si=JduZQAUA0WkVhY8x" target="_blank" rel="noopener">
+          <div class="ytch__thumb">
+            <img src="youtube/yt_thumb_3.png" alt="" width="1180" height="2557" loading="lazy">
+            <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
+          </div>
+          <div class="ytch__name">Context в Go: всё, что нужно знать разработчику</div>
+        </a>
+      </div>
+
+      <div class="ytch__actions fade-up">
+        <a class="btn btn--dark btn--lg" href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener">
+          <img src="icons/more_video.svg" alt="" width="16" height="18" aria-hidden="true">
+          Смотреть больше видео
+        </a>
+        <a class="btn btn--dark btn--lg" href="https://telegram.me/olezhek28go" target="_blank" rel="noopener">
+          <img src="icons/telegram.svg" alt="" width="16" height="17" aria-hidden="true">
+          Перейти в TG-канал
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TASK 10: FAQ (faq) =====
+       Аккордеон — та же механика, что и в program (Task 6): button[aria-expanded]
+       + [aria-controls] + переключение [hidden] через JS, кружок с «+», который
+       поворотом двух палочек превращается в крестик. Нативные <details>/<summary>
+       из SD намеренно не используются — иначе на странице было бы два разных
+       способа сворачивания-разворачивания. Все пункты свёрнуты по умолчанию.
+       «паттрены» в пятом вопросе — опечатка оригинала (см. CLAUDE.md, «Ngix»/
+       «Jagger»), переносим как есть. -->
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="container">
+      <div class="section__head section__head--center fade-up">
+        <h2 class="section__title" id="faq-title">Заблуждения и частые вопросы</h2>
+      </div>
+
+      <div class="faq">
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-1-head" aria-expanded="false" aria-controls="faq-1-body">
+              <span class="faq__qtext">Как-то все сложно... Я еще не дорос до такого уровня</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-1-body" role="region" aria-labelledby="faq-1-head" hidden>
+            <p>Микросервисы сейчас используют почти в каждой BigTech-компании. Если ты знаешь основы синтаксиса языка GO или любой другой язык программирования, то без проблем сможешь усвоить всю программу курса.</p>
+            <p>По поводу уровня сложности — мы будем идти поэтапно от простого к сложному, от теории к практике + ты сможешь задавать любые вопросы в чате или на онлайн-встречах. Курс подразумевает прямое взаимодействие со мной на всех этапах — даже на проверке практических заданий:)</p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-2-head" aria-expanded="false" aria-controls="faq-2-body">
+              <span class="faq__qtext">Я не знаю GO... Кажется, я ничего не пойму на курсе</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-2-body" role="region" aria-labelledby="faq-2-head" hidden>
+            <p>Если знаешь другие языки программирования, то все будет понятно. Например, ко мне часто приходят ребята, которые пишут на php, js, java, c#, c++ и ruby.</p>
+            <p>Но если хочешь освоить Go на практике, советую ознакомиться с основами синтаксиса — на курсе так будет гораздо проще.</p>
+            <p>На Stepik есть бесплатный курс по основам — рекомендую:) Вот ссылка – <a href="https://stepik.org/course/96832/syllabus" target="_blank" rel="noopener">Thanks Go</a></p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-3-head" aria-expanded="false" aria-controls="faq-3-body">
+              <span class="faq__qtext">А я точно смогу применять эти знания на практике?</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-3-body" role="region" aria-labelledby="faq-3-head" hidden>
+            <p>Весь курс — это совокупность опыта и знаний, которые я приобрел, пока работал в Озоне и Авито. То, чему я буду учить на курсе — это те знания, без которых невозможно работать в BigTech-компании, использующей микросервисы.</p>
+            <p>Я работаю старшим инженером в Avito, и 80% информации курса применяется нашей командой на практике каждый день. Остальные 20% - это глубокие знания, которые могут пригодиться в сложных и непонятных рабочих ситуациях</p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-4-head" aria-expanded="false" aria-controls="faq-4-body">
+              <span class="faq__qtext">Как бесплатно прокачать базу по GO для курса?</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-4-body" role="region" aria-labelledby="faq-4-head" hidden>
+            <p>На Stepik есть бесплатный курс по основам — рекомендую:) Вот ссылка – <a href="https://stepik.org/course/54403/promo?search=7968873230" target="_blank" rel="noopener">Программирование на Golang</a>, но в будущем я сделаю свой.</p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-5-head" aria-expanded="false" aria-controls="faq-5-body">
+              <span class="faq__qtext">Чем новая версия курса отличается от предыдущей?</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-5-body" role="region" aria-labelledby="faq-5-head" hidden>
+            <p>Это совершенно новый курс — с проектом, гораздо интереснее и сложнее предыдущего. Он глубже проработан, и включает новые технологии и темы: Nginx, DDD, Транзакции, Блокировки в Postgres и Redis, OpenTelemetry, нагрузочное тестирование и паттрены распределенных систем</p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-6-head" aria-expanded="false" aria-controls="faq-6-body">
+              <span class="faq__qtext">Я не из России. Можно оплатить иностранной картой / валютой?</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-6-body" role="region" aria-labelledby="faq-6-head" hidden>
+            <p>Да, на сайте подключена платежная система, которая позволяет оплачивать курс в любой валюте и из любой страны:)</p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-7-head" aria-expanded="false" aria-controls="faq-7-body">
+              <span class="faq__qtext">Я – юридическое лицо. Можно оплатить курс своему сотруднику?</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-7-body" role="region" aria-labelledby="faq-7-head" hidden>
+            <p>Конечно! Чтобы оплатить курс от лица компании, пожалуйста, напишите мне в Telegram – я отвечу сразу, как увижу сообщение:)</p>
+            <p><a href="https://t.me/olezhek28" target="_blank" rel="noopener">Написать в Telegram</a></p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-8-head" aria-expanded="false" aria-controls="faq-8-body">
+              <span class="faq__qtext">Можно вернуть деньги, если курс не понравится / передумаю?</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-8-body" role="region" aria-labelledby="faq-8-head" hidden>
+            <p>Да, я верну тебе всю стоимость курса, если в течение первой недели после старта ты поймёшь, что курс тебе не нравится / не подходит. Если захочешь уйти после первой недели, то мы перерассчитаем стоимость курса и вернём тебе остаток</p>
+            <p>Если захочешь уйти после первой недели, то мы перерассчитаем стоимость обучения и вернем тебе остаток</p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-9-head" aria-expanded="false" aria-controls="faq-9-body">
+              <span class="faq__qtext">Сколько нужно уделять времени курсу? Я смогу совмещать всё с работой?</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-9-body" role="region" aria-labelledby="faq-9-head" hidden>
+            <p>Каждую неделю тебе будут открываться новые видеоуроки с практическим заданием + каждую неделю мы будем проводить QA-сессии в онлайн-формате, чтобы разобрать задания и ответить на вопросы по теме.</p>
+            <p>Я сделал такой формат специально для того, чтобы у тебя была возможность легко совмещать прохождение курса с учёбой или работой.</p>
+            <p>Ты сможешь проходить курс в удобном для себя темпе — записи уроков останутся с тобой на 2 года.</p>
+          </div>
+        </div>
+
+        <div class="faq__item fade-up">
+          <h3 class="faq__q">
+            <button class="faq__qbtn" type="button" id="faq-10-head" aria-expanded="false" aria-controls="faq-10-body">
+              <span class="faq__qtext">Что делать, если я не успею сдать практическое задание в дедлайн?</span>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq__a" id="faq-10-body" role="region" aria-labelledby="faq-10-head" hidden>
+            <p>Если ты не успел сдать практическое задание в дедлайн, ты всегда сможешь сделать это чуть позже. Если случилась ситуация, что курс закончился, а ты ещё не отправил задание, то у тебя будет 1 дополнительный месяц на проверку после окончания курса:)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TASK 10: «ЕСТЬ ВОПРОС?» (final) =====
+       По контент-файлу секция final — это только этот блок: заголовок «Есть
+       вопрос?», текст-ссылка на поддержку в Telegram. Юр-футер уже сверстан
+       в Task 3 отдельно и сюда не переносится (см. комментарий у .footer в
+       CSS). Класс блока НЕ final__card: этот селектор уже зарезервирован в
+       токенах (см. .mech, .tier--light, .final__card, .jobs { --focus:
+       var(--light-ink) } в RESET) под светлые островки — здесь же тёмная
+       карточка на тёмном фоне, тёмное фокус-кольцо на ней стало бы
+       невидимым. icons/tg_icon.svg залит в #182023 (тёмный, под светлую
+       подложку) — кладём его в жёлтый кружок var(--accent), а не прямо на
+       тёмную карточку, иначе иконка слилась бы с фоном. -->
+  <section class="section final">
+    <div class="container">
+      <div class="final__panel fade-up">
+        <h2 class="final__title">Есть вопрос?</h2>
+        <a class="final__link" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener" data-goal="final">
+          <span class="final__icon" aria-hidden="true"><img src="icons/tg_icon.svg" alt="" width="20" height="20"></span>
+          <span>Пиши в телеграм — отвечу сразу, как увижу сообщение:)</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== ПОПАПЫ СКРИНШОТОВ ВАКАНСИЙ =====
        Универсальный механизм модалок страницы: триггер несёт атрибут data-modal-open
        со значением, равным id попапа; сам попап получает этот id и атрибут hidden
@@ -3107,6 +3427,17 @@
       var body = item.querySelector('.program__body');
       btn.addEventListener('click', function () {
         var open = item.classList.toggle('program__item--open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        body.hidden = !open;
+      });
+    });
+
+    // ===== FAQ: та же механика аккордеона, что и у программы, каждый пункт независим =====
+    document.querySelectorAll('.faq__item').forEach(function (item) {
+      var btn = item.querySelector('.faq__qbtn');
+      var body = item.querySelector('.faq__a');
+      btn.addEventListener('click', function () {
+        var open = item.classList.toggle('faq__item--open');
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         body.hidden = !open;
       });
