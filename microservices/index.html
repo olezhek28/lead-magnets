@@ -266,7 +266,16 @@
   .btn--lg.btn--rated { padding-right: 12px; }
   .btn--lg .btn__badge { height: 30px; }
 
-  /* ===== ШАПКА (NAV) ===== */
+  /* ===== ШАПКА (NAV) =====
+     Два состояния, переключаются JS по window.scrollY (см. <script> в конце
+     файла, updateHeaderScrolled): наверху страницы — только логотип и кнопка
+     «Меню» с бургером, без пунктов и без CTA; при скролле на .header
+     появляется класс .is-scrolled — .header__inner собирается в капсулу
+     (скругление, своя подложка, обводка) с пунктами навигации и жёлтой
+     кнопкой «Записаться на курс», бургер прячется. На ≤960px пункты и CTA
+     всегда скрыты, а бургер всегда виден — тот же брейкпоинт, что и раньше
+     (мобильное меню не зависит от скролла), только с видимой подписью
+     «Меню» рядом с иконкой вместо icon-only кнопки. */
   .header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     background: rgba(16, 23, 26, 0.74);
@@ -275,10 +284,15 @@
     box-shadow: 0 1px 0 rgba(255,255,255,.03) inset;
     transition: background .3s var(--ease), border-color .3s var(--ease);
   }
-  .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 78px; position: relative; transition: height .3s var(--ease); }
+  .header__inner {
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    height: 78px; position: relative; border-radius: 0; margin: 0;
+    background: transparent; border: 1px solid transparent;
+    transition: height .3s var(--ease), background .3s var(--ease), border-color .3s var(--ease), margin .3s var(--ease), padding .3s var(--ease);
+  }
   .header__logo { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); letter-spacing: -0.02em; flex-shrink: 0; }
   .header__logo b { color: var(--accent); font-weight: 700; }
-  .header__nav { display: flex; gap: 6px; }
+  .header__nav { display: none; gap: 6px; }
   .header__nav-link {
     position: relative; font-size: 14px; font-weight: 500; color: var(--text-mute);
     padding: 8px 12px; border-radius: var(--r-sm);
@@ -296,13 +310,28 @@
      задача, которая заведёт секции с этими id */
   .header__nav-link.is-current { color: var(--accent); }
   .header__nav-link.is-current::after { transform: scaleX(1); background: rgba(223,223,65,.55); }
-  .header__cta { padding: 12px 20px; font-size: 13px; flex-shrink: 0; }
+  .header__cta { display: none; padding: 12px 20px; font-size: 13px; flex-shrink: 0; }
 
-  .menu-toggle { display: none; background: none; border: none; padding: 8px; border-radius: var(--r-sm); }
-  .menu-toggle span { display: block; width: 24px; height: 2px; background: var(--text-h); margin: 5px 0; border-radius: 2px; transition: transform .3s var(--ease), opacity .2s var(--ease); }
-  .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-  .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  /* капсула — только на .is-scrolled и только там, где пункты вообще видны (>960px) */
+  .header.is-scrolled .header__inner {
+    height: auto; margin: 14px 0; padding: 8px 8px 8px 26px; border-radius: 999px;
+    background: rgba(24,32,35,.94); border-color: var(--border-acc);
+    box-shadow: var(--sh-lift);
+  }
+  .header.is-scrolled .header__nav { display: flex; }
+  .header.is-scrolled .header__cta { display: inline-flex; }
+  .header.is-scrolled .menu-toggle { display: none; }
+
+  .menu-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: none; border: none; padding: 8px 10px; border-radius: var(--r-sm); cursor: pointer;
+  }
+  .menu-toggle__label { font-size: 14px; font-weight: 500; color: var(--text-h); }
+  .menu-toggle__icon { display: inline-flex; flex-direction: column; }
+  .menu-toggle__icon span { display: block; width: 24px; height: 2px; background: var(--text-h); margin: 5px 0; border-radius: 2px; transition: transform .3s var(--ease), opacity .2s var(--ease); }
+  .menu-toggle[aria-expanded="true"] .menu-toggle__icon span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] .menu-toggle__icon span:nth-child(2) { opacity: 0; }
+  .menu-toggle[aria-expanded="true"] .menu-toggle__icon span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   .nav-mobile { display: none; }
   .nav-mobile.open {
     display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
@@ -378,8 +407,12 @@
   /* ===== RESPONSIVE ===== */
   @media (max-width: 960px) {
     .container { padding: 0 24px; }
-    .header__nav { display: none; }
-    .menu-toggle { display: block; }
+    /* мобильное/планшетное меню не зависит от скролла — бургер с подписью
+       всегда виден, капсула с пунктами и CTA всегда скрыта */
+    .header__nav, .header.is-scrolled .header__nav { display: none; }
+    .header__cta, .header.is-scrolled .header__cta { display: none; }
+    .menu-toggle, .header.is-scrolled .menu-toggle { display: inline-flex; }
+    .header.is-scrolled .header__inner { margin: 0; padding: 0; border-radius: 0; background: transparent; box-shadow: none; }
     .footer__bottom { grid-template-columns: 1fr; gap: 32px; }
     .footer__links-row { align-items: flex-start; }
     .footer__links a { text-align: left; white-space: normal; }
@@ -476,6 +509,18 @@
   .cta-capsule .btn { border-radius: 999px; padding: 21px 44px; font-size: 15.5px; }
 
   /* ===== SEGMENTS — «Курс адаптирован…» (rec765399428) =====
+     Перевёрстка 1 (заход 2): слева крупная карточка только с заголовком секции
+     (вторая часть текста — серым, .who__title-mut, тот же приём, что
+     .hero__title-mut) и Go-код-скриншотом под ней; справа три карточки
+     колонкой, у каждой сверху жёлтый индикатор-квадратик(и). Индикаторы —
+     steps/step_1.svg/step_2.svg/step_3.svg, уже используются в секции get
+     как счётчик 1..6 из 6 (см. .get__step ниже) — здесь ровно тот же файл,
+     просто до 3, а не до 6: рендерится идентично (лишние прозрачные пиксели
+     справа от квадратов не видны). Код-скриншот под левой карточкой —
+     learning_process/video_lesson.png, уже используется в секции steps
+     (шаг 1); на живой Tilda в этой секции стоит тот же файл (сверено
+     байт-в-байт с Frame20335660.png с CDN) — просто как декоративная
+     подложка, без повторной декларации нового файла.
      kotkins_small.png выглядывает из угла последней карточки (тот же файл, что
      Rails-порт применял для сегмента карточек), glass_figure.svg — полупрозрачная
      волнистая подложка за шапкой секции (тот же source-хеш, что и у маскота).
@@ -483,14 +528,30 @@
      (var(--bg-primary) = #10171A) — подложка была физически невидима (контраст
      ~1.1:1 даже с учётом opacity: .5). filter: invert(1) переворачивает #182023
      в ~#E7DFDC — тон, близкий к безопасному --light-bg, — подложка становится
-     видимым, но по-прежнему мягким декором, а не удаляется как разметка. */
+     видимым, но по-прежнему мягким декором, а не удаляется как разметка.
+     Кот с репликой «Здарова! Я — Коткинс» (mascot/kotkins.png +
+     mascot/speech_bubble_1.svg) стоит вступлением над сеткой, в обычном
+     потоке — не абсолютным «выглядыванием» из угла, как у .steps__cat/
+     .pricing__cat/.ytch__cat: у секции .who есть overflow:hidden (нужен,
+     чтобы широкая who__deco не создавала горизонтальный скролл), поэтому
+     элемент с отрицательным top для «выглядывания» здесь был бы обрезан. */
   .who { position: relative; padding: 96px 0; overflow: hidden; }
   .who__deco {
     position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
     width: 620px; max-width: 140%; opacity: .5; filter: invert(1); pointer-events: none; z-index: 0;
   }
-  .who .section__head, .who__grid { position: relative; z-index: 1; }
-  .who__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .who .section__head, .who__intro, .who__grid { position: relative; z-index: 1; }
+  .who__intro { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 28px; }
+  .who__cat { width: 84px; height: auto; flex-shrink: 0; pointer-events: none; }
+  .who__mascot-bubble { width: 220px; height: auto; }
+  .who__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .who__lead { display: flex; flex-direction: column; gap: 24px; }
+  .who__title-card { padding: 34px 30px 30px; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card); }
+  .who__title-card .section__title { margin: 0; }
+  .who__title-mut { color: var(--text-mute); font-weight: 400; }
+  .who__code { display: block; width: 100%; height: auto; border-radius: var(--r-lg); border: 1px solid var(--border-card); }
+  .who__list { display: flex; flex-direction: column; gap: 24px; }
+  .who__step { display: block; height: 10px; width: auto; margin-bottom: 4px; }
   .who__card {
     position: relative; padding: 34px 30px 30px; border-radius: var(--r-lg);
     background: var(--bg-card); border: 1px solid var(--border-card);
@@ -601,7 +662,12 @@
 
   @media (max-width: 960px) {
     .hero { padding: 132px 0 72px; }
-    .who__grid, .get__grid { grid-template-columns: repeat(2, 1fr); }
+    .get__grid { grid-template-columns: repeat(2, 1fr); }
+    /* лид (заголовок+код) и список карточек — колонкой, лид сверху, как
+       на живой Tilda в этом же промежутке ширин (см. заход 2, секция who) */
+    .who__grid { grid-template-columns: 1fr; }
+    .who__cat { width: 64px; }
+    .who__mascot-bubble { width: 180px; }
     .jobs { padding: 36px 28px; }
   }
   @media (max-width: 768px) {
@@ -616,7 +682,11 @@
     .cta-capsule__meta { flex-direction: row; justify-content: space-between; padding: 0; min-width: 0; width: 100%; }
     .cta-capsule .btn { width: 100%; }
     .who, .get { padding: 64px 0; }
-    .who__grid, .get__grid { grid-template-columns: 1fr; }
+    .get__grid { grid-template-columns: 1fr; }
+    .who__title-card, .who__card { padding: 26px 22px; }
+    .who__intro { gap: 10px; margin-bottom: 20px; }
+    .who__cat { width: 52px; }
+    .who__mascot-bubble { width: 150px; }
     .who__mascot { width: 58px; }
     .jobs { padding: 28px 20px; gap: 32px; border-radius: var(--r-lg); }
     .jobs__head { flex-direction: column; align-items: flex-start; }
@@ -713,38 +783,41 @@
   }
 
   /* ===== STEPS — «Как всё устроено по шагам» (rec765428053 + rec2045530091) =====
-     Два столбца, естественный DOM-порядок: 1/3 слева, 2/4 справа — как задано
-     в брифе, без модификаторов на элементах. */
+     Перевёрстка 2 (заход 2): карточек-плиток больше нет — четыре шага идут
+     чередующимися строками (.steps__row): нечётные — текст слева/картинка
+     справа, чётные — наоборот, через .steps__row:nth-child(even). Порядок в
+     DOM всегда «текст → картинка» (картинка decorative, alt=""), переключает
+     сторону только CSS (row-reverse) — читающий порядок для скринридера не
+     меняется. На ≤960px (там же, где на живой Tilda чередование схлопывается
+     в стопку) — все строки в один стек «картинка сверху, текст снизу»
+     (column-reverse поверх того же DOM-порядка текст→картинка). */
   .steps { position: relative; }
   /* Правка 3 (визуальное ревью): на живой Tilda кот Коткинс (noroot.png,
      607×1201 — тот же файл, что у нас лежит как mascot/kotkins.png) выглядывает
-     из-за верхнего правого края секции и уходит вниз, за первую карточку сетки.
-     .steps__cat стоит в разметке раньше .steps__grid, поэтому непозиционированные
-     карточки .steps__item (у них своя непрозрачная background) естественным
-     образом перекрывают нижнюю часть кота при вёрстке (paint order по DOM) —
-     это и даёт эффект «выглядывает из-за карточки», без явного z-index. */
+     из-за верхнего правого края секции. .steps__cat стоит в разметке раньше
+     .steps__list, поэтому ничего его специально не перекрывает — держится
+     на paint order и общей высоте шапки секции. */
   .steps__cat { position: absolute; top: -22px; right: 76px; width: 128px; height: auto; pointer-events: none; }
-  .steps__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-  .steps__item {
-    position: relative; background: var(--bg-card); border: 1px solid var(--border-card);
-    border-radius: var(--r-xl); padding: 32px; display: flex; flex-direction: column; gap: 16px;
-    transition: border-color .3s var(--ease), transform .3s var(--ease);
-  }
-  .steps__item:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  .steps__list { display: flex; flex-direction: column; gap: 64px; }
+  .steps__row { display: flex; align-items: center; gap: 48px; }
+  .steps__row:nth-child(even) { flex-direction: row-reverse; }
+  .steps__col--text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .steps__col--img { flex: 1 1 0; min-width: 0; }
   /* Ревью Task 9: icons/checkmark.svg заливается в #182023 — тот же цвет, что и
-     фон .steps__item (var(--bg-card) = #182023), поэтому иконка была физически
+     фон карточки (var(--bg-card) = #182023), поэтому иконка была физически
      невидима (opacity: .8 без инверсии цвета не спасает). Заменено на inline-SVG
      чип тем же способом, что .tier__check в секции tariffs, — одна методика
-     решения на всю страницу вместо двух разных. */
+     решения на всю страницу вместо двух разных. Бейдж остаётся маленьким
+     акцентом перед заголовком шага, теперь в текстовой колонке строки. */
   .steps__check {
     display: inline-flex; align-items: center; justify-content: center;
     width: 28px; height: 28px; border-radius: 7px;
     background: rgba(223,223,65,.12); border: 1px solid rgba(223,223,65,.22);
   }
   .steps__check svg { width: 14px; height: 14px; color: var(--accent); }
-  .steps__img { width: 100%; height: auto; border-radius: var(--r-md); background: var(--bg-primary); }
-  .steps__title { font-family: var(--display); font-size: 19px; font-weight: 500; line-height: 1.32; letter-spacing: -0.01em; color: var(--text-h); }
-  .steps__desc { font-size: 15px; line-height: 1.6; color: var(--text-mute); }
+  .steps__img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); background: var(--bg-primary); border: 1px solid var(--border-card); }
+  .steps__title { font-family: var(--display); font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: -0.015em; color: var(--text-h); }
+  .steps__desc { font-size: 15px; line-height: 1.62; color: var(--text-mute); }
   .steps__star { color: var(--accent); text-decoration: none; margin-left: 2px; }
   .steps__star:hover { text-decoration: underline; }
   /* mascot/speech_bubble_2.svg — не пустая рамка: текст «Ну или по лапкам…
@@ -766,14 +839,16 @@
     font-size: 13.5px; font-weight: 500; transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
   }
   .steps__mascot:hover { background: var(--bg-tertiary); border-color: rgba(223,223,65,.45); color: var(--accent); }
-  .steps__footnote { margin-top: 24px; font-family: var(--mono); font-size: 13px; color: var(--text-faint); }
+  .steps__footnote { margin-top: 32px; font-family: var(--mono); font-size: 13px; color: var(--text-faint); }
 
   @media (max-width: 960px) {
-    .steps__grid { grid-template-columns: 1fr; }
+    .steps__list { gap: 48px; }
+    .steps__row, .steps__row:nth-child(even) { flex-direction: column-reverse; gap: 20px; }
     .steps__cat { width: 96px; right: 40px; top: -14px; }
   }
   @media (max-width: 640px) {
-    .steps__item { padding: 24px; }
+    .steps__list { gap: 36px; }
+    .steps__title { font-size: 19px; }
     /* На ≤640px заголовок секции переносится на две строки и «Кот» перекрывал
        вторую строку («…по шагам») — легальность текста важнее декора,
        прячем маскота на самых узких экранах. */
@@ -781,33 +856,62 @@
   }
 
   /* ===== COMMUNITY — «А еще у нас полный комфортик…» (rec765448890) =====
+     Перевёрстка 3 (заход 2): три колонки — слева столбик из пяти скриншотов
+     чата, в центре мокап телефона (component .phone/.phone__screen,
+     перенесён из system_design/index.html — там уже есть готовый CSS-мокап
+     под ровно этот же блок «комфортик в чатике», не изобретаем второй),
+     справа заголовок + подзаголовок + подпись-плашка. Реального скриншота
+     для мокапа не было — докачан с CDN живой Tilda в Task «заход 2»
+     (community/phone_mockup.png, тот же файл, что на живой странице,
+     Group20633103.png — карусель из трёх экранов там не переносим, это
+     отдельный периметр «карусели» следующего захода, здесь только первый
+     статичный кадр).
      .community__hl воспроизводит подсветку «просто кайфуем» так же, как она
-     сделана на живой Tilda — заливкой фона, без картинки (см. комментарий
-     у разметки секции).
-     Правка 4 (визуальное ревью): пять скриншотов чата отличаются по размеру
-     вчетверо (294×71…1153×535) — в жёсткой сетке одинаковых ячеек мелкие
-     реплики тонули, а крупные скриншоты обрезались/тянулись. Заменено на
-     CSS-масонри (columns: 2) — картинки укладываются по естественной высоте,
-     каждая колонка сама балансируется, ничего не растягивается и не режется.
+     сделана на живой Tilda — заливкой фона, без картинки.
      Кот убран из секции: на живой Tilda его здесь нет вовсе (см. контент-файл,
      правка 4) — настоящее место mascot/kotkins.png внутри steps (правка 3). */
-  .community__head { max-width: 640px; margin: 0 auto 40px; text-align: center; }
+  .community__grid { display: grid; grid-template-columns: 1fr 1.1fr 1.3fr; gap: 32px; align-items: center; }
+  .community__chats { display: flex; flex-direction: column; gap: 14px; }
+  .community__chat { display: block; width: 100%; height: auto; border-radius: var(--r-md); border: 1px solid var(--border-card); }
+  .community__chat:nth-child(odd) { transform: rotate(-1.4deg); }
+  .community__chat:nth-child(even) { transform: rotate(1.4deg); }
+  .community__phone-wrap { display: flex; justify-content: center; }
+  /* мокап телефона — рамка на CSS (скруглённый корпус + вырез-динамик), тот
+     же приём, что .phone в system_design/index.html. */
+  .phone {
+    position: relative; width: 100%; max-width: 260px; aspect-ratio: 9 / 18.6;
+    background: linear-gradient(160deg, #232d31, #141b1e);
+    border: 1px solid var(--border-acc); border-radius: 40px;
+    padding: 12px; box-shadow: var(--sh-lift);
+  }
+  .phone::before {
+    content: ''; position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    width: 54px; height: 6px; border-radius: 999px; background: rgba(0,0,0,.55); z-index: 3;
+  }
+  .phone__screen { position: relative; width: 100%; height: 100%; border-radius: 30px; overflow: hidden; background: var(--bg-primary); }
+  .phone__screen img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .community__info { display: flex; flex-direction: column; gap: 16px; }
   /* Фикс финального ревью: learning_speech.svg залит в #182023 — тот же цвет,
      что фон секции (var(--bg-primary) = #10171A), squiggle был физически
      невидим. filter: invert(1) переворачивает заливку в ~#E7DFDC (тон,
      близкий к --light-bg) — тот же приём и то же обоснование, что у .who__deco. */
-  .community__tail { width: 84px; height: auto; margin: 0 auto 12px; filter: invert(1); opacity: .85; }
-  .community__lead { margin-top: 14px; font-size: 16px; line-height: 1.6; color: var(--text-mute); }
-  .community__chats { columns: 2; column-gap: 16px; margin-bottom: 32px; }
-  .community__chat { display: block; width: 100%; height: auto; border-radius: var(--r-lg); border: 1px solid var(--border-card); break-inside: avoid; margin: 0 0 16px; }
+  .community__tail { width: 84px; height: auto; filter: invert(1); opacity: .85; }
+  .community__lead { font-size: 16px; line-height: 1.6; color: var(--text-mute); }
   .community__caption {
-    position: relative; max-width: 640px; margin: 0 auto; padding: 18px 22px; border-radius: var(--r-lg); background: var(--bg-card);
-    border: 1px solid var(--border-card); font-size: 15.5px; line-height: 1.6; color: var(--text-body); text-align: center;
+    position: relative; padding: 18px 22px; border-radius: var(--r-lg); background: var(--bg-card);
+    border: 1px solid var(--border-card); font-size: 15.5px; line-height: 1.6; color: var(--text-body);
   }
   .community__hl { background: #22282D; color: var(--text-h); padding: 2px 6px; border-radius: 5px; }
 
+  @media (max-width: 960px) {
+    .community__grid { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .community__info { order: 1; align-items: center; }
+    .community__phone-wrap { order: 2; }
+    .community__chats { order: 3; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .community__chats .community__chat { width: 130px; transform: none; }
+  }
   @media (max-width: 640px) {
-    .community__chats { columns: 1; }
+    .community__chats .community__chat { width: 96px; }
   }
 
   /* ===== HOMEWORK — аккордеон из 8 ДЗ (правка 2, визуальное ревью) =====
@@ -1390,8 +1494,13 @@
     .ytch__cat { display: none; }
   }
 
-  /* ---- faq (та же механика раскрытия, что у .program__*, см. Task 6) ---- */
-  .faq { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  /* ---- faq (та же механика раскрытия, что у .program__*, см. Task 6) =====
+     Перевёрстка 4 (заход 2): две колонки, вопросы распределены слева-направо
+     (обычный row-major порядок grid: 1-й вопрос — верхний левый, 2-й —
+     верхний правый, 3-й — второй ряд слева и т.д.). Аккордеон и его разметка
+     (button[aria-expanded]+[aria-controls]/[hidden]) не тронуты — меняется
+     только контейнер-раскладка. На ≤640px — одна колонка. */
+  .faq { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 20px; align-items: start; }
   .faq__item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); transition: background .3s var(--ease), border-color .3s var(--ease); }
   .faq__item:hover { border-color: var(--border-acc); }
   .faq__item--open { background: var(--bg-secondary); border-color: var(--border-acc); }
@@ -1438,6 +1547,7 @@
     .faq__toggle::after  { height: 12px; }
     .faq__a { padding: 0 16px 20px; }
     .faq__a p { font-size: 14.5px; }
+    .faq { grid-template-columns: 1fr; }
   }
 
   /* ---- «Есть вопрос?» (final) ---- */
@@ -1485,8 +1595,9 @@
       <a class="header__nav-link" href="#tariffs">Стоимость</a>
     </nav>
     <a class="btn btn--primary header__cta" href="#tariffs" data-goal="header">Записаться на&nbsp;курс</a>
-    <button class="menu-toggle" id="menu-toggle" aria-label="Меню" aria-expanded="false" aria-controls="nav-mobile">
-      <span></span><span></span><span></span>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-mobile">
+      <span class="menu-toggle__label">Меню</span>
+      <span class="menu-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
     </button>
     <div class="nav-mobile container" id="nav-mobile">
       <a class="header__nav-link" href="#about-course">О курсе</a>
@@ -1551,27 +1662,45 @@
   </section>
 
   <!-- ===== КОМУ ПОДХОДИТ КУРС (segments, rec765399428) =====
-       В разметке Tilda внутри карточки описание идёт перед заголовком, на экране —
-       наоборот; здесь и в контент-файле порядок уже экранный (заголовок → описание). -->
+       Перевёрстка 1 (заход 2): слева — карточка с заголовком секции и Go-код-
+       скриншотом под ней, справа — три карточки колонкой с квадратиками-
+       индикаторами (1/2/3). В разметке Tilda внутри карточки описание идёт
+       перед заголовком, на экране — наоборот; здесь порядок уже экранный
+       (заголовок → описание). Кот с репликой «Здарова! Я — Коткинс» —
+       реплика, которую заход 1 убрал из секции steps как неверно привязанную;
+       её настоящее место — здесь, вступлением перед сеткой (см. контент-файл,
+       секция segments). -->
   <section class="who">
     <img class="who__deco" src="course_adapted/glass_figure.svg" alt="" width="279" height="43" aria-hidden="true">
     <div class="container">
-      <div class="section__head fade-up">
-        <h2 class="section__title">Курс адаптирован под частые проблемы backend-a,<br>которые встречаются на работе</h2>
+      <div class="who__intro fade-up">
+        <img class="who__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
+        <img class="who__mascot-bubble" src="mascot/speech_bubble_1.svg" alt="Здарова! Я — Коткинс" width="323" height="115" loading="lazy">
       </div>
       <div class="who__grid fade-up">
-        <div class="who__card">
-          <h3 class="who__title">Перехожу на Go — хочу быстро адаптироваться и не писать как на старом языке</h3>
-          <p class="who__desc">Узнаешь все необходимое про внутрянку Go и микросервисную архитектуру: HTTP, OpenAPI, gRPC, Kafka, Redis, Postgres, Prometheus, Grafana, Jagger, Elasticsearch, Kibana, Envoy, OpenTelemetry и др., чтобы сменить стек без потери в ЗП и сразу работать на интересных проектах.</p>
+        <div class="who__lead">
+          <div class="who__title-card">
+            <h2 class="section__title">Курс адаптирован под частые проблемы backend-a, <span class="who__title-mut">которые встречаются на работе</span></h2>
+          </div>
+          <img class="who__code" src="learning_process/video_lesson.png" alt="" width="1161" height="1573" loading="lazy">
         </div>
-        <div class="who__card">
-          <h3 class="who__title">Пишу на Go, но застрял в типовых задачах — хочу расти дальше</h3>
-          <p class="who__desc">Узнаешь лучшие практики, нюансы и лайфхаки построения микросервисов, которые применяются в бигтехах, чтобы вырасти из рутины и начать решать сложные инженерные задачи.</p>
-        </div>
-        <div class="who__card">
-          <h3 class="who__title">Хочу уверенно проходить собесы и повысить свой грейд и зарплату</h3>
-          <p class="who__desc">Напишешь реальный проект из 5 микросервисов, разберёшься как всё взаимодействует между собой и сможешь уверенно отвечать на вопросы по архитектуре и технологиям на собесах в топовые компании.</p>
-          <img class="who__mascot" src="mascot/kotkins_small.png" alt="" width="607" height="1201" aria-hidden="true">
+        <div class="who__list">
+          <div class="who__card">
+            <img class="who__step" src="steps/step_1.svg" alt="" width="88" height="13">
+            <h3 class="who__title">Перехожу на Go — хочу быстро адаптироваться и не писать как на старом языке</h3>
+            <p class="who__desc">Узнаешь все необходимое про внутрянку Go и микросервисную архитектуру: HTTP, OpenAPI, gRPC, Kafka, Redis, Postgres, Prometheus, Grafana, Jagger, Elasticsearch, Kibana, Envoy, OpenTelemetry и др., чтобы сменить стек без потери в ЗП и сразу работать на интересных проектах.</p>
+          </div>
+          <div class="who__card">
+            <img class="who__step" src="steps/step_2.svg" alt="" width="88" height="13">
+            <h3 class="who__title">Пишу на Go, но застрял в типовых задачах — хочу расти дальше</h3>
+            <p class="who__desc">Узнаешь лучшие практики, нюансы и лайфхаки построения микросервисов, которые применяются в бигтехах, чтобы вырасти из рутины и начать решать сложные инженерные задачи.</p>
+          </div>
+          <div class="who__card">
+            <img class="who__step" src="steps/step_3.svg" alt="" width="88" height="13">
+            <h3 class="who__title">Хочу уверенно проходить собесы и повысить свой грейд и зарплату</h3>
+            <p class="who__desc">Напишешь реальный проект из 5 микросервисов, разберёшься как всё взаимодействует между собой и сможешь уверенно отвечать на вопросы по архитектуре и технологиям на собесах в топовые компании.</p>
+            <img class="who__mascot" src="mascot/kotkins_small.png" alt="" width="607" height="1201" aria-hidden="true">
+          </div>
         </div>
       </div>
     </div>
@@ -2079,12 +2208,15 @@
   </section>
 
   <!-- ===== КАК ВСЁ УСТРОЕНО ПО ШАГАМ (steps, rec765428053 + rec2045530091) =====
-       Четыре шага двухколоночной сеткой (естественный порядок DOM даёт ровно
-       раскладку 1/3 слева, 2/4 справа). Звёздочка в шаге 3 ведёт на сноску
-       под сеткой. Правка 2: отдельной модалки ДЗ больше нет — все 8 заданий
-       теперь аккордеоном в секции homework ниже, реплика маскота в шаге 2
-       ведёт туда обычной якорной ссылкой. Правка 3: mascot/kotkins.png
-       выглядывает из-за верхнего правого угла секции — см. .steps__cat. -->
+       Перевёрстка 2 (заход 2): карточек-плиток больше нет — четыре шага идут
+       чередующимися строками (шаг 1 и 3 текстом слева/картинкой справа, 2 и 4
+       — наоборот; см. контент-файл, секция steps). Сторону переключает CSS
+       (.steps__row:nth-child(even)), DOM-порядок в каждой строке одинаковый:
+       текст, потом картинка. Звёздочка в шаге 3 ведёт на сноску под списком.
+       Правка 2: отдельной модалки ДЗ больше нет — все 8 заданий теперь
+       аккордеоном в секции homework ниже, реплика маскота в шаге 2 ведёт туда
+       обычной якорной ссылкой. Правка 3: mascot/kotkins.png выглядывает из-за
+       верхнего правого угла секции — см. .steps__cat. -->
   <section class="section steps" id="education">
     <div class="container">
       <img class="steps__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
@@ -2092,31 +2224,47 @@
         <h2 class="section__title">Как всё устроено по шагам</h2>
         <img class="steps__mascot-bubble" src="mascot/speech_bubble_2.svg" alt="Ну или по лапкам… Как удобнее" width="198" height="81" loading="lazy">
       </div>
-      <div class="steps__grid fade-up">
-        <div class="steps__item">
-          <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <img class="steps__img" src="learning_process/video_lesson.png" alt="" width="1161" height="1573" loading="lazy">
-          <h3 class="steps__title">Смотришь видеоуроки и ходишь на онлайн-встречи с разборами практических заданий и вопросов</h3>
-          <p class="steps__desc">Каждую неделю будет открываться несколько уроков. Будешь изучать микросервисы лапку за лапкой, без полыхающих дедлайнов, ну и еще кое-чего:)</p>
+      <div class="steps__list fade-up">
+        <div class="steps__row">
+          <div class="steps__col steps__col--text">
+            <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3 class="steps__title">Смотришь видеоуроки и ходишь на онлайн-встречи с разборами практических заданий и вопросов</h3>
+            <p class="steps__desc">Каждую неделю будет открываться несколько уроков. Будешь изучать микросервисы лапку за лапкой, без полыхающих дедлайнов, ну и еще кое-чего:)</p>
+          </div>
+          <div class="steps__col steps__col--img">
+            <img class="steps__img" src="learning_process/video_lesson.png" alt="" width="1161" height="1573" loading="lazy">
+          </div>
         </div>
-        <div class="steps__item">
-          <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <img class="steps__img" src="learning_process/homework.png" alt="" width="1121" height="693" loading="lazy">
-          <h3 class="steps__title">Делаешь практическое задание с упором на реальную практику</h3>
-          <p class="steps__desc">Задания полностью моделируют бизнес-таски в BigTech-компаниях. Короче, Коткинс сделал все, чтобы ты был готов к настоящей работе</p>
-          <a class="steps__mascot" href="#homework">Коткинс, какие будут задания?</a>
+        <div class="steps__row">
+          <div class="steps__col steps__col--text">
+            <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3 class="steps__title">Делаешь практическое задание с упором на реальную практику</h3>
+            <p class="steps__desc">Задания полностью моделируют бизнес-таски в BigTech-компаниях. Короче, Коткинс сделал все, чтобы ты был готов к настоящей работе</p>
+            <a class="steps__mascot" href="#homework">Коткинс, какие будут задания?</a>
+          </div>
+          <div class="steps__col steps__col--img">
+            <img class="steps__img" src="learning_process/homework.png" alt="" width="1121" height="693" loading="lazy">
+          </div>
         </div>
-        <div class="steps__item">
-          <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <img class="steps__img" src="learning_process/feedback.png" alt="" width="1121" height="693" loading="lazy">
-          <h3 class="steps__title">Получаешь подробный фидбек по практическому заданию и эталонное решение от Олега<a class="steps__star" href="#steps-footnote" aria-describedby="steps-footnote">*</a></h3>
-          <p class="steps__desc">Кожаные скрупулезно проверят практическое задание и покажут ошибки. А ещё отправят видео с идеальным решением, как бы они сами писали код в этом кейсе — с разбором всех нюансов и типичных ошибок</p>
+        <div class="steps__row">
+          <div class="steps__col steps__col--text">
+            <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3 class="steps__title">Получаешь подробный фидбек по практическому заданию и эталонное решение от Олега<a class="steps__star" href="#steps-footnote" aria-describedby="steps-footnote">*</a></h3>
+            <p class="steps__desc">Кожаные скрупулезно проверят практическое задание и покажут ошибки. А ещё отправят видео с идеальным решением, как бы они сами писали код в этом кейсе — с разбором всех нюансов и типичных ошибок</p>
+          </div>
+          <div class="steps__col steps__col--img">
+            <img class="steps__img" src="learning_process/feedback.png" alt="" width="1121" height="693" loading="lazy">
+          </div>
         </div>
-        <div class="steps__item">
-          <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <img class="steps__img" src="learning_process/materials.png" alt="" width="1121" height="693" loading="lazy">
-          <h3 class="steps__title">Читаешь допматериалы</h3>
-          <p class="steps__desc">Забугорные курсы, статейки, видосики — короче, не заскучаешь!</p>
+        <div class="steps__row">
+          <div class="steps__col steps__col--text">
+            <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3 class="steps__title">Читаешь допматериалы</h3>
+            <p class="steps__desc">Забугорные курсы, статейки, видосики — короче, не заскучаешь!</p>
+          </div>
+          <div class="steps__col steps__col--img">
+            <img class="steps__img" src="learning_process/materials.png" alt="" width="1121" height="693" loading="lazy">
+          </div>
         </div>
       </div>
       <p class="steps__footnote fade-up" id="steps-footnote">* На тарифе с обратной связью по практическим заданиям</p>
@@ -2124,54 +2272,51 @@
   </section>
 
   <!-- ===== КОМЬЮНИТИ И ЧАТ (community, rec765448890) =====
+       Перевёрстка 3 (заход 2): три колонки — слева столбик из пяти скриншотов
+       чата (chat_1…chat_5, без изменений), в центре мокап телефона с реальным
+       скриншотом переписки (community/phone_mockup.png — докачан с CDN живой
+       Tilda, см. комментарий у .phone в CSS), справа заголовок, подзаголовок
+       и подпись-плашка «просто кайфуем». На живой Tilda мокап — карусель из
+       трёх экранов; карусели в этом заходе не трогаем (отдельный периметр),
+       здесь один статичный первый кадр.
        mascot/learning_speech.svg — маленький волнистый «хвостик»-указатель у
        заголовка. Привязка сверена с живой Tilda (JS-инспекция DOM rec765448890
        18.08.2026): исходник tild3738…/photo.svg на странице имеет натуральные
        размеры 169×21 — это ровно learning_speech.svg, а не speech_bubble_4.svg
        (271×57, полноразмерная плашка-баббл), как было в контент-файле раньше.
-       Метка «Картинки:» в контент-файле поправлена этой же задачей.
        Подсветка «просто кайфуем» на живой странице — обычный background-color
        (#22282D), без картинки, поэтому воспроизведена CSS-классом .community__hl
        без лишнего SVG.
-       Правка 4 (визуальное ревью) закрывает открытый вопрос про mascot/kotkins.png
-       выше: файла действительно нет в DOM этой секции на живой странице — кот
-       убран из разметки, декларация перенесена в секцию steps, где он и
-       выглядывает на самом деле (см. правку 3 и комментарий у .steps__cat).
-       Пять скриншотов чата (chat_1…chat_5) отличаются по размеру вчетверо —
-       вместо жёсткой сетки одинаковых ячеек теперь CSS-масонри (columns: 2,
-       .community__chat { break-inside: avoid }), картинки укладываются по
-       естественной высоте без растяжения и без обрезки.
-       Правка 4 (визуальный заход №1) закрывает и вопрос про speech_bubble_2/3/4:
-       все три несут собственный впечатанный контуром текст («Ну или по лапкам…
-       Как удобнее», «В предзапись не записался — без микросервисов остался»,
-       «Ты это… Заходи, если что») и на живой Tilda стоят каждая на своём месте —
-       не в комьюнити, а в steps (2), над тарифами (3) и в youtube-tg (4), там
-       и расставлены. Кот с репликой из company (mascot/kotkins_small.png +
-       по смыслу не его бейдж) убран — в оригинале кота в секции «Учиться от
-       компании» нет вовсе. mascot/speech_bubble_1.svg («Здарова! Я —
-       Коткинс…») освободился (раньше ошибочно стоял в steps вместо
-       speech_bubble_2.svg) и остаётся неиспользуемым — на живой Tilda он
-       выступает в секции segments («Кому подходит курс», кот+реплика рядом с
-       её заголовком), но добавление туда — структурная правка (новый узел
-       разметки в секции, которую не трогаем в этом заходе), не точечная,
-       поэтому вне периметра. Файл остаётся на диске и задекларирован в
-       «Картинки:» секции segments контент-файла как неиспользуемый актив —
-       по инварианту проекта «каждая картинка в microservices/ задекларирована». -->
+       Кот в этой секции по-прежнему не стоит — файла нет в DOM этой секции на
+       живой странице, его настоящее место в steps (см. правку 3 там). Реплика
+       «Здарова! Я — Коткинс» (mascot/speech_bubble_1.svg), которая раньше
+       числилась здесь неиспользуемым активом, этим заходом добавлена в
+       секцию segments («Кому подходит курс») — её настоящее место на живой
+       Tilda, декларация перенесена в контент-файл туда же. -->
   <section class="section community">
     <div class="container">
-      <div class="community__head fade-up">
-        <img class="community__tail" src="mascot/learning_speech.svg" alt="" width="169" height="21" aria-hidden="true">
-        <h2 class="section__title">А еще у нас полный комфортик в чатике и на лекциях:)</h2>
-        <p class="community__lead">Обсуждаем задания и болтаем за жизнь без духоты и формальностей</p>
+      <div class="community__grid">
+        <div class="community__chats fade-up">
+          <img class="community__chat" src="community/chat_1.png" alt="" width="1148" height="251" loading="lazy">
+          <img class="community__chat" src="community/chat_2.png" alt="" width="973" height="211" loading="lazy">
+          <img class="community__chat" src="community/chat_3.png" alt="" width="1153" height="535" loading="lazy">
+          <img class="community__chat" src="community/chat_4.png" alt="" width="1135" height="757" loading="lazy">
+          <img class="community__chat" src="community/chat_5.png" alt="" width="294" height="71" loading="lazy">
+        </div>
+        <div class="community__phone-wrap fade-up">
+          <div class="phone">
+            <div class="phone__screen">
+              <img src="community/phone_mockup.png" alt="Переписка в чате потока" width="1180" height="2559" loading="lazy">
+            </div>
+          </div>
+        </div>
+        <div class="community__info fade-up">
+          <img class="community__tail" src="mascot/learning_speech.svg" alt="" width="169" height="21" aria-hidden="true">
+          <h2 class="section__title">А еще у нас полный комфортик в чатике и на лекциях:)</h2>
+          <p class="community__lead">Обсуждаем задания и болтаем за жизнь без духоты и формальностей</p>
+          <p class="community__caption">У нас учатся парни и крутые гошницы, и мы <span class="community__hl">просто кайфуем</span> в течение всего потока:)</p>
+        </div>
       </div>
-      <div class="community__chats fade-up">
-        <img class="community__chat" src="community/chat_1.png" alt="" width="1148" height="251" loading="lazy">
-        <img class="community__chat" src="community/chat_2.png" alt="" width="973" height="211" loading="lazy">
-        <img class="community__chat" src="community/chat_3.png" alt="" width="1153" height="535" loading="lazy">
-        <img class="community__chat" src="community/chat_4.png" alt="" width="1135" height="757" loading="lazy">
-        <img class="community__chat" src="community/chat_5.png" alt="" width="294" height="71" loading="lazy">
-      </div>
-      <p class="community__caption fade-up">У нас учатся парни и крутые гошницы, и мы <span class="community__hl">просто кайфуем</span> в течение всего потока:)</p>
     </div>
   </section>
 
@@ -3359,7 +3504,7 @@
   <section class="section" id="faq" aria-labelledby="faq-title">
     <div class="container">
       <div class="section__head section__head--center fade-up">
-        <h2 class="section__title" id="faq-title">Заблуждения и частые вопросы</h2>
+        <h2 class="section__title" id="faq-title">Заблуждения и<br>частые вопросы</h2>
       </div>
 
       <div class="faq">
@@ -3922,6 +4067,14 @@
       });
     }, { threshold: 0.3 });
     document.querySelectorAll('[data-count]').forEach(function (el) { counterObserver.observe(el); });
+
+    // ===== шапка: капсула с пунктами появляется при скролле =====
+    var headerEl = document.querySelector('.header');
+    function updateHeaderScrolled() {
+      headerEl.classList.toggle('is-scrolled', window.scrollY > 40);
+    }
+    updateHeaderScrolled();
+    window.addEventListener('scroll', updateHeaderScrolled, { passive: true });
 
     // ===== мобильное меню (CSS-состояния .open / aria-expanded уже описаны) =====
     var menuToggle = document.getElementById('menu-toggle');
