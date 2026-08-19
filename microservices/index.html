@@ -222,6 +222,10 @@
 
   .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
 
+  /* Визуально скрытый, но доступный скринридеру текст (правка 1: имя тултипа
+     на кнопке-«плюсике» схемы + подпись play-кнопки видео). */
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
   /* ===== АНИМАЦИИ ПРИ СКРОЛЛЕ ===== */
   /* только opacity + transform: GPU-композит без репейнта */
   .fade-up { transition: opacity .6s var(--ease), transform .6s var(--ease); }
@@ -538,7 +542,7 @@
      атрибут на триггере клика (data-modal-open) и закрытии (data-modal-close).
      Тёмная тема панели — фикс ревью Task 7: изначально .modal__dialog унаследовал
      светлый фон jobs__card (Task 5, там попапы несли только картинку вакансии),
-     но с текстовыми модалками (#homework-modal, и 11 историй в Task 8) светлый
+     но с текстовыми модалками (истории участников, Task 8) светлый
      фон + токены текста под тёмный фон (--text-h/--text-body) давали контраст
      ~1:1. Красим панель, а не текст — так же решено в system_design/index.html
      (.gc-modal__panel: background: var(--bg-card), border: var(--border-card)),
@@ -551,6 +555,18 @@
     overflow: auto; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card);
     box-shadow: var(--sh-lift);
   }
+  /* ===== Правка 6: скроллбар модалок под тему =====
+     Длинные истории участников скроллятся внутри .modal__dialog — раньше там
+     был белый системный скроллбар, чужеродный тёмной странице. Оставляем
+     прокрутку видимой (не auto-hide), просто красим под палитру страницы. */
+  .modal__dialog {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-acc) transparent;
+  }
+  .modal__dialog::-webkit-scrollbar { width: 10px; }
+  .modal__dialog::-webkit-scrollbar-track { background: transparent; }
+  .modal__dialog::-webkit-scrollbar-thumb { background-color: var(--border-acc); border-radius: 999px; border: 2px solid var(--bg-card); }
+  .modal__dialog::-webkit-scrollbar-thumb:hover { background-color: var(--accent); }
   .modal__close {
     position: absolute; top: 10px; right: 10px; z-index: 2; width: 36px; height: 36px;
     display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;
@@ -676,6 +692,15 @@
   /* ===== STEPS — «Как всё устроено по шагам» (rec765428053 + rec2045530091) =====
      Два столбца, естественный DOM-порядок: 1/3 слева, 2/4 справа — как задано
      в брифе, без модификаторов на элементах. */
+  .steps { position: relative; }
+  /* Правка 3 (визуальное ревью): на живой Tilda кот Коткинс (noroot.png,
+     607×1201 — тот же файл, что у нас лежит как mascot/kotkins.png) выглядывает
+     из-за верхнего правого края секции и уходит вниз, за первую карточку сетки.
+     .steps__cat стоит в разметке раньше .steps__grid, поэтому непозиционированные
+     карточки .steps__item (у них своя непрозрачная background) естественным
+     образом перекрывают нижнюю часть кота при вёрстке (paint order по DOM) —
+     это и даёт эффект «выглядывает из-за карточки», без явного z-index. */
+  .steps__cat { position: absolute; top: -22px; right: 76px; width: 128px; height: auto; pointer-events: none; }
   .steps__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
   .steps__item {
     position: relative; background: var(--bg-card); border: 1px solid var(--border-card);
@@ -709,7 +734,8 @@
      обычный текстовый пилюля-баттон, без картинки. */
   .steps__mascot-bubble { width: 220px; height: auto; margin-top: 20px; }
   .steps__mascot {
-    align-self: flex-start; border: 1px solid var(--border-acc); border-radius: 999px;
+    align-self: flex-start; display: inline-block; text-decoration: none;
+    border: 1px solid var(--border-acc); border-radius: 999px;
     background: var(--bg-secondary); color: var(--text-h); padding: 12px 22px;
     font-size: 13.5px; font-weight: 500; transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
   }
@@ -718,15 +744,27 @@
 
   @media (max-width: 960px) {
     .steps__grid { grid-template-columns: 1fr; }
+    .steps__cat { width: 96px; right: 40px; top: -14px; }
   }
   @media (max-width: 640px) {
     .steps__item { padding: 24px; }
+    /* На ≤640px заголовок секции переносится на две строки и «Кот» перекрывал
+       вторую строку («…по шагам») — легальность текста важнее декора,
+       прячем маскота на самых узких экранах. */
+    .steps__cat { display: none; }
   }
 
   /* ===== COMMUNITY — «А еще у нас полный комфортик…» (rec765448890) =====
      .community__hl воспроизводит подсветку «просто кайфуем» так же, как она
      сделана на живой Tilda — заливкой фона, без картинки (см. комментарий
-     у разметки секции). */
+     у разметки секции).
+     Правка 4 (визуальное ревью): пять скриншотов чата отличаются по размеру
+     вчетверо (294×71…1153×535) — в жёсткой сетке одинаковых ячеек мелкие
+     реплики тонули, а крупные скриншоты обрезались/тянулись. Заменено на
+     CSS-масонри (columns: 2) — картинки укладываются по естественной высоте,
+     каждая колонка сама балансируется, ничего не растягивается и не режется.
+     Кот убран из секции: на живой Tilda его здесь нет вовсе (см. контент-файл,
+     правка 4) — настоящее место mascot/kotkins.png внутри steps (правка 3). */
   .community__head { max-width: 640px; margin: 0 auto 40px; text-align: center; }
   /* Фикс финального ревью: learning_speech.svg залит в #182023 — тот же цвет,
      что фон секции (var(--bg-primary) = #10171A), squiggle был физически
@@ -734,41 +772,78 @@
      близкий к --light-bg) — тот же приём и то же обоснование, что у .who__deco. */
   .community__tail { width: 84px; height: auto; margin: 0 auto 12px; filter: invert(1); opacity: .85; }
   .community__lead { margin-top: 14px; font-size: 16px; line-height: 1.6; color: var(--text-mute); }
-  .community__chats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-  .community__chat { width: 100%; height: auto; border-radius: var(--r-lg); border: 1px solid var(--border-card); }
-  .community__chat:nth-child(4), .community__chat:nth-child(5) { grid-column: span 1; }
-  .community__mascot { display: flex; align-items: flex-end; gap: 24px; max-width: 640px; margin: 0 auto; }
-  .community__kotkins { width: 96px; height: auto; flex-shrink: 0; }
+  .community__chats { columns: 2; column-gap: 16px; margin-bottom: 32px; }
+  .community__chat { display: block; width: 100%; height: auto; border-radius: var(--r-lg); border: 1px solid var(--border-card); break-inside: avoid; margin: 0 0 16px; }
   .community__caption {
-    position: relative; padding: 18px 22px; border-radius: var(--r-lg); background: var(--bg-card);
-    border: 1px solid var(--border-card); font-size: 15.5px; line-height: 1.6; color: var(--text-body);
+    position: relative; max-width: 640px; margin: 0 auto; padding: 18px 22px; border-radius: var(--r-lg); background: var(--bg-card);
+    border: 1px solid var(--border-card); font-size: 15.5px; line-height: 1.6; color: var(--text-body); text-align: center;
   }
   .community__hl { background: #22282D; color: var(--text-h); padding: 2px 6px; border-radius: 5px; }
 
+  @media (max-width: 640px) {
+    .community__chats { columns: 1; }
+  }
+
+  /* ===== HOMEWORK — аккордеон из 8 ДЗ (правка 2, визуальное ревью) =====
+     На Tilda это попап (#popup:homework) со списком всех восьми домашних
+     заданий — раньше здесь была карточка+модалка с текстом только первой
+     недели (один и тот же абзац повторялся трижды на странице, считая
+     программу). Теперь — аккордеон, механика идентична .program__*/.faq__*
+     (та же кнопка с aria-expanded, тот же [hidden] на теле). Модалка
+     #homework-modal и её единственный триггер убраны как избыточные —
+     третьей реализации аккордеона на странице быть не должно. */
+  .homework__list { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .homework__item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); transition: background .3s var(--ease), border-color .3s var(--ease); }
+  .homework__item:hover { border-color: var(--border-acc); }
+  .homework__item--open { background: var(--bg-secondary); border-color: var(--border-acc); }
+  .homework__q { margin: 0; }
+  .homework__qbtn {
+    all: unset; box-sizing: border-box; width: 100%; cursor: pointer;
+    padding: 24px 26px; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    border-radius: var(--r-lg);
+  }
+  .homework__qbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-md); }
+  .homework__qbtn:active .homework__toggle { transform: scale(.94); }
+  .homework__qtext { font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); line-height: 1.4; letter-spacing: -0.01em; text-wrap: pretty; }
+  .homework__toggle {
+    position: relative; width: 40px; height: 40px; border-radius: var(--r-md);
+    background: var(--bg-primary); color: var(--text-mute); border: 1px solid var(--border-acc);
+    flex-shrink: 0; transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .18s var(--ease);
+  }
+  .homework__toggle::before, .homework__toggle::after {
+    content: ''; position: absolute; top: 50%; left: 50%; background: currentColor; border-radius: 1px;
+    transition: transform .35s var(--ease);
+  }
+  .homework__toggle::before { width: 14px; height: 1.5px; transform: translate(-50%, -50%); }
+  .homework__toggle::after  { width: 1.5px; height: 14px; transform: translate(-50%, -50%); }
+  .homework__item:hover:not(.homework__item--open) .homework__toggle { border-color: rgba(223,223,65,.45); color: var(--accent); }
+  .homework__item--open .homework__toggle { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .homework__item--open .homework__toggle::before { transform: translate(-50%, -50%) rotate(45deg); }
+  .homework__item--open .homework__toggle::after  { transform: translate(-50%, -50%) rotate(45deg); }
+  .homework__a { padding: 0 26px 26px; }
+  .homework__a[hidden] { display: none; }
+  .homework__a p { font-size: 15px; line-height: 1.62; color: var(--text-mute); max-width: 70ch; margin: 0; }
   @media (max-width: 960px) {
-    .community__chats { grid-template-columns: repeat(2, 1fr); }
+    .homework__qbtn { padding: 20px 20px; }
+    .homework__toggle { width: 36px; height: 36px; }
+    .homework__a { padding: 0 20px 22px; }
   }
   @media (max-width: 640px) {
-    .community__chats { grid-template-columns: 1fr; }
-    .community__mascot { flex-direction: column; align-items: flex-start; }
+    .homework__qbtn { padding: 18px 16px; gap: 14px; }
+    .homework__qtext { font-size: 15.5px; }
+    .homework__toggle { width: 34px; height: 34px; }
+    .homework__toggle::before { width: 12px; }
+    .homework__toggle::after  { height: 12px; }
+    .homework__a { padding: 0 16px 20px; }
+    .homework__a p { font-size: 14.5px; }
   }
 
-  /* ===== HOMEWORK — карточка «ДЗ – неделя №1» (rec765399448/rec2045531601) =====
-     Отдельный видимый триггер модалки, требование Step 3 брифа Task 7 (на
-     Tilda своей секции нет — попап открывается только репликой маскота). */
-  .homework__card {
-    max-width: 760px; margin: 0 auto; text-align: center; background: var(--bg-card);
-    border: 1px solid var(--border-card); border-radius: var(--r-xl); padding: 44px;
-    display: flex; flex-direction: column; align-items: center; gap: 16px;
-  }
-  .homework__title { font-family: var(--display); font-size: 24px; font-weight: 500; color: var(--text-h); }
-  .homework__desc { font-size: 15.5px; line-height: 1.6; color: var(--text-mute); max-width: 56ch; }
-  .homework__btn { margin-top: 8px; }
-
-  /* ===== МОДАЛКА С ТЕКСТОМ (используется #homework-modal) =====
+  /* ===== МОДАЛКА С ТЕКСТОМ (используется 11 модалками историй участников) =====
      Дополняет универсальные .modal/.modal__overlay/.modal__dialog/.modal__close
      из секции vacancies — те попапы несли только картинку, здесь же нужен
-     заголовок и текстовый блок. */
+     заголовок и текстовый блок. Раньше сюда же был привязан #homework-modal —
+     убран правкой 2 (ДЗ переехали в аккордеон на странице, отдельная модалка
+     с текстом только первой недели стала лишней). */
   .modal__dialog { padding: 40px; }
   .modal__title { font-family: var(--display); font-size: 22px; font-weight: 500; color: var(--text-h); margin: 0 0 16px; padding-right: 28px; }
   .modal__body { font-size: 15.5px; line-height: 1.62; color: var(--text-body); }
@@ -783,39 +858,97 @@
      задумывалось для #homework-modal). Скриншоты 1680×3570 сжимались до ~478px
      шириной — текст нечитаем. .modal--img расширяет диалог и снимает паддинг,
      не трогая базовые правила — от них зависят модалка ДЗ и модалки историй. */
-  .modal--img .modal__dialog { max-width: min(1100px, 96vw); padding: 0; }
+  /* width (не только max-width) обязателен: без него .modal__dialog внутри
+     flex-центрирования .modal схлопывается до content-box, а у видео-модалки
+     правки 1 внутри лежит .video-modal__frame с width:100% — проценту не от
+     чего считаться, диалог рендерился 2×2px (найдено на этой же визуальной
+     проверке). У модалок-скриншотов вакансий это раньше маскировалось
+     собственной intrinsic-шириной <img>. */
+  .modal--img .modal__dialog { width: min(1100px, 96vw); max-width: min(1100px, 96vw); padding: 0; }
   @media (max-width: 640px) {
     .modal--img .modal__dialog { padding: 0; }
   }
+  /* Модалка видео «Обзор проекта» (правка 1) переиспользует .modal--img —
+     тот же широкий диалог без паддинга, что и у скриншотов вакансий. */
+  .video-modal__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  .video-modal__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
-  /* ===== PROJECT-RESULT — схема из 5 микросервисов (project-result) =====
-     Один блок с адаптивом вместо трёх блоков Tilda (десктоп + 2 мобильных
-     дубля) — решение контроллера, см. комментарий у разметки секции. */
-  .project__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 48px; margin-bottom: 40px; }
-  .project__head .section__title { max-width: 560px; }
-  .project__subtitle { max-width: 420px; font-size: 15px; line-height: 1.6; color: var(--text-mute); }
-  /* Фикс финального ревью: карточка раньше выглядела как кликабельный видео-
-     плеер (play-кнопка + таймкод «8:00»), но это <div> без ссылки и без
-     обработчика — по клику ничего не происходит. Контент-файл ожидает попап
-     с обзором проекта, но URL самого видео в нём не задокументирован —
-     выдумывать нельзя, попап не реализуем. Убрали play-иконку и таймкод,
-     оставили подпись как обычный текстовый ярлык, без намёка на кликабельность. */
-  .project__video {
-    position: relative; display: inline-flex; align-items: center; margin-bottom: 40px;
-    padding: 16px 24px; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card);
+  /* ===== PROJECT-RESULT — пересборка (правка 1, визуальное ревью) =====
+     Раскладка сверена с живой Tilda (rec765399450): слева заголовок+подзаголовок,
+     справа — ракета, под ней play-кнопка обзора проекта и бейдж GetCourse,
+     ниже на всю ширину — схема архитектуры с тултипами вместо списка dl.
+     Плашка с автором внизу остаётся как раньше, но без ракеты — та переехала
+     наверх, вместе с картинкой ушла и причина «уехавшей за экран» правой
+     колонки на 1440px. */
+  .project__top { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px 56px; align-items: start; margin-bottom: 48px; }
+  .project__intro .section__title { max-width: 520px; }
+  .project__subtitle { margin: 18px 0 0; max-width: 460px; font-size: 15px; line-height: 1.6; color: var(--text-mute); }
+  .project__hero { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; }
+  .project__rocket { width: 100%; max-width: 240px; height: auto; }
+  .project__video-row { display: flex; align-items: center; gap: 14px; width: 100%; }
+  .project__play {
+    all: unset; box-sizing: border-box; cursor: pointer; flex-shrink: 0; width: 56px; height: 56px; border-radius: 50%;
+    display: flex; transition: transform .2s var(--ease); border-radius: 50%;
   }
-  .project__video-title { font-family: var(--display); font-size: 16px; font-weight: 500; color: var(--text-h); }
-  .project__schema { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: start; margin-bottom: 56px; }
-  .project__schema-img { width: 100%; height: auto; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card); }
-  .project__schema-list { display: flex; flex-direction: column; gap: 18px; }
-  .project__schema-item dt { font-family: var(--display); font-size: 15.5px; font-weight: 600; color: var(--text-h); line-height: 1.4; }
-  .project__schema-item dd { margin: 4px 0 0; font-size: 14.5px; line-height: 1.56; color: var(--text-mute); }
+  .project__play:hover, .project__play:focus-visible { transform: scale(1.08); outline: 2px solid var(--accent); outline-offset: 2px; }
+  .project__play img { width: 100%; height: 100%; }
+  .project__video-meta { display: flex; flex-direction: column; gap: 2px; }
+  .project__video-time { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); }
+  .project__video-title { font-family: var(--display); font-size: 14.5px; font-weight: 500; color: var(--text-h); }
+  .project__badge { width: 68px; height: 68px; margin-left: auto; flex-shrink: 0; }
+
+  .project__diagram { position: relative; margin-bottom: 56px; }
+  .project__schema-img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card); }
+  .project__nodes { position: absolute; inset: 0; }
+  .project__node {
+    all: unset; position: absolute; box-sizing: border-box; width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    background: var(--accent); color: var(--accent-ink); font-family: var(--display); font-size: 15px; font-weight: 700; line-height: 1;
+    box-shadow: 0 0 0 3px var(--bg-primary), 0 2px 10px rgba(0,0,0,.4);
+    transition: transform .2s var(--ease), background .2s var(--ease);
+    z-index: 2;
+  }
+  .project__node span { pointer-events: none; }
+  .project__node[aria-expanded="true"] { background: var(--text-h); }
+  .project__node--iam { left: 19.5%; top: 11.9%; transform: translate(-50%, -50%); }
+  .project__node--payment { left: 49.4%; top: 8.2%; transform: translate(-50%, -50%); }
+  .project__node--assembly { left: 89.8%; top: 8.2%; transform: translate(-50%, -50%); }
+  .project__node--order { left: 49.4%; top: 50%; transform: translate(-50%, -50%); }
+  .project__node--kafka { left: 68.2%; top: 50.1%; transform: translate(-50%, -50%); }
+  .project__node--nginx { left: 19.6%; top: 50.2%; transform: translate(-50%, -50%); }
+  .project__node--observability { left: 87.3%; top: 83.2%; transform: translate(-50%, -50%); }
+  .project__node--inventory { left: 49.4%; top: 91.8%; transform: translate(-50%, -50%); }
+  .project__node:hover, .project__node:focus-visible { transform: translate(-50%, -50%) scale(1.15); outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .project__tooltip {
+    position: absolute; z-index: 3; width: max-content; max-width: 250px;
+    background: var(--bg-secondary); border: 1px solid var(--border-acc); border-radius: var(--r-md);
+    padding: 14px 16px; box-shadow: 0 14px 34px rgba(0,0,0,.45);
+  }
+  .project__tooltip[hidden] { display: none; }
+  .project__tooltip-title { margin: 0 0 6px; font-family: var(--display); font-size: 13.5px; font-weight: 600; color: var(--text-h); line-height: 1.35; }
+  .project__tooltip-desc { margin: 0; font-size: 13px; line-height: 1.52; color: var(--text-mute); }
+  /* позиция тултипа = позиция узла + сдвиг в свободную сторону, чтобы не вылезать за края схемы */
+  .project__tooltip--iam { left: 19.5%; top: 11.9%; transform: translate(-6px, 22px); }
+  .project__tooltip--payment { left: 49.4%; top: 8.2%; transform: translate(-50%, 22px); }
+  .project__tooltip--assembly { left: 89.8%; top: 8.2%; transform: translate(calc(-100% + 6px), 22px); }
+  .project__tooltip--order { left: 49.4%; top: 50%; transform: translate(-50%, 22px); }
+  .project__tooltip--kafka { left: 68.2%; top: 50.1%; transform: translate(-50%, 22px); }
+  .project__tooltip--nginx { left: 19.6%; top: 50.2%; transform: translate(-6px, 22px); }
+  .project__tooltip--observability { left: 87.3%; top: 83.2%; transform: translate(calc(-100% + 6px), calc(-100% - 22px)); }
+  .project__tooltip--inventory { left: 49.4%; top: 91.8%; transform: translate(-50%, calc(-100% - 22px)); }
+
+  /* Запасной текстовый список: на 640px схема нечитаема, тултипы бесполезны —
+     см. отчёт о правках. Показываем только на узких экранах. */
+  .project__schema-list--fallback { display: none; }
+  .project__schema-list--fallback dt { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--text-h); line-height: 1.4; }
+  .project__schema-list--fallback dd { margin: 4px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--text-mute); }
+  .project__schema-list--fallback div + div { margin-top: 16px; }
+
   .project__plate {
-    position: relative; overflow: hidden; display: flex; align-items: flex-end; gap: 32px;
+    position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 22px;
     background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl); padding: 44px;
   }
-  .project__rocket { width: 120px; height: auto; flex-shrink: 0; }
-  .project__plate-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
   .project__plate-text { font-size: 16px; line-height: 1.6; color: var(--text-body); max-width: 68ch; }
   .project__author { display: flex; align-items: center; gap: 14px; }
   .project__author-photo { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
@@ -824,12 +957,20 @@
   .project__cta { align-self: flex-start; }
 
   @media (max-width: 960px) {
-    .project__schema { grid-template-columns: 1fr; }
-    .project__plate { flex-direction: column; align-items: flex-start; }
-    .project__rocket { width: 90px; }
+    .project__top { grid-template-columns: 1fr; }
+    .project__hero { align-items: flex-start; }
+    .project__rocket { max-width: 180px; }
   }
   @media (max-width: 640px) {
-    .project__head { flex-direction: column; align-items: flex-start; }
+    /* Прячем саму картинку и оверлей «+»-кнопок (нечитаемо на узком экране),
+       но не .project__diagram целиком — иначе вместе с ним исчез бы и
+       вложенный в него запасной список .project__schema-list--fallback
+       (скрытый родитель прячет потомков независимо от их собственного
+       display; была реальная ошибка на ревью — список не появлялся). */
+    .project__schema-img, .project__nodes { display: none; }
+    .project__schema-list--fallback { display: flex; flex-direction: column; }
+    .project__video-row { flex-wrap: wrap; }
+    .project__badge { margin-left: 0; }
     .project__plate { padding: 28px; }
   }
 
@@ -931,8 +1072,13 @@
   .modal__story-head .modal__title { margin: 0 0 4px; }
   .modal__story-meta { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); }
 
-  /* ---- BIGTECH — ЛОГОСЕТКА КОМПАНИЙ (bigtech) ---- */
-  .bigtech__grid { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 40px 56px; margin: 8px 0 44px; }
+  /* ---- BIGTECH — ЛОГОСЕТКА КОМПАНИЙ (bigtech) =====
+     Правка 5 (визуальное ревью): на живой Tilda это ровная сетка 4×2 (сверено
+     живым инспектированием DOM: восемь <img> лежат по x∈{145,440,734,1029},
+     y — двумя рядами). Раньше был flex-wrap в один ряд — при восьми логотипах
+     фиксированной ширины 7 помещались в первый ряд, восьмой висел один на
+     втором, визуально кривая раскладка. */
+  .bigtech__grid { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; justify-items: center; column-gap: 40px; row-gap: 36px; margin: 8px 0 44px; }
   .bigtech__logo {
     height: 32px; width: auto; max-width: 128px; object-fit: contain;
     filter: grayscale(1); opacity: .68;
@@ -963,7 +1109,7 @@
     .stories__grid { grid-template-columns: 1fr; }
     .modal--story .modal__dialog { padding: 28px 22px; }
     .modal__story-head { gap: 12px; }
-    .bigtech__grid { gap: 28px 36px; }
+    .bigtech__grid { grid-template-columns: repeat(2, 1fr); column-gap: 28px; row-gap: 30px; }
     .bigtech__logo { height: 26px; }
   }
 
@@ -995,7 +1141,16 @@
      scarcity) не использован. mascot/kotkins_small.png — растровый, цвет
      не зависит от фона карточки, поэтому безопасно переиспользован ещё раз
      (peek-в-угол) на карточке «Учиться от компании», как в .who__mascot. */
-  .pricing__scarcity { margin: 0 0 22px; text-align: center; }
+  /* Правка 7 (визуальное ревью): между кнопкой bigtech__cta, плашкой
+     «Начинаем осенью 2026» и карточками «Старт потока/Длительность» было
+     два соседних .section с полным вертикальным паддингом (96px сверху и
+     снизу у каждой) плюс собственные отступы блоков — секция читалась
+     разреженной. .bigtech снизу и #tariffs сверху получают меньший паддинг
+     (эти два блока смысловая пара «CTA компании → тарифы», не нужен двойной
+     воздух между ними), плюс сжаты внутренние отступы самих блоков. */
+  .section.bigtech { padding-bottom: 48px; }
+  #tariffs { padding-top: 48px; }
+  .pricing__scarcity { margin: 0 0 16px; text-align: center; }
   .scarcity {
     display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
     padding: 12px 22px; border-radius: var(--r-md);
@@ -1006,7 +1161,7 @@
   @keyframes scarcityPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(223,223,65,.55); } 60% { box-shadow: 0 0 0 8px rgba(223,223,65,0); } }
   @media (prefers-reduced-motion: reduce) { .scarcity__dot { animation: none; } }
 
-  .pricing__facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 420px; margin: 0 auto 44px; }
+  .pricing__facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 420px; margin: 0 auto 30px; }
   .fact { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 15px 18px; display: flex; flex-direction: column; gap: 7px; }
   .fact__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
   .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
@@ -1831,12 +1986,14 @@
 
   <!-- ===== КАК ВСЁ УСТРОЕНО ПО ШАГАМ (steps, rec765428053 + rec2045530091) =====
        Четыре шага двухколоночной сеткой (естественный порядок DOM даёт ровно
-       раскладку 1/3 слева, 2/4 справа). Реплика маскота в шаге 2 и кнопка
-       карточки ДЗ ниже открывают один и тот же #homework-modal — общий
-       универсальный механизм модалок, описанный в конце файла. Звёздочка в
-       шаге 3 ведёт на сноску под сеткой. -->
+       раскладку 1/3 слева, 2/4 справа). Звёздочка в шаге 3 ведёт на сноску
+       под сеткой. Правка 2: отдельной модалки ДЗ больше нет — все 8 заданий
+       теперь аккордеоном в секции homework ниже, реплика маскота в шаге 2
+       ведёт туда обычной якорной ссылкой. Правка 3: mascot/kotkins.png
+       выглядывает из-за верхнего правого угла секции — см. .steps__cat. -->
   <section class="section steps" id="education">
     <div class="container">
+      <img class="steps__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
       <div class="section__head fade-up">
         <h2 class="section__title">Как всё устроено по шагам</h2>
         <img class="steps__mascot-bubble" src="mascot/speech_bubble_1.svg" alt="Здарова! Я — Коткинс. Курс ведет Олег, но главный тут я. В общем, слушай…" width="323" height="115" loading="lazy">
@@ -1853,7 +2010,7 @@
           <img class="steps__img" src="learning_process/homework.png" alt="" width="1121" height="693" loading="lazy">
           <h3 class="steps__title">Делаешь практическое задание с упором на реальную практику</h3>
           <p class="steps__desc">Задания полностью моделируют бизнес-таски в BigTech-компаниях. Короче, Коткинс сделал все, чтобы ты был готов к настоящей работе</p>
-          <button type="button" class="steps__mascot" data-modal-open="homework-modal">Коткинс, какие будут задания?</button>
+          <a class="steps__mascot" href="#homework">Коткинс, какие будут задания?</a>
         </div>
         <div class="steps__item">
           <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -1882,13 +2039,14 @@
        Подсветка «просто кайфуем» на живой странице — обычный background-color
        (#22282D), без картинки, поэтому воспроизведена CSS-классом .community__hl
        без лишнего SVG.
-       mascot/kotkins.png в текущем DOM секции на живой странице не найден
-       (проверены все img/data-original/background-image внутри rec765448890 —
-       там только 5 chat_N, 3 слайда мобильного мокапа телефона и learning_speech.svg).
-       Оставляю картинку в разметке, т.к. она задекларирована в контент-файле и
-       по брифу «кот Коткинс с репликами живёт здесь» — но контроллеру стоит
-       знать, что её текущее место на живой странице не подтверждено (в отличие
-       от учтённого выше photo.svg — тот подтверждён однозначно).
+       Правка 4 (визуальное ревью) закрывает открытый вопрос про mascot/kotkins.png
+       выше: файла действительно нет в DOM этой секции на живой странице — кот
+       убран из разметки, декларация перенесена в секцию steps, где он и
+       выглядывает на самом деле (см. правку 3 и комментарий у .steps__cat).
+       Пять скриншотов чата (chat_1…chat_5) отличаются по размеру вчетверо —
+       вместо жёсткой сетки одинаковых ячеек теперь CSS-масонри (columns: 2,
+       .community__chat { break-inside: avoid }), картинки укладываются по
+       естественной высоте без растяжения и без обрезки.
        speech_bubble_2.svg/speech_bubble_3.svg/speech_bubble_4.svg тоже не
        задействованы в разметке: как и speech_bubble_1.svg в steps, все три несут
        собственный впечатанный контуром текст («Ну или по лапкам… Как удобнее»,
@@ -1912,120 +2070,317 @@
         <img class="community__chat" src="community/chat_4.png" alt="" width="1135" height="757" loading="lazy">
         <img class="community__chat" src="community/chat_5.png" alt="" width="294" height="71" loading="lazy">
       </div>
-      <div class="community__mascot fade-up">
-        <img class="community__kotkins" src="mascot/kotkins.png" alt="" width="607" height="1201" loading="lazy">
-        <p class="community__caption">У нас учатся парни и крутые гошницы, и мы <span class="community__hl">просто кайфуем</span> в течение всего потока:)</p>
-      </div>
+      <p class="community__caption fade-up">У нас учатся парни и крутые гошницы, и мы <span class="community__hl">просто кайфуем</span> в течение всего потока:)</p>
     </div>
   </section>
 
-  <!-- ===== ДЗ — НЕДЕЛЯ №1 (homework, rec765399448/rec2045531601/rec765399502) =====
-       На Tilda это попап без своего видимого блока — открывается только
-       репликой маскота из steps. По Step 3 брифа заводим отдельную видимую
-       карточку-триггер с тем же попапом. Полный аккордеон из 8 недель — контент
-       секции program (уже перенесён в Task 6, каждая неделя там раскрывает своё
-       задание целиком); эта карточка и модалка сознательно ограничены неделей №1
-       (rec2045531601) — так задано в брифе Task 7 Step 3, не пропуск контента. -->
-  <section class="section homework">
+  <!-- ===== ДЗ — АККОРДЕОН ИЗ 8 НЕДЕЛЬ (homework, rec765399448/rec2045531601/rec765399502) =====
+       Правка 2 (визуальное ревью): на Tilda это попап (#popup:homework) со
+       списком всех восьми домашних заданий. Раньше здесь была карточка+модалка
+       с текстом только первой недели — один и тот же абзац повторялся трижды
+       на странице, считая программу. Теперь — аккордеон всех 8 ДЗ, механика
+       та же, что у .program__*/.faq__* (Task 6/9): <button aria-expanded>,
+       тело через aria-controls, всё свёрнуто по умолчанию. Тексты — из
+       секции program контент-файла (там же, где и раньше, просто без
+       дублирования: program раскрывает разделы недели целиком, здесь —
+       отдельно только «Практическое задание» каждой недели). Реплика
+       маскота в шаге 2 секции steps ведёт сюда якорной ссылкой #homework. -->
+  <section class="section homework" id="homework">
     <div class="container">
-      <div class="homework__card fade-up">
-        <h3 class="homework__title">ДЗ – неделя №1</h3>
-        <p class="homework__desc">Реализовать 3 микросервиса: OrderService (HTTP), InventoryService (gRPC), PaymentService (gRPC). Связать их через gRPC-клиенты — заказ обращается к складу и платёжке.</p>
-        <button type="button" class="btn btn--dark homework__btn" data-modal-open="homework-modal">Посмотреть задание</button>
+      <div class="section__head fade-up">
+        <h2 class="section__title">Домашние задания по неделям</h2>
+      </div>
+      <div class="homework__list">
+        <div class="homework__item fade-up" id="hw-1">
+          <h3 class="homework__q">
+            <button class="homework__qbtn" type="button" id="hw-1-head" aria-expanded="false" aria-controls="hw-1-body">
+              <span class="homework__qtext">ДЗ – неделя №1</span>
+              <span class="homework__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="homework__a" id="hw-1-body" role="region" aria-labelledby="hw-1-head" hidden>
+            <p>Реализовать 3 микросервиса: OrderService (HTTP), InventoryService (gRPC), PaymentService (gRPC). Связать их через gRPC-клиенты — заказ обращается к складу и платёжке.</p>
+          </div>
+        </div>
+        <div class="homework__item fade-up" id="hw-2">
+          <h3 class="homework__q">
+            <button class="homework__qbtn" type="button" id="hw-2-head" aria-expanded="false" aria-controls="hw-2-body">
+              <span class="homework__qtext">ДЗ – неделя №2</span>
+              <span class="homework__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="homework__a" id="hw-2-body" role="region" aria-labelledby="hw-2-head" hidden>
+            <p>Рефакторинг всех 3 сервисов в Clean Architecture. Unit-тесты с моками на сервисный и API-слой. Покрытие ≥40%.</p>
+          </div>
+        </div>
+        <div class="homework__item fade-up" id="hw-3">
+          <h3 class="homework__q">
+            <button class="homework__qbtn" type="button" id="hw-3-head" aria-expanded="false" aria-controls="hw-3-body">
+              <span class="homework__qtext">ДЗ – неделя №3</span>
+              <span class="homework__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="homework__a" id="hw-3-body" role="region" aria-labelledby="hw-3-head" hidden>
+            <p>Поднять PostgreSQL через Docker Compose для OrderService и InventoryService. Написать миграции, заменить хранение в памяти на реальные SQL-запросы. Интегрировать Transaction Manager для атомарного создания заказа</p>
+          </div>
+        </div>
+        <div class="homework__item fade-up" id="hw-4">
+          <h3 class="homework__q">
+            <button class="homework__qbtn" type="button" id="hw-4-head" aria-expanded="false" aria-controls="hw-4-body">
+              <span class="homework__qtext">ДЗ – неделя №4</span>
+              <span class="homework__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="homework__a" id="hw-4-body" role="region" aria-labelledby="hw-4-head" hidden>
+            <p>Внедрить конфигурацию и DI-контейнер во все сервисы. Создать платформенную библиотеку. Реализовать DDD: сущность Part с методами Reserve/Release, Value Objects для свойств компонентов в JSONB, сервис проверки совместимости при заказе</p>
+          </div>
+        </div>
+        <div class="homework__item fade-up" id="hw-5">
+          <h3 class="homework__q">
+            <button class="homework__qbtn" type="button" id="hw-5-head" aria-expanded="false" aria-controls="hw-5-body">
+              <span class="homework__qtext">ДЗ – неделя №5</span>
+              <span class="homework__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="homework__a" id="hw-5-body" role="region" aria-labelledby="hw-5-head" hidden>
+            <p>Поднять Kafka. Создать AssemblyService — новый микросервис, который слушает событие оплаты, «собирает корабль» и отправляет событие завершения сборки. OrderService публикует событие при оплате и обновляет статус при получении результата сборки. Блокировка строк для безопасного резервирования деталей.</p>
+          </div>
+        </div>
+        <div class="homework__item fade-up" id="hw-6">
+          <h3 class="homework__q">
+            <button class="homework__qbtn" type="button" id="hw-6-head" aria-expanded="false" aria-controls="hw-6-body">
+              <span class="homework__qtext">ДЗ – неделя №6</span>
+              <span class="homework__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="homework__a" id="hw-6-body" role="region" aria-labelledby="hw-6-head" hidden>
+            <p>Создать IAM Service — пятый микросервис: Register, Login, Logout, Whoami, GetUser. Пользователи в PostgreSQL, сессии в Redis с ограниченным временем жизни. Добавить HTTP middleware в OrderService и gRPC-интерцептор в InventoryService для проверки сессий через IAM.</p>
+          </div>
+        </div>
+        <div class="homework__item fade-up" id="hw-7">
+          <h3 class="homework__q">
+            <button class="homework__qbtn" type="button" id="hw-7-head" aria-expanded="false" aria-controls="hw-7-body">
+              <span class="homework__qtext">ДЗ – неделя №7</span>
+              <span class="homework__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="homework__a" id="hw-7-body" role="region" aria-labelledby="hw-7-head" hidden>
+            <p>Развернуть полный стек наблюдаемости: коллектор телеметрии, Elasticsearch + Kibana, Prometheus + Grafana, Jaeger. Настроить логи всех сервисов в Kibana. Бизнес-метрики (заказы, выручка) в Grafana. Трассировка полного пути запроса через Order → Inventory → Payment. Вынести инструменты наблюдаемости в платформенную библиотеку.</p>
+          </div>
+        </div>
+        <div class="homework__item fade-up" id="hw-8">
+          <h3 class="homework__q">
+            <button class="homework__qbtn" type="button" id="hw-8-head" aria-expanded="false" aria-controls="hw-8-body">
+              <span class="homework__qtext">ДЗ – неделя №8</span>
+              <span class="homework__toggle" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="homework__a" id="hw-8-body" role="region" aria-labelledby="hw-8-head" hidden>
+            <p>Контейнеризировать все сервисы. Собрать единый Docker Compose со всей инфраструктурой. Настроить Nginx для балансировки OrderService на 3 реплики. Реализовать распределённый Rate Limiter через Redis — единый лимит на все экземпляры. Провести нагрузочное тестирование</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-
-  <div class="modal" id="homework-modal" data-modal hidden>
-    <div class="modal__overlay" data-modal-close></div>
-    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="homework-modal-title" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
-      <h3 class="modal__title" id="homework-modal-title">ДЗ — неделя №1</h3>
-      <div class="modal__body">
-        <p>Реализовать 3 микросервиса: OrderService (HTTP), InventoryService (gRPC), PaymentService (gRPC). Связать их через gRPC-клиенты — заказ обращается к складу и платёжке.</p>
-      </div>
-    </div>
-  </div>
 
   <!-- ===== РЕЗУЛЬТАТ КУРСА — СХЕМА ИЗ 5 МИКРОСЕРВИСОВ (project-result) =====
-       На Tilda три блока: основной (rec765399450) + два мобильных адаптива
-       (rec2087077241, rec765399453/rec765399454). По решению контроллера здесь
-       один блок с адаптивной вёрсткой — мобильные дубли не переносим. Текст
-       берём из десктопного варианта: rec765399454 описывает предыдущую версию
-       курса (MongoDB, Envoy и Telegram-бот вместо актуального стека) —
-       расхождение зафиксировано в контент-файле, это фаза 2.
-       Схема — картинка project/architecture.svg (актуальная версия с Nginx,
-       заменена в Task 2). Подписи сервисов на 390px нечитаемы на самой схеме,
-       поэтому вынесены отдельным текстовым списком рядом — так они остаются
-       доступны и для скринридера. Опечатка «Ngix» в подзаголовке — с живой
-       Tilda, сохраняем намеренно (см. контент-файл). -->
+       Правка 1 (визуальное ревью): полная пересборка по раскладке живой Tilda
+       (rec765399450) — слева заголовок+подзаголовок, справа ракета/видео/бейдж,
+       ниже на всю ширину схема с тултипами вместо списка dl. Раньше правая
+       колонка списка уезжала за экран на 1440px, а ракета висела отдельной
+       карточкой внизу — правка убирает обе проблемы.
+       На Tilda ещё два мобильных дубля (rec2087077241, rec765399453/54) —
+       не переносим, тот же выбор контроллера, что и раньше (см. историю
+       ревью): десктопный текст, один адаптивный блок.
+       Видео обзора — Dzen-embed (https://dzen.ru/embed/oUUZEZV8MAAA, попап
+       #popup:dzenvideo оригинала), iframe создаётся лениво по первому клику
+       по play-кнопке, тем же приёмом, что и виджет GetCourse в конце файла
+       (см. .gc-modal/loadWidget) — сторонний фрейм не должен грузиться у
+       каждого посетителя просто так.
+       Бейдж «Проверено GetCourse» — не картинка из rec765399450 (это ранее
+       предполагалось ошибочно): на деле это сайтовый скрипт
+       qr-hidden-banner.js из блока rec1820993491 (секция cookie), рисующий
+       живой SVG-виджет с фиксированным позиционированием. Гонять сторонний
+       скрипт ради статичной картинки — лишний риск и лишняя аналитика,
+       поэтому бейдж снят как статичный кадр с живой страницы и лежит
+       статикой в project/getcourse-badge.png.
+       Тултипы: восемь узлов схемы — координаты вычислены по самому файлу
+       project/architecture.svg (940×488, узлы найдены по цвету заливки),
+       проценты от размеров контейнера, чтобы не расползались при масштабе.
+       Узел Kafka не нашёлся первым проходом (поиск по цвету плашки — у
+       остальных узлов тёмная заливка #353C44 или своя фирменная, а у Kafka
+       заливки нет вовсе, только белые иконка+подпись поверх фона диаграммы);
+       из-за этого он не виден на белом фоне (так рендерит автономный
+       просмотр SVG в браузере — ровно этим и объясняется путаница при
+       первом проходе), но прекрасно виден на тёмном фоне страницы, где
+       диаграмма реально используется. Координаты уточнены рендером картинки
+       на тёмном фоне и точным поиском белых пикселей — узел лежит на самой
+       линии Order → Assembly, между ними, как и должно быть по тексту
+       тултипа («связывает микросервисы асинхронно»). На 640px, где схема
+       нечитаема, тултипы бесполезны — показываем текстовый список dl тем
+       же восемью описаниями (запасной вариант, тоже доступен для
+       скринридера). Опечатка «Ngix» в подзаголовке — с живой Tilda, сохраняем
+       намеренно (см. контент-файл). -->
   <section class="section project" id="project-result">
     <div class="container">
-      <div class="project__head fade-up">
-        <h2 class="section__title">Результат курса — микросервисная ракета, как на проде</h2>
-        <p class="project__subtitle">API на HTTP и gRPC, PostgreSQL, Kafka и Redis, логирование, метрики, трассировка, алерты, авторизация, Ngix. Все через код, в одной архитектуре без теории ради теории</p>
+      <div class="project__top fade-up">
+        <div class="project__intro">
+          <h2 class="section__title">Результат курса — микросервисная ракета, как на проде</h2>
+          <p class="project__subtitle">API на HTTP и gRPC, PostgreSQL, Kafka и Redis, логирование, метрики, трассировка, алерты, авторизация, Ngix. Все через код, в одной архитектуре без теории ради теории</p>
+        </div>
+        <div class="project__hero">
+          <img class="project__rocket" src="project/rocket.png" alt="" width="553" height="1121" aria-hidden="true">
+          <div class="project__video-row">
+            <button type="button" class="project__play" data-modal-open="video-modal" aria-haspopup="dialog">
+              <img src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
+              <span class="sr-only">Смотреть обзор проекта</span>
+            </button>
+            <div class="project__video-meta">
+              <span class="project__video-time">8:00</span>
+              <span class="project__video-title">Обзор проекта</span>
+            </div>
+            <img class="project__badge" src="project/getcourse-badge.png" alt="Значок «Проверено GetCourse»" width="170" height="170" loading="lazy">
+          </div>
+        </div>
       </div>
 
-      <div class="project__video fade-up">
-        <span class="project__video-title">Обзор проекта</span>
-      </div>
-
-      <div class="project__schema fade-up">
+      <div class="project__diagram fade-up">
         <img class="project__schema-img" src="project/architecture.svg" alt="Схема архитектуры проекта: Client → Nginx-шлюз → IAM/Order/Payment/Inventory-сервисы, Kafka с Assembly-сервисом, хранилища PostgreSQL/Redis, наблюдаемость через OpenTelemetry/Prometheus/Grafana/Jaeger/Kibana" width="940" height="488" loading="lazy">
-        <dl class="project__schema-list">
-          <div class="project__schema-item">
-            <dt>Отвечает за аутентификацию и авторизацию</dt>
+        <div class="project__nodes">
+          <button type="button" class="project__node project__node--iam" id="node-iam-btn" aria-expanded="false" aria-controls="node-iam"><span aria-hidden="true">+</span><span class="sr-only">IAM Service — подробнее</span></button>
+          <div class="project__tooltip project__tooltip--iam" id="node-iam" role="region" aria-labelledby="node-iam-btn" hidden>
+            <h4 class="project__tooltip-title">Отвечает за аутентификацию и авторизацию</h4>
+            <p class="project__tooltip-desc">Пользователи хранятся в PostgreSQL, сессии — в Redis. Проверяет валидность сессии на входе через Envoy и предоставляет информацию о пользователе другим сервисам</p>
+          </div>
+
+          <button type="button" class="project__node project__node--payment" id="node-payment-btn" aria-expanded="false" aria-controls="node-payment"><span aria-hidden="true">+</span><span class="sr-only">Payment Service — подробнее</span></button>
+          <div class="project__tooltip project__tooltip--payment" id="node-payment" role="region" aria-labelledby="node-payment-btn" hidden>
+            <h4 class="project__tooltip-title">Обрабатывает оплату заказов</h4>
+            <p class="project__tooltip-desc">Принимает gRPC-запросы от Order, не имеет своей базы</p>
+          </div>
+
+          <button type="button" class="project__node project__node--assembly" id="node-assembly-btn" aria-expanded="false" aria-controls="node-assembly"><span aria-hidden="true">+</span><span class="sr-only">Assembly Service — подробнее</span></button>
+          <div class="project__tooltip project__tooltip--assembly" id="node-assembly" role="region" aria-labelledby="node-assembly-btn" hidden>
+            <h4 class="project__tooltip-title">Обрабатывает событие «оплата прошла», ждёт 10 секунд и отправляет событие «ракета собрана»</h4>
+            <p class="project__tooltip-desc">Консьюмер Kafka. Симулирует асинхронную обработку заказов</p>
+          </div>
+
+          <button type="button" class="project__node project__node--order" id="node-order-btn" aria-expanded="false" aria-controls="node-order"><span aria-hidden="true">+</span><span class="sr-only">Order Service — подробнее</span></button>
+          <div class="project__tooltip project__tooltip--order" id="node-order" role="region" aria-labelledby="node-order-btn" hidden>
+            <h4 class="project__tooltip-title">Центральный сервис для оформления заказов</h4>
+            <p class="project__tooltip-desc">Общается с Inventory и Payment по gRPC, пишет данные в PostgreSQL, публикует события в Kafka. Доступен по HTTP</p>
+          </div>
+
+          <button type="button" class="project__node project__node--kafka" id="node-kafka-btn" aria-expanded="false" aria-controls="node-kafka"><span aria-hidden="true">+</span><span class="sr-only">Kafka — подробнее</span></button>
+          <div class="project__tooltip project__tooltip--kafka" id="node-kafka" role="region" aria-labelledby="node-kafka-btn" hidden>
+            <h4 class="project__tooltip-title">Связывает микросервисы асинхронно</h4>
+            <p class="project__tooltip-desc">Служит для передачи событий от Order → Assembly → Notification. Настроен в KRaft-режиме без ZooKeeper</p>
+          </div>
+
+          <button type="button" class="project__node project__node--nginx" id="node-nginx-btn" aria-expanded="false" aria-controls="node-nginx"><span aria-hidden="true">+</span><span class="sr-only">Nginx — подробнее</span></button>
+          <div class="project__tooltip project__tooltip--nginx" id="node-nginx" role="region" aria-labelledby="node-nginx-btn" hidden>
+            <h4 class="project__tooltip-title">Маршрутизатор и точка входа в систему</h4>
+            <p class="project__tooltip-desc">Принимает HTTP/gRPC-запросы, перенаправляет их в нужный сервис, валидирует сессию через IAM. Всё взаимодействие снаружи идёт только через него</p>
+          </div>
+
+          <button type="button" class="project__node project__node--observability" id="node-observability-btn" aria-expanded="false" aria-controls="node-observability"><span aria-hidden="true">+</span><span class="sr-only">Observability — подробнее</span></button>
+          <div class="project__tooltip project__tooltip--observability" id="node-observability" role="region" aria-labelledby="node-observability-btn" hidden>
+            <h4 class="project__tooltip-title">Полная система наблюдаемости как в продакшене</h4>
+            <p class="project__tooltip-desc">OpenTelemetry Collector — собирает логи, метрики, трейсы. Prometheus — хранит метрики. Grafana — отображает метрики. Jaeger — визуализирует трейсы. Kibana — визуализирует логи</p>
+          </div>
+
+          <button type="button" class="project__node project__node--inventory" id="node-inventory-btn" aria-expanded="false" aria-controls="node-inventory"><span aria-hidden="true">+</span><span class="sr-only">Inventory Service — подробнее</span></button>
+          <div class="project__tooltip project__tooltip--inventory" id="node-inventory" role="region" aria-labelledby="node-inventory-btn" hidden>
+            <h4 class="project__tooltip-title">Хранит информацию о доступных деталях</h4>
+            <p class="project__tooltip-desc">gRPC-сервис. Позволяет Order’у проверять существование деталей при оформлении заказа</p>
+          </div>
+        </div>
+
+        <dl class="project__schema-list--fallback">
+          <div>
+            <dt>IAM Service — отвечает за аутентификацию и авторизацию</dt>
             <dd>Пользователи хранятся в PostgreSQL, сессии — в Redis. Проверяет валидность сессии на входе через Envoy и предоставляет информацию о пользователе другим сервисам</dd>
           </div>
-          <div class="project__schema-item">
-            <dt>Обрабатывает оплату заказов</dt>
+          <div>
+            <dt>Payment Service — обрабатывает оплату заказов</dt>
             <dd>Принимает gRPC-запросы от Order, не имеет своей базы</dd>
           </div>
-          <div class="project__schema-item">
-            <dt>Обрабатывает событие «оплата прошла», ждёт 10 секунд и отправляет событие «ракета собрана»</dt>
+          <div>
+            <dt>Assembly Service — обрабатывает событие «оплата прошла», ждёт 10 секунд и отправляет событие «ракета собрана»</dt>
             <dd>Консьюмер Kafka. Симулирует асинхронную обработку заказов</dd>
           </div>
-          <div class="project__schema-item">
-            <dt>Центральный сервис для оформления заказов</dt>
+          <div>
+            <dt>Order Service — центральный сервис для оформления заказов</dt>
             <dd>Общается с Inventory и Payment по gRPC, пишет данные в PostgreSQL, публикует события в Kafka. Доступен по HTTP</dd>
           </div>
-          <div class="project__schema-item">
-            <dt>Связывает микросервисы асинхронно</dt>
+          <div>
+            <dt>Kafka — связывает микросервисы асинхронно</dt>
             <dd>Служит для передачи событий от Order → Assembly → Notification. Настроен в KRaft-режиме без ZooKeeper</dd>
           </div>
-          <div class="project__schema-item">
-            <dt>Маршрутизатор и точка входа в систему</dt>
+          <div>
+            <dt>Nginx — маршрутизатор и точка входа в систему</dt>
             <dd>Принимает HTTP/gRPC-запросы, перенаправляет их в нужный сервис, валидирует сессию через IAM. Всё взаимодействие снаружи идёт только через него</dd>
           </div>
-          <div class="project__schema-item">
-            <dt>Полная система наблюдаемости как в продакшене</dt>
+          <div>
+            <dt>Observability — полная система наблюдаемости как в продакшене</dt>
             <dd>OpenTelemetry Collector — собирает логи, метрики, трейсы. Prometheus — хранит метрики. Grafana — отображает метрики. Jaeger — визуализирует трейсы. Kibana — визуализирует логи</dd>
           </div>
-          <div class="project__schema-item">
-            <dt>Хранит информацию о доступных деталях</dt>
+          <div>
+            <dt>Inventory Service — хранит информацию о доступных деталях</dt>
             <dd>gRPC-сервис. Позволяет Order’у проверять существование деталей при оформлении заказа</dd>
           </div>
         </dl>
       </div>
 
       <div class="project__plate fade-up">
-        <img class="project__rocket" src="project/rocket.png" alt="" width="553" height="1121" aria-hidden="true">
-        <div class="project__plate-body">
-          <p class="project__plate-text">Все, как на работе — контрактное программирование, DI, тесты, docker-compose, observability. Это сложный проект, где придётся много писать руками, разбираться в зависимостях и реально прокачиваться как инженер</p>
-          <div class="project__author">
-            <img class="project__author-photo" src="project/instructor_small.png" alt="Олег Козырев" width="445" height="445" loading="lazy">
-            <div>
-              <div class="project__author-name">Олег Козырев</div>
-              <div class="project__author-role">Senior Engineer в BigTech</div>
-            </div>
+        <p class="project__plate-text">Все, как на работе — контрактное программирование, DI, тесты, docker-compose, observability. Это сложный проект, где придётся много писать руками, разбираться в зависимостях и реально прокачиваться как инженер</p>
+        <div class="project__author">
+          <img class="project__author-photo" src="project/instructor_small.png" alt="Олег Козырев" width="445" height="445" loading="lazy">
+          <div>
+            <div class="project__author-name">Олег Козырев</div>
+            <div class="project__author-role">Senior Engineer в BigTech</div>
           </div>
-          <a class="btn btn--primary project__cta" href="#tariffs" data-goal="project-result">
-            <span>Записаться на курс</span>
-          </a>
         </div>
+        <a class="btn btn--primary project__cta" href="#tariffs" data-goal="project-result">
+          <span>Записаться на курс</span>
+        </a>
       </div>
     </div>
   </section>
+
+  <!-- ===== МОДАЛКА ВИДЕО «ОБЗОР ПРОЕКТА» (Dzen-embed) =====
+       Тот же приём, что у виджета GetCourse (см. .gc-modal/loadWidget в конце
+       файла): iframe создаётся по первому клику на play-кнопке, а не лежит в
+       разметке заранее — сторонний фрейм не должен грузиться у каждого
+       посетителя секции project-result. Универсальный модальный механизм
+       (data-modal-open/data-modal-close) только показывает/прячет модалку;
+       создание iframe — отдельный обработчик ниже. -->
+  <div class="modal modal--img" id="video-modal" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Обзор проекта" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <div class="video-modal__frame" id="video-modal-frame"></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var btn = document.querySelector('[data-modal-open="video-modal"]');
+      var frameHost = document.getElementById('video-modal-frame');
+      var created = false;
+      if (!btn || !frameHost) return;
+      btn.addEventListener('click', function () {
+        if (created) return;
+        created = true;
+        var iframe = document.createElement('iframe');
+        iframe.src = 'https://dzen.ru/embed/oUUZEZV8MAAA';
+        iframe.title = 'Обзор проекта — видео';
+        iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen');
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.loading = 'lazy';
+        frameHost.appendChild(iframe);
+      });
+    })();
+  </script>
 
   <!-- ===== АВТОР КУРСА (author, id="speaker") =====
        По образцу system_design/index.html:2571-2674 (структура «биография +
@@ -3040,8 +3395,9 @@
        со значением, равным id попапа; сам попап получает этот id и атрибут hidden
        по умолчанию, элементы закрытия несут атрибут data-modal-close.
        JS (открытие/закрытие/Esc/возврат фокуса, снятие hidden) — общий скрипт
-       Task 7 в конце файла, тот же обслуживает и #homework-modal. Текста в
-       попапах нет, только картинка — по контент-файлу. -->
+       Task 7 в конце файла, тот же обслуживает истории участников и модалку
+       видео project-result. Текста в попапах нет, только картинка — по
+       контент-файлу. -->
   <div class="modal modal--img" id="modal-vacancy-ozon" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Ozon Tech" tabindex="-1">
@@ -3469,6 +3825,17 @@
       });
     });
 
+    // ===== Правка 2: ДЗ — та же механика аккордеона, что у программы/FAQ =====
+    document.querySelectorAll('.homework__item').forEach(function (item) {
+      var btn = item.querySelector('.homework__qbtn');
+      var body = item.querySelector('.homework__a');
+      btn.addEventListener('click', function () {
+        var open = item.classList.toggle('homework__item--open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        body.hidden = !open;
+      });
+    });
+
     // ===== FAQ: та же механика аккордеона, что и у программы, каждый пункт независим =====
     document.querySelectorAll('.faq__item').forEach(function (item) {
       var btn = item.querySelector('.faq__qbtn');
@@ -3479,14 +3846,42 @@
         body.hidden = !open;
       });
     });
+
+    // ===== Правка 1: тултипы узлов схемы project-result — один открыт за раз =====
+    var schemaNodes = Array.prototype.slice.call(document.querySelectorAll('.project__node'));
+    schemaNodes.forEach(function (btn) {
+      var tip = document.getElementById(btn.getAttribute('aria-controls'));
+      if (!tip) return;
+      btn.addEventListener('click', function () {
+        var willOpen = tip.hidden;
+        schemaNodes.forEach(function (other) {
+          var otherTip = document.getElementById(other.getAttribute('aria-controls'));
+          if (otherTip) otherTip.hidden = true;
+          other.setAttribute('aria-expanded', 'false');
+        });
+        if (willOpen) {
+          tip.hidden = false;
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('.project__diagram')) return;
+      schemaNodes.forEach(function (btn) {
+        var tip = document.getElementById(btn.getAttribute('aria-controls'));
+        if (tip) tip.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
   });
 </script>
 
 <!-- ===== УНИВЕРСАЛЬНЫЙ МЕХАНИЗМ МОДАЛОК (Task 7) =====
-     Обслуживает три попапа вакансий (Task 5), #homework-modal (Task 7) и
-     11 модалок историй участников #story-1…#story-11 (Task 8) — тем же
-     механизмом, без правок здесь: разметки атрибутами data-modal-open/
-     data-modal-close на нужный id было достаточно. -->
+     Обслуживает три попапа вакансий (Task 5), 11 модалок историй участников
+     #story-1…#story-11 (Task 8) и модалку видео project-result (правка 1) —
+     тем же механизмом, без правок здесь: разметки атрибутами data-modal-open/
+     data-modal-close на нужный id было достаточно. #homework-modal (Task 7)
+     здесь тоже обслуживался раньше — убран правкой 2 вместе с ДЗ-аккордеоном. -->
 <script>
   (function () {
     var lastTrigger = null;
