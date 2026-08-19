@@ -672,7 +672,17 @@
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .steps__item:hover { border-color: var(--border-acc); transform: translateY(-3px); }
-  .steps__check { width: 44px; height: 18px; opacity: .8; }
+  /* Ревью Task 9: icons/checkmark.svg заливается в #182023 — тот же цвет, что и
+     фон .steps__item (var(--bg-card) = #182023), поэтому иконка была физически
+     невидима (opacity: .8 без инверсии цвета не спасает). Заменено на inline-SVG
+     чип тем же способом, что .tier__check в секции tariffs, — одна методика
+     решения на всю страницу вместо двух разных. */
+  .steps__check {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 7px;
+    background: rgba(223,223,65,.12); border: 1px solid rgba(223,223,65,.22);
+  }
+  .steps__check svg { width: 14px; height: 14px; color: var(--accent); }
   .steps__img { width: 100%; height: auto; border-radius: var(--r-md); background: var(--bg-primary); }
   .steps__title { font-family: var(--display); font-size: 19px; font-weight: 500; line-height: 1.32; letter-spacing: -0.01em; color: var(--text-h); }
   .steps__desc { font-size: 15px; line-height: 1.6; color: var(--text-mute); }
@@ -932,13 +942,15 @@
      микросервисов на Tilda нет ни точной даты старта (только «осень 2026» —
      придумывать ISO-дату нельзя), ни «мест на поток».
      Иконки icons/checkmark.svg и icons/checkmark_light.svg из «Картинки»
-     контент-файла сюда сознательно НЕ добавлены: обе заливаются в #182023, а
-     .steps__check (Task 7) уже кладёт этот же checkmark.svg на карточку с
-     тем же фоном var(--bg-card) = #182023 — там иконка фактически невидима
-     (только opacity: .8 без инверсии цвета). Плодить тот же баг на новой
-     тёмной карточке тарифа смысла нет; договорка про сам checkmark.svg —
-     на ревью Task 7 или отдельную задачу фазы 2. icons/bonus.svg (тоже
-     заливка #182023) использован — но только на светлой карточке
+     контент-файла сюда сознательно НЕ добавлены: обе заливаются в #182023 —
+     тот же цвет, что фон карточек var(--bg-card), на нём иконка физически
+     невидима (только opacity: .8 без инверсии цвета не спасает). Ровно этот
+     баг обнаружился на ревью в .steps__check (Task 7, тот же checkmark.svg на
+     той же var(--bg-card)) и исправлен там же тем же способом — заменой на
+     inline-SVG чип, см. .steps__check ниже по файлу. Плодить тут третий
+     файловый checkmark с тем же дефектом смысла не было — .tier__check и
+     .steps__check используют одну методику на всю страницу. icons/bonus.svg
+     (тоже заливка #182023) использован — но только на светлой карточке
      («С проверкой», --tier-light), там тёмная заливка видна нормально.
      icons/star.svg по той же причине (тёмная заливка на тёмной плашке
      scarcity) не использован. mascot/kotkins_small.png — растровый, цвет
@@ -1097,7 +1109,7 @@
       <a class="header__nav-link" href="#feedback">Отзывы</a>
       <a class="header__nav-link" href="#tariffs">Стоимость</a>
     </nav>
-    <a class="btn btn--primary header__cta" href="#tariffs">Записаться на&nbsp;курс</a>
+    <a class="btn btn--primary header__cta" href="#tariffs" data-goal="header">Записаться на&nbsp;курс</a>
     <button class="menu-toggle" id="menu-toggle" aria-label="Меню" aria-expanded="false" aria-controls="nav-mobile">
       <span></span><span></span><span></span>
     </button>
@@ -1108,7 +1120,7 @@
       <a class="header__nav-link" href="#speaker">Об авторе</a>
       <a class="header__nav-link" href="#feedback">Отзывы</a>
       <a class="header__nav-link" href="#tariffs">Стоимость</a>
-      <a class="btn btn--primary" href="#tariffs">Записаться на&nbsp;курс</a>
+      <a class="btn btn--primary" href="#tariffs" data-goal="menu">Записаться на&nbsp;курс</a>
       <div class="nav-mobile__social" aria-label="Я в соцсетях">
         <a href="https://t.me/olezhek28" target="_blank" rel="noopener" aria-label="Telegram"><img src="icons/telegram.svg" alt="" width="32" height="32"></a>
         <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener" aria-label="YouTube"><img src="icons/youtube.svg" alt="" width="32" height="32"></a>
@@ -1696,26 +1708,26 @@
       </div>
       <div class="steps__grid fade-up">
         <div class="steps__item">
-          <img class="steps__check" src="icons/checkmark.svg" alt="" width="44" height="18" aria-hidden="true">
+          <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <img class="steps__img" src="learning_process/video_lesson.png" alt="" width="1161" height="1573" loading="lazy">
           <h3 class="steps__title">Смотришь видеоуроки и ходишь на онлайн-встречи с разборами практических заданий и вопросов</h3>
           <p class="steps__desc">Каждую неделю будет открываться несколько уроков. Будешь изучать микросервисы лапку за лапкой, без полыхающих дедлайнов, ну и еще кое-чего:)</p>
         </div>
         <div class="steps__item">
-          <img class="steps__check" src="icons/checkmark.svg" alt="" width="44" height="18" aria-hidden="true">
+          <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <img class="steps__img" src="learning_process/homework.png" alt="" width="1121" height="693" loading="lazy">
           <h3 class="steps__title">Делаешь практическое задание с упором на реальную практику</h3>
           <p class="steps__desc">Задания полностью моделируют бизнес-таски в BigTech-компаниях. Короче, Коткинс сделал все, чтобы ты был готов к настоящей работе</p>
           <button type="button" class="steps__mascot" data-modal-open="homework-modal">Коткинс, какие будут задания?</button>
         </div>
         <div class="steps__item">
-          <img class="steps__check" src="icons/checkmark.svg" alt="" width="44" height="18" aria-hidden="true">
+          <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <img class="steps__img" src="learning_process/feedback.png" alt="" width="1121" height="693" loading="lazy">
           <h3 class="steps__title">Получаешь подробный фидбек по практическому заданию и эталонное решение от Олега<a class="steps__star" href="#steps-footnote" aria-describedby="steps-footnote">*</a></h3>
           <p class="steps__desc">Кожаные скрупулезно проверят практическое задание и покажут ошибки. А ещё отправят видео с идеальным решением, как бы они сами писали код в этом кейсе — с разбором всех нюансов и типичных ошибок</p>
         </div>
         <div class="steps__item">
-          <img class="steps__check" src="icons/checkmark.svg" alt="" width="44" height="18" aria-hidden="true">
+          <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <img class="steps__img" src="learning_process/materials.png" alt="" width="1121" height="693" loading="lazy">
           <h3 class="steps__title">Читаешь допматериалы</h3>
           <p class="steps__desc">Забугорные курсы, статейки, видосики — короче, не заскучаешь!</p>
