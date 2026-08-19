@@ -1236,7 +1236,26 @@
     display: flex; flex-direction: column; transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .reviews__card:hover { border-color: rgba(16,23,26,.24); transform: translateY(-3px); }
-  .reviews__img { width: 100%; height: auto; display: block; }
+  /* Правка (заход 6): на живой Tilda картинка отзыва не растягивается на свою
+     натуральную высоту — там это отдельный imgwrapper с фиксированной высотой
+     360×640px (замерено JS-инспекцией DOM на rec2078055861), то есть отношение
+     640/360 = 9:16 ровно. Наши скриншоты (591×1279, ~2.16:1) вертикальнее
+     оригинала — там в них видна вся переписка целиком, у нас — только верхний
+     фрагмент. height: auto растягивал карточку на полную высоту скриншота,
+     из-за чего подпись уезжала за нижнюю кромку экрана. Фикс — та же техника
+     обрезки, что уже используется в .yt__thumb img (видеоотзывы): фиксируем
+     пропорцию через aspect-ratio и кадрируем object-fit: cover от верхнего
+     края (object-position: top), чтобы всегда была видна шапка переписки.
+     Ловушка: height: auto здесь обязателен, хотя кажется избыточным рядом с
+     aspect-ratio — у <img> заданы HTML-атрибуты width/height (591×1279),
+     браузер маппит их в CSS-хинт с приоритетом ниже авторских правил, но выше
+     инициального значения. Без явного height:auto этот хинт остаётся
+     единственным объявлением высоты в каскаде, height становится «заданным»,
+     а не auto — и aspect-ratio, который пересчитывает только auto-измерения,
+     на такую высоту не влияет вообще (проверено: без этой строки высота
+     картинки была ровно 1279px на любой ширине, будто aspect-ratio не
+     применялся). */
+  .reviews__img { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; object-position: top; display: block; }
   .reviews__caption { padding: 16px 18px; font-size: 14px; font-weight: 500; color: var(--light-ink); line-height: 1.4; border-top: 1px solid rgba(16,23,26,.08); }
 
   /* ---- ВИДЕООТЗЫВЫ (video-reviews) — переиспользует паттерн .yt__* из
