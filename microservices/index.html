@@ -1874,18 +1874,13 @@
   }
 
   /* ===== TASK 9: ТАРИФЫ (tariffs) / «УЧИТЬСЯ ОТ КОМПАНИИ» (company) =====
-     .tier/.pricing/.fact/.scarcity — перенос system_design/index.html:483-493
-     (scarcity) и 1432-1560 (тарифы), урезан до того, что реально есть в
-     контент-файле: без бейджа «Лучший выбор», без зачёркнутых пунктов/старой
-     цены и без блока «Как оплатить» — на Tilda-странице микросервисов этого
-     текста нет, фаза 1 его не придумывает (см. решение контроллера). Порядок
-     блоков внутри карточки (список → блок цены) переставлен под порядок
-     реального контента: на Tilda цена идёт ПОСЛЕ списка, а не перед ним, как
-     в system_design.
-     Полоса фактов — .fact из system_design/index.html:2691, но с двумя
-     реальными значениями (старт потока, длительность) вместо четырёх: для
-     микросервисов на Tilda нет ни точной даты старта (только «осень 2026» —
-     придумывать ISO-дату нельзя), ни «мест на поток».
+     .tier/.pricing — перенос system_design/index.html:1432-1560 (тарифы),
+     урезан до того, что реально есть в контент-файле: без бейджа «Лучший
+     выбор», без зачёркнутых пунктов/старой цены и без блока «Как оплатить» —
+     на Tilda-странице микросервисов этого текста нет, фаза 1 его не
+     придумывает (см. решение контроллера). Порядок блоков внутри карточки
+     (список → блок цены) переставлен под порядок реального контента: на
+     Tilda цена идёт ПОСЛЕ списка, а не перед ним, как в system_design.
      Иконки icons/checkmark.svg и icons/checkmark_light.svg из «Картинки»
      контент-файла сюда сознательно НЕ добавлены: обе заливаются в #182023 —
      тот же цвет, что фон карточек var(--bg-card), на нём иконка физически
@@ -1898,12 +1893,35 @@
      чип остаётся нужен (.tier__check), это не файловый checkmark. icons/bonus.svg
      тем же способом не используется вовсе (см. правку у .tier__bonus-icon
      ниже — это была не иконка подарка, а посторонний обрезок формы, заменён
-     на инлайновый SVG). icons/star.svg по той же причине (тёмная заливка на
-     тёмной плашке scarcity) не использован. */
-  /* Правка 7 (визуальное ревью): между кнопкой bigtech__cta, плашкой
-     «Начинаем осенью 2026» и карточками «Старт потока/Длительность» было
-     два соседних .section с полным вертикальным паддингом (96px сверху и
-     снизу у каждой) плюс собственные отступы блоков — секция читалась
+     на инлайновый SVG). */
+  /* Правка (заход 16, сверка шапки секции с оригиналом): на живом оригинале
+     (rec770883063) «Начинаем осенью 2026» — это h2 того же масштаба, что и
+     остальные заголовки секций страницы (getComputedStyle на живом узле:
+     font-weight 500, letter-spacing -1px при 26px на узком экране —
+     то же отношение -0.0375em, что и .section__title), а не мелкая
+     капс-плашка с точкой-индикатором — .scarcity/.scarcity__dot вместе с
+     анимацией scarcityPulse были отсебятиной, унаследованной от system_design
+     (там это был реальный badge «Осталось мест» с другим текстом и
+     назначением), убраны вместе с разметкой.
+     Полоса фактов «Старт потока / Длительность» (.pricing__facts/.fact) —
+     туда же: на оригинале в этой секции (rec770883063) нет ничего, кроме
+     заголовка, кота и облачка — сверено по живому DOM (у секции ровно 4
+     .tn-atom: фото кота, SVG-облачко, h2 и служебный tooltip-узел карусели,
+     не связанный с тарифами). Текст «Старт потока» не встречается на всей
+     странице ни разу (проверено и по живому DOM, и по исходному HTML
+     страницы) — придумывать «дату старта потока» как отдельный факт было
+     ошибкой. «Длительность» на странице встречается — но в шапке (hero/
+     bigtech, rec2045225131, класс uc-bigtech, тот же текст «8 недель»), а
+     не в этой секции; она уже отражена в .hero__cta-capsule. Пилюля и полоса
+     фактов пришли из system_design/index.html:483-493 и :2691 соответственно
+     — тот же паттерн переноса соседнего лендинга, что уже случался в этом
+     проекте раньше. Заголовок теперь встаёт в общий узел .section__head
+     .section__head--mascot (тот же приём, что у .steps/.ytch — заголовок
+     слева, пара «облачко + кот» справа на одной высоте с ним, механика
+     общая на все три секции). */
+  /* Правка 7 (визуальное ревью): между кнопкой bigtech__cta и шапкой тарифов
+     было два соседних .section с полным вертикальным паддингом (96px сверху
+     и снизу у каждой) плюс собственные отступы блоков — секция читалась
      разреженной. .bigtech снизу и #tariffs сверху получают меньший паддинг
      (эти два блока смысловая пара «CTA компании → тарифы», не нужен двойной
      воздух между ними), плюс сжаты внутренние отступы самих блоков. */
@@ -1913,28 +1931,15 @@
      файл, что у steps/ytch) выглядывает из-за верхнего правого края секции
      тарифов с репликой «В предзапись не записался — без микросервисов
      остался» (mascot/speech_bubble_3.svg) — тот же приём .steps__cat, только
-     секция называется .pricing, а не .steps. Реплика встаёт рядом с плашкой
-     «Начинаем осенью 2026» — .pricing__scarcity стала flex-строкой вместо
-     текст-центрированного блока, чтобы пилюля и облачко шли в один ряд. */
+     секция называется .pricing, а не .steps. .pricing__cat специально
+     оставлен абсолютным относительно всей секции .pricing (а не относительно
+     .section__head--mascot, как у .steps__cat/.ytch__cat) — заход 14 уже
+     сверял эту пару с оригиналом и подтвердил, что она стоит верно (см.
+     правки там); заход 16 подгоняет только заголовок рядом и не трогает
+     геометрию кота/облачка, чтобы не сдвинуть то, что уже сверено. */
   .pricing { position: relative; }
   .pricing__cat { position: absolute; top: -22px; right: 76px; width: 128px; height: auto; pointer-events: none; }
   .pricing__mascot-bubble { width: 200px; height: auto; }
-  .pricing__scarcity { margin: 0 0 16px; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
-  .scarcity {
-    display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
-    padding: 12px 22px; border-radius: var(--r-md);
-    background: rgba(223,223,65,.07); border: 1px solid rgba(223,223,65,.26);
-    font-family: var(--mono); font-size: 12.5px; font-weight: 400; color: var(--text-body);
-  }
-  .scarcity__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; animation: scarcityPulse 2.4s var(--ease) infinite; }
-  @keyframes scarcityPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(223,223,65,.55); } 60% { box-shadow: 0 0 0 8px rgba(223,223,65,0); } }
-  @media (prefers-reduced-motion: reduce) { .scarcity__dot { animation: none; } }
-
-  .pricing__facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 420px; margin: 0 auto 30px; }
-  .fact { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 15px 18px; display: flex; flex-direction: column; gap: 7px; }
-  .fact__label { font-family: var(--font); font-size: 10.5px; font-weight: 500; letter-spacing: normal; color: var(--text-faint); }
-  .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: normal; line-height: 1.25; color: var(--text-h); }
-  .fact__value--accent { color: var(--accent); }
 
   /* Правка (заход 7, п.7): на живой Tilda обе карточки — 819px, ровно
      поровну (замерено getBoundingClientRect на «Стандарт»/«С проверкой» —
@@ -2033,15 +2038,14 @@
     .pricing__cat { width: 96px; right: 40px; top: -14px; }
   }
   @media (max-width: 640px) {
-    .scarcity { font-size: 11.5px; padding: 11px 16px; }
-    .pricing__facts { grid-template-columns: 1fr 1fr; max-width: none; }
     .tier { padding: 34px 24px 30px; }
-    /* Правка (заход 9): на живом оригинале кот виден и на узких экранах —
-       не прячем его здесь. .pricing__mascot-bubble уменьшена (200 → 150),
-       такой же приём, как у .steps__mascot-bubble/.ytch__mascot-bubble на
-       этом же брейкпоинте — освобождает горизонтальный зазор для кота
-       справа от облачка внутри .pricing__scarcity, который на ≤640px
-       остаётся одной строкой (пилюля + облачко) вплоть до ≤400px. */
+    /* Правка (заход 9, обновлено в заходе 16): на живом оригинале кот виден
+       и на узких экранах — не прячем его здесь. .pricing__mascot-bubble
+       уменьшена (200 → 150), такой же приём, как у .steps__mascot-bubble/
+       .ytch__mascot-bubble на этом же брейкпоинте. Заход 16 убрал пилюлю
+       .scarcity, но заголовок и облачко на ≤640px по-прежнему складываются
+       в столбец (см. .section__head--mascot выше — общее правило на все
+       секции с этим паттерном), а не остаются одной строкой. */
     /* Кот на живом оригинале при таком узком контейнере не помещается рядом
        с облачком без выхода за правый край страницы (замерено на 390px:
        кот там обрезан примерно на 39px из ~157px рендер-ширины, ~24%) —
@@ -2056,8 +2060,6 @@
     .pricing__cat { width: 70px; right: -3px; top: -22px; }
   }
   @media (max-width: 400px) {
-    .fact { padding: 13px 15px; }
-    .fact__value { font-size: 15.5px; }
     .pricing__mascot-bubble { width: 120px; }
     .pricing__cat { width: 60px; right: -26px; top: -14px; }
   }
@@ -4202,13 +4204,19 @@
   </section>
 
   <!-- ===== ТАРИФЫ (tariffs) =====
-       По образцу system_design/index.html:2675-2787 (.tier, .pricing), но без
-       заголовка «Тарифы»: у секции tariffs контент-файла нет строки «Заголовок:»
-       (в отличие от program/what-you-get, где она есть) — на живой Tilda здесь,
-       похоже, нет отдельного видимого h2, вступлением служит сама плашка
-       «Начинаем осенью 2026». Текстового заголовка не придумываем, у секции
-       вместо этого aria-label с тем текстом, которым эту точку страницы называет
-       сама навигация («Стоимость → #tariffs», см. секцию nav контент-файла).
+       По образцу system_design/index.html:2675-2787 (.tier, .pricing).
+       Заголовок «Начинаем осенью 2026» (заход 16, сверка с живым оригиналом
+       rec770883063) — там это обычный h2 того же масштаба, что и остальные
+       заголовки секций страницы (см. .section__title), а не мелкая плашка:
+       раньше здесь стояла .scarcity-пилюля с точкой-индикатором и полоса
+       «Старт потока / Длительность» (.pricing__facts) — обе унаследованы от
+       system_design (:483-493 и :2691) и на оригинале отсутствуют (сверено
+       и по живому DOM секции, и по исходному HTML страницы — «Старт потока»
+       не встречается на ней вообще ни разу), убраны вместе с разметкой.
+       Заголовок и пара «облачко + кот» встают в общий .section__head
+       .section__head--mascot — тот же приём, что у .steps/.ytch (заголовок
+       слева, пара «облачко + кот» справа на одной высоте), aria-labelledby вместо
+       aria-label — секцию теперь называет её реальный видимый заголовок.
        Состав тарифов и цены — дословно из секции tariffs контент-файла:
        74 990 ₽ / 109 990 ₽ (экранные), рассрочка от 6 999 ₽ и от 10 266 ₽ в
        месяц. Расхождение по «доступу на 2 года» (обычный пункт списка тут, но
@@ -4217,23 +4225,12 @@
        курса. Блока «честно»/гарантий (.honest) нет: подходящего текста в
        секции tariffs нет, гарантия возврата в контент-файле стоит под секцией
        faq — не наш rec-список, придумывать здесь нечего. -->
-  <section class="section pricing" id="tariffs" aria-label="Стоимость">
+  <section class="section pricing" id="tariffs" aria-labelledby="tariffs-title">
     <div class="container">
       <img class="pricing__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
-      <div class="pricing__scarcity fade-up">
-        <span class="scarcity"><span class="scarcity__dot" aria-hidden="true"></span>Начинаем осенью 2026</span>
+      <div class="section__head section__head--mascot fade-up">
+        <h2 class="section__title" id="tariffs-title">Начинаем осенью 2026</h2>
         <img class="pricing__mascot-bubble" src="mascot/speech_bubble_3.svg" alt="В предзапись не записался — без микросервисов остался" width="265" height="79" loading="lazy">
-      </div>
-
-      <div class="pricing__facts fade-up">
-        <div class="fact">
-          <span class="fact__label">Старт потока</span>
-          <span class="fact__value fact__value--accent">Осень 2026</span>
-        </div>
-        <div class="fact">
-          <span class="fact__label">Длительность</span>
-          <span class="fact__value">8 недель</span>
-        </div>
       </div>
 
       <div class="pricing__tiers">
