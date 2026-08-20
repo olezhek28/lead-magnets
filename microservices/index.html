@@ -1447,8 +1447,27 @@
   .carousel__track > * { scroll-snap-align: start; flex-shrink: 0; }
   @media (prefers-reduced-motion: reduce) { .carousel__track { scroll-behavior: auto; } }
 
-  /* ---- ТЕКСТОВЫЕ ОТЗЫВЫ (reviews, id="feedback") ---- */
+  /* ---- ТЕКСТОВЫЕ ОТЗЫВЫ (reviews, id="feedback") ----
+     Правка (заход 13): «на 4.94/5» на живом оригинале — не белый текст
+     заголовка, а отдельный <span> цвета var(--accent) (rgb(223,223,65) =
+     #DFDF41, замерено getComputedStyle на живом узле, div до <br> в тот же
+     span не входит — окрашена только часть после переноса). Контраст
+     #DFDF41 на фоне секции (наследует --bg-h/#182023, отдельного фона у
+     .reviews нет) ≈ 11.65:1 — с большим запасом выше нормы 4.5:1.
+     Перенос «2 строки на оригинале vs 3 у нас» (жалоба владельца) при
+     проверке не подтвердился в доступном для замера диапазоне ширин
+     (591–800px): контейнер заголовка на оригинале и так упирается в
+     max-width:640px (то же значение, что уже стоит в .reviews__head), а
+     шрифт фиксирован на 42px (не флюид) — при такой паре фраза «Участники
+     оценивают качество материала» физически не помещается в одну строку
+     (873px на 42px Manrope против ~600px контейнера) ни на одной из
+     проверенных ширин — там тоже 3 строки. Дальше 800px окно в этой сессии
+     не резюлось (resize_window не менял фактический вьюпорт), поэтому
+     сценарий «на 1440 контейнер шире» не проверен и не исключён — ширина/
+     кегль здесь не трогались, раз параметры и так совпадают с оригиналом
+     (640px и ~42/44px), чтобы не выдумывать несовпадение без замера. */
   .reviews__head { max-width: 640px; }
+  .reviews__rating { color: var(--accent); }
   .reviews__grid { gap: 20px; }
   .reviews__grid > .reviews__card { flex-basis: calc((100% - 40px) / 3); }
   /* Правка 6 (визуальный заход №1): на живой Tilda подпись под скриншотом
@@ -1467,9 +1486,20 @@
      подписи — оставшиеся ≈16% (padding 30px + заголовок 24px/1.35). У нас
      скриншот съедал ≈92% высоты карточки (aspect-ratio 336/628 при padding
      12/12/0 + подпись 16px/1 строка) — отсюда ощущение зажатости, а не из-за
-     полей вокруг картинки, которых на оригинале как раз нет. */
+     полей вокруг картинки, которых на оригинале как раз нет.
+     Правка (заход 13): владелец снова увидел «мало белого поля» вокруг
+     скриншота — перепроверено заново на живой странице (getBoundingClientRect
+     на #rec2078055861 .t1196__imgwrapper/.t1196__bgimg/.t1196__item). Отступов
+     0/0/0 (top/left/right) подтверждение то же самое, что и в правке 12 —
+     картинка залита от края до края. А вот со скруглением ошиблись: у
+     .t1196__item радиус не var(--r-lg) (16px), а фиксированные 30px
+     (#rec2078055861 .t1196__item { border-radius: 30px } — то же самое
+     значение и у второй карусели #rec2081619121, без адаптива по брейкпоинтам).
+     При заметно более щедром скруглении на карточке шире, чем у нас,
+     угловые сегменты подложки читаются как «поле» сверху и по бокам — это
+     не паддинг, а радиус, дававший вдвое меньший скругления сегмент. */
   .reviews__card {
-    margin: 0; padding: 0; border-radius: var(--r-lg); overflow: hidden; background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
+    margin: 0; padding: 0; border-radius: 30px; overflow: hidden; background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
     display: flex; flex-direction: column; transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .reviews__card:hover { border-color: rgba(16,23,26,.24); transform: translateY(-3px); }
@@ -1829,7 +1859,14 @@
     background: var(--light-bg); color: var(--light-ink); border: 1px solid rgba(16,23,26,.22);
     box-shadow: 0 42px 92px -44px rgba(0,0,0,.95), 0 0 0 1px rgba(223,223,65,.18);
   }
-  .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--accent); }
+  /* Правка (заход 13): жёлтая полоса сверху карточки — снята. На живом
+     оригинале у «Стандарт»/«С проверкой» проверены оба уровня разметки
+     (.tn-molecule с фоном карточки и вложенная группа) — ни ::before, ни
+     ::after, ни border-top/box-shadow/background-image ни на одном из них
+     нет (getComputedStyle на живой странице). position: relative и
+     overflow: hidden у .tier — общего назначения (клип скруглённых углов
+     var(--r-xl) под содержимое карточки), ставились не только ради этой
+     полосы, поэтому оставлены как есть. */
   /* На оригинале «Стандарт»/«С проверкой» — не мелкая подпись, а заголовок
      карточки: 26px, обычным начертанием (без капса), с тем же отрицательным
      трекингом, что и другие --display-заголовки страницы. Раньше здесь была
@@ -2111,23 +2148,44 @@
   .final__title { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); font-weight: 500; letter-spacing: -0.05em; color: var(--text-h); margin: 0; }
   /* Тонкая линия-разделитель над репликой — на оригинале это отдельная
      полоса между заголовком и текстом, а не просто отступ; border-top
-     прямо на ссылке экономит один пустой div. */
+     прямо на ссылке экономит один пустой div.
+     Правка (заход 13): на живом оригинале этот текст — вообще не ссылка
+     (обычный <div>, без href, matches(':hover') не срабатывает ни разу),
+     поэтому цвет при наведении не меняется никогда — сняли :hover-переход,
+     который здесь был выдуман. Сам <a> и data-goal оставлены — это
+     дополнительная точка входа в Telegram, а не разметка 1:1 с оригиналом,
+     трогать её (снимать тег) — отдельная задача, не про наведение. */
   .final__link {
     display: block; max-width: 40ch; padding-top: 24px; border-top: 1px solid var(--border-card);
     font-size: 16px; line-height: 1.5; color: var(--text-h);
-    transition: color .2s var(--ease);
   }
-  .final__link:hover { color: var(--accent); }
   /* Светлый остров — фон и фокус-кольцо берём из уже готовой пары токенов
      --light-bg/--light-ink (та же, что у .tier--light/.project__plate),
      см. --focus в RESET (.final__card уже в списке). Контраст иконки
-     (#182023, залит в самом SVG) на --light-bg ≈13.8:1. */
+     (#182023, залит в самом SVG) на --light-bg ≈13.8:1.
+     Правка (заход 13): на живом оригинале у этой карточки нет состояния
+     наведения вообще — замерено наведением реальной мыши (matches(':hover')
+     + getComputedStyle в момент наведения на активной вкладке) и двойной
+     проверкой по стилям: ни для этой записи (#rec765399488), ни для блока
+     t396 в целом на странице не заведено ни одного правила с ":hover"
+     (grep по всем подключённым t396*.css) — transform/box-shadow при
+     наведении здесь были додуманы, снимаем и их, и transition под них. */
   .final__card {
     border-radius: var(--r-xl); background: var(--light-bg);
     display: flex; align-items: center; justify-content: center;
-    transition: transform .25s var(--ease), box-shadow .25s var(--ease);
   }
-  .final__card:hover { transform: translateY(-3px); box-shadow: var(--sh-lift); }
+  /* Правка (заход 13): проверка чек-листа «кольцо тёмное и видно с
+     клавиатуры» провалилась на дефолтном outline-offset:3px из RESET —
+     --light-ink (#10171A) буквально совпадает с --bg-primary (#10171A,
+     фон страницы вокруг карточки), кольцо рисовалось поверх фона того же
+     цвета и было невидимо (0 отличий в скриншоте до/после Tab). Тот же
+     --focus:var(--light-ink) токен используют другие светлые островки
+     (.mech/.project__plate/.stories__card/.reviews__card) — у них тот же
+     риск, но это за пределами точечной правки этого захода, не трогаем.
+     Фикс здесь — увести кольцо внутрь карточки (отрицательный offset), где
+     оно ложится на --light-bg: те же --light-ink/--light-bg дают 14.76:1
+     (см. комментарий-таблицу контрастов у .stories__card ниже по файлу). */
+  .final__card:focus-visible { outline-offset: -4px; }
   .final__card-icon { width: clamp(52px, 8vw, 72px); height: auto; }
   @media (max-width: 960px) {
     .final__grid { grid-template-columns: 1fr; gap: 16px; }
@@ -3358,7 +3416,7 @@
     <div class="container">
       <div class="carousel__head fade-up">
         <div class="reviews__head section__head">
-          <h2 class="section__title">Участники оценивают качество материала<br>на 4.94/5</h2>
+          <h2 class="section__title">Участники оценивают качество материала<br><span class="reviews__rating">на 4.94/5</span></h2>
         </div>
         <div class="carousel__arrows">
           <button type="button" class="carousel__arrow" data-carousel-prev aria-label="Предыдущие отзывы">
