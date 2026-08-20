@@ -2005,7 +2005,16 @@
   .ytch__card:hover .ytch__play { transform: translate(-50%,-50%) scale(1.2); }
   .ytch__thumb { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg-secondary); }
   .ytch__thumb img:first-child { width: 100%; height: 100%; object-fit: cover; }
-  .ytch__play { position: absolute; top: 50%; left: 50%; width: 52px; height: 52px; transform: translate(-50%,-50%); transition: transform .3s var(--ease); filter: drop-shadow(0 8px 20px rgba(0,0,0,.5)); }
+  /* Правка (визуальный заход 12, п.3): на живой Tilda в этой секции стоит не
+     та же «тяжёлая» play-иконка с белым кругом-подложкой, что в project-result
+     (icons/play.svg, 57×56), а плоский треугольник без подложки (32×32),
+     который на hover меняет цвет с белого на акцентный жёлтый — два разных
+     файла (solar_play-bold.svg / solar_play-bold_yell.svg), не один. Сделано
+     двумя наложенными картинками с кроссфейдом по opacity. */
+  .ytch__play { position: absolute; top: 50%; left: 50%; width: 32px; height: 32px; transform: translate(-50%,-50%); transition: transform .3s var(--ease), opacity .3s var(--ease); filter: drop-shadow(0 8px 20px rgba(0,0,0,.5)); }
+  .ytch__play--accent { opacity: 0; }
+  .ytch__card:hover .ytch__play--default { opacity: 0; }
+  .ytch__card:hover .ytch__play--accent { opacity: 1; }
   /* Правка (заход 8, п.4): подпись видео на оригинале — 400-е начертание
      без трекинга (getComputedStyle на «Почему 87% Go Roadmap…»), не 500/-0.01em. */
   .ytch__name { padding: 16px 18px 20px; font-family: var(--display); font-size: 15px; font-weight: 400; line-height: 1.35; color: var(--text-h); letter-spacing: normal; }
@@ -2865,15 +2874,27 @@
        «Здарова! Я — Коткинс» (mascot/speech_bubble_1.svg), которая раньше
        числилась здесь неиспользуемым активом, этим заходом добавлена в
        секцию segments («Кому подходит курс») — её настоящее место на живой
-       Tilda, декларация перенесена в контент-файл туда же. -->
+       Tilda, декларация перенесена в контент-файл туда же.
+
+       Правка (визуальный заход 12, п.2): «без изменений» про chat_1…chat_4
+       выше — устарело. Сплошная сверка 20.08.2026 показала, что все четыре
+       файла содержали совершенно постороннюю переписку (chat_4.png — вообще
+       про школьный выпускной, к курсу отношения не имеет). Перекачаны заново
+       по адресам Frame_1…Frame_4.png из «Источник Tilda» контент-файла
+       (раздел community) — они уже были верными позиционно, просто на диске
+       лежали не те байты. chat_5.png и мокап телефона не трогали — сверка
+       подтвердила, что они настоящие. У новых файлов другие пиксельные
+       размеры, чем у прежних плейсхолдеров — width/height у <img> обновлены
+       под реальные картинки. -->
+
   <section class="section community">
     <div class="container">
       <div class="community__grid">
         <div class="community__chats fade-up">
-          <img class="community__chat" src="community/chat_1.png" alt="" width="1148" height="251" loading="lazy">
-          <img class="community__chat" src="community/chat_2.png" alt="" width="973" height="211" loading="lazy">
-          <img class="community__chat" src="community/chat_3.png" alt="" width="1153" height="535" loading="lazy">
-          <img class="community__chat" src="community/chat_4.png" alt="" width="1135" height="757" loading="lazy">
+          <img class="community__chat" src="community/chat_1.png" alt="" width="255" height="71" loading="lazy">
+          <img class="community__chat" src="community/chat_2.png" alt="" width="306" height="89" loading="lazy">
+          <img class="community__chat" src="community/chat_3.png" alt="" width="306" height="71" loading="lazy">
+          <img class="community__chat" src="community/chat_4.png" alt="" width="294" height="89" loading="lazy">
           <img class="community__chat" src="community/chat_5.png" alt="" width="294" height="71" loading="lazy">
         </div>
         <div class="community__phone-wrap fade-up">
@@ -3488,7 +3509,19 @@
        Правка 1 (заход 3): сетка заменена на настоящую карусель, показывает по
        три — общий механизм .carousel__*/data-carousel-* см. у секции reviews
        выше и в <script> в конце файла. Кнопка «Читать историю» в каждой
-       карточке уже фокусируемая, отдельный tabindex на карточке не нужен. -->
+       карточке уже фокусируемая, отдельный tabindex на карточке не нужен.
+
+       Правка (визуальный заход 12, п.1): утверждение выше про побайтовое
+       совпадение аватарок — устарело и было ошибочным. Сплошная сверка
+       md5 с живой Tilda 20.08.2026 показала, что 8 из 11 файлов
+       student_stories/student_N.jpeg на самом деле были перепутаны между
+       собой (два цикла перестановки: 1→10→8→2→6→5→1 и 9↔11; позиции 3, 4, 7
+       были верны изначально). Самое заметное: у позиции 9 (Валентина
+       Богданова) стояла фотография Кирилла Макарова и наоборот — мужское
+       фото под женским именем. Файлы 1, 2, 5, 6, 8, 9, 10, 11 перекачаны
+       заново с CDN-адресов из «Источник Tilda» контент-файла (раздел
+       stories) — они уже были верными позиционно, просто до этого захода
+       никто не проверял реальные байты на диске. -->
   <section class="section stories" data-carousel>
     <div class="container">
       <div class="carousel__head fade-up">
@@ -4122,21 +4155,24 @@
         <a class="ytch__card fade-up" href="https://youtu.be/HPXUE28R8ZI?si=MUgiC7zHd3X2pR1O" target="_blank" rel="noopener">
           <div class="ytch__thumb">
             <img src="youtube/yt_thumb_roadmap.jpg" alt="" width="1280" height="720" loading="lazy">
-            <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
+            <img class="ytch__play ytch__play--default" src="icons/play_flat.svg" alt="" width="32" height="32" aria-hidden="true">
+            <img class="ytch__play ytch__play--accent" src="icons/play_flat_accent.svg" alt="" width="32" height="32" aria-hidden="true">
           </div>
           <div class="ytch__name">Почему 87% Go Roadmap учат не тому</div>
         </a>
         <a class="ytch__card fade-up" href="https://youtu.be/lc3ATNxWQbI?si=JduZQAUA0WkVhY8x" target="_blank" rel="noopener">
           <div class="ytch__thumb">
             <img src="youtube/yt_thumb_architecture.jpg" alt="" width="1280" height="720" loading="lazy">
-            <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
+            <img class="ytch__play ytch__play--default" src="icons/play_flat.svg" alt="" width="32" height="32" aria-hidden="true">
+            <img class="ytch__play ytch__play--accent" src="icons/play_flat_accent.svg" alt="" width="32" height="32" aria-hidden="true">
           </div>
           <div class="ytch__name">Чистая АРХИТЕКТУРА GOLANG — ультимативный гайд на реальном проекте [за 3 часа]</div>
         </a>
         <a class="ytch__card fade-up" href="https://youtu.be/2cxmJUJ2Ge0?si=SOFLB2SxjT8SgeVn" target="_blank" rel="noopener">
           <div class="ytch__thumb">
             <img src="youtube/yt_thumb_context.jpg" alt="" width="1280" height="720" loading="lazy">
-            <img class="ytch__play" src="icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
+            <img class="ytch__play ytch__play--default" src="icons/play_flat.svg" alt="" width="32" height="32" aria-hidden="true">
+            <img class="ytch__play ytch__play--accent" src="icons/play_flat_accent.svg" alt="" width="32" height="32" aria-hidden="true">
           </div>
           <div class="ytch__name">Context в Go: всё, что нужно знать разработчику</div>
         </a>
