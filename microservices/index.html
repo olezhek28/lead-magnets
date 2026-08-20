@@ -411,8 +411,22 @@
   .footer__brand b { color: var(--accent); }
   .footer__req { font-family: var(--mono); font-size: 12px; line-height: 1.85; color: var(--text-faint); max-width: 52ch; }
   .footer__disclaimer { margin-top: 16px; font-size: 11px; color: var(--text-faint); line-height: 1.5; letter-spacing: .005em; max-width: 60ch; text-wrap: pretty; }
-  .footer__links { font-size: 11px; }
-  .footer__links-row { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+  /* Правка (заход 9): на живом оригинале шесть юр-ссылок — два
+     горизонтальных ряда по три (не столбик), оба прижаты к правому краю,
+     см. разметку выше. .footer__links теперь сам flex-column из двух
+     .footer__links-row (по одному на ряд), gap между рядами равен gap
+     внутри ряда — читается как единая сетка 2×3, а не два обособленных
+     блока. padding-right резервирует место под .social-float (фиксированный
+     виджет «Я в соцсетях», position:fixed справа снизу, ~54px + 28px отступ
+     от края вьюпорта) — без этого зазора последние буквы «…персональных
+     данных»/«…рассылку»/«…сайта» на 1280–1440px оказывались под виджетом,
+     когда пользователь долистывает до футера (виджет никуда не уезжает,
+     он floating). На ≤960px .footer__bottom схлопывается в один столбец,
+     а .footer__links-row ниже возвращается к вертикальному списку с
+     выравниванием по левому краю — там ссылки и так уходят от виджета
+     влево, эта подстраховка не нужна. */
+  .footer__links { display: flex; flex-direction: column; gap: 8px; font-size: 11px; padding-right: 74px; }
+  .footer__links-row { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
   .footer__links a {
     display: inline-block; padding: 1px 0; color: var(--text-faint); text-align: right; white-space: nowrap;
     border-bottom: 1px solid transparent;
@@ -431,7 +445,14 @@
     .menu-toggle, .header.is-scrolled .menu-toggle { display: inline-flex; }
     .header.is-scrolled .header__inner { margin: 0; padding: 0; border-radius: 0; background: transparent; box-shadow: none; }
     .footer__bottom { grid-template-columns: 1fr; gap: 32px; }
-    .footer__links-row { align-items: flex-start; }
+    /* ≤960px .footer__bottom уже в один столбец — ссылки уходят влево,
+       под .social-float заезжать некому, поэтому здесь тот же приём, что
+       был на всей странице до правки: два .footer__links-row возвращаются
+       в вертикальный список (gap между рядами = gap внутри ряда, см. ниже —
+       читается одним сплошным столбиком из шести, а не двумя разрозненными
+       тройками), правый резерв под виджет снимается — он больше не нужен. */
+    .footer__links { padding-right: 0; gap: 7px; }
+    .footer__links-row { flex-direction: column; align-items: flex-start; gap: 7px; }
     .footer__links a { text-align: left; white-space: normal; }
   }
   @media (max-width: 768px) {
@@ -918,15 +939,24 @@
   @media (max-width: 640px) {
     .steps__list { gap: 36px; }
     .steps__title { font-size: 19px; }
-    /* На ≤640px заголовок секции переносится на две строки и «Кот» перекрывал
-       вторую строку («…по шагам») — легальность текста важнее декора,
-       прячем маскота на самых узких экранах; пара «облачко-кот» схлопывается
-       под заголовок (.section__head--mascot в столбец), остаётся одно
-       облачко без кота. */
+    /* Правка (заход 9): на живом оригинале (проверено на 390px) кот не
+       прячется на узких экранах — пара «облачко-кот» схлопывается под
+       заголовок (.section__head--mascot в столбец, тот же приём, что и на
+       ≥641px), но кот остаётся виден, просто мельче и ниже, во второй
+       строке под title. Кот перекрывал вторую строку заголовка не из-за
+       самого узкого экрана, а из-за того, что раньше .steps__mascot-group
+       стояла РЯДОМ с заголовком (row) — в столбик (column) заголовок и
+       группа больше не делят одну строку, конфликт исчезает сам собой.
+       .steps__mascot-group получает явную height: без неё группа в потоке
+       была бы высотой с одно только облачко (кот вне потока, position:
+       absolute), и 174px кота вылезали бы под группу, наезжая на
+       .steps__list ниже — с explicit height группа резервирует место под
+       кота целиком, следующий отступ (section__head margin-bottom: 48px)
+       остаётся чистым воздухом уже после кота, а не до него. */
     .section__head--mascot { flex-direction: column; align-items: flex-start; }
-    .steps__mascot-group { width: 180px; }
-    .steps__mascot-bubble { width: 180px; }
-    .steps__cat { display: none; }
+    .steps__mascot-group { width: 210px; height: 160px; }
+    .steps__mascot-bubble { width: 150px; }
+    .steps__cat { width: 84px; right: 0; top: -10px; }
   }
 
   /* ===== COMMUNITY — «А еще у нас полный комфортик…» (rec765448890) =====
@@ -1708,11 +1738,30 @@
     .scarcity { font-size: 11.5px; padding: 11px 16px; }
     .pricing__facts { grid-template-columns: 1fr 1fr; max-width: none; }
     .tier { padding: 34px 24px 30px; }
-    .pricing__cat { display: none; }
+    /* Правка (заход 9): на живом оригинале кот виден и на узких экранах —
+       не прячем его здесь. .pricing__mascot-bubble уменьшена (200 → 150),
+       такой же приём, как у .steps__mascot-bubble/.ytch__mascot-bubble на
+       этом же брейкпоинте — освобождает горизонтальный зазор для кота
+       справа от облачка внутри .pricing__scarcity, который на ≤640px
+       остаётся одной строкой (пилюля + облачко) вплоть до ≤400px. */
+    /* Кот на живом оригинале при таком узком контейнере не помещается рядом
+       с облачком без выхода за правый край страницы (замерено на 390px:
+       кот там обрезан примерно на 39px из ~157px рендер-ширины, ~24%) —
+       overflow-x: clip на html/body (см. ~строку 194) режет его без
+       горизонтальной прокрутки, ровно как на оригинале. Здесь тот же приём:
+       .pricing__mascot-bubble сжата (200 → 140), кот встаёт сразу после
+       облачка (не перекрывая текст в нём — в отличие от .steps__cat/
+       .ytch__cat, у .pricing__cat с оригинала нет нахлёста на облачко, см.
+       десктопные top/right выше), с небольшим отрицательным right вместо
+       положительного — минимальный, безопасный выход за край. */
+    .pricing__mascot-bubble { width: 140px; }
+    .pricing__cat { width: 70px; right: -3px; top: -22px; }
   }
   @media (max-width: 400px) {
     .fact { padding: 13px 15px; }
     .fact__value { font-size: 15.5px; }
+    .pricing__mascot-bubble { width: 120px; }
+    .pricing__cat { width: 60px; right: -26px; top: -14px; }
   }
 
   /* ===== TASK 9: МОДАЛКА ПРЕДЗАПИСИ — ФОРМА GETCOURSE (виджет) =====
@@ -1806,10 +1855,15 @@
   @media (max-width: 640px) {
     .ytch__grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 32px; }
     .ytch__actions { flex-direction: column; align-items: stretch; }
+    /* Правка (заход 9): та же логика, что у .steps__mascot-group выше —
+       кот не прячется, а остаётся виден под заголовком (столбик вместо
+       строки снимает конфликт с текстом), explicit height у группы
+       резервирует место под кота в потоке, чтобы он не наезжал на
+       .ytch__grid ниже. */
     .section__head--mascot { flex-direction: column; align-items: flex-start; }
-    .ytch__mascot-group { width: 190px; }
-    .ytch__mascot-bubble { width: 190px; }
-    .ytch__cat { display: none; }
+    .ytch__mascot-group { width: 230px; height: 170px; }
+    .ytch__mascot-bubble { width: 160px; }
+    .ytch__cat { width: 90px; right: 0; top: -8px; }
   }
 
   /* ---- faq (та же механика раскрытия, что у .program__*, см. Task 6) =====
@@ -1868,30 +1922,47 @@
     .faq { grid-template-columns: 1fr; }
   }
 
-  /* ---- «Есть вопрос?» (final) ---- */
+  /* ---- «Есть вопрос?» (final) =====
+     Правка (заход 9): две колонки почти 1:1 (580×400 обе, зазор 20px —
+     замерено на живом оригинале), а не одна центрированная карточка —
+     см. комментарий у разметки этой секции про .final__card и токен
+     --light-bg. */
+  .final__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .final__panel {
-    max-width: 640px; margin: 0 auto; padding: 56px 48px;
+    min-height: 380px; padding: 44px 40px;
     border-radius: var(--r-xl); background: var(--bg-card); border: 1px solid var(--border-card);
-    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 24px;
   }
   /* Правка (заход 8, п.4): «Есть вопрос?» на оригинале — -2px при 40px
      (getComputedStyle) = -0.05em, не -0.02em. */
   .final__title { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); font-weight: 500; letter-spacing: -0.05em; color: var(--text-h); margin: 0; }
+  /* Тонкая линия-разделитель над репликой — на оригинале это отдельная
+     полоса между заголовком и текстом, а не просто отступ; border-top
+     прямо на ссылке экономит один пустой div. */
   .final__link {
-    display: inline-flex; align-items: center; gap: 14px; max-width: 46ch;
-    font-size: 16px; line-height: 1.4; color: var(--text-h); text-align: left;
+    display: block; max-width: 40ch; padding-top: 24px; border-top: 1px solid var(--border-card);
+    font-size: 16px; line-height: 1.5; color: var(--text-h);
+    transition: color .2s var(--ease);
   }
-  .final__icon {
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    width: 44px; height: 44px; border-radius: 50%; background: var(--accent);
-    transition: background .2s var(--ease), transform .2s var(--ease);
-  }
-  .final__icon img { width: 20px; height: 20px; }
-  .final__link:hover .final__icon { background: var(--accent-dim); transform: scale(1.06); }
   .final__link:hover { color: var(--accent); }
+  /* Светлый остров — фон и фокус-кольцо берём из уже готовой пары токенов
+     --light-bg/--light-ink (та же, что у .tier--light/.project__plate),
+     см. --focus в RESET (.final__card уже в списке). Контраст иконки
+     (#182023, залит в самом SVG) на --light-bg ≈13.8:1. */
+  .final__card {
+    border-radius: var(--r-xl); background: var(--light-bg);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .final__card:hover { transform: translateY(-3px); box-shadow: var(--sh-lift); }
+  .final__card-icon { width: clamp(52px, 8vw, 72px); height: auto; }
+  @media (max-width: 960px) {
+    .final__grid { grid-template-columns: 1fr; gap: 16px; }
+    .final__panel { min-height: auto; }
+    .final__card { min-height: 160px; }
+  }
   @media (max-width: 640px) {
-    .final__panel { padding: 40px 26px; gap: 20px; }
-    .final__link { flex-direction: column; text-align: center; gap: 12px; }
+    .final__panel { padding: 34px 26px; gap: 20px; }
   }
 
 </style>
@@ -4058,24 +4129,35 @@
   </section>
 
   <!-- ===== TASK 10: «ЕСТЬ ВОПРОС?» (final) =====
-       По контент-файлу секция final — это только этот блок: заголовок «Есть
-       вопрос?», текст-ссылка на поддержку в Telegram. Юр-футер уже сверстан
-       в Task 3 отдельно и сюда не переносится (см. комментарий у .footer в
-       CSS). Класс блока НЕ final__card: этот селектор уже зарезервирован в
-       токенах (см. .mech, .tier--light, .final__card, .project__plate,
-       .stories__card, .reviews__card { --focus: var(--light-ink) } в RESET)
-       под светлые островки — здесь же тёмная
-       карточка на тёмном фоне, тёмное фокус-кольцо на ней стало бы
-       невидимым. icons/tg_icon.svg залит в #182023 (тёмный, под светлую
-       подложку) — кладём его в жёлтый кружок var(--accent), а не прямо на
-       тёмную карточку, иначе иконка слилась бы с фоном. -->
+       Правка (заход 9): на живом оригинале блок — не одна центрированная
+       карточка, а две колонки почти поровну (замерено на 1440px: 580×400
+       и 580×400 при зазоре 20px — то есть 1:1, не 0.85/1.15, как у
+       .footer__bottom). Слева тёмная карточка: заголовок вверху, тонкая
+       линия-разделитель и реплика-ссылка внизу, между ними — пустой воздух
+       (flex column + justify-content:space-between). Справа — светлая
+       карточка с крупным логотипом Telegram по центру, без жёлтого кружка
+       (тот кружок из старой версии — на живой странице его нет вовсе,
+       иконка лежит прямо на светлой подложке). Класс правой карточки —
+       .final__card: он не выдуман здесь, а уже зарезервирован в токенах
+       (см. .mech, .tier--light, .final__card, .project__plate,
+       .stories__card, .reviews__card { --focus: var(--light-ink) } в
+       RESET) именно под такой светлый остров — комментарий-заглушка на
+       этом самом месте раньше специально предупреждал не занимать это имя
+       чем-то тёмным. Фон — var(--light-bg) (тот же токен, что у
+       .tier--light/.project__plate), контраст иконки (#182023, залит в
+       самом SVG) на нём ≈13.8:1 — с большим запасом выше 4.5:1.
+       icons/tg_icon.svg — тот же файл (даже тот же исходный clipPath-id
+       clip0_133_9857), что и малый значок telegram на живом оригинале —
+       вторую иконку с CDN скачивать не понадобилось. -->
   <section class="section final">
     <div class="container">
-      <div class="final__panel fade-up">
-        <h2 class="final__title">Есть вопрос?</h2>
-        <a class="final__link" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener" data-goal="final">
-          <span class="final__icon" aria-hidden="true"><img src="icons/tg_icon.svg" alt="" width="20" height="20"></span>
-          <span>Пиши в телеграм — отвечу сразу, как увижу сообщение:)</span>
+      <div class="final__grid fade-up">
+        <div class="final__panel">
+          <h2 class="final__title">Есть вопрос?</h2>
+          <a class="final__link" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener" data-goal="final">Пиши в телеграм — отвечу сразу, как увижу сообщение:)</a>
+        </div>
+        <a class="final__card" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener" aria-label="Написать в Telegram" data-goal="final">
+          <img class="final__card-icon" src="icons/tg_icon.svg" alt="" width="64" height="65">
         </a>
       </div>
     </div>
@@ -4130,11 +4212,21 @@
           Услуги носят информационно-консультационный характер. Не&nbsp;является образовательной деятельностью, не&nbsp;подлежит лицензированию.
         </div>
       </div>
+      <!-- Правка (заход 9): на живом оригинале эти шесть ссылок — не один
+           вертикальный столбик, а два горизонтальных ряда по три (замерено
+           на 1440px: ряд 1 — «Подготовка…»/«Публичная оферта»/«Согласие на
+           обработку…», ряд 2 — «Согласие на информационно-рекламную…»/
+           «Политика обработки…»/«Разработка сайта», оба прижаты к правому
+           краю, зазор между ссылками в ряду 8px, между рядами тоже ~8px).
+           Порядок ссылок в DOM у нас уже совпадал 1:1 с этой разбивкой —
+           достаточно было разбить на два .footer__links-row по три. -->
       <nav class="footer__links" aria-label="Юридические документы и другие материалы">
         <div class="footer__links-row">
           <a href="https://olezhek28.courses/gothrough" target="_blank" rel="noopener">Подготовка к&nbsp;собесам по&nbsp;Go</a>
           <a href="oferta.html" target="_blank" rel="noopener">Публичная оферта</a>
           <a href="agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
+        </div>
+        <div class="footer__links-row">
           <a href="marketing-agree.html" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
           <a href="policy.html" target="_blank" rel="noopener">Политика обработки персональных данных</a>
           <a href="https://andrew-design.ru/?utm_source=olezhek28" target="_blank" rel="noopener">Разработка сайта</a>
