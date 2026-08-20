@@ -236,7 +236,7 @@
      контур давал бы низкий контраст — переключатель на тёмный оставлен про запас
      для будущих светлых островков (например .tier--light в тарифах) */
   :root { --focus: var(--accent); }
-  .mech, .tier--light, .final__card, .project__plate, .stories__card, .reviews__card { --focus: var(--light-ink); }
+  .mech, .tier--light, .final__card, .project__plate, .project__tooltip, .stories__card, .reviews__card { --focus: var(--light-ink); }
   :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
   .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
@@ -652,7 +652,23 @@
   }
   .who__title-card .section__title { margin: 0; }
   .who__title-mut { color: var(--text-mute); font-weight: 400; }
-  .who__code { position: relative; z-index: 0; flex: 1 1 auto; min-height: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  /* Правка (заход 14, п.8, третий заход на этот элемент — формулировка на
+     этот раз точная): низ стеклянной подложки должен совпадать с нижней
+     кромкой последней карточки правой колонки, причём «плавающе» — на
+     1440/1280/960 у карточек разная высота. Прежний .who__code с
+     flex:1 1 auto; height:100% этого не давал: во время грид-прохода
+     «сколько .who__lead хочет по высоту сама» height:100% на потомке без
+     ещё-не-определённой высоты родителя резолвится в auto → берётся
+     собственное соотношение сторон картинки (1161:1573, высокое) → .who__lead
+     оказывается «естественно» выше .who__list → align-items:stretch тянет
+     уже не .who__lead (короткую колонку) до .who__list, а наоборот — и низ
+     подложки убегает ниже последней карточки. Фикс — убрать .who__code из
+     потока (position:absolute inset:0), тогда высоту .who__lead при грид-
+     подсчёте определяет только .who__title-card (мелкий, в потоке), .who__list
+     закономерно оказывается выше, align-items:stretch тянет .who__lead
+     ровно до её высоты, а абсолютная картинка заполняет получившийся бокс
+     ровно до низа — без фиксированного числа, следует за карточками. */
+  .who__code { position: absolute; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
   .who__list { display: flex; flex-direction: column; gap: 24px; }
   .who__step { display: block; height: 10px; width: auto; margin-bottom: 4px; }
   .who__card {
@@ -1085,6 +1101,16 @@
   }
   .phone__slide--active { opacity: 1; }
   @media (prefers-reduced-motion: reduce) { .phone__slide { transition: none; } }
+  /* Правка (заход 14, п.7): на живом оригинале мокап — родная tilda-галерея
+     (data-elem-type='gallery', slds_dotscontrols="in", slds_dotssize="8",
+     slds_dotsbgcolor="#3c3c3c", slds_dotsbgcoloractive="#ffffff") — три точки
+     внизу картинки, неактивная тёмно-серая, активная белая. У нас те же три
+     кадра — свой кроссфейд-таймер (см. <script> ниже), точки не декоративные,
+     а индикатор состояния: <button> с aria-label и role="tab", кликабельны. */
+  .phone__dots { position: absolute; left: 0; right: 0; bottom: 14px; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .phone__dot { all: unset; box-sizing: border-box; width: 8px; height: 8px; border-radius: 50%; background: #3c3c3c; cursor: pointer; transition: background .3s var(--ease), transform .2s var(--ease); }
+  .phone__dot:hover { transform: scale(1.2); }
+  .phone__dot--active { background: #ffffff; }
   .community__info { display: flex; flex-direction: column; gap: 16px; }
   /* Правка 2 (заход 3): .community__tail (mascot/learning_speech.svg, инверсия
      цвета) убран целиком — после filter: invert(1) волнистый «хвостик»-указатель
@@ -1241,7 +1267,7 @@
   .project__subtitle { margin: 0; max-width: 460px; font-size: 15px; line-height: 1.6; color: var(--text-mute); }
   .project__video-row { display: flex; align-items: center; gap: 14px; }
   .project__play {
-    all: unset; box-sizing: border-box; cursor: pointer; flex-shrink: 0; width: 72px; height: 72px; border-radius: 50%;
+    all: unset; box-sizing: border-box; position: relative; cursor: pointer; flex-shrink: 0; width: 72px; height: 72px; border-radius: 50%;
     display: flex; transition: transform .2s var(--ease);
   }
   /* Правка (заход 10, п.3): на оригинале кнопки play видео на hover growят
@@ -1249,6 +1275,22 @@
      общее правило на все видео-превью страницы, не только эту) — было 1.08. */
   .project__play:hover, .project__play:focus-visible { transform: scale(1.2); outline: 2px solid var(--accent); outline-offset: 2px; }
   .project__play img { width: 100%; height: 100%; }
+  /* Правка (заход 14, п.6): на живом оригинале вокруг play-кнопки крутится
+     кольцо-индикатор — фирменный tilda-приём .animBorder (rec765399490):
+     полоса-градиент вращается позади круглой маски (animation: rotate 2s
+     linear infinite reverse), базовые тона тёмно-серые (#4E5357→#1C1F23),
+     на hover — акцентный жёлтый. Здесь тот же характер (закольцованное
+     вращение конус-градиента позади кнопки, замаскированное в тонкое
+     кольцо) на токенах проекта, без сторонних цветов. */
+  .project__play::before {
+    content: ''; position: absolute; inset: -7px; border-radius: 50%; z-index: -1;
+    background: conic-gradient(from 0deg, var(--accent) 0deg, rgba(223,223,65,.12) 60deg, transparent 130deg, transparent 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+    animation: project-play-spin 2s linear infinite;
+  }
+  @keyframes project-play-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .project__play::before { animation: none; } }
   .project__video-meta { display: flex; flex-direction: column; gap: 2px; }
   .project__video-time { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); }
   .project__video-title { font-family: var(--display); font-size: 14.5px; font-weight: 500; color: var(--text-h); }
@@ -1278,6 +1320,23 @@
     transition: transform .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
     z-index: 2;
   }
+  /* Правка (заход 14, п.4): на живом оригинале у каждого «+» есть парный
+     24×24 круг-«пинг» (data-animate-sbs-opts: scale 1→1.7 с угасанием
+     opacity 1→0 за 1200мс, пауза, возврат за 500мс, зациклено ~2.4s) —
+     классический radar-pulse, сигнализирующий «сюда можно нажать».
+     Тот же характер анимации через ::before позади кнопки, без JS. */
+  .project__node::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%; z-index: -1;
+    background: var(--text-h); pointer-events: none;
+    animation: project-node-pulse 2.4s ease-out infinite;
+  }
+  @keyframes project-node-pulse {
+    0%   { transform: scale(1);   opacity: .9; }
+    50%  { transform: scale(1.7); opacity: 0; }
+    79%  { transform: scale(1);   opacity: 0; }
+    100% { transform: scale(1);   opacity: .9; }
+  }
+  @media (prefers-reduced-motion: reduce) { .project__node::before { animation: none; opacity: 0; } }
   .project__node span { pointer-events: none; }
   .project__node[aria-expanded="true"] { background: var(--accent); color: var(--accent-ink); }
   .project__node--iam { left: 19.5%; top: 0%; transform: translate(-50%, -50%); }
@@ -1290,14 +1349,21 @@
   .project__node--inventory { left: 49.4%; top: 83.6%; transform: translate(-50%, -50%); }
   .project__node:hover, .project__node:focus-visible { transform: translate(-50%, -50%) scale(1.15); outline: 2px solid var(--accent); outline-offset: 2px; }
 
+  /* Правка (заход 14, п.5): на живом оригинале подсказка светлая, почти
+     белая (.tn-atom__tip background-color:#ecf1f9), текст тёмный (#182023).
+     У нас уже есть готовая светлая пара токенов для таких «островков»
+     (--light-card/--light-ink/--light-mute, та же, что у .project__plate)
+     — переиспользуем её вместо разового hex: отношение «светлый фон, тёмный
+     текст» то же, что на оригинале, контраст даже выше (14.6:1 у
+     оригинала → 16.4:1/9.2:1 здесь, см. отчёт). */
   .project__tooltip {
     position: absolute; z-index: 3; width: max-content; max-width: 250px;
-    background: var(--bg-secondary); border: 1px solid var(--border-acc); border-radius: var(--r-md);
+    background: var(--light-card); border: 1px solid rgba(16,23,26,.1); border-radius: var(--r-md);
     padding: 14px 16px; box-shadow: 0 14px 34px rgba(0,0,0,.45);
   }
   .project__tooltip[hidden] { display: none; }
-  .project__tooltip-title { margin: 0 0 6px; font-family: var(--display); font-size: 13.5px; font-weight: 600; color: var(--text-h); line-height: 1.35; }
-  .project__tooltip-desc { margin: 0; font-size: 13px; line-height: 1.52; color: var(--text-mute); }
+  .project__tooltip-title { margin: 0 0 6px; font-family: var(--display); font-size: 13.5px; font-weight: 600; color: var(--light-ink); line-height: 1.35; }
+  .project__tooltip-desc { margin: 0; font-size: 13px; line-height: 1.52; color: var(--light-mute); }
   /* позиция тултипа = позиция узла (см. .project__node--*) + сдвиг в свободную сторону,
      чтобы не вылезать за края схемы */
   .project__tooltip--iam { left: 19.5%; top: 0%; transform: translate(-6px, 22px); }
@@ -1318,17 +1384,25 @@
 
   /* Правка 6 (визуальный заход №1): на живой Tilda карточка «Все, как на
      работе…» светлая, почти белая, с аватаркой и жёлтой кнопкой — у нас была
-     тёмной (--bg-card). Токены и контраст те же, что у .tier--light. */
+     тёмной (--bg-card). Токены и контраст те же, что у .tier--light.
+     Правка (заход 14, п.3): порядок и раскладка сведены с оригиналом
+     (rec765399450 — элемент аватара top:879, абзац top:980, кнопка top:1010
+     left:806): аватар с именем сверху, ниже — строка «текст + кнопка
+     в один ряд» (кнопка top ~ середина текстового блока, справа от него,
+     а не под ним). Кегль абзаца поднят с 16 до 18px (data-field-fontsize
+     оригинала), аватар — с 52 до 64px (data-field-height 74px, отношение
+     перенесено, не абсолютный px). */
   .project__plate {
-    position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 22px;
+    position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 20px;
     background: var(--light-card); border: 1px solid rgba(16,23,26,.1); border-radius: var(--r-xl); padding: 44px;
   }
-  .project__plate-text { font-size: 16px; line-height: 1.6; color: var(--light-mute); max-width: 68ch; }
+  .project__plate-row { display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+  .project__plate-text { font-size: 18px; line-height: 1.6; color: var(--light-mute); max-width: 60ch; flex: 1 1 auto; }
   .project__author { display: flex; align-items: center; gap: 14px; }
-  .project__author-photo { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
-  .project__author-name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--light-ink); }
+  .project__author-photo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+  .project__author-name { font-family: var(--display); font-size: 17px; font-weight: 600; color: var(--light-ink); }
   .project__author-role { font-size: 13.5px; color: var(--light-meta); }
-  .project__cta { align-self: flex-start; }
+  .project__cta { align-self: center; flex-shrink: 0; }
 
   @media (max-width: 960px) {
     .project__top { grid-template-columns: 1fr; }
@@ -1352,6 +1426,8 @@
     .project__rocket { display: none; }
     .project__video-row { flex-wrap: wrap; }
     .project__plate { padding: 28px; }
+    .project__plate-row { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .project__cta { align-self: stretch; }
   }
 
   /* Дальнейшие задачи дописывают CSS секций main ниже этой строки. */
@@ -1364,7 +1440,18 @@
      .yt__thumb/.yt__play/.yt__play-btn (см. комментарий у video-reviews). */
 
   /* ---- АВТОР (author, id="speaker") ---- */
-  .author__grid { display: grid; grid-template-columns: 1fr 360px; gap: 64px; align-items: start; }
+  /* Правка (заход 14, п.2): на живом оригинале (rec765399460) фото Олега —
+     голый <img> без рамки/фона/скругления, вписан в фон страницы, ставится
+     с отрицательным top (нависает над списком/счётчиками сверху) так, что
+     его нижний край совпадает с нижней кромкой блока (top:-547px +
+     height:567px = artboard-height:20px). У нас нет zero-block канваса —
+     переносим отношение «без рамки, крупнее, нижний край = низ секции»
+     через grid: колонка растянута по высоте (align-items: stretch,
+     .author__side — flex с прижатием к низу), сама фотка без оформления,
+     заполняет колонку object-fit:cover — её низ автоматически совпадает
+     с низом строки (=низ списка/счётчиков слева), совпадая с сутью приёма
+     оригинала без копирования абсолютных px негативного канваса. */
+  .author__grid { display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: stretch; }
   .author__list { list-style: none; margin: 32px 0 36px; }
   .author__item { display: grid; grid-template-columns: 200px 1fr; gap: 8px 24px; padding: 20px 0; border-top: 1px solid var(--border-card); align-items: start; }
   .author__item:last-child { border-bottom: 1px solid var(--border-card); }
@@ -1372,19 +1459,29 @@
   .author__company-name { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--text-h); white-space: nowrap; letter-spacing: normal; line-height: 1.2; }
   .author__badge { display: inline-block; padding: 4px 10px; border: 1px solid var(--border-acc); border-radius: var(--r-sm); font-family: var(--mono); font-size: 11px; color: var(--text-mute); white-space: nowrap; }
   .author__desc { padding-top: 2px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
-  .author__photo { border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); box-shadow: var(--sh-lift); position: sticky; top: 108px; }
-  .author__photo img { display: block; width: 100%; height: auto; object-fit: cover; }
+  .author__side { display: flex; }
+  .author__photo { display: block; width: 100%; }
+  .author__photo img { display: block; width: 100%; height: 100%; aspect-ratio: 1089 / 1209; object-fit: cover; object-position: top center; }
 
   /* .stat-card переиспользован из system_design/index.html:2571-2674 (структура
-     и класс — дословно), CSS-значения адаптированы под токены этого файла. */
+     и класс — дословно), CSS-значения адаптированы под токены этого файла.
+     Правка (заход 14, п.1): на живом оригинале (rec1213545821, .t983__card)
+     карточки заметно выше и с более крупными числом/подписью — замер
+     getComputedStyle: .t983__card-content padding 60px 30px 30px (верх вдвое
+     больше боков/низа — отношение 2:1:1, а не наш симметричный 26/22/28),
+     .t-card__title (число) font-size:30px константно на всех брейкпоинтах
+     (не масштабируется вниз), .t-card__descr (подпись) font-size:16px,
+     border-radius:16px. Перенесены отношения: удвоенный верхний паддинг и
+     фиксированный (не vw-зависимый) кегль числа/подписи — не абсолютные px
+     оригинала (тот верстается в canvas 1200/940/620px, у нас другая сетка). */
   .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .stat-card { background: var(--bg-card); border: 1px solid var(--border-card); color: var(--text-h); border-radius: var(--r-lg); padding: 26px 22px 28px; transition: transform .3s var(--ease), border-color .3s var(--ease); }
+  .stat-card { background: var(--bg-card); border: 1px solid var(--border-card); color: var(--text-h); border-radius: var(--r-lg); padding: 52px 26px 26px; transition: transform .3s var(--ease), border-color .3s var(--ease); }
   .stat-card:first-child { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
   .stat-card:hover { transform: translateY(-3px); border-color: rgba(223,223,65,.35); }
-  .stat-card__number { font-family: var(--mono); font-size: clamp(24px, 2.2vw, 30px); font-weight: 500; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; margin-bottom: 14px; line-height: 1.1; white-space: nowrap; }
-  .stat-card__line { width: 26px; height: 1px; background: rgba(255,255,255,.18); margin-bottom: 12px; }
+  .stat-card__number { font-family: var(--mono); font-size: 30px; font-weight: 500; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; margin-bottom: 16px; line-height: 1.1; white-space: nowrap; }
+  .stat-card__line { width: 26px; height: 1px; background: rgba(255,255,255,.18); margin-bottom: 14px; }
   .stat-card:first-child .stat-card__line { background: rgba(0,45,37,.3); }
-  .stat-card__label { font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--text-mute); }
+  .stat-card__label { font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--text-mute); }
   .stat-card:first-child .stat-card__label { color: rgba(0,45,37,.82); }
 
   /* ---- КАРУСЕЛИ (reviews / video-reviews / stories) — общий механизм -----
@@ -1749,8 +1846,8 @@
 
   @media (max-width: 960px) {
     .author__grid { grid-template-columns: 1fr; gap: 38px; }
-    .author__side { order: -1; max-width: 400px; }
-    .author__photo { position: static; }
+    .author__side { order: -1; width: 100%; max-width: 400px; margin: 0 auto; }
+    .author__photo img { height: auto; }
     .stats-row { grid-template-columns: 1fr 1fr; }
     .stats-row > :first-child { grid-column: span 2; }
     .reviews__grid > .reviews__card { flex-basis: calc((100% - 20px) / 2); }
@@ -2961,6 +3058,11 @@
               <img class="phone__slide phone__slide--active" src="community/phone_mockup.png" alt="Переписка в чате потока" width="1180" height="2559" loading="lazy">
               <img class="phone__slide" src="community/phone_chat_2.png" alt="Переписка в чате потока" width="1180" height="2557" loading="lazy">
               <img class="phone__slide" src="community/phone_chat_3.png" alt="Переписка в чате потока" width="1180" height="2557" loading="lazy">
+              <div class="phone__dots" role="tablist" aria-label="Кадры переписки">
+                <button type="button" class="phone__dot phone__dot--active" role="tab" aria-selected="true" aria-label="Кадр 1 из 3"></button>
+                <button type="button" class="phone__dot" role="tab" aria-selected="false" aria-label="Кадр 2 из 3"></button>
+                <button type="button" class="phone__dot" role="tab" aria-selected="false" aria-label="Кадр 3 из 3"></button>
+              </div>
             </div>
           </div>
         </div>
@@ -3164,7 +3266,12 @@
             <span class="sr-only">Смотреть обзор проекта</span>
           </button>
           <div class="project__video-meta">
-            <span class="project__video-time">8:00</span>
+            <!-- Правка (заход 14, п.6): «8:00» было ошибочно взято от другого
+                 видео на живой Tilda-странице (там же встречается «20:00» у
+                 другого блока) — открыт сам ролик, dzen.ru/embed/oUUZEZV8MAAA
+                 («Описание проекта на курсе "Микросервисы на Go 3.0"»),
+                 таймлайн плеера показал фактическую длительность 10:43. -->
+            <span class="project__video-time">10:43</span>
             <span class="project__video-title">Обзор проекта</span>
           </div>
         </div>
@@ -3271,7 +3378,6 @@
       </div>
 
       <div class="project__plate fade-up">
-        <p class="project__plate-text">Все, как на работе — контрактное программирование, DI, тесты, docker-compose, observability. Это сложный проект, где придётся много писать руками, разбираться в зависимостях и реально прокачиваться как инженер</p>
         <div class="project__author">
           <img class="project__author-photo" src="project/instructor_small.png" alt="Олег Козырев" width="445" height="445" loading="lazy">
           <div>
@@ -3279,10 +3385,13 @@
             <div class="project__author-role">Senior Engineer в BigTech</div>
           </div>
         </div>
-        <a class="btn btn--primary project__cta btn--rated" href="#tariffs" data-goal="project-result">
-          <span>Записаться на курс</span>
-          <img class="btn__badge" src="icons/rating_badge.svg" alt="Рейтинг курса 4,94 из 5" width="93" height="33" loading="lazy">
-        </a>
+        <div class="project__plate-row">
+          <p class="project__plate-text">Все, как на работе — контрактное программирование, DI, тесты, docker-compose, observability. Это сложный проект, где придётся много писать руками, разбираться в зависимостях и реально прокачиваться как инженер</p>
+          <a class="btn btn--primary project__cta btn--rated" href="#tariffs" data-goal="project-result">
+            <span>Записаться на курс</span>
+            <img class="btn__badge" src="icons/rating_badge.svg" alt="Рейтинг курса 4,94 из 5" width="93" height="33" loading="lazy">
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -4980,18 +5089,32 @@
     // пользователя «уменьшить движение», таймер вообще не заводится (не
     // просто ускоряется/убирается transition — automatic листание само по
     // себе тоже движение, которого reduce-motion просит избегать), на экране
-    // остаётся первый кадр без переключений. Все три <img> уже в DOM (не
-    // src, который переписывается) — переключается только класс
-    // .phone__slide--active, обычный opacity-transition из CSS. =====
+    // остаётся первый кадр без автоматических переключений. Все три <img>
+    // уже в DOM (не src, который переписывается) — переключается только
+    // класс .phone__slide--active, обычный opacity-transition из CSS.
+    // Правка (заход 14, п.7): добавлены три точки-индикатора (.phone__dot,
+    // см. CSS) — переключаются синхронно со сменой кадра через общую show(),
+    // сами кликабельны независимо от reduceMotion (это ручное действие
+    // пользователя, а не автоматическая анимация, reduce-motion его не
+    // запрещает; кроссфейд у самого перехода всё равно отключён CSS-правилом
+    // выше). =====
     document.querySelectorAll('[data-phone-slider]').forEach(function (root) {
       var slides = root.querySelectorAll('.phone__slide');
-      if (slides.length < 2 || reduceMotion) return;
+      var dots = root.querySelectorAll('.phone__dot');
+      if (slides.length < 2) return;
       var i = 0;
-      setInterval(function () {
+      function show(next) {
         slides[i].classList.remove('phone__slide--active');
-        i = (i + 1) % slides.length;
+        if (dots[i]) { dots[i].classList.remove('phone__dot--active'); dots[i].setAttribute('aria-selected', 'false'); }
+        i = next;
         slides[i].classList.add('phone__slide--active');
-      }, 4000);
+        if (dots[i]) { dots[i].classList.add('phone__dot--active'); dots[i].setAttribute('aria-selected', 'true'); }
+      }
+      dots.forEach(function (dot, idx) {
+        dot.addEventListener('click', function () { if (idx !== i) show(idx); });
+      });
+      if (reduceMotion) return;
+      setInterval(function () { show((i + 1) % slides.length); }, 4000);
     });
   });
 </script>
