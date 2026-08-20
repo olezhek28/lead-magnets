@@ -264,10 +264,19 @@
   }
   .btn:active { transform: translateY(1px) scale(.994); }
   .btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 0 rgba(223,223,65,.35); }
-  .btn--primary:hover { background: #EBEB55; transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(223,223,65,.6); }
+  /* Правка (заход 10, п.3): на живом оригинале жёлтая кнопка на hover темнеет
+     (rgb(202,202,24) — замерено через document.styleSheets, правило Tilda
+     button-CbZscgJX:hover), а не светлеет — было наоборот, #EBEB55 светлее
+     базового --accent. Направление изменения имеет значение само по себе,
+     не только сам факт, что что-то меняется. */
+  .btn--primary:hover { background: #CACA18; transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(223,223,65,.6); }
   /* вторичные/призрачные — язык пилюль с меньшим радиусом (~30px) */
   .btn--dark { background: var(--bg-secondary); color: var(--text-h); border-color: var(--border-acc); border-radius: 30px; }
-  .btn--dark:hover { background: var(--bg-tertiary); border-color: rgba(255,255,255,.28); transform: translateY(-2px); }
+  /* Правка (заход 10, п.3): тёмная кнопка на hover — rgb(34,40,45) на
+     оригинале (та же tilda-выборка, button-CVFNKAI2/-oLDoC6DV:hover),
+     между --bg-secondary и --bg-tertiary, но не равна ни одному токену —
+     держим явным hex, а не var(--bg-tertiary) (был чуть светлее нужного). */
+  .btn--dark:hover { background: #22282D; border-color: rgba(255,255,255,.28); transform: translateY(-2px); }
   .btn--lg { padding: 21px 46px; font-size: 16px; }
   .btn--block { display: flex; width: 100%; }
   /* Правка 1 (визуальный заход №1): бейдж рейтинга «★ 4.94 / 5» — тёмная пилюля
@@ -1139,7 +1148,10 @@
     all: unset; box-sizing: border-box; cursor: pointer; flex-shrink: 0; width: 72px; height: 72px; border-radius: 50%;
     display: flex; transition: transform .2s var(--ease);
   }
-  .project__play:hover, .project__play:focus-visible { transform: scale(1.08); outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* Правка (заход 10, п.3): на оригинале кнопки play видео на hover growят
+     до scale(1.2) (document.styleSheets: .tn-atom:hover .tn-atom__video-play-icon,
+     общее правило на все видео-превью страницы, не только эту) — было 1.08. */
+  .project__play:hover, .project__play:focus-visible { transform: scale(1.2); outline: 2px solid var(--accent); outline-offset: 2px; }
   .project__play img { width: 100%; height: 100%; }
   .project__video-meta { display: flex; flex-direction: column; gap: 2px; }
   .project__video-time { font-family: var(--mono); font-size: 12.5px; color: var(--text-faint); }
@@ -1292,29 +1304,36 @@
      нужен). Стрелки — настоящие <button>, у края списка получают атрибут
      disabled из JS (см. .carousel__arrow:disabled) вместо того, чтобы молча
      ничего не делать.
-     icons/arrow_left.svg/arrow_right.svg (лежали в проекте неиспользуемыми
-     с этапа переноса ассетов) залиты #182023 — та же проблема с тёмными
-     ассетами на тёмном фоне, что описана в комментарии у токенов вверху
-     файла. Иконки уже рисуют собственный кружок, поэтому не кладём их на
-     дополнительную подложку, а инвертируем целиком, тем же приёмом, что и
-     у .who__deco: получается самодостаточная светлая круглая кнопка со
-     стрелкой, читаемая на тёмном фоне секции.
-     Важно: имена файлов не совпадают с направлением стрелки на картинке —
-     проверено вживую рендером. icons/arrow_left.svg рисует шеврон вправо (›),
-     icons/arrow_right.svg — шеврон влево (‹). Поэтому в разметке всех трёх
-     каруселей на data-carousel-prev стоит arrow_right.svg (‹, «назад»), а на
-     data-carousel-next — arrow_left.svg (›, «вперёд»): так стрелка на кнопке
-     показывает своё реальное направление, а не буквальное имя файла. */
+     Правка (заход 10, п.2): стрелки были цветом инвертированы («светлый
+     кружок, тёмный шеврон» через filter:invert(1) на исходной иконке
+     icons/arrow_*.svg, у которой круг залит #182023, а шеврон — #E9E8ED;
+     инверсия переворачивала обе заливки). На живом оригинале (замерено
+     getComputedStyle на .t1196__control, общей для всех трёх каруселей)
+     ровно наоборот: тёмный кружок rgb(40,47,52), белый шеврон rgb(255,255,255),
+     без рамки (border: 0), круг 40×40 (border-radius: 50px). Менять можно
+     только этот файл — внешние icons/arrow_*.svg трогать нельзя, поэтому
+     вместо img с filter кнопка теперь сама рисует круглую подложку
+     (background), а шеврон — инлайновый svg на currentColor. Оригинал не
+     показывает видимого disabled-состояния (карусель там зациклена, стрелки
+     всегда активны) — :disabled ниже остаётся собственным решением проекта
+     (приглушённая копия исправленной палитры, не «слияние с фоном»). */
   .carousel__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; }
   .carousel__head .section__head { margin-bottom: 0; }
   .carousel__arrows { display: flex; gap: 10px; flex-shrink: 0; }
   .carousel__arrow {
     all: unset; box-sizing: border-box; cursor: pointer; flex-shrink: 0;
-    width: 44px; height: 45px; display: flex; border-radius: 50%;
-    transition: transform .2s var(--ease), opacity .2s var(--ease);
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; background: #282f34; color: #fff; border: 1px solid transparent;
+    transition: transform .2s var(--ease), opacity .2s var(--ease), background-color .2s var(--ease), border-color .2s var(--ease);
   }
-  .carousel__arrow img { width: 100%; height: 100%; display: block; filter: invert(1); }
-  .carousel__arrow:hover:not(:disabled) { transform: translateY(-2px); }
+  .carousel__arrow svg { width: 16px; height: 16px; display: block; flex-shrink: 0; }
+  /* Правка (заход 10, п.3): на живом оригинале ховер стрелки — не только
+     чуть светлее фон (rgb(51,60,66), уже совпадало с --ease-плавным лифтом),
+     но и белая рамка 1px (замерено через document.styleSheets — Tilda кладёт
+     это отдельным !important-правилом .t1196__control:hover). В базе рамка
+     держится прозрачной той же толщины, чтобы её появление на hover не
+     двигало раскладку. */
+  .carousel__arrow:hover:not(:disabled) { transform: translateY(-2px); background: #333c42; border-color: #fff; }
   .carousel__arrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
   .carousel__arrow:disabled { opacity: .35; cursor: not-allowed; }
   /* Правка (заход 7, п.1): overflow-x: auto без явного overflow-y CSS по
@@ -1405,7 +1424,7 @@
   .yt__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(16,23,26,.18); transition: background .2s ease; }
   .yt__card:hover .yt__play { background: rgba(16,23,26,.34); }
   .yt__play-btn { width: 52px; height: 52px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 32px -14px rgba(223,223,65,.7); transition: transform .3s var(--ease); }
-  .yt__card:hover .yt__play-btn { transform: scale(1.08); }
+  .yt__card:hover .yt__play-btn { transform: scale(1.2); }
   .yt__play-btn svg { width: 20px; height: 20px; color: var(--accent-ink); margin-left: 3px; }
 
   /* ---- РЕАЛЬНЫЕ ИСТОРИИ УЧАСТНИКОВ (stories) ----
@@ -1448,28 +1467,45 @@
      поэтому bleed отключён, чтобы не плодить непроверенное поведение. */
   .stories__grid { gap: 20px; margin-bottom: 28px; }
   .stories__grid.carousel__track { margin-right: calc(-1 * (max(0px, (100vw - 1240px)) / 2 + 60px)); }
-  .stories__grid > .stories__card { flex-basis: calc((100% - 40px) / 3); }
+  /* Правка (заход 10, п.1): деление ширины растянутой (bled) дорожки на 3
+     давало 413px при 1440 — на 15% больше исходных 360px, но всё ещё
+     заметно мельче оригинала: карточка/окно у оригинала 380/1440 ≈ 26.4%
+     (замерено getBoundingClientRect на rec2081619121), а формула
+     «(track-40)/3» гналась за шириной самой дорожки, а не за этим
+     отношением. Карточка теперь считается напрямую как доля окна
+     (26.39vw ≈ 380px при 1440px, отношение из оригинала, не абсолютные
+     пиксели), независимо от того, насколько bled-дорожка шире контейнера —
+     bleed-формула выше по-прежнему только определяет, где обрезается видимая
+     область (сколько видно от 4-й карточки), а не размер карточки. */
+  .stories__grid > .stories__card { flex-basis: 26.39vw; }
   .stories__card {
     display: flex; flex-direction: column;
     border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(16,23,26,.1);
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .stories__card:hover { border-color: rgba(16,23,26,.24); transform: translateY(-3px); }
-  .stories__top-section { display: flex; flex-direction: column; gap: 14px; padding: 26px 24px 20px; background: var(--light-bg); }
+  /* Правка (заход 10, п.1): паддинги/кегли ниже приведены к оригиналу
+     (rec2081619121, getComputedStyle на .t-card__uptitle/.t-card__title):
+     боковой паддинг светлой плашки 30px (было 24), аватар 70×70 (было 52,
+     18.4% ширины карточки против исходных 12.6%), имя 18px/500 (было
+     15px/600), ник 14px/500 (было 12.5px/400), заголовок истории 24px
+     (было 16.5px — самое заметное расхождение, абзац истории уже совпадал
+     14px/14px и не менялся). */
+  .stories__top-section { display: flex; flex-direction: column; gap: 14px; padding: 30px 30px 24px; background: var(--light-bg); }
   /* .stories__card целиком наследует --focus: var(--light-ink) (RESET, тёмный
      цвет для фокус-кольца на светлых островках) — но кнопка «Читать историю»
      теперь на тёмной нижней плашке, тёмное кольцо там было бы невидимо.
      Возвращаем --focus к акцентному жёлтому именно в этой секции. */
-  .stories__bottom-section { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 18px 24px 24px; background: var(--bg-secondary); --focus: var(--accent); }
+  .stories__bottom-section { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 20px 30px 28px; background: var(--bg-secondary); --focus: var(--accent); }
   .stories__top { display: flex; align-items: center; gap: 14px; }
-  .stories__avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-  .stories__name { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--light-ink); line-height: 1.3; }
+  .stories__avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .stories__name { font-family: var(--display); font-size: 18px; font-weight: 500; color: var(--light-ink); line-height: 1.3; }
   /* Правка (заход 7, п.4): ник теперь ссылка на t.me/<ник> — те же токены
      цвета, что и раньше (div/a визуально неотличимы), только курсор и
      hover-подчёркивание сигналят кликабельность. */
-  .stories__nick { display: inline-block; font-family: var(--mono); font-size: 12.5px; color: var(--light-faint); margin-top: 2px; }
+  .stories__nick { display: inline-block; font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--light-faint); margin-top: 2px; }
   .stories__nick:hover { text-decoration: underline; text-underline-offset: 2px; }
-  .stories__headline { font-family: var(--display); font-size: 16.5px; font-weight: 500; line-height: 1.36; letter-spacing: normal; color: var(--light-ink); }
+  .stories__headline { font-family: var(--display); font-size: 24px; font-weight: 500; line-height: 1.36; letter-spacing: normal; color: var(--light-ink); }
   .stories__excerpt { flex: 1; font-size: 14px; line-height: 1.58; color: var(--text-body); }
   /* Правка (заход 8, п.2а): «Читать историю →» на живом оригинале акцентная,
      лаймовая (var(--accent)), а не почти белая var(--text-h) — та же группа
@@ -1838,7 +1874,7 @@
   .ytch__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
   .ytch__card { display: block; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); transition: border-color .25s var(--ease), transform .25s var(--ease); }
   .ytch__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
-  .ytch__card:hover .ytch__play { transform: translate(-50%,-50%) scale(1.08); }
+  .ytch__card:hover .ytch__play { transform: translate(-50%,-50%) scale(1.2); }
   .ytch__thumb { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg-secondary); }
   .ytch__thumb img:first-child { width: 100%; height: 100%; object-fit: cover; }
   .ytch__play { position: absolute; top: 50%; left: 50%; width: 52px; height: 52px; transform: translate(-50%,-50%); transition: transform .3s var(--ease); filter: drop-shadow(0 8px 20px rgba(0,0,0,.5)); }
@@ -3153,8 +3189,10 @@
        review_5.png), альт-версии не задействованы.
        Правка 1 (заход 3): сетка заменена на настоящую карусель — общий механизм
        .carousel__*/data-carousel-* (см. отчёт и <script> в конце файла), один на
-       все три карусели страницы. icons/arrow_left.svg/arrow_right.svg (лежали
-       неиспользуемыми с Task 2) наконец подключены. Весь контент остаётся в DOM:
+       все три карусели страницы. Стрелки — инлайновый svg-шеврон на круглой
+       подложке (см. правку заход 10, п.2; icons/arrow_*.svg больше не
+       используются — с ними цвета инверсией переворачивались наоборот).
+       Весь контент остаётся в DOM:
        карусель — это горизонтальная прокрутка .reviews__grid (теперь ещё и
        .carousel__track), а не display:none/скрытие карточек. У каждой карточки
        нет своего интерактивного элемента (только img+figcaption), поэтому она
@@ -3168,10 +3206,10 @@
         </div>
         <div class="carousel__arrows">
           <button type="button" class="carousel__arrow" data-carousel-prev aria-label="Предыдущие отзывы">
-            <img src="icons/arrow_right.svg" alt="" width="44" height="45" loading="lazy">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <button type="button" class="carousel__arrow" data-carousel-next aria-label="Следующие отзывы">
-            <img src="icons/arrow_left.svg" alt="" width="44" height="45" loading="lazy">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
       </div>
@@ -3237,10 +3275,10 @@
         </div>
         <div class="carousel__arrows">
           <button type="button" class="carousel__arrow" data-carousel-prev aria-label="Предыдущие видеоотзывы">
-            <img src="icons/arrow_right.svg" alt="" width="44" height="45" loading="lazy">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <button type="button" class="carousel__arrow" data-carousel-next aria-label="Следующие видеоотзывы">
-            <img src="icons/arrow_left.svg" alt="" width="44" height="45" loading="lazy">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
       </div>
@@ -3324,10 +3362,10 @@
         </div>
         <div class="carousel__arrows">
           <button type="button" class="carousel__arrow" data-carousel-prev aria-label="Предыдущие истории">
-            <img src="icons/arrow_right.svg" alt="" width="44" height="45" loading="lazy">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <button type="button" class="carousel__arrow" data-carousel-next aria-label="Следующие истории">
-            <img src="icons/arrow_left.svg" alt="" width="44" height="45" loading="lazy">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
       </div>
@@ -4212,24 +4250,23 @@
           Услуги носят информационно-консультационный характер. Не&nbsp;является образовательной деятельностью, не&nbsp;подлежит лицензированию.
         </div>
       </div>
-      <!-- Правка (заход 9): на живом оригинале эти шесть ссылок — не один
-           вертикальный столбик, а два горизонтальных ряда по три (замерено
+      <!-- Правка (заход 9): на живом оригинале эти ссылки — не один
+           вертикальный столбик, а два горизонтальных ряда (замерено
            на 1440px: ряд 1 — «Подготовка…»/«Публичная оферта»/«Согласие на
            обработку…», ряд 2 — «Согласие на информационно-рекламную…»/
-           «Политика обработки…»/«Разработка сайта», оба прижаты к правому
-           краю, зазор между ссылками в ряду 8px, между рядами тоже ~8px).
-           Порядок ссылок в DOM у нас уже совпадал 1:1 с этой разбивкой —
-           достаточно было разбить на два .footer__links-row по три. -->
+           «Политика обработки…», оба прижаты к правому краю, зазор между
+           ссылками в ряду 8px, между рядами тоже ~8px).
+           Ссылка «Разработка сайта» (andrew-design.ru), которая на живой
+           Tilda замыкала второй ряд, здесь убрана по просьбе владельца. -->
       <nav class="footer__links" aria-label="Юридические документы и другие материалы">
         <div class="footer__links-row">
           <a href="https://olezhek28.courses/gothrough" target="_blank" rel="noopener">Подготовка к&nbsp;собесам по&nbsp;Go</a>
           <a href="oferta.html" target="_blank" rel="noopener">Публичная оферта</a>
-          <a href="agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
+          <a href="/agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
         </div>
         <div class="footer__links-row">
-          <a href="marketing-agree.html" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
-          <a href="policy.html" target="_blank" rel="noopener">Политика обработки персональных данных</a>
-          <a href="https://andrew-design.ru/?utm_source=olezhek28" target="_blank" rel="noopener">Разработка сайта</a>
+          <a href="/marketing-agree.html" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
+          <a href="/policy.html" target="_blank" rel="noopener">Политика обработки персональных данных</a>
         </div>
       </nav>
     </div>
