@@ -1629,7 +1629,24 @@
   .reviews__head { max-width: 640px; }
   .reviews__rating { color: var(--accent); }
   .reviews__grid { gap: 20px; }
-  .reviews__grid > .reviews__card { flex-basis: calc((100% - 40px) / 3); }
+  /* Правка (заход 20): карточка отзыва была текучей (доля ширины трека),
+     на оригинале — фиксированная (замерено getBoundingClientRect на живых
+     #rec2078055861 .t1196__item по всем ширинам окна, а не по пересказу):
+     360px при окне >960px, 295px при 481–960px (это не наша придумка —
+     собственный default-брейкпоинт виджета Tilda .t1196__item{max-width:295px}
+     из tilda-blocks-page….min.css перебивает инлайновую ширину 360px, у
+     блока нет override на 960, только на imgwrapper-высоту), 300px при
+     ≤480px (инлайн #rec2078055861 .t1196__item{width:300px} внутри
+     @media(max-width:480px), там же общий .t1196__item{max-width:100%}
+     снимает 295-й потолок). На широком окне разница со старой формулой
+     «(100%-40px)/3» была не видна (в контейнере 1240px даёт те же 360px
+     случайно) — расхождение проявлялось около 1000px, где формула ужимала
+     карточку до ~280px против неизменных 360px оригинала, и «худело»
+     заодно всё внутри, включая белое поле вокруг скриншота (см. история
+     правок у .reviews__card ниже — три предыдущих захода мерили это на
+     1440, где всё совпадало случайно). flex-shrink:0 у .carousel__track > *
+     уже не даёт карточке сжаться меньше flex-basis. */
+  .reviews__grid > .reviews__card { flex-basis: 360px; }
   /* Правка 6 (визуальный заход №1): на живой Tilda подпись под скриншотом
      отзыва — на белой карточке, тёмным текстом (сам скриншот тёмный —
      это чат/переписка, его не трогаем, светлеет только плашка подписи).
@@ -1913,7 +1930,11 @@
     .author__photo img { height: auto; }
     .stats-row { grid-template-columns: 1fr 1fr; }
     .stats-row > :first-child { grid-column: span 2; }
-    .reviews__grid > .reviews__card { flex-basis: calc((100% - 20px) / 2); }
+    /* Правка (заход 20): 295px — не наше число, это дефолтный потолок
+       виджета Tilda (.t1196__item{max-width:295px} в CSS платформы для
+       ≤960px), который на оригинале перебивает инлайновую ширину 360px —
+       см. подробный разбор у .reviews__grid выше. */
+    .reviews__grid > .reviews__card { flex-basis: 295px; }
     .yt__grid--7 .yt__card { flex-basis: calc((100% - 32px) / 3); }
     /* bleed за контейнер — только для десктопной раскладки «3 в ряд» выше
        (см. правку п.2б), на ≤960px формула карточек другая и не отмечена
@@ -1926,7 +1947,6 @@
     .author__company-name { white-space: normal; }
     .stats-row { grid-template-columns: 1fr; }
     .stats-row > :first-child { grid-column: auto; }
-    .reviews__grid > .reviews__card { flex-basis: 100%; }
     .yt__grid--7 .yt__card { flex-basis: calc((100% - 16px) / 2); }
     .stories__grid > .stories__card { flex-basis: 100%; }
     .modal--story .modal__dialog { padding: 28px 22px; }
@@ -1934,6 +1954,17 @@
     .bigtech__grid { grid-template-columns: repeat(2, 1fr); }
     .bigtech__cell { padding: 16px 14px; }
     .bigtech__logo { height: 44px; }
+  }
+  /* Правка (заход 20): у .reviews__card свой третий брейкпоинт — 480px,
+     а не общий проектный 640px. Это не отступление ради красоты, а
+     повтор брейкпоинта самого оригинала: инлайновый #rec2078055861 CSS
+     переключает ширину карточки на 480px (@media(max-width:480px)
+     { .t1196__item{width:300px} }), 640px в исходнике вообще не участвует
+     в расчёте этой карточки. Строка ниже раньше была внутри блока 640px
+     (flex-basis:100%) — эта формула не совпадала с оригиналом ни на одной
+     ширине (см. разбор у .reviews__grid выше), поэтому перенесена сюда. */
+  @media (max-width: 480px) {
+    .reviews__grid > .reviews__card { flex-basis: 300px; }
   }
 
   /* ===== TASK 9: ТАРИФЫ (tariffs) / «УЧИТЬСЯ ОТ КОМПАНИИ» (company) =====
