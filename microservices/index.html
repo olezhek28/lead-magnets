@@ -149,7 +149,9 @@
      (найдено семь раз: checkmark/star/tg_icon/glass_figure/learning_speech и др.).
      Без обработки их безопасно класть только на светлые подложки — --accent,
      --light-bg, --light-card. На тёмный фон — либо filter: invert(1) (см.
-     .who__deco), либо inline-SVG в var(--accent) (см. .steps__check). */
+     .who__deco), либо inline-SVG в var(--accent) (см. .tier__check в tariffs;
+     .steps__check решал ту же задачу для шагов, но убран правкой 12, п.А2 —
+     на живом оригинале у шагов нет чек-бейджа вовсе). */
   :root {
     --bg-primary:   #10171A;
     --bg-card:      #182023;
@@ -579,10 +581,15 @@
      как счётчик 1..6 из 6 (см. .get__step ниже) — здесь ровно тот же файл,
      просто до 3, а не до 6: рендерится идентично (лишние прозрачные пиксели
      справа от квадратов не видны). Код-скриншот под левой карточкой —
-     learning_process/video_lesson.png, уже используется в секции steps
-     (шаг 1); на живой Tilda в этой секции стоит тот же файл (сверено
-     байт-в-байт с Frame20335660.png с CDN) — просто как декоративная
-     подложка, без повторной декларации нового файла.
+     learning_process/video_lesson.png; на живой Tilda в этой секции стоит
+     тот же файл (сверено байт-в-байт с Frame20335660.png с CDN) — как
+     декоративная подложка, а не рабочий скриншот. Правка 12 (п.А1): до этой
+     правки файл ошибочно дублировался вторым использованием в секции steps
+     (шаг 1, «видеоуроки») — там ему не место (это подложка, а не скринкаст
+     IDE), поэтому теперь декларация только одна, здесь. См. правку 12 в
+     контент-файле (секция steps) и .who__code ниже — там же разбор, как
+     подложка встроена фоновым слоем позади заголовка, а не отдельной
+     картинкой в потоке.
      kotkins_small.png выглядывает из угла последней карточки (тот же файл, что
      Rails-порт применял для сегмента карточек), glass_figure.svg — полупрозрачная
      волнистая подложка за шапкой секции (тот же source-хеш, что и у маскота).
@@ -606,12 +613,46 @@
   .who__intro { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 28px; }
   .who__cat { width: 84px; height: auto; flex-shrink: 0; pointer-events: none; }
   .who__mascot-bubble { width: 220px; height: auto; }
-  .who__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-  .who__lead { display: flex; flex-direction: column; gap: 24px; }
-  .who__title-card { padding: 34px 30px 30px; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card); }
+  /* Правка 12 (п.А5): align-items со start на stretch — левая колонка
+     (.who__lead) растягивается на высоту правой (.who__list, три карточки +
+     зазоры), освобождая место под фоновую подложку ниже заголовка. На
+     живом оригинале (rec2045527681) подложка тянется почти на всю высоту
+     секции за вычетом верхнего отступа под заголовок — здесь это то же
+     отношение, перенесённое на нашу двухколоночную сетку, а не абсолютные
+     px оригинала (600px канвас не совпадает с нашим). */
+  .who__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+  /* .who__lead — сама подложка + карточка заголовка одним контейнером:
+     border/radius/overflow:hidden перенесены сюда с .who__title-card (было
+     дублирование обводки).
+     Правка 12 (п.А5, ревизия после жалобы владельца на нечитаемый заголовок):
+     первая версия клала .who__code фоновым слоем НА ВСЮ высоту блока
+     (position: absolute; inset: 0) позади заголовка — расчёт был на градиент
+     под текстом, но у стеклянной подложки яркие/насыщенные разводы попадали
+     прямо под нижние строки заголовка, а background: var(--bg-card) → transparent
+     их не перекрывал (жалоба: «backend-a, которые» и «встречаются на работе»
+     тонут). Тот же класс дефекта, что уже топил текст под картинками в этом
+     проекте несколько раз — «в CSS цвет правильный, а под текстом
+     оказывается непредсказуемый фон». Фикс не «усилить градиент», а убрать
+     нахлёст текста на изображение вовсе: .who__lead — flex-column, где
+     .who__title-card — обычный блок в потоке (flex: 0 0 auto, своя сплошная
+     непрозрачная var(--bg-card) под всеми строками без исключения, нулевой
+     риск в принципе), а .who__code — следующий элемент потока, занимает
+     только оставшееся место (flex: 1 1 auto) СТРОГО НИЖЕ заголовка, без
+     наложения текста на изображение — как и просил владелец, сверяясь с
+     оригиналом («заголовок на чистой тёмной поверхности, подложка ниже»). */
+  .who__lead { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--r-lg); border: 1px solid var(--border-card); }
+  .who__title-card { position: relative; z-index: 1; flex: 0 0 auto; padding: 34px 30px 30px; border-radius: var(--r-lg) var(--r-lg) 0 0; background: var(--bg-card); }
+  /* Стык карточки и подложки смягчён градиентом, но только НИЖЕ карточки —
+     ::after растёт из низа .who__title-card вниз, а не вверх, поэтому в зону
+     текста никогда не заходит (ровно наоборот прошлой версии, где ::after
+     тянулся от -25% в оба конца через видимую нижнюю кромку карточки). */
+  .who__title-card::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 48px;
+    background: linear-gradient(to bottom, var(--bg-card), transparent); pointer-events: none;
+  }
   .who__title-card .section__title { margin: 0; }
   .who__title-mut { color: var(--text-mute); font-weight: 400; }
-  .who__code { display: block; width: 100%; height: auto; border-radius: var(--r-lg); border: 1px solid var(--border-card); }
+  .who__code { position: relative; z-index: 0; flex: 1 1 auto; min-height: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
   .who__list { display: flex; flex-direction: column; gap: 24px; }
   .who__step { display: block; height: 10px; width: auto; margin-bottom: 4px; }
   .who__card {
@@ -728,6 +769,10 @@
     /* лид (заголовок+код) и список карточек — колонкой, лид сверху, как
        на живой Tilda в этом же промежутке ширин (см. заход 2, секция who) */
     .who__grid { grid-template-columns: 1fr; }
+    /* Правка 12 (п.А5): одна колонка — .who__list больше не задаёт высоту
+       .who__lead через stretch, подложке нужен свой min-height, иначе
+       align-items:stretch выше не от чего считать и фон схлопнется в 0. */
+    .who__lead { min-height: 460px; }
     .who__cat { width: 64px; }
     .who__mascot-bubble { width: 180px; }
     .jobs { padding: 36px 28px; }
@@ -746,6 +791,7 @@
     .who, .get { padding: 64px 0; }
     .get__grid { grid-template-columns: 1fr; }
     .who__title-card, .who__card { padding: 26px 22px; }
+    .who__lead { min-height: 340px; }
     .who__intro { gap: 10px; margin-bottom: 20px; }
     .who__cat { width: 52px; }
     .who__mascot-bubble { width: 150px; }
@@ -891,21 +937,21 @@
   .steps__cat { position: absolute; top: -26px; right: 0; width: 120px; height: auto; pointer-events: none; }
   .steps__list { display: flex; flex-direction: column; gap: 64px; }
   .steps__row { display: flex; align-items: center; gap: 48px; }
-  .steps__row:nth-child(even) { flex-direction: row-reverse; }
+  /* nth-of-type, не nth-child: .steps__footnote (правка 12, п.А3) физически
+     переехал внутрь .steps__list между строкой 3 и строкой 4 (см. разметку и
+     комментарий там), а nth-child(even) считает вообще всех детей контейнера
+     — с <p> сноской внутри строка 4 стала бы 5-м ребёнком (нечётным) и
+     потеряла бы разворот. nth-of-type считает только среди div-соседей
+     того же тега, поэтому чужеродный p-элемент в подсчёт не попадает и чередование
+     сторон не ломается независимо от того, что ещё лежит в списке. */
+  .steps__row:nth-of-type(even) { flex-direction: row-reverse; }
   .steps__col--text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
   .steps__col--img { flex: 1 1 0; min-width: 0; }
-  /* Ревью Task 9: icons/checkmark.svg заливается в #182023 — тот же цвет, что и
-     фон карточки (var(--bg-card) = #182023), поэтому иконка была физически
-     невидима (opacity: .8 без инверсии цвета не спасает). Заменено на inline-SVG
-     чип тем же способом, что .tier__check в секции tariffs, — одна методика
-     решения на всю страницу вместо двух разных. Бейдж остаётся маленьким
-     акцентом перед заголовком шага, теперь в текстовой колонке строки. */
-  .steps__check {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 28px; height: 28px; border-radius: 7px;
-    background: rgba(223,223,65,.12); border: 1px solid rgba(223,223,65,.22);
-  }
-  .steps__check svg { width: 14px; height: 14px; color: var(--accent); }
+  /* Правка 12 (п.А2): чек-бейдж (icons/checkmark.svg → потом inline-SVG чип)
+     убран у всех четырёх шагов — на живом оригинале (rec2045530091, t843)
+     галочки нет ни у одного шага вовсе, это была отсебятина заброшенного
+     порта. .steps__check и .steps__check svg удалены вместе с разметкой —
+     класс без правил и правила без разметки одинаково не нужны. */
   .steps__img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); background: var(--bg-primary); border: 1px solid var(--border-card); }
   /* Правка (заход 8, п.4): на оригинале заголовок шага набран 600-м, а не
      500-м начертанием, трекинг обычный (getComputedStyle на "Смотришь
@@ -928,15 +974,28 @@
      раньше была якорной ссылкой на секцию homework в потоке страницы — сама
      разметка кнопки не менялась, .steps__mascot одинаково подходит и <a>,
      и <button> (класс общий с кнопкой шага 2, но не с бейджем — тот теперь
-     .steps__mascot-bubble внутри .steps__mascot-group). */
+     .steps__mascot-bubble внутри .steps__mascot-group).
+     Правка 12 (п.А4): на живом оригинале эта кнопка жёлтая, не тёмная —
+     замерено на rec2045530091 (.t-btnflex_type_button): фон #dfdf41 (=
+     var(--accent), день-в-день), текст #002b24 (у var(--accent-ink) на
+     тон темнее, #002D25, — берём точное значение с живой страницы, а не
+     ближайший токен), hover — фон #caca18 (тоже не совпадает ни с одним
+     готовым токеном, оставлен литералом). border убран (на живом варианте
+     его нет, тень тоже). */
   .steps__mascot {
-    align-self: flex-start; display: inline-block; text-decoration: none;
-    border: 1px solid var(--border-acc); border-radius: 999px;
-    background: var(--bg-secondary); color: var(--text-h); padding: 12px 22px;
-    font-size: 13.5px; font-weight: 500; transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+    align-self: flex-start; display: inline-block; text-decoration: none; border: none;
+    border-radius: 999px; background: var(--accent); color: #002b24; padding: 12px 22px;
+    font-size: 13.5px; font-weight: 500; transition: background .25s var(--ease);
   }
-  .steps__mascot:hover { background: var(--bg-tertiary); border-color: rgba(223,223,65,.45); color: var(--accent); }
-  .steps__footnote { margin-top: 32px; font-family: var(--mono); font-size: 13px; color: var(--text-faint); }
+  .steps__mascot:hover { background: #caca18; }
+  /* Правка 12 (п.А3): сноска раньше стояла после всего .steps__list — визуально
+     примыкала к последнему шагу («Читаешь допматериалы»), хотя звёздочка в
+     заголовке принадлежит третьему шагу («…от Олега*»). На живом оригинале
+     сноска лежит прямо под блоком фидбека. Разметка передвинута между строкой
+     3 и строкой 4 (см. .steps__list); margin-top отрицательный — гасит часть
+     родного 64px gap контейнера, чтобы сноска читалась вплотную к своему
+     шагу, а не ровно посередине между шагом 3 и шагом 4. */
+  .steps__footnote { margin-top: -32px; font-family: var(--mono); font-size: 13px; color: var(--text-faint); }
 
   @media (max-width: 960px) {
     .steps__list { gap: 48px; }
@@ -1002,7 +1061,30 @@
     width: 54px; height: 6px; border-radius: 999px; background: rgba(0,0,0,.55); z-index: 3;
   }
   .phone__screen { position: relative; width: 100%; height: 100%; border-radius: 30px; overflow: hidden; background: var(--bg-primary); }
-  .phone__screen img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* Правка 12 (п.В): на живой Tilda это не один статичный кадр, а галерея
+     (data-elem-type='gallery', slds_autoplay="4", slds_loop="loop",
+     slds_arrowcontrols="none", slds_dotscontrols="in") из трёх экранов
+     переписки, которая листается сама. Карусельный механизм .carousel__*
+     / data-carousel-* (см. reviews/video-reviews/stories) сюда не подошёл:
+     это горизонтальный scroll-snap трек с ручными стрелками и без таймера —
+     плодить в нём автолистание означало бы либо городить второй параллельный
+     таймер поверх scroll-контейнера ради одной full-bleed картинки без
+     стрелок и без соседних карточек, либо тащить в разметку телефона чужую
+     семантику "трека/страницы". Для одного кадра, кросс-фейдящего сам по
+     себе, кроссфейд через opacity — минимальный псевдоним той же идеи
+     (автоматическая смена состояния по таймеру), но своей, отдельной
+     реализацией: все три <img> остаются в DOM (не meta-тег alt на одной
+     переиспользуемой картинке — иначе для скринридера и поисковика
+     существовал бы только один скриншот), меняется только class
+     .phone__slide--active, opacity анимируется в рамках уже существующего
+     .phone__screen (position: relative; overflow: hidden), поэтому смена
+     кадра не трогает layout остальной страницы. */
+  .phone__slide {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    opacity: 0; transition: opacity .8s var(--ease);
+  }
+  .phone__slide--active { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .phone__slide { transition: none; } }
   .community__info { display: flex; flex-direction: column; gap: 16px; }
   /* Правка 2 (заход 3): .community__tail (mascot/learning_speech.svg, инверсия
      цвета) убран целиком — после filter: invert(1) волнистый «хвостик»-указатель
@@ -1018,7 +1100,21 @@
   @media (max-width: 960px) {
     .community__grid { grid-template-columns: 1fr; justify-items: center; text-align: center; }
     .community__info { order: 1; align-items: center; }
-    .community__phone-wrap { order: 2; }
+    /* Побочная находка при проверке п.В (не из списка правок владельца, но
+       напрямую блокирует показ самого слайдера на мобильном — без этого
+       мокап физически не виден): justify-items: center выше даёт каждому
+       grid-item свой justify-self: center по умолчанию, то есть ширина по
+       inline-оси считается по содержимому (shrink-to-fit), а не растягивается
+       на всю колонку. .phone__phone-wrap { display: flex; justify-content:
+       center } с единственным ребёнком .phone { width: 100% } внутри
+       shrink-to-fit контейнера — циклическая зависимость (100% от чего?),
+       браузер резолвит её в 0 контента + padding/border (12+12+1+1=26px —
+       ровно та ширина, что рендерилась). justify-self: stretch возвращает
+       .community__phone-wrap на всю ширину колонки, .phone { width: 100% }
+       снова считается от неё, а не от пустоты. Баг воспроизводится и на HEAD
+       этого файла до всех правок этого захода — не регрессия от слайдера,
+       но чинить пришлось: без этого п.В нечем подтвердить на 390px. */
+    .community__phone-wrap { order: 2; justify-self: stretch; }
     .community__chats { order: 3; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px; }
     .community__chats .community__chat { width: 130px; transform: none; }
   }
@@ -1358,15 +1454,22 @@
   /* Правка 6 (визуальный заход №1): на живой Tilda подпись под скриншотом
      отзыва — на белой карточке, тёмным текстом (сам скриншот тёмный —
      это чат/переписка, его не трогаем, светлеет только плашка подписи).
-     Правка (заход 7, п.10): скриншот там не прижат к краям вплотную — лежит
-     внутри белой карточки с полем сверху и по бокам (замерено на
-     rec2078055861 покраской .t1196__item/.t1196__imgwrapper: 12px слева,
-     справа и сверху, 0 снизу — карточка 360px шириной, т.е. поле ≈ 3.3% её
-     ширины), сам скриншот при этом со скруглёнными углами (16px) и как бы
-     плавает в карточке. Здесь это padding на карточке + свой border-radius
-     на картинке (только верхние углы — снизу она flush с подписью). */
+     Правка 12 (п.Б): заход 7 (п.10) когда-то намерил у скриншота поля 12px
+     слева/справа/сверху — свежая проверка (getBoundingClientRect на
+     rec2078055861 .t1196__item/.t1196__imgwrapper, живая страница) этого не
+     подтверждает: у обоих элементов один и тот же x (132.5) и одна и та же
+     ширина (360px) день-в-день, поле нулевое, скриншот залит от края до края
+     карточки, скругление — только за счёт overflow:hidden самой карточки
+     (radius 30px), а не отдельного radius на картинке. Старое измерение,
+     видимо, снято с более ранней версии живой страницы — доверяем свежему
+     замеру. Заодно замерено то, из-за чего владелец увидел «мало белого
+     поля»: скриншот занимает 640 из 765px высоты карточки (≈84%), а плашка
+     подписи — оставшиеся ≈16% (padding 30px + заголовок 24px/1.35). У нас
+     скриншот съедал ≈92% высоты карточки (aspect-ratio 336/628 при padding
+     12/12/0 + подпись 16px/1 строка) — отсюда ощущение зажатости, а не из-за
+     полей вокруг картинки, которых на оригинале как раз нет. */
   .reviews__card {
-    margin: 0; padding: 12px 12px 0; border-radius: var(--r-lg); overflow: hidden; background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
+    margin: 0; padding: 0; border-radius: var(--r-lg); overflow: hidden; background: var(--light-card); border: 1px solid rgba(16,23,26,.1);
     display: flex; flex-direction: column; transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .reviews__card:hover { border-color: rgba(16,23,26,.24); transform: translateY(-3px); }
@@ -1379,11 +1482,9 @@
      в .yt__thumb img (видеоотзывы): фиксируем пропорцию через aspect-ratio и
      кадрируем object-fit: cover от верхнего края (object-position: top),
      чтобы всегда была видна шапка переписки.
-     Правка (заход 7, п.10): отношение сторон видимой области скриншота
-     (не внешнего wrapper 9:16, а именно того, что видно после полей выше)
-     на оригинале — 336:628 (360px wrapper минус по 12px полей слева/справа,
-     минус 12px сверху, 0 снизу), это уже, чем было 9:16 — при том же самом
-     скриншоте показывает заметно больше переписки по вертикали.
+     Правка 12 (п.Б): 336/628 (поля 12px, см. комментарий у .reviews__card
+     выше) заменено на 360/640 = 9/16 — точное отношение wrapper на живой
+     странице, без вычета несуществующих полей.
      Ловушка: height: auto здесь обязателен, хотя кажется избыточным рядом с
      aspect-ratio — у <img> заданы HTML-атрибуты width/height (591×1279),
      браузер маппит их в CSS-хинт с приоритетом ниже авторских правил, но выше
@@ -1393,8 +1494,14 @@
      на такую высоту не влияет вообще (проверено: без этой строки высота
      картинки была ровно 1279px на любой ширине, будто aspect-ratio не
      применялся). */
-  .reviews__img { width: 100%; height: auto; aspect-ratio: 336 / 628; object-fit: cover; object-position: top; display: block; border-radius: var(--r-lg) var(--r-lg) 0 0; }
-  .reviews__caption { padding: 16px 18px; font-size: 14px; font-weight: 500; color: var(--light-ink); line-height: 1.4; border-top: 1px solid rgba(16,23,26,.08); }
+  .reviews__img { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; object-position: top; display: block; }
+  /* Правка 12 (п.Б): подпись увеличена под оригинал (getComputedStyle на
+     .t-card__title внутри .t1196__content-inner, rec2078055861, живая
+     страница): padding 30px кругом (было 16/18), font-size 24px/font-weight
+     500 (было 14px), line-height 32.4px = 1.35 (было 1.4 — почти совпадало,
+     тронуто только вслед за кеглем). border-top снят — на оригинале подпись
+     не отделена линией, панель того же белого цвета продолжает карточку. */
+  .reviews__caption { padding: 30px; font-size: 24px; font-weight: 500; color: var(--light-ink); line-height: 1.35; }
 
   /* ---- ВИДЕООТЗЫВЫ (video-reviews) — переиспользует паттерн .yt__* из
      system_design/index.html:2788-2832 (превью + play-кнопка поверх), но кнопка
@@ -1423,9 +1530,16 @@
   .yt__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .yt__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(16,23,26,.18); transition: background .2s ease; }
   .yt__card:hover .yt__play { background: rgba(16,23,26,.34); }
-  .yt__play-btn { width: 52px; height: 52px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 32px -14px rgba(223,223,65,.7); transition: transform .3s var(--ease); }
+  /* Правка 12 (п.10): кнопка play когда-то обосновали жёлтой («наш акцент
+     вместо брендового красного YouTube») — но живой источник тут не YouTube,
+     а RuTube, и его плеер синий, не красный: замерено в raw HTML оригинала,
+     .tn-atom__video-play-icon svg circle{fill:#00a1e7;} — правило со специфичностью
+     выше инлайновой заливки circle (fill="black" в самом SVG), поэтому кружок
+     фактически синий, треугольник — белый (fill="white" в исходном SVG,
+     совпадает с var(--text-h)/белым один-в-один, отдельный токен не заводим). */
+  .yt__play-btn { width: 52px; height: 52px; border-radius: 50%; background: #00a1e7; display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 32px -14px rgba(0,161,231,.7); transition: transform .3s var(--ease); }
   .yt__card:hover .yt__play-btn { transform: scale(1.2); }
-  .yt__play-btn svg { width: 20px; height: 20px; color: var(--accent-ink); margin-left: 3px; }
+  .yt__play-btn svg { width: 20px; height: 20px; color: #ffffff; margin-left: 3px; }
 
   /* ---- РЕАЛЬНЫЕ ИСТОРИИ УЧАСТНИКОВ (stories) ----
      Правка (заход 7, п.3): на живой Tilda карточка двухцветная — светлая
@@ -1491,7 +1605,20 @@
      15px/600), ник 14px/500 (было 12.5px/400), заголовок истории 24px
      (было 16.5px — самое заметное расхождение, абзац истории уже совпадал
      14px/14px и не менялся). */
-  .stories__top-section { display: flex; flex-direction: column; gap: 14px; padding: 30px 30px 24px; background: var(--light-bg); }
+  /* Правка 12 (п.11): на живой Tilda (rec2081619121) светлая плашка скруглена
+     не только сверху, но и снизу — низ .t-card__title несёт radius: 0 0 30px 30px
+     (замерено getComputedStyle), тогда как верх плашки сам по себе radius: 0 и
+     выглядит скруглённым только потому, что стартует вровень с верхним краем
+     тёмной карточки и обрезается её собственным overflow:hidden (radius 30px
+     на .t1196__item). Ширины у плашки и карточки при этом совпадают день-в-день
+     (боковых полей нет) — «зазор», который видит владелец, это не реальный
+     margin, а именно скруглённые нижние углы плашки на фоне тёмной подложки
+     карточки: угол дуги открывает тёмный фон в четверти круга по бокам от
+     низа плашки. Тот же приём здесь — border-radius снизу на .stories__card
+     уже даёт скругление у .stories__bottom-section через overflow:hidden,
+     верх .stories__top-section скругляется тем же способом; не хватало только
+     её собственного нижнего radius. */
+  .stories__top-section { display: flex; flex-direction: column; gap: 14px; padding: 30px 30px 24px; background: var(--light-bg); border-radius: 0 0 var(--r-lg) var(--r-lg); }
   /* .stories__card целиком наследует --focus: var(--light-ink) (RESET, тёмный
      цвет для фокус-кольца на светлых островках) — но кнопка «Читать историю»
      теперь на тёмной нижней плашке, тёмное кольцо там было бы невидимо.
@@ -1636,11 +1763,12 @@
      контент-файла сюда сознательно НЕ добавлены: обе заливаются в #182023 —
      тот же цвет, что фон карточек var(--bg-card), на нём иконка физически
      невидима (только opacity: .8 без инверсии цвета не спасает). Ровно этот
-     баг обнаружился на ревью в .steps__check (Task 7, тот же checkmark.svg на
-     той же var(--bg-card)) и исправлен там же тем же способом — заменой на
-     inline-SVG чип, см. .steps__check ниже по файлу. Плодить тут третий
-     файловый checkmark с тем же дефектом смысла не было — .tier__check и
-     .steps__check используют одну методику на всю страницу. icons/bonus.svg
+     баг когда-то обнаружился на ревью и в шагах секции steps (тот же
+     checkmark.svg на той же var(--bg-card)) — там его сначала чинили тем же
+     способом, заменой на inline-SVG чип (.steps__check), а правкой 12 (п.А2)
+     чек-бейдж у шагов убрали вовсе: на живом оригинале его там нет ни у
+     одного шага. Здесь, в tariffs, тот же дефект решён иначе — inline-SVG
+     чип остаётся нужен (.tier__check), это не файловый checkmark. icons/bonus.svg
      тем же способом не используется вовсе (см. правку у .tier__bonus-icon
      ниже — это была не иконка подарка, а посторонний обрезок формы, заменён
      на инлайновый SVG). icons/star.svg по той же причине (тёмная заливка на
@@ -1737,7 +1865,7 @@
      (259×137, читался «непонятной полоской»). Иконка подарка на оригинале —
      инлайновый SVG-путь Tilda (vector-элемент, не файл на CDN — скачивать
      нечего), путь скопирован 1:1 и перекрашен в currentColor тем же приёмом,
-     что и .tier__check/.steps__check. */
+     что и .tier__check. */
   .tier__bonus-icon { width: 20px; height: 22px; flex-shrink: 0; color: var(--light-ink); }
   /* На оригинале «Бонусный модуль по прохождению собесов:» — это жирная
      строка-врезка (16px, 700, обычным начертанием на тёмных чернилах), а не
@@ -2109,7 +2237,7 @@
           <div class="who__title-card">
             <h2 class="section__title">Курс адаптирован под частые проблемы backend-a, <span class="who__title-mut">которые встречаются на работе</span></h2>
           </div>
-          <img class="who__code" src="learning_process/video_lesson.png" alt="" width="1161" height="1573" loading="lazy">
+          <img class="who__code" src="learning_process/video_lesson.png" alt="" width="1161" height="1573" aria-hidden="true" loading="lazy">
         </div>
         <div class="who__list">
           <div class="who__card">
@@ -2660,58 +2788,63 @@
       <div class="steps__list fade-up">
         <div class="steps__row">
           <div class="steps__col steps__col--text">
-            <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <h3 class="steps__title">Смотришь видеоуроки и ходишь на онлайн-встречи с разборами практических заданий и вопросов</h3>
             <p class="steps__desc">Каждую неделю будет открываться несколько уроков. Будешь изучать микросервисы лапку за лапкой, без полыхающих дедлайнов, ну и еще кое-чего:)</p>
           </div>
           <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/video_lesson.png" alt="" width="1161" height="1573" loading="lazy">
+            <img class="steps__img" src="learning_process/screencast.png" alt="" width="1121" height="693" loading="lazy">
           </div>
         </div>
         <div class="steps__row">
           <div class="steps__col steps__col--text">
-            <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <h3 class="steps__title">Делаешь практическое задание с упором на реальную практику</h3>
             <p class="steps__desc">Задания полностью моделируют бизнес-таски в BigTech-компаниях. Короче, Коткинс сделал все, чтобы ты был готов к настоящей работе</p>
             <button type="button" class="steps__mascot" data-modal-open="homework-modal" aria-haspopup="dialog">Коткинс, какие будут задания?</button>
           </div>
           <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/homework.png" alt="" width="1121" height="693" loading="lazy">
+            <img class="steps__img" src="learning_process/homework_example.png" alt="" width="1121" height="693" loading="lazy">
           </div>
         </div>
         <div class="steps__row">
           <div class="steps__col steps__col--text">
-            <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <h3 class="steps__title">Получаешь подробный фидбек по практическому заданию и эталонное решение от Олега<a class="steps__star" href="#steps-footnote" aria-describedby="steps-footnote">*</a></h3>
             <p class="steps__desc">Кожаные скрупулезно проверят практическое задание и покажут ошибки. А ещё отправят видео с идеальным решением, как бы они сами писали код в этом кейсе — с разбором всех нюансов и типичных ошибок</p>
           </div>
           <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/feedback.png" alt="" width="1121" height="693" loading="lazy">
+            <img class="steps__img" src="learning_process/code_review.png" alt="" width="1121" height="693" loading="lazy">
           </div>
         </div>
+        <p class="steps__footnote fade-up" id="steps-footnote">* На тарифе с обратной связью по практическим заданиям</p>
         <div class="steps__row">
           <div class="steps__col steps__col--text">
-            <span class="steps__check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <h3 class="steps__title">Читаешь допматериалы</h3>
             <p class="steps__desc">Забугорные курсы, статейки, видосики — короче, не заскучаешь!</p>
           </div>
           <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/materials.png" alt="" width="1121" height="693" loading="lazy">
+            <img class="steps__img" src="learning_process/materials_list.png" alt="" width="1121" height="692" loading="lazy">
           </div>
         </div>
       </div>
-      <p class="steps__footnote fade-up" id="steps-footnote">* На тарифе с обратной связью по практическим заданиям</p>
     </div>
   </section>
 
   <!-- ===== КОМЬЮНИТИ И ЧАТ (community, rec765448890) =====
        Перевёрстка 3 (заход 2): три колонки — слева столбик из пяти скриншотов
-       чата (chat_1…chat_5, без изменений), в центре мокап телефона с реальным
-       скриншотом переписки (community/phone_mockup.png — докачан с CDN живой
-       Tilda, см. комментарий у .phone в CSS), справа заголовок, подзаголовок
-       и подпись-плашка «просто кайфуем». На живой Tilda мокап — карусель из
-       трёх экранов; карусели в этом заходе не трогаем (отдельный периметр),
-       здесь один статичный первый кадр.
+       чата (chat_1…chat_5, без изменений), в центре мокап телефона, справа
+       заголовок, подзаголовок и подпись-плашка «просто кайфуем».
+       Правка 12 (п.В): на живой Tilda мокап — не статичный кадр, а галерея из
+       трёх экранов переписки (data-elem-type='gallery', slds_autoplay="4",
+       slds_loop="loop"), которая листается сама, без стрелок. Раньше (заход 2)
+       здесь стоял только первый кадр (community/phone_mockup.png = Group20633103.png
+       с CDN, докачан тогда же) — карусель сознательно не переносили, откладывая
+       на «отдельный периметр». Два оставшихся кадра галереи докачаны этим
+       заходом: community/phone_chat_2.png = Group20633104.png, community/phone_chat_3.png
+       = Group20633102.png (порядок — как в data-field-imgs-value галереи на
+       живой странице: 103 → 104 → 102). Автолистание — кроссфейд по таймеру
+       (см. .phone__slide в CSS и <script> в конце файла), не переиспользует
+       .carousel__*/data-carousel-* (см. комментарий у .phone__screen: та
+       механика — ручной scroll-snap трек нескольких карточек, здесь же один
+       full-bleed кадр без стрелок, а не сравнимая по форме карусель).
        mascot/learning_speech.svg — маленький волнистый «хвостик»-указатель у
        заголовка. Привязка сверена с живой Tilda (JS-инспекция DOM rec765448890
        18.08.2026): исходник tild3738…/photo.svg на странице имеет натуральные
@@ -2745,8 +2878,10 @@
         </div>
         <div class="community__phone-wrap fade-up">
           <div class="phone">
-            <div class="phone__screen">
-              <img src="community/phone_mockup.png" alt="Переписка в чате потока" width="1180" height="2559" loading="lazy">
+            <div class="phone__screen" data-phone-slider>
+              <img class="phone__slide phone__slide--active" src="community/phone_mockup.png" alt="Переписка в чате потока" width="1180" height="2559" loading="lazy">
+              <img class="phone__slide" src="community/phone_chat_2.png" alt="Переписка в чате потока" width="1180" height="2557" loading="lazy">
+              <img class="phone__slide" src="community/phone_chat_3.png" alt="Переписка в чате потока" width="1180" height="2557" loading="lazy">
             </div>
           </div>
         </div>
@@ -4741,6 +4876,28 @@
       track.addEventListener('scroll', update, { passive: true });
       window.addEventListener('resize', update);
       update();
+    });
+
+    // ===== Правка 12 (п.В): автолистание мокапа телефона в community —
+    // не .carousel__* (тот механизм — ручной scroll-snap трек нескольких
+    // карточек со стрелками, здесь один full-bleed кадр без стрелок,
+    // см. комментарий у .phone__screen в CSS), а отдельный таймер-кроссфейд.
+    // reduceMotion — та же переменная, что и у карусели выше: если у
+    // пользователя «уменьшить движение», таймер вообще не заводится (не
+    // просто ускоряется/убирается transition — automatic листание само по
+    // себе тоже движение, которого reduce-motion просит избегать), на экране
+    // остаётся первый кадр без переключений. Все три <img> уже в DOM (не
+    // src, который переписывается) — переключается только класс
+    // .phone__slide--active, обычный opacity-transition из CSS. =====
+    document.querySelectorAll('[data-phone-slider]').forEach(function (root) {
+      var slides = root.querySelectorAll('.phone__slide');
+      if (slides.length < 2 || reduceMotion) return;
+      var i = 0;
+      setInterval(function () {
+        slides[i].classList.remove('phone__slide--active');
+        i = (i + 1) % slides.length;
+        slides[i].classList.add('phone__slide--active');
+      }, 4000);
     });
   });
 </script>
