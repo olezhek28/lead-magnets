@@ -950,7 +950,15 @@
      ниже — см. скриншоты захода 8). */
   .steps__mascot-group { position: relative; flex-shrink: 0; width: 300px; }
   .steps__mascot-bubble { display: block; width: 200px; height: auto; }
-  .steps__cat { position: absolute; top: -26px; right: 0; width: 120px; height: auto; pointer-events: none; }
+  /* Правка (заход 17): на живой Tilda кот в этой паре зеркалирован
+     (голова развёрнута влево, к облачку) — сверено побайтово с исходником
+     noroot.png (тот же файл, что и .pricing__cat/.ytch__cat): наш локальный
+     mascot/kotkins.png сам по себе, без CSS-трансформации, соответствует
+     оригинальной «прямой» ориентации только у .who__cat, а у steps/pricing/
+     ytch на живой странице использован зеркальный вариант того же кадра.
+     transform: scaleX(-1) не смещает layout-бокс (top/right остаются как
+     были), только отражает содержимое внутри него. */
+  .steps__cat { position: absolute; top: -26px; right: 0; width: 120px; height: auto; pointer-events: none; transform: scaleX(-1); }
   .steps__list { display: flex; flex-direction: column; gap: 64px; }
   .steps__row { display: flex; align-items: center; gap: 48px; }
   /* nth-of-type, не nth-child: .steps__footnote (правка 12, п.А3) физически
@@ -1971,13 +1979,46 @@
      остался» (mascot/speech_bubble_3.svg) — тот же приём .steps__cat, только
      секция называется .pricing, а не .steps. .pricing__cat специально
      оставлен абсолютным относительно всей секции .pricing (а не относительно
-     .section__head--mascot, как у .steps__cat/.ytch__cat) — заход 14 уже
-     сверял эту пару с оригиналом и подтвердил, что она стоит верно (см.
-     правки там); заход 16 подгоняет только заголовок рядом и не трогает
-     геометрию кота/облачка, чтобы не сдвинуть то, что уже сверено. */
+     .section__head--mascot, как у .steps__cat/.ytch__cat).
+     Правка (заход 17): предыдущая калибровка (заход 14) не совпадала с
+     оригиналом — сверено пиксель-в-пиксель на живой rec2045225131 (viewport
+     1440): карточка «С проверкой» (.tier--light) накрывает кота по всей его
+     ширине (правый край кота там всего на ~8px внутри правого края карточки,
+     а не за её пределами), и её верхний край пересекает кота на ~58% его
+     высоты сверху — видна только голова и плечи, а не бок кота, свисающий
+     сбоку от карточки, как было раньше при right:76px (при right:76px кот
+     оказывался в основном ПРАВЕЕ .container — почти не над карточкой, и
+     обрезался не прямым краем карточки, а произвольной диагональю её
+     скруглённого угла). Новые top/right пересчитаны так же, как и раньше —
+     статичными px, откалиброванными по этому отношению на нашей раскладке
+     (см. .container max-width/padding в начале файла), а не взятые
+     буквально с оригинала (свой canvas другой ширины). Также кот здесь
+     зеркалирован (transform: scaleX(-1), тот же приём и тот же разбор
+     файла-источника, что у .steps__cat выше) — на живом оригинале голова
+     развёрнута влево, к облачку с репликой, а не вправо.
+     Кот на оригинале выезжает снизу вверх по мере прокрутки (сначала не
+     виден, потом проступает целиком) — здесь для этого класс .fade-up, тот
+     же, что у остальных 8 блоков со scroll-reveal на странице, вторая
+     анимация не заводится. У .fade-up своя механика через transform
+     (translate3d на .pre → none на .visible), поэтому .fade-up навешан на
+     обёртку .pricing__cat-wrap, а не на сам <img>: иначе transform реплея
+     конфликтовал бы с transform: scaleX(-1) на картинке (один и тот же
+     CSS-property на одном элементе, зеркало терялось бы). Тот же приём уже
+     есть у .steps__cat/.ytch__cat выше — там reveal-transform достаётся
+     .section__head--mascot.fade-up (предку), а scaleX(-1) — картинке. */
   .pricing { position: relative; }
-  .pricing__cat { position: absolute; top: -22px; right: 76px; width: 128px; height: auto; pointer-events: none; }
-  .pricing__mascot-bubble { width: 200px; height: auto; }
+  .pricing__cat-wrap { position: absolute; top: 10px; right: 160px; width: 128px; pointer-events: none; }
+  .pricing__cat { display: block; width: 100%; height: auto; pointer-events: none; transform: scaleX(-1); }
+  /* Правка (заход 17): margin-right отодвигает облачко от правого края
+     .container — на оригинале между правым краем облачка (x=1161 на
+     viewport 1440) и правым краем карточки/кота (x≈1293) есть свой зазор
+     (~130px), а у .section__head--mascot здесь justify-content:space-between
+     без него прижал бы облачко ровно к тому же краю контейнера, что и кот
+     (оба тянутся к одной границе .container) — кот при верной по крою
+     позиции (см. .pricing__cat-wrap выше) наезжал на текст реплики. Отступ
+     калиброван так же, как остальные px в этом файле: по отношению с живой
+     страницы, а не буквально. */
+  .pricing__mascot-bubble { width: 200px; height: auto; margin-right: 160px; }
 
   /* Правка (заход 7, п.7): на живой Tilda обе карточки — 819px, ровно
      поровну (замерено getBoundingClientRect на «Стандарт»/«С проверкой» —
@@ -2073,7 +2114,7 @@
 
   @media (max-width: 960px) {
     .pricing__tiers { grid-template-columns: 1fr; }
-    .pricing__cat { width: 96px; right: 40px; top: -14px; }
+    .pricing__cat-wrap { width: 96px; right: 40px; top: -14px; }
   }
   @media (max-width: 640px) {
     .tier { padding: 34px 24px 30px; }
@@ -2095,11 +2136,11 @@
        десктопные top/right выше), с небольшим отрицательным right вместо
        положительного — минимальный, безопасный выход за край. */
     .pricing__mascot-bubble { width: 140px; }
-    .pricing__cat { width: 70px; right: -3px; top: -22px; }
+    .pricing__cat-wrap { width: 70px; right: -3px; top: -22px; }
   }
   @media (max-width: 400px) {
     .pricing__mascot-bubble { width: 120px; }
-    .pricing__cat { width: 60px; right: -26px; top: -14px; }
+    .pricing__cat-wrap { width: 60px; right: -26px; top: -14px; }
   }
 
   /* ===== TASK 9: МОДАЛКА ПРЕДЗАПИСИ — ФОРМА GETCOURSE (виджет) =====
@@ -2172,7 +2213,9 @@
      теперь right: 0, а не отрицательный оффсет за пределы группы. */
   .ytch__mascot-group { position: relative; flex-shrink: 0; width: 310px; }
   .ytch__mascot-bubble { display: block; width: 220px; height: auto; }
-  .ytch__cat { position: absolute; top: -12px; right: 0; width: 110px; height: auto; pointer-events: none; }
+  /* Правка (заход 17): зеркалирование, как у .steps__cat выше (тот же
+     исходник noroot.png, там же и разбор). */
+  .ytch__cat { position: absolute; top: -12px; right: 0; width: 110px; height: auto; pointer-events: none; transform: scaleX(-1); }
   .ytch__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
   .ytch__card { display: block; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); transition: border-color .25s var(--ease), transform .25s var(--ease); }
   .ytch__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
@@ -4277,7 +4320,9 @@
        faq — не наш rec-список, придумывать здесь нечего. -->
   <section class="section pricing" id="tariffs" aria-labelledby="tariffs-title">
     <div class="container">
-      <img class="pricing__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
+      <div class="pricing__cat-wrap fade-up">
+        <img class="pricing__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
+      </div>
       <div class="section__head section__head--mascot fade-up">
         <h2 class="section__title" id="tariffs-title">Начинаем осенью 2026</h2>
         <img class="pricing__mascot-bubble" src="mascot/speech_bubble_3.svg" alt="В предзапись не записался — без микросервисов остался" width="265" height="79" loading="lazy">
