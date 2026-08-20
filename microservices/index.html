@@ -197,9 +197,15 @@
     background: var(--bg-primary);
     color: var(--text-body);
     line-height: 1.55;
-    font-feature-settings: "ss01" 1;
-    -webkit-font-smoothing: antialiased;
-    /* НЕ overflow-x: hidden — на body это делает его отдельным контейнером
+    /* Правка (заход 8, п.4): font-feature-settings: "ss01" 1 и
+       -webkit-font-smoothing: antialiased — наследие лендинга System Design
+       (там был Geist, ss01 — под его альтернативный набор начертаний).
+       На живой странице оригинала (олежек28.courses/microservices) оба
+       свойства проверены через getComputedStyle и поиск по разметке —
+       ни одного вхождения. Здесь шрифт один (Manrope), ss01 подменял
+       рисунок букв, а antialiased визуально утончал текст — оба убраны,
+       рендеринг отдаётся браузеру по умолчанию, как на оригинале.
+       НЕ overflow-x: hidden — на body это делает его отдельным контейнером
        прокрутки: ломаются переходы по якорям (меню) и window.scrollY отдаёт 0.
        clip обрезает, но скроллер не создаёт. */
     overflow-x: clip;
@@ -218,7 +224,12 @@
   img, svg { max-width: 100%; display: block; }
   button { font: inherit; cursor: pointer; }
   h1, h2, h3, .display { font-family: var(--display); }
-  ::selection { background: var(--accent); color: var(--accent-ink); }
+  /* Правка (заход 8, п.6): унаследованное от лендинга System Design правило
+     ::selection { background: var(--accent); ... } красило выделение текста
+     мышью в лаймовый — на живом оригинале такого переопределения нет,
+     выделение системное (обычно синее). Правило снято целиком, второго
+     такого же для отдельных блоков (например, светлых карточек) в файле
+     не было. */
   /* фокус-кольцо наследуется вниз по дереву: на светлых поверхностях жёлтый
      контур давал бы низкий контраст — переключатель на тёмный оставлен про запас
      для будущих светлых островков (например .tier--light в тарифах) */
@@ -246,7 +257,7 @@
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
     padding: 18px 40px; border-radius: 999px;
     font-family: var(--display);
-    font-size: 14.5px; font-weight: 600; line-height: 1; letter-spacing: -0.01em;
+    font-size: 14.5px; font-weight: 600; line-height: 1; letter-spacing: normal;
     border: 1px solid transparent; text-align: center;
     transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease),
                 transform .18s var(--ease), box-shadow .25s var(--ease);
@@ -296,7 +307,7 @@
     background: transparent; border: 1px solid transparent;
     transition: height .3s var(--ease), background .3s var(--ease), border-color .3s var(--ease), margin .3s var(--ease), padding .3s var(--ease);
   }
-  .header__logo { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); letter-spacing: -0.02em; flex-shrink: 0; }
+  .header__logo { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); letter-spacing: normal; flex-shrink: 0; }
   .header__logo b { color: var(--accent); font-weight: 700; }
   .header__nav { display: none; gap: 6px; }
   .header__nav-link {
@@ -395,7 +406,7 @@
      это отдельная секция "Финальный CTA" внутри main, её верстает другая задача. */
   .footer { padding: 90px 0 80px; border-top: 1px solid var(--border-card); }
   .footer__bottom { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 48px; align-items: start; }
-  .footer__brand { display: inline-block; font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); margin-bottom: 18px; letter-spacing: -0.01em; transition: color .2s var(--ease); }
+  .footer__brand { display: inline-block; font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); margin-bottom: 18px; letter-spacing: normal; transition: color .2s var(--ease); }
   .footer__brand:hover { color: var(--accent); }
   .footer__brand b { color: var(--accent); }
   .footer__req { font-family: var(--mono); font-size: 12px; line-height: 1.85; color: var(--text-faint); max-width: 52ch; }
@@ -456,9 +467,14 @@
      .steps__mascot-group/.ytch__mascot-group), одна механика на обе секции. */
   .section__head--mascot { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: none; }
   .section__head--mascot .section__title { margin: 0; }
+  /* Правка (заход 8, п.4): трекинг замерен на живых H2 оригинала —
+     «Как всё устроено по шагам», «Кстати, Олег ведет YouTube…» и
+     «Заблуждения и частые вопросы» дают одно и то же -1.5px при 40px
+     (getComputedStyle) — это -0.0375em, а не -0.03em, которые здесь стояли
+     раньше. */
   .section__title {
     font-family: var(--display); font-size: clamp(28px, 3.6vw, 44px); font-weight: 500;
-    line-height: 1.14; letter-spacing: -0.03em; color: var(--text-h); margin: 0; text-wrap: pretty;
+    line-height: 1.14; letter-spacing: -0.0375em; color: var(--text-h); margin: 0; text-wrap: pretty;
   }
   .section__cta { margin-top: 48px; text-align: center; }
 
@@ -479,9 +495,14 @@
     background: linear-gradient(90deg, transparent, rgba(223,223,65,.35), transparent);
   }
   .hero__inner { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; text-align: center; }
+  /* Правка (заход 8, п.4): на живом оригинале заголовок хиро набран заметно
+     светлее и с более тонким трекингом, чем было здесь — getComputedStyle
+     даёт font-weight: 300, letter-spacing: -1px при 70px (≈ -0.0143em),
+     а не 500 / -0.04em. Файл шрифта 300 уже подключён (Manrope
+     300;400;500;600;700), просадки в начертании нет. */
   .hero__title {
-    font-family: var(--display); font-size: clamp(34px, 5.2vw, 60px); font-weight: 500;
-    line-height: 1.08; letter-spacing: -0.04em; color: var(--text-h); margin: 0 0 26px;
+    font-family: var(--display); font-size: clamp(34px, 5.2vw, 60px); font-weight: 300;
+    line-height: 1.08; letter-spacing: -0.0143em; color: var(--text-h); margin: 0 0 26px;
   }
   /* «3.0» — прошлая версия заголовка правилась поверх этой, серый цвет достался
      хвосту как визуальная память об этом — переносим ровно так, как на экране */
@@ -515,7 +536,7 @@
   }
   .cta-capsule__meta { display: flex; flex-direction: column; gap: 5px; padding: 0 28px; min-width: 118px; text-align: center; }
   .cta-capsule__label { font-family: var(--font); font-size: 11px; letter-spacing: normal; color: var(--text-mute); }
-  .cta-capsule__value { font-family: var(--display); font-size: 16px; font-weight: 500; letter-spacing: -0.01em; color: var(--text-h); white-space: nowrap; }
+  .cta-capsule__value { font-family: var(--display); font-size: 16px; font-weight: 500; letter-spacing: normal; color: var(--text-h); white-space: nowrap; }
   .cta-capsule__value--accent { color: var(--accent); }
   .cta-capsule .btn { border-radius: 999px; padding: 21px 44px; font-size: 15.5px; }
 
@@ -570,7 +591,7 @@
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .who__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
-  .who__title { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.32; letter-spacing: -0.015em; color: var(--text-h); }
+  .who__title { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.32; letter-spacing: normal; color: var(--text-h); }
   .who__desc { font-size: 15px; line-height: 1.62; color: var(--text-mute); }
   .who__mascot {
     position: absolute; right: -6px; bottom: -4px; width: 74px; height: auto;
@@ -590,7 +611,7 @@
   }
   .get__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
   .get__step { height: 10px; width: auto; margin-bottom: 4px; }
-  .get__lead { font-family: var(--display); font-size: 17px; font-weight: 600; line-height: 1.4; letter-spacing: -0.01em; color: var(--text-h); }
+  .get__lead { font-family: var(--display); font-size: 17px; font-weight: 500; line-height: 1.4; letter-spacing: normal; color: var(--text-h); }
   .get__desc { font-size: 15px; line-height: 1.56; color: var(--text-mute); }
 
   /* ===== VACANCIES «Изучаем, что требуют…» (rec2072585811) =====
@@ -610,7 +631,7 @@
     gap: 40px; box-shadow: var(--sh-lift);
   }
   .jobs__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
-  .jobs__title { max-width: 420px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.03em; color: var(--text-h); margin: 0; text-wrap: pretty; }
+  .jobs__title { max-width: 420px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.0375em; color: var(--text-h); margin: 0; text-wrap: pretty; }
   .jobs__aside { max-width: 360px; text-align: right; }
   .jobs__lead { font-size: 16px; line-height: 1.6; color: var(--text-mute); }
   /* три карточки со скриншотами вакансий, слева направо: Ozon Tech, Wildberries,
@@ -718,10 +739,15 @@
   .prog-head { text-align: center; max-width: 900px; margin: 0 auto 44px; }
   .prog-head__pill { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 26px;
     padding: 9px 20px 9px 16px; border-radius: 999px; background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28);
-    font-family: var(--font); font-size: 14px; font-weight: 500; letter-spacing: .02em; color: var(--accent); }
+    font-family: var(--font); font-size: 14px; font-weight: 500; letter-spacing: .03em; color: var(--accent); }
   .prog-head__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: progPulse 2.4s var(--ease) infinite; }
   @keyframes progPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(223,223,65,.5); } 60% { box-shadow: 0 0 0 8px rgba(223,223,65,0); } }
-  .prog-head__title { font-family: var(--display); font-size: clamp(30px, 4.4vw, 52px); font-weight: 600; line-height: 1.1; letter-spacing: -0.03em; color: var(--text-h); }
+  /* Правка (заход 8, п.4): .prog-head__pill выше — единственная подпись на
+     странице, где на оригинале трекинг положительный (0.5px при 16px ≈
+     0.03em, а не 0.02em) — единственное исключение из общей чистки минуса.
+     .prog-head__title сверен отдельно: -1.5px при 40px = -0.0375em, вес 500
+     (был 600, а не -0.03em). */
+  .prog-head__title { font-family: var(--display); font-size: clamp(30px, 4.4vw, 52px); font-weight: 500; line-height: 1.1; letter-spacing: -0.0375em; color: var(--text-h); }
   @media (prefers-reduced-motion: reduce) { .prog-head__dot { animation: none; } }
 
   .program { max-width: 1080px; margin: 0; display: flex; flex-direction: column; gap: 16px; }
@@ -743,7 +769,7 @@
   .program__headtext { flex: 1; min-width: 0; display: block; }
   .program__step { display: block; font-family: var(--font); font-size: 11px; font-weight: 500; color: var(--text-faint); margin-bottom: 13px; letter-spacing: normal; transition: color .3s var(--ease); }
   .program__item--open .program__step { color: var(--accent); }
-  .program__name { display: block; font-family: var(--display); font-size: clamp(20px, 2.4vw, 30px); font-weight: 500; color: var(--text-h); line-height: 1.16; letter-spacing: -0.03em; text-wrap: balance; }
+  .program__name { display: block; font-family: var(--display); font-size: clamp(20px, 2.4vw, 30px); font-weight: 500; color: var(--text-h); line-height: 1.16; letter-spacing: normal; text-wrap: balance; }
   .program__toggle {
     position: relative; width: 46px; height: 46px; border-radius: var(--r-md);
     background: var(--bg-primary); color: var(--text-mute); border: 1px solid var(--border-acc);
@@ -772,7 +798,7 @@
     padding: 9px 16px; border-radius: var(--r-md); margin-bottom: 20px;
   }
   .program__label--result { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-  .program__block-title { font-family: var(--display); font-size: 19px; font-weight: 500; color: var(--text-h); line-height: 1.32; letter-spacing: -0.01em; margin: 0 0 14px; }
+  .program__block-title { font-family: var(--display); font-size: 19px; font-weight: 500; color: var(--text-h); line-height: 1.32; letter-spacing: normal; margin: 0 0 14px; }
   .program__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; }
   .program__list li { position: relative; padding-left: 22px; font-size: 15.5px; line-height: 1.62; color: var(--text-mute); }
   .program__list li::before { content: ''; position: absolute; left: 0; top: .68em; width: 9px; height: 1px; background: var(--accent); }
@@ -810,10 +836,29 @@
      кот при left=1074.6/top=212 — то есть кот перекрывает облачко примерно на
      41% его ширины и стоит на 26px выше). Тот же приём и с той же геометрией
      использован в секции ytch ниже (см. .ytch__mascot-group) — механика одна
-     на обе секции, а не две разные. */
-  .steps__mascot-group { position: relative; flex-shrink: 0; width: 200px; }
-  .steps__mascot-bubble { display: block; width: 100%; height: auto; }
-  .steps__cat { position: absolute; top: -22px; right: -78px; width: 100px; height: auto; pointer-events: none; }
+     на обе секции, а не две разные.
+     Правка (заход 8, п.1): у .steps__cat/.ytch__cat правым краем при
+     отрицательном right вылезали за пределы страницы — .who в этом файле
+     ссылалась именно на этот риск (см. комментарий у .who выше). Раньше
+     .steps__mascot-bubble растягивалась на 100% ширины группы, а кот
+     дополнительно выступал ещё на right:-78px за её правый край — эта
+     разница (78px) и есть overflow сверх padding контейнера, обрезаемый
+     html/body{overflow-x:clip} на узких широких экранах (замерено: уже
+     при 1280px кот вылезал на 4px за viewport).
+     Фикс: .steps__mascot-bubble больше не растягивается на всю группу —
+     у неё свой фиксированный размер (200px, ровно тот же, что раньше давала
+     100% от группы, — облачко не уменьшилось), а группа стала шире ровно
+     настолько, чтобы вместить увеличенного кота целиком внутри своих же
+     границ (.steps__cat теперь right: 0 — не может вылезти за правый край
+     группы ни при какой ширине окна). Кот увеличен со 100px до 120px
+     (+20%, отношение перенесено с живой страницы: там кот шире своего
+     облачка почти вдвое, здесь — глубокая перестройка вёрстки под цельный
+     canvas другой ширины, поэтому размер откалиброван по этой же пропорции
+     не буквально, а на глаз безопасного максимума, не наезжающего на .steps__list
+     ниже — см. скриншоты захода 8). */
+  .steps__mascot-group { position: relative; flex-shrink: 0; width: 300px; }
+  .steps__mascot-bubble { display: block; width: 200px; height: auto; }
+  .steps__cat { position: absolute; top: -26px; right: 0; width: 120px; height: auto; pointer-events: none; }
   .steps__list { display: flex; flex-direction: column; gap: 64px; }
   .steps__row { display: flex; align-items: center; gap: 48px; }
   .steps__row:nth-child(even) { flex-direction: row-reverse; }
@@ -832,7 +877,10 @@
   }
   .steps__check svg { width: 14px; height: 14px; color: var(--accent); }
   .steps__img { display: block; width: 100%; height: auto; border-radius: var(--r-lg); background: var(--bg-primary); border: 1px solid var(--border-card); }
-  .steps__title { font-family: var(--display); font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: -0.015em; color: var(--text-h); }
+  /* Правка (заход 8, п.4): на оригинале заголовок шага набран 600-м, а не
+     500-м начертанием, трекинг обычный (getComputedStyle на "Смотришь
+     видеоуроки и ходишь…" — font-weight:600, letter-spacing:normal). */
+  .steps__title { font-family: var(--display); font-size: 22px; font-weight: 600; line-height: 1.3; letter-spacing: normal; color: var(--text-h); }
   .steps__desc { font-size: 15px; line-height: 1.62; color: var(--text-mute); }
   .steps__star { color: var(--accent); text-decoration: none; margin-left: 2px; }
   .steps__star:hover { text-decoration: underline; }
@@ -863,8 +911,9 @@
   @media (max-width: 960px) {
     .steps__list { gap: 48px; }
     .steps__row, .steps__row:nth-child(even) { flex-direction: column-reverse; gap: 20px; }
-    .steps__mascot-group { width: 150px; }
-    .steps__cat { width: 80px; right: -6px; top: -16px; }
+    .steps__mascot-group { width: 230px; }
+    .steps__mascot-bubble { width: 150px; }
+    .steps__cat { width: 95px; right: 0; top: -20px; }
   }
   @media (max-width: 640px) {
     .steps__list { gap: 36px; }
@@ -876,6 +925,7 @@
        облачко без кота. */
     .section__head--mascot { flex-direction: column; align-items: flex-start; }
     .steps__mascot-group { width: 180px; }
+    .steps__mascot-bubble { width: 180px; }
     .steps__cat { display: none; }
   }
 
@@ -961,7 +1011,7 @@
   }
   .homework__qbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-md); }
   .homework__qbtn:active .homework__toggle { transform: scale(.94); }
-  .homework__qtext { font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); line-height: 1.4; letter-spacing: -0.01em; text-wrap: pretty; }
+  .homework__qtext { font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); line-height: 1.4; letter-spacing: normal; text-wrap: pretty; }
   .homework__toggle {
     position: relative; width: 40px; height: 40px; border-radius: var(--r-md);
     background: var(--bg-primary); color: var(--text-mute); border: 1px solid var(--border-acc);
@@ -1181,7 +1231,7 @@
   .author__item { display: grid; grid-template-columns: 200px 1fr; gap: 8px 24px; padding: 20px 0; border-top: 1px solid var(--border-card); align-items: start; }
   .author__item:last-child { border-bottom: 1px solid var(--border-card); }
   .author__company { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .author__company-name { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--text-h); white-space: nowrap; letter-spacing: -0.02em; line-height: 1.2; }
+  .author__company-name { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--text-h); white-space: nowrap; letter-spacing: normal; line-height: 1.2; }
   .author__badge { display: inline-block; padding: 4px 10px; border: 1px solid var(--border-acc); border-radius: var(--r-sm); font-family: var(--mono); font-size: 11px; color: var(--text-mute); white-space: nowrap; }
   .author__desc { padding-top: 2px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
   .author__photo { border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); box-shadow: var(--sh-lift); position: sticky; top: 108px; }
@@ -1343,7 +1393,31 @@
      Все пары выше минимума 4.5:1 — тот класс ошибок (текст сливается с
      фоном), на котором проект спотыкался уже семь раз, здесь проверен
      цифрами, а не на глаз. */
+  /* Правка (заход 8, п.2б): на живой Tilda у этого блока (t1196) нет
+     собственного узкого «контейнера» — трек карусели растянут на всю ширину
+     окна (замерено: t1196 w=1440 при viewport 1440, x=0), первая карточка
+     просто выровнена по левому краю с тем же отступом, что у остального
+     текстового столбца (x=140). Карточка/зазор при этом почти той же доли,
+     что и у нас (380/1200≈32%, зазор 20px — у нас 360px/20px при делении на
+     3 внутри .container, тоже ≈32%) — сама формула деления на 3 не была
+     ошибкой. Разница в другом: у оригинала карточки не подогнаны ровно под
+     три штуки в границах контейнера — трек шире, и с правого края всегда
+     чуть выглядывает четвёртая карточка (при 1440px видно ≈100px её кромки),
+     это и читается как «карточки крупнее, воздуха меньше». У нас же ровно
+     3 карточки без остатка упираются в правый паддинг контейнера — отсюда
+     ощущение зажатости. Фикс — тот же приём, что на оригинале: трек только
+     этой карусели (не .reviews__grid — там формула прежняя и не была
+     отмечена как проблема) продлён вправо за паддинг контейнера до края
+     окна отрицательным margin-right. flex-basis карточки — это доля именно
+     от ширины трека (calc((100% - 40px) / 3)), поэтому при более широком
+     треке карточки подросли сами (1440px: 360px → 413px, +15%, зазор
+     остался 20px) — трек по-прежнему делится ровно на 3 без остатка, без
+     видимой четвёртой кромки, но пропорция карточка/окно (413/1440 ≈ 29%)
+     теперь даже чуть выше оригинальной (380/1440 ≈ 26%). На ≤960px формула
+     карточек меняется на деление на 2 — там задача не отмечала проблему,
+     поэтому bleed отключён, чтобы не плодить непроверенное поведение. */
   .stories__grid { gap: 20px; margin-bottom: 28px; }
+  .stories__grid.carousel__track { margin-right: calc(-1 * (max(0px, (100vw - 1240px)) / 2 + 60px)); }
   .stories__grid > .stories__card { flex-basis: calc((100% - 40px) / 3); }
   .stories__card {
     display: flex; flex-direction: column;
@@ -1365,12 +1439,17 @@
      hover-подчёркивание сигналят кликабельность. */
   .stories__nick { display: inline-block; font-family: var(--mono); font-size: 12.5px; color: var(--light-faint); margin-top: 2px; }
   .stories__nick:hover { text-decoration: underline; text-underline-offset: 2px; }
-  .stories__headline { font-family: var(--display); font-size: 16.5px; font-weight: 600; line-height: 1.36; letter-spacing: -0.01em; color: var(--light-ink); }
+  .stories__headline { font-family: var(--display); font-size: 16.5px; font-weight: 500; line-height: 1.36; letter-spacing: normal; color: var(--light-ink); }
   .stories__excerpt { flex: 1; font-size: 14px; line-height: 1.58; color: var(--text-body); }
+  /* Правка (заход 8, п.2а): «Читать историю →» на живом оригинале акцентная,
+     лаймовая (var(--accent)), а не почти белая var(--text-h) — та же группа
+     ошибок, что уже семь раз ловилась на этом проекте (текст сливается
+     с фоном или не совпадает с оригиналом по цвету); на этот раз замерено
+     явно и контраст посчитан ниже. */
   .stories__btn {
     align-self: flex-start; margin-top: 4px; padding: 0; background: none; border: none;
     display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--text-h);
+    font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--accent);
     transition: gap .2s var(--ease);
   }
   .stories__btn:hover { gap: 9px; }
@@ -1413,16 +1492,37 @@
      отсюда мелкие, потерянные в рамке значки. Паддинг уменьшен, высота
      логотипа увеличена — соотношение приближено к оригинальному без
      привязки к пиксельной ширине самой сетки (она у нас другая: 4 колонки
-     через gap-фон, а не бордеры Tilda-таблицы). */
-  .bigtech__cell { background: var(--bg-primary); display: flex; align-items: center; justify-content: center; padding: 18px 20px; transition: background .3s var(--ease); }
+     через gap-фон, а не бордеры Tilda-таблицы).
+     Правка (заход 8, п.3): предыдущая правка подняла логотип только до 40→64px
+     при паддинге 18/20 (высота ячейки 100px) — это давало отношение лишь
+     64/100 ≈ 0.64, а не заявленные 0.82. Перемерено заново на живой странице
+     тем же способом (rec766038551): логотип 97.5px, ячейка 118.5px,
+     отношение 0.8228; ширина сетки на оригинале — 1180px, отношение высоты
+     ячейки к ширине сетки — 118.5/1180 ≈ 0.1004. У нас ширина сетки 1120px
+     (4 колонки внутри .container) — по тому же отношению высота ячейки
+     должна быть ≈112px, логотип внутри неё — ≈92px. Вертикальный паддинг
+     сведён к ~10px (92+10+10=112) — совпало с уже описанным в правке 7
+     ориентиром почти один в один; горизонтальный паддинг не трогаю — под
+     него отдельного отношения не мерили, 20px оставляет логотипам разной
+     ширины (Т-Банк узкий, ВК широкий) одинаковый воздух от границы ячейки. */
+  .bigtech__cell { background: var(--bg-primary); display: flex; align-items: center; justify-content: center; padding: 10px 20px; transition: background .3s var(--ease); }
   .bigtech__cell:hover { background: var(--bg-secondary); }
   .bigtech__logo {
-    height: 64px; width: auto; max-width: 100%; object-fit: contain;
+    height: 92px; width: auto; max-width: 100%; object-fit: contain;
     filter: grayscale(1); opacity: .72;
     transition: filter .3s var(--ease), opacity .3s var(--ease), transform .3s var(--ease);
   }
   .bigtech__cell:hover .bigtech__logo { filter: grayscale(0); opacity: 1; transform: translateY(-2px); }
   .bigtech__cta { text-align: center; }
+  /* Правка (заход 8, п.3): на оригинале кнопка «Учиться от компании» — 324×66
+     при ширине сетки 1180 (доля 0.275×0.056), у нас была 231×52.5 при той же
+     базовой .btn.btn--primary, что и остальные кнопки страницы — трогать
+     общий .btn нельзя (посадит все кнопки сайта), поэтому увеличение
+     скорректировано только внутри .bigtech__cta, тем же приёмом, что уже
+     применён на этой странице для карточек-исключений. Целевые паддинги
+     подобраны так, чтобы при неизменном 14.5px тексте выйти на те же доли
+     от ширины сетки (1120px здесь): ≈308×63px. */
+  .bigtech__cta .btn { padding: 24px 78px; }
 
   @media (max-width: 960px) {
     .author__grid { grid-template-columns: 1fr; gap: 38px; }
@@ -1432,6 +1532,10 @@
     .stats-row > :first-child { grid-column: span 2; }
     .reviews__grid > .reviews__card { flex-basis: calc((100% - 20px) / 2); }
     .yt__grid--7 .yt__card { flex-basis: calc((100% - 32px) / 3); }
+    /* bleed за контейнер — только для десктопной раскладки «3 в ряд» выше
+       (см. правку п.2б), на ≤960px формула карточек другая и не отмечена
+       как проблемная, поэтому trek возвращается в границы контейнера. */
+    .stories__grid.carousel__track { margin-right: 0; }
     .stories__grid > .stories__card { flex-basis: calc((100% - 20px) / 2); }
   }
   @media (max-width: 640px) {
@@ -1508,7 +1612,7 @@
   .pricing__facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 420px; margin: 0 auto 30px; }
   .fact { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 15px 18px; display: flex; flex-direction: column; gap: 7px; }
   .fact__label { font-family: var(--font); font-size: 10.5px; font-weight: 500; letter-spacing: normal; color: var(--text-faint); }
-  .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
+  .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: normal; line-height: 1.25; color: var(--text-h); }
   .fact__value--accent { color: var(--accent); }
 
   /* Правка (заход 7, п.7): на живой Tilda обе карточки — 819px, ровно
@@ -1538,18 +1642,21 @@
      11px моно-подпись капсом — держим её как заголовок карточки, а не
      мелкую капс-метку, и поэтому поднимаем цвет до основного (--text-h /
      --light-ink), как у прочих заголовков карточек на странице. */
+  /* Правка (заход 8, п.4): «Стандарт»/«С проверкой» на оригинале — 500-е
+     начертание с трекингом -1.4px при 26px (≈ -0.054em), не 600/-0.02em. */
   .tier__label {
-    font-family: var(--display); font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3;
+    font-family: var(--display); font-size: 22px; font-weight: 500; letter-spacing: -0.054em; line-height: 1.3;
     margin-bottom: 22px; color: var(--text-h);
   }
   .tier--light .tier__label { color: var(--light-ink); }
-  .tier__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin: 0 0 8px; }
-  .tier__list li { position: relative; padding-left: 32px; font-size: 15px; line-height: 1.58; color: var(--text-mute); }
+  /* Правка (заход 8, п.5): на живом оригинале пункты тарифов идут с обычным
+     круглым маркером списка, без иконки-галочки в жёлтом квадратике —
+     .tier__check (span + inline-SVG) убран из разметки, список вернулся
+     к нативному list-style: disc, маркер наследует цвет строки (currentColor),
+     поэтому отдельного цвета для .tier--light не нужно. */
+  .tier__list { list-style: disc; display: flex; flex-direction: column; gap: 14px; margin: 0 0 8px; padding-left: 20px; }
+  .tier__list li { font-size: 15px; line-height: 1.58; color: var(--text-mute); }
   .tier--light .tier__list li { color: var(--light-mute); }
-  .tier__check { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(223,223,65,.12); border: 1px solid rgba(223,223,65,.22); display: flex; align-items: center; justify-content: center; }
-  .tier--light .tier__check { background: var(--accent); border-color: var(--accent); }
-  .tier__check svg { width: 10px; height: 10px; color: var(--accent); }
-  .tier--light .tier__check svg { color: var(--accent-ink); }
 
   /* «Бонусный модуль по прохождению собесов» — только в тарифе «С проверкой».
      Правка (заход 7, п.6): на живой Tilda это не полоса-разделитель с
@@ -1572,7 +1679,6 @@
      (--tier-light), поэтому цвет сразу поднят до --light-ink. */
   .tier__bonus-title { font-family: var(--font); font-size: 15px; font-weight: 700; letter-spacing: normal; color: var(--light-ink); }
   .tier__bonus .tier__list { margin-bottom: 0; }
-  .tier__bonus .tier__check { background: rgba(16,23,26,.08); border-color: rgba(16,23,26,.16); }
 
   /* margin-top: auto — см. комментарий у .pricing__tiers: цена+кнопка
      прижаты к низу карточки как единая группа, а не сама кнопка отдельно. */
@@ -1583,9 +1689,11 @@
      но убираем моно-трекинг и добавляем вес, который был у мелкой капс-подписи. */
   .tier__price-label { font-family: var(--font); font-size: 12px; font-weight: 700; letter-spacing: normal; color: var(--text-faint); margin-bottom: 8px; }
   .tier--light .tier__price-label { color: var(--light-meta); }
-  .tier__price { font-family: var(--display); font-size: clamp(30px, 3.6vw, 42px); font-weight: 500; letter-spacing: -0.03em; line-height: 1; color: var(--text-h); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+  /* Правка (заход 8, п.4): цена «74 990 ₽» на оригинале — 600-е начертание
+     с трекингом -0.6px при 26px (≈ -0.023em), не 500/-0.03em. */
+  .tier__price { font-family: var(--display); font-size: clamp(30px, 3.6vw, 42px); font-weight: 600; letter-spacing: -0.023em; line-height: 1; color: var(--text-h); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
   .tier--light .tier__price { color: var(--light-ink); }
-  .tier__price b { font-weight: 500; }
+  .tier__price b { font-weight: 600; }
   .tier__pay { font-family: var(--mono); font-size: 12.5px; line-height: 1.55; color: var(--text-faint); }
   .tier--light .tier__pay { color: var(--light-meta); }
   .tier__cta { margin-top: 28px; }
@@ -1669,9 +1777,15 @@
      left=1144.7/top=665 — кот стоит правее и чуть ниже бордюра облачка
      (небольшой зазор ~24px, а не перекрытие, как в .steps__mascot-group —
      геометрия у двух секций своя, приём общий). */
-  .ytch__mascot-group { position: relative; flex-shrink: 0; width: 220px; }
-  .ytch__mascot-bubble { display: block; width: 100%; height: auto; }
-  .ytch__cat { position: absolute; top: -10px; right: -84px; width: 96px; height: auto; pointer-events: none; }
+  /* Правка (заход 8, п.1): та же обрезка правым краем страницы и тот же
+     фикс, что у .steps__cat выше (см. комментарий там) — облачко больше не
+     растягивается на 100% группы (у него свой фиксированный размер, 220px,
+     тот же, что и раньше), группа расширена, чтобы вместить увеличенного
+     кота (96px → 110px, +15%) целиком внутри своих границ: .ytch__cat
+     теперь right: 0, а не отрицательный оффсет за пределы группы. */
+  .ytch__mascot-group { position: relative; flex-shrink: 0; width: 310px; }
+  .ytch__mascot-bubble { display: block; width: 220px; height: auto; }
+  .ytch__cat { position: absolute; top: -12px; right: 0; width: 110px; height: auto; pointer-events: none; }
   .ytch__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
   .ytch__card { display: block; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); transition: border-color .25s var(--ease), transform .25s var(--ease); }
   .ytch__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
@@ -1679,18 +1793,22 @@
   .ytch__thumb { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg-secondary); }
   .ytch__thumb img:first-child { width: 100%; height: 100%; object-fit: cover; }
   .ytch__play { position: absolute; top: 50%; left: 50%; width: 52px; height: 52px; transform: translate(-50%,-50%); transition: transform .3s var(--ease); filter: drop-shadow(0 8px 20px rgba(0,0,0,.5)); }
-  .ytch__name { padding: 16px 18px 20px; font-family: var(--display); font-size: 15px; font-weight: 500; line-height: 1.35; color: var(--text-h); letter-spacing: -0.01em; }
+  /* Правка (заход 8, п.4): подпись видео на оригинале — 400-е начертание
+     без трекинга (getComputedStyle на «Почему 87% Go Roadmap…»), не 500/-0.01em. */
+  .ytch__name { padding: 16px 18px 20px; font-family: var(--display); font-size: 15px; font-weight: 400; line-height: 1.35; color: var(--text-h); letter-spacing: normal; }
   .ytch__actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
   @media (max-width: 960px) {
     .ytch__grid { grid-template-columns: 1fr 1fr; gap: 18px; }
-    .ytch__mascot-group { width: 170px; }
-    .ytch__cat { width: 78px; right: -24px; top: 6px; }
+    .ytch__mascot-group { width: 250px; }
+    .ytch__mascot-bubble { width: 170px; }
+    .ytch__cat { width: 88px; right: 0; top: 4px; }
   }
   @media (max-width: 640px) {
     .ytch__grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 32px; }
     .ytch__actions { flex-direction: column; align-items: stretch; }
     .section__head--mascot { flex-direction: column; align-items: flex-start; }
     .ytch__mascot-group { width: 190px; }
+    .ytch__mascot-bubble { width: 190px; }
     .ytch__cat { display: none; }
   }
 
@@ -1712,7 +1830,7 @@
   }
   .faq__qbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-md); }
   .faq__qbtn:active .faq__toggle { transform: scale(.94); }
-  .faq__qtext { font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); line-height: 1.4; letter-spacing: -0.01em; text-wrap: pretty; }
+  .faq__qtext { font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); line-height: 1.4; letter-spacing: normal; text-wrap: pretty; }
   .faq__toggle {
     position: relative; width: 40px; height: 40px; border-radius: var(--r-md);
     background: var(--bg-primary); color: var(--text-mute); border: 1px solid var(--border-acc);
@@ -1756,7 +1874,9 @@
     border-radius: var(--r-xl); background: var(--bg-card); border: 1px solid var(--border-card);
     text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px;
   }
-  .final__title { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); font-weight: 500; letter-spacing: -0.02em; color: var(--text-h); margin: 0; }
+  /* Правка (заход 8, п.4): «Есть вопрос?» на оригинале — -2px при 40px
+     (getComputedStyle) = -0.05em, не -0.02em. */
+  .final__title { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); font-weight: 500; letter-spacing: -0.05em; color: var(--text-h); margin: 0; }
   .final__link {
     display: inline-flex; align-items: center; gap: 14px; max-width: 46ch;
     font-size: 16px; line-height: 1.4; color: var(--text-h); text-align: left;
@@ -3676,12 +3796,12 @@
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
           <ul class="tier__list">
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>60 практических уроков</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Доступ к курсу на 2 года</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Практические задания после лекций</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Итоговый проект</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Еженедельные встречи с ответами на вопросы по курсу и заданиям</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Доступ к общему чатику</li>
+            <li>60 практических уроков</li>
+            <li>Доступ к курсу на 2 года</li>
+            <li>Практические задания после лекций</li>
+            <li>Итоговый проект</li>
+            <li>Еженедельные встречи с ответами на вопросы по курсу и заданиям</li>
+            <li>Доступ к общему чатику</li>
           </ul>
           <div class="tier__price-block">
             <div class="tier__price-label">Ориентировочная стоимость:</div>
@@ -3700,11 +3820,11 @@
         <div class="tier tier--light fade-up">
           <div class="tier__label">С проверкой</div>
           <ul class="tier__list">
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Все, что есть в тарифе «Стандарт»</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Код-ревью практических заданий и обратная связь</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Возможность сдать практические задания в течение 1 месяца после окончания курса</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Эталонное решение практических заданий от Олега с подробными видео-разборами</li>
-            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Возможность взять «академ», если пока не можешь продолжать обучение</li>
+            <li>Все, что есть в тарифе «Стандарт»</li>
+            <li>Код-ревью практических заданий и обратная связь</li>
+            <li>Возможность сдать практические задания в течение 1 месяца после окончания курса</li>
+            <li>Эталонное решение практических заданий от Олега с подробными видео-разборами</li>
+            <li>Возможность взять «академ», если пока не можешь продолжать обучение</li>
           </ul>
           <div class="tier__bonus">
             <div class="tier__bonus-head">
@@ -3712,8 +3832,8 @@
               <div class="tier__bonus-title">Бонусный модуль по прохождению собесов:</div>
             </div>
             <ul class="tier__list">
-              <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Разбор 60 golang задач с реальных собесов</li>
-              <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Разбор 30 алгоритмических задач с реальных собесов</li>
+              <li>Разбор 60 golang задач с реальных собесов</li>
+              <li>Разбор 30 алгоритмических задач с реальных собесов</li>
             </ul>
           </div>
           <div class="tier__price-block">
