@@ -1788,6 +1788,30 @@
 <body>
 
 <script>document.documentElement.classList.add('anim-ready');</script>
+<script>
+  // ===== Единая точка отправки целей в Метрику =====
+  // Цели зовут четыре независимых модуля страницы (форма, модалки, аккордеоны,
+  // видео), каждый живёт в своей IIFE, поэтому функция общая и объявлена до
+  // них. ym приезжает из /consent.js и может отсутствовать вовсе: человек
+  // отклонил аналитику в баннере либо сработал блокировщик — тогда молча
+  // выходим, ни один вызов цели не должен ронять страницу.
+  // Второй аргумент — «место»: попадает в параметры визита и позволяет в
+  // отчёте разложить одну цель по кнопкам/секциям, не заводя цель на каждую.
+  (function () {
+    var COUNTER = 96022201;
+    var once = {};
+    window.trackGoal = function (name, place) {
+      if (typeof window.ym !== 'function') return;
+      window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
+    };
+    // для целей, которые осмысленны один раз за визит (доскроллил до тарифов)
+    window.trackGoalOnce = function (name, place) {
+      if (once[name]) return;
+      once[name] = true;
+      window.trackGoal(name, place);
+    };
+  })();
+</script>
 
 <a class="skip-link" href="#top">К содержанию</a>
 
@@ -3281,6 +3305,28 @@
     measure();
     backToTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
+    // ===== Цели: доскролл до тарифов и раскрытие программы =====
+    // «Дошёл до цен, но не открыл форму» — главный разрыв воронки, который
+    // иначе не увидеть. Считаем один раз за визит: прокрутка блока
+    // вверх-вниз интерес не удваивает.
+    var tarifySection = document.getElementById('tarify');
+    if (tarifySection && 'IntersectionObserver' in window) {
+      var tarifyObserver = new IntersectionObserver(function (entries) {
+        if (!entries.some(function (en) { return en.isIntersecting; })) return;
+        window.trackGoalOnce('sd_reach_tariffs', 'scroll');
+        tarifyObserver.disconnect();
+      }, { threshold: 0.25 });
+      tarifyObserver.observe(tarifySection);
+    }
+    // Программа собрана на нативных <details>, поэтому слушаем их же событие
+    // toggle, а не клик по summary: так цель не разъедется, если пункт
+    // раскроют с клавиатуры или скриптом. Считаем только раскрытие.
+    document.querySelectorAll('details.program__item').forEach(function (item, i) {
+      item.addEventListener('toggle', function () {
+        if (item.open) window.trackGoal('sd_program_open', 'week-' + (i + 1));
+      });
+    });
+
     // ===== мобильное меню (CSS-состояния .open / aria-expanded уже описаны) =====
     var menuToggle = document.getElementById('menu-toggle');
     var navMobile = document.getElementById('nav-mobile');
@@ -3390,14 +3436,9 @@
 </div>
 <script>
   (function () {
-    // ===== Цели Яндекс.Метрики =====
-    // ym появляется из /consent.js и может отсутствовать: пользователь отклонил
-    // аналитику в баннере либо сработал блокировщик. Молча пропускаем.
-    var COUNTER = 96022201;
-    function goal(name, place) {
-      if (typeof window.ym !== 'function') return;
-      window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
-    }
+    // Цели уходят через общий window.trackGoal (объявлен выше по файлу
+    // одним блоком на все модули страницы).
+    var goal = window.trackGoal;
     // якорные CTA (герой, после программы, тарифы, bigtech и т.д.); кнопки анкеты
     // считаются отдельно, в open() — иначе клик по ним залогировался бы дважды
     document.addEventListener('click', function (e) {
@@ -3514,6 +3555,8 @@
       var errors = validate(v);
       if (errors.length) {
         errors.forEach(function (pair) { setError(pair[0], pair[1]); });
+        // place — первое непройденное поле: видно, на чём именно спотыкаются
+        goal('sd_form_error', 'validation:' + errors[0][0]);
         var firstWrap = form.querySelector('.is-invalid');
         var firstInput = firstWrap && firstWrap.querySelector('input');
         if (firstInput) firstInput.focus();
@@ -3542,6 +3585,8 @@
         // Telegram).
         setTimeout(function () { window.location.href = CHAT_URL; }, 1400);
       }).catch(function () {
+        // без этой цели сорвавшаяся отправка неотличима от «передумал»
+        goal('sd_form_error', 'network');
         sending = false;
         submitBtn.disabled = false;
         submitBtn.textContent = 'Отправить заявку';

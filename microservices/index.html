@@ -2608,6 +2608,30 @@
 <body>
 
 <script>document.documentElement.classList.add('anim-ready');</script>
+<script>
+  // ===== Единая точка отправки целей в Метрику =====
+  // Цели зовут четыре независимых модуля страницы (форма, модалки, аккордеоны,
+  // видео), каждый живёт в своей IIFE, поэтому функция общая и объявлена до
+  // них. ym приезжает из /consent.js и может отсутствовать вовсе: человек
+  // отклонил аналитику в баннере либо сработал блокировщик — тогда молча
+  // выходим, ни один вызов цели не должен ронять страницу.
+  // Второй аргумент — «место»: попадает в параметры визита и позволяет в
+  // отчёте разложить одну цель по кнопкам/секциям, не заводя цель на каждую.
+  (function () {
+    var COUNTER = 96022201;
+    var once = {};
+    window.trackGoal = function (name, place) {
+      if (typeof window.ym !== 'function') return;
+      window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
+    };
+    // для целей, которые осмысленны один раз за визит (доскроллил до тарифов)
+    window.trackGoalOnce = function (name, place) {
+      if (once[name]) return;
+      once[name] = true;
+      window.trackGoal(name, place);
+    };
+  })();
+</script>
 
 <a class="skip-link" href="#top">К содержанию</a>
 
@@ -4999,14 +5023,9 @@
 </div>
 <script>
   (function () {
-    // ===== Цели Яндекс.Метрики =====
-    // ym появляется из /consent.js и может отсутствовать: пользователь отклонил
-    // аналитику в баннере либо сработал блокировщик. Молча пропускаем.
-    var COUNTER = 96022201;
-    function goal(name, place) {
-      if (typeof window.ym !== 'function') return;
-      window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
-    }
+    // Цели уходят через общий window.trackGoal (объявлен выше по файлу
+    // одним блоком на все модули страницы).
+    var goal = window.trackGoal;
     // якорные CTA (герой, после программы, тарифы, bigtech и т.д.); кнопки анкеты
     // считаются отдельно, в open() — иначе клик по ним залогировался бы дважды
     document.addEventListener('click', function (e) {
@@ -5123,6 +5142,9 @@
       var errors = validate(v);
       if (errors.length) {
         errors.forEach(function (pair) { setError(pair[0], pair[1]); });
+        // В отчёте видно, на каком именно поле люди спотыкаются: place —
+        // первое непройденное поле, а не просто «ошибка формы».
+        goal('ms_form_error', 'validation:' + errors[0][0]);
         var firstWrap = form.querySelector('.is-invalid');
         var firstInput = firstWrap && firstWrap.querySelector('input');
         if (firstInput) firstInput.focus();
@@ -5150,6 +5172,9 @@
         // рядом: переход может не сработать (блокировщик, отсутствие Telegram).
         setTimeout(function () { window.location.href = BOT_URL; }, 1400);
       }).catch(function () {
+        // Отдельная цель: без неё сорвавшаяся отправка в статистике
+        // неотличима от «человек передумал и закрыл модалку».
+        goal('ms_form_error', 'network');
         sending = false;
         submitBtn.disabled = false;
         submitBtn.textContent = 'Отправить заявку';
@@ -5286,6 +5311,30 @@
       if (window.innerWidth > 960 && navMobile.classList.contains('open')) closeMenu();
     });
 
+    // ===== Цели: доскролл до тарифов и клики по видеоотзывам =====
+    // «Дошёл до цен, но не открыл форму» — единственный способ увидеть, где
+    // теряется тёплый трафик, поэтому доскролл до тарифов заведён отдельной
+    // целью. Считается один раз за визит (trackGoalOnce): человек может
+    // проматывать блок вверх-вниз сколько угодно, интерес от этого не растёт.
+    var tariffsSection = document.getElementById('tariffs');
+    if (tariffsSection && 'IntersectionObserver' in window) {
+      var tariffsObserver = new IntersectionObserver(function (entries) {
+        if (!entries.some(function (en) { return en.isIntersecting; })) return;
+        window.trackGoalOnce('ms_reach_tariffs', 'scroll');
+        tariffsObserver.disconnect();
+      }, { threshold: 0.25 });
+      tariffsObserver.observe(tariffsSection);
+    }
+    // Видеоотзывы — внешние ссылки на RuTube. trackLinks в Метрике их и так
+    // видит во «внешних переходах», но целью они не были и в воронку не
+    // вставали; place — порядковый номер карточки, чтобы видеть, какие
+    // отзывы вообще смотрят.
+    document.querySelectorAll('.yt__card').forEach(function (card, i) {
+      card.addEventListener('click', function () {
+        window.trackGoal('ms_video_click', 'review-' + (i + 1));
+      });
+    });
+
     // ===== программа: аккордеон недель (каждая неделя раскрывается независимо) =====
     document.querySelectorAll('.program__item').forEach(function (item) {
       var btn = item.querySelector('.program__headbtn');
@@ -5294,6 +5343,8 @@
         var open = item.classList.toggle('program__item--open');
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         body.hidden = !open;
+        // считаем только раскрытие: закрытие пункта — не интерес, а его конец
+        if (open) window.trackGoal('ms_accordion_open', 'program');
       });
     });
 
@@ -5307,6 +5358,8 @@
         var open = item.classList.toggle('homework__item--open');
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         body.hidden = !open;
+        // считаем только раскрытие: закрытие пункта — не интерес, а его конец
+        if (open) window.trackGoal('ms_accordion_open', 'homework');
       });
     });
 
@@ -5318,6 +5371,8 @@
         var open = item.classList.toggle('faq__item--open');
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         body.hidden = !open;
+        // считаем только раскрытие: закрытие пункта — не интерес, а его конец
+        if (open) window.trackGoal('ms_accordion_open', 'faq');
       });
     });
 
@@ -5503,7 +5558,17 @@
     }
     document.addEventListener('click', function (e) {
       var opener = e.target.closest && e.target.closest('[data-modal-open]');
-      if (opener) { e.preventDefault(); open(opener.getAttribute('data-modal-open'), opener); return; }
+      if (opener) {
+        e.preventDefault();
+        var id = opener.getAttribute('data-modal-open');
+        // Одна цель на все 16 модалок, разложение — через place: истории
+        // участников (story-N), ДЗ, вакансии, видеообзор проекта. Заводить
+        // цель на каждую модалку смысла нет, в отчёте они всё равно
+        // разбираются по параметру.
+        window.trackGoal(id === 'video-modal' ? 'ms_video_play' : 'ms_modal_open', id);
+        open(id, opener);
+        return;
+      }
       var closer = e.target.closest && e.target.closest('[data-modal-close]');
       if (closer) close(closer.closest('.modal'));
     });
