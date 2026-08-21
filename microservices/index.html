@@ -39,9 +39,13 @@
 <meta property="og:url" content="https://guide.olezhek28.courses/microservices/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- прогреваем соединение под анкету GetCourse: DNS+TCP+TLS делаются заранее,
-     но ничего не загружается — хит в Метрику не уходит, а форма по клику
-     открывается заметно быстрее на плохой сети -->
+<!-- Соединение под анкету GetCourse: DNS+TCP+TLS заранее, ничего не грузим.
+     Основную работу теперь делает не это, а ранний прогрев самого iframe
+     (см. WARM_FORM_EARLY в конце файла) — в Chrome пул соединений, как и
+     кэш, разделён по паре сайтов, так что кросс-сайтовому фрейму это
+     соединение не достанется. Тег оставлен ради браузеров, которые делят
+     только по верхнему сайту (Firefox, Safari): там он по-прежнему работает
+     и стоит один handshake. -->
 <link rel="preconnect" href="https://school.olezhek28.courses">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&subset=latin,cyrillic&display=swap" rel="stylesheet">
 
@@ -2344,6 +2348,17 @@
      CSS и разметка оставлены рабочими заранее, чтобы включение при появлении
      id формы свелось к правке трёх JS-констант и атрибутов кнопок. */
   .gc-modal[hidden] { display: none; }
+  /* Прогрев формы (см. WARM_FORM_EARLY в JS): iframe создаётся до того, как
+     модалку открыли. Прятать его на это время через display:none нельзя —
+     форма GetCourse раз в секунду шлёт наверх свою высоту как
+     $(body).height(), а у документа внутри display:none-фрейма она равна
+     нулю. Наш обработчик такие сообщения отбрасывает, через 10 секунд решает,
+     что форма не отозвалась, и подменяет живой iframe запасным — ровно это и
+     происходило при первой попытке прогрева. Поэтому на время прогрева
+     модалка отрисовывается как обычно, но полностью прозрачна и не ловит
+     клики; из таб-порядка и дерева доступности её выключает inert (тот же
+     приём, что уже используется для фона под открытой модалкой). */
+  .gc-modal[hidden].is-warming { display: flex; opacity: 0; pointer-events: none; }
   .gc-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: flex-start; justify-content: center;
     padding: 40px 24px 64px; overflow-y: auto; overscroll-behavior: contain; }
   .gc-modal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.8); backdrop-filter: blur(5px); }
@@ -4547,12 +4562,16 @@
             <div class="tier__price"><b>74 990 ₽</b></div>
             <div class="tier__pay">В рассрочку на 12% дороже, зато можно купить от 6 999 ₽/месяц</div>
           </div>
-          <!-- ЗАГЛУШКА ФАЗЫ 1: кнопки ведут на анкету Tilda, потому что своей формы
-               GetCourse для микросервисов ещё нет. Разметка и JS модалки ниже уже
-               готовы — когда появятся id и uniq, поменять href на data-gc-open
-               и подставить значения в WIDGET_ID / WIDGET_SRC / FORM_URL. -->
+          <!-- Кнопка открывает нашу модалку с анкетой предзаписи GetCourse
+               (id 1603640 — та же форма, что висит на «Заполнить анкету
+               предзаписи» на оригинале: там она лежит в Tilda-попапе
+               #popup:register, см. .gc-modal и loadWidget в конце файла).
+               Это <a href> на саму анкету, а не <button>: JS перехватывает
+               клик (open() зовёт preventDefault) и показывает форму в
+               модалке, а без JS ссылка просто открывает ту же анкету
+               отдельной страницей — записаться можно в любом случае. -->
           <div class="tier__cta">
-            <a class="btn btn--primary btn--block" href="https://olezhek28.courses/microservices#popup:register" data-goal="tariffs">Заполнить анкету предзаписи</a>
+            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1603640" data-gc-open data-goal="tariffs">Заполнить анкету предзаписи</a>
           </div>
         </div>
 
@@ -4580,9 +4599,9 @@
             <div class="tier__price"><b>109 990 ₽</b></div>
             <div class="tier__pay">В рассрочку на 12% дороже, зато можно купить от 10 266 ₽/месяц</div>
           </div>
-          <!-- ЗАГЛУШКА ФАЗЫ 1: см. комментарий у кнопки тарифа «Стандарт» выше. -->
+          <!-- см. комментарий у кнопки тарифа «Стандарт» выше -->
           <div class="tier__cta">
-            <a class="btn btn--primary btn--block" href="https://olezhek28.courses/microservices#popup:register" data-goal="tariffs">Заполнить анкету предзаписи</a>
+            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1603640" data-gc-open data-goal="tariffs">Заполнить анкету предзаписи</a>
           </div>
         </div>
       </div>
@@ -4912,15 +4931,12 @@
      форму нельзя прогревать целиком заранее). CSS — в <style> в <head> (см.
      блок TASK 9 там же).
 
-     ЗАГЛУШКА ФАЗЫ 1: идентификаторы формы предзаписи микросервисов ещё не
-     выданы Олегом (владельцем курса), поэтому ни на одной кнопке страницы
-     нет data-gc-open — кнопки тарифов ведут прямо на анкету Tilda (см.
-     секцию tariffs выше). Разметка и JS модалки ниже уже готовы и просто
-     не активируются: querySelectorAll('[data-gc-open]') возвращает пустой
-     список, .gc-modal остаётся hidden всегда. Когда id появятся, переключение
-     сводится к замене href на data-gc-open на кнопках тарифов и подстановке
-     значений в WIDGET_ID / WIDGET_SRC / FORM_URL ниже. Безопасно: страница
-     закрыта от индексации и на боевой домен не переключается до фазы 2. -->
+     Форма подключена (заход 23): это та же анкета предзаписи GetCourse,
+     что и на оригинале — id виджета 1603640, на живой Tilda её скрипт лежит
+     в попапе #popup:register («Скрипт предзаписи»), который открывают кнопки
+     «Заполнить анкету предзаписи» в тарифах. У нас вместо Tilda-попапа своя
+     модалка: кнопки тарифов помечены data-gc-open (см. секцию tariffs выше),
+     iframe с формой создаётся по первому клику. -->
 <div class="gc-modal" id="gc-modal" hidden>
   <div class="gc-modal__backdrop" data-gc-close></div>
   <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Анкета предзаписи">
@@ -4976,14 +4992,15 @@
     // Поэтому iframe собираем сами теми же параметрами, а штатный скрипт держим
     // как запасной путь на случай, если GetCourse поменяет схему URL.
     //
-    // ЗАГЛУШКА ФАЗЫ 1 (см. комментарий над разметкой .gc-modal выше): реальных
-    // id формы предзаписи микросервисов пока нет. WIDGET_ID — это значение
-    // атрибута id у выданного GetCourse тега <script>, им форма подписывает
-    // postMessage со своей высотой, самовольно его придумывать нельзя.
-    var WIDGET_ID  = 'REPLACE_ME_WIDGET_ID';
-    var WIDGET_SRC = 'https://school.olezhek28.courses/pl/lite/widget/script?id=REPLACE_ME';
+    // WIDGET_ID — значение атрибута id у выданного GetCourse тега <script>
+    // (не номер формы!): именно им форма подписывает postMessage со своей
+    // высотой, поэтому придумать его нельзя — взят с живой Tilda, из попапа
+    // #popup:register на olezhek28.courses/microservices, вместе с id=1603640
+    // самой анкеты предзаписи.
+    var WIDGET_ID  = 'ca4bacc333a23f8511421a18d54da3091928ea3d';
+    var WIDGET_SRC = 'https://school.olezhek28.courses/pl/lite/widget/script?id=1603640';
     var WIDGET_ORIGIN = 'https://school.olezhek28.courses';
-    var FORM_URL   = 'https://school.olezhek28.courses/pl/lite/widget/widget?id=REPLACE_ME';
+    var FORM_URL   = 'https://school.olezhek28.courses/pl/lite/widget/widget?id=1603640';
     var FRAME_NAME = 'gc-ms-form';
     var widgetRequested = false;
     var fallbackRequested = false;
@@ -5067,63 +5084,60 @@
       body.appendChild(s);
     }
 
-    // ===== Прогрев статики формы =====
-    // Сам iframe заранее не создаём: он тянет за собой счётчик Метрики, который
-    // в GetCourse задаётся одним полем на весь аккаунт, и лишний просмотр
-    // испортил бы статистику лендинга (см. комментарий у .gc-modal__body).
-    // Но файлы, из которых форма состоит, отдаются с max-age на годы вперёд —
-    // их можно просто скачать заранее: iframe потом берёт их из кэша, а Метрика
-    // молчит, потому что документ формы не выполняется. Список конкретных
-    // вендорных файлов перенесён из system_design/index.html как есть: тот же
-    // GetCourse-аккаунт (school.olezhek28.courses) отдаёт их по тем же путям
-    // независимо от id конкретного виджета.
+    // ===== Прогрев формы =====
+    // Прошлый вариант (перенесён из system_design) грел не саму форму, а её
+    // статику: со страницы уходили <link rel="prefetch"> на файлы GetCourse в
+    // расчёте, что iframe потом возьмёт их из кэша. Замер показал, что в
+    // Chrome так не выйдет: HTTP-кэш там разделён по ПАРЕ сайтов (верхний
+    // сайт + сайт фрейма), поэтому файл, скачанный страницей
+    // guide.olezhek28.courses, и тот же файл, запрошенный внутри iframe
+    // school.olezhek28.courses, лежат в разных ячейках. Проверено прямо
+    // здесь: после того как форма уже открывалась и скачала всю свою
+    // статику, prefetch тех же 54 файлов со страницы всё равно шёл по сети
+    // (в среднем 1.6 с на файл, 3.2 с суммарно), а повторный запрос того же
+    // файла из самой страницы — 3-6 мс. То есть кэш работает, просто у
+    // фрейма он свой. Единственный способ реально прогреть форму — создать
+    // сам iframe заранее: он попадёт в нужную ячейку кэша.
     //
-    // Только вендорные: бандлы с хэшем содержимого в имени (dictionary-gen,
-    // superlite-block, custom-form) прогревать бесполезно — GetCourse
-    // пересобирает их, и к моменту открытия формы хэш уже другой, в кэш они
-    // не попадают. Не возвращать их в список.
-    var GC = 'https://school.olezhek28.courses/pl/nassets/';
-    var PREFETCH = [
-      GC + '4b8ca1d0/jquery-ui.min.js?v=1765633902',
-      GC + 'de470cdd/css/all.css?v=1765633899',
-      GC + 'd142fbf/css/bootstrap.min.css?v=1777880033',
-      GC + '2b98cd16/jquery.min.js?v=1765633902',
-      GC + 'cc216a2a/select2.min.js?v=1765633902',
-      GC + 'de470cdd/css/v4-shims.css?v=1765633899',
-      GC + 'ddb7aabd/js/bootstrap-datetimepicker.min.js?v=1765633902',
-      GC + '4b8ca1d0/themes/smoothness/jquery-ui.css?v=1765633902',
-      GC + '5ff1daa/js/bootstrap-datepicker.min.js?v=1765633902'
-    ];
-    var warmed = false;
-    function warmFormAssets() {
-      if (warmed) return;
-      warmed = true;
-      // полтора мегабайта на экономном тарифе или медленной сети — не наш случай
-      var c = navigator.connection;
-      if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
-      PREFETCH.forEach(function (u) {
-        var l = document.createElement('link');
-        l.rel = 'prefetch';
-        l.as = /\.css(\?|$)/.test(u) ? 'style' : 'script';
-        l.href = u;
-        document.head.appendChild(l);
-      });
-    }
-    // греем на подходе к тарифам: до клика остаётся несколько секунд
+    // Цена прогрева: страница формы тянет ту же Метрику (счётчик 96022201 —
+    // вычитано в её HTML), поэтому каждый прогрев = лишний просмотр в
+    // статистике лендинга. Поэтому греем не у всех подряд:
+    //   — на подходе к тарифам: даёт несколько секунд форы, а они и нужны —
+    //     от клика до готовой анкеты 4-5 с (0.55 с из них документ формы,
+    //     остальное её 62 файла статики, каждый ответ по 0.4-0.6 с);
+    //   — при наведении/касании/фокусе самой кнопки анкеты: здесь прогрев
+    //     бесплатен и по аналитике — этот человек всё равно её открывает.
+    // Для сравнения: на оригинале форма грузится у 100% посетителей (скрипт
+    // GetCourse лежит прямо в разметке Tilda-попапа и отрабатывает на
+    // загрузке страницы), то есть лишний просмотр там есть у каждого; у нас —
+    // только у дошедших до тарифов. Если для статистики и это дорого —
+    // WARM_FORM_EARLY = false, тогда форма греется только по наведению.
+    var WARM_FORM_EARLY = true;
     var tariffs = document.getElementById('tariffs');
-    if (tariffs && 'IntersectionObserver' in window) {
+    if (WARM_FORM_EARLY && tariffs && 'IntersectionObserver' in window) {
       var warmObserver = new IntersectionObserver(function (entries) {
         if (entries.some(function (e) { return e.isIntersecting; })) {
-          warmFormAssets();
+          loadWidget();
           warmObserver.disconnect();
         }
-      }, { rootMargin: '800px 0px' });
+      }, { rootMargin: '1400px 0px' });
       warmObserver.observe(tariffs);
     }
-    // подстраховка: наведение на кнопку анкеты, если до тарифов не доскроллили
+    // Клик по любому CTA «Записаться на курс» (восемь якорей на #tariffs) —
+    // самый ранний надёжный сигнал: скролл до тарифов и чтение цен дают
+    // форме ещё несколько секунд на загрузку.
+    if (WARM_FORM_EARLY) {
+      document.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('a[href="#tariffs"]')) loadWidget();
+      });
+    }
+    // Подстраховка (работает независимо от WARM_FORM_EARLY): человек уже
+    // тянется к кнопке анкеты — на десктопе это доли секунды до клика, на
+    // тач-устройствах touchstart приходит раньше click.
     document.querySelectorAll('[data-gc-open]').forEach(function (b) {
-      b.addEventListener('pointerenter', warmFormAssets, { once: true });
-      b.addEventListener('touchstart', warmFormAssets, { once: true, passive: true });
+      b.addEventListener('pointerenter', loadWidget, { once: true });
+      b.addEventListener('focus', loadWidget, { once: true });
+      b.addEventListener('touchstart', loadWidget, { once: true, passive: true });
     });
 
     function loadWidget() {
@@ -5131,6 +5145,9 @@
       widgetRequested = true;
       var body = document.getElementById('gc-modal-body');
       if (!body) return;
+      // греем при закрытой модалке — переводим её в отрисовываемое, но
+      // невидимое состояние, иначе форма отдаёт нулевую высоту (см. CSS)
+      if (modal.hidden) { modal.classList.add('is-warming'); modal.setAttribute('inert', ''); }
       var loaded = false;
       var f = document.createElement('iframe');
       f.id = 'gc-frame';
@@ -5195,6 +5212,7 @@
     function open(e) {
       if (e) { e.preventDefault(); lastTrigger = e.currentTarget; }
       goal('ms_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
+      modal.classList.remove('is-warming'); modal.removeAttribute('inert');
       modal.hidden = false; document.body.classList.add('gc-lock');
       backgroundInert(true);
       loadWidget();
