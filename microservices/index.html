@@ -3746,7 +3746,10 @@
        разметке заранее — сторонний фрейм не должен грузиться у каждого
        посетителя секции project-result. Универсальный модальный механизм
        (data-modal-open/data-modal-close) только показывает/прячет модалку;
-       создание iframe — отдельный обработчик ниже. -->
+       создание iframe — отдельный обработчик ниже. Он же выносит фрейм из
+       DOM при закрытии: [hidden] прячет модалку визуально, но плеер внутри
+       продолжает играть — звук шёл из невидимого фрейма до перезагрузки
+       страницы. -->
   <div class="modal modal--img" id="video-modal" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Обзор проекта" tabindex="-1">
@@ -3758,11 +3761,13 @@
     (function () {
       var btn = document.querySelector('[data-modal-open="video-modal"]');
       var frameHost = document.getElementById('video-modal-frame');
-      var created = false;
-      if (!btn || !frameHost) return;
+      var modal = document.getElementById('video-modal');
+      if (!btn || !frameHost || !modal) return;
+      // Флага «уже создан» больше нет: фрейм живёт ровно столько, сколько
+      // открыта модалка, поэтому каждое открытие поднимает плеер заново —
+      // с начала ролика, а не с того места, где его бросили.
       btn.addEventListener('click', function () {
-        if (created) return;
-        created = true;
+        if (frameHost.firstChild) return;
         var iframe = document.createElement('iframe');
         iframe.src = 'https://dzen.ru/embed/oUUZEZV8MAAA';
         iframe.title = 'Обзор проекта — видео';
@@ -3771,6 +3776,15 @@
         iframe.loading = 'lazy';
         frameHost.appendChild(iframe);
       });
+      // Закрыть модалку можно четырьмя способами (крестик, клик по фону,
+      // Esc, а после правок общего механизма — и любым новым), и все они
+      // делают одно: ставят [hidden] на .modal. Поэтому слушаем сам атрибут,
+      // а не кнопки: так снос фрейма не разъедется с механизмом модалок,
+      // который живёт в другом конце файла. Остановить чужой плеер иначе
+      // нельзя — postMessage к dzen.ru нам недоступен.
+      new MutationObserver(function () {
+        if (modal.hidden) frameHost.textContent = '';
+      }).observe(modal, { attributes: true, attributeFilter: ['hidden'] });
     })();
   </script>
 
