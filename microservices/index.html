@@ -1335,7 +1335,113 @@
   .project__diagram { position: relative; width: 75.4%; padding-top: 20px; }
   .project__schema-img { display: block; width: 100%; height: auto; }
   .project__nodes { position: absolute; top: 20px; left: 0; right: 0; bottom: 0; }
-  .project__rocket { position: absolute; right: 0; top: 20px; height: 104%; width: auto; max-width: 32%; }
+  /* Пасхалка (заход 22): ракета кликабельна и стартует с пламенем.
+     Сама раскладка не изменилась — те же right/top/height/max-width, что
+     были у <img>, просто теперь их несёт <button>-обёртка, а картинка
+     заполняет её целиком. aspect-ratio нужен именно обёртке: у кнопки
+     высота задана (104% сцены), а ширина auto — без известной пропорции
+     она схлопнулась бы по shrink-to-fit вокруг картинки, чья ширина, в
+     свою очередь, зависит от ширины кнопки (циклическая зависимость).
+     object-fit: contain — страховка на случай, когда сработает max-width
+     (на десктопе не срабатывает: ракета выходит ≈20% ширины сцены).
+     all: unset снимает кнопочные стили браузера; порядок объявлений внутри
+     правила важен — всё, что идёт ниже, перебивает unset (тот же приём, что
+     у .project__node ниже по файлу). */
+  .project__rocket {
+    all: unset; box-sizing: border-box; display: block; cursor: pointer;
+    position: absolute; right: 0; top: 20px; height: 104%; width: auto; max-width: 32%;
+    aspect-ratio: 553 / 1121;
+    transition: transform .3s var(--ease), filter .3s var(--ease);
+  }
+  .project__rocket-img { display: block; width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 1; }
+  /* Подсказка «меня можно нажать» — лёгкий подъём и тень при наведении. */
+  .project__rocket:hover { transform: translateY(-6px); filter: drop-shadow(0 16px 30px rgba(0,0,0,.55)); }
+  .project__rocket:active { transform: translateY(-2px); }
+  /* Геометрия пламени привязана к соплу, замеренному по самому файлу
+     rocket.png (553×1121, альфа-канал): ось сопла x≈245px = 44.3% ширины
+     кадра (не 50% — у картинки перспектива, корпус смещён влево от центра
+     кадра), срез сопла y≈875px = 78% высоты, диаметр сопла ≈95px ≈ 17%
+     ширины. Опоры ракеты кончаются на 92% высоты, поэтому факел, уходящий
+     до ~104%, выглядит бьющим из-под неё. */
+  .project__rocket-flame {
+    position: absolute; left: 44.3%; top: 78%; width: 17%; height: 26%;
+    transform: translateX(-50%) scaleY(.15); transform-origin: 50% 0;
+    opacity: 0; pointer-events: none; z-index: 0;
+  }
+  /* Два слоя: ::before — широкое мягкое зарево (оно же подсвечивает опоры),
+     ::after — узкое горячее ядро. У каждого свой ритм мерцания, из-за
+     разной длительности они не совпадают по фазе и огонь не выглядит
+     «пульсирующим по таймеру». */
+  .project__rocket-flame::before,
+  .project__rocket-flame::after {
+    content: ''; position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+    border-radius: 50% 50% 46% 46% / 14% 14% 86% 86%;
+  }
+  .project__rocket-flame::before {
+    width: 190%; height: 100%;
+    background: radial-gradient(60% 80% at 50% 0%, rgba(255,196,84,.85) 0%, rgba(255,122,26,.55) 45%, rgba(255,74,0,0) 100%);
+    filter: blur(9px);
+  }
+  .project__rocket-flame::after {
+    width: 100%; height: 82%;
+    background:
+      radial-gradient(58% 42% at 50% 4%, #fff 0%, #fff5cf 55%, rgba(255,236,168,0) 100%),
+      radial-gradient(75% 100% at 50% 0%, #ffd166 0%, #ff9a2e 42%, #ff5c00 72%, rgba(255,92,0,0) 100%);
+    filter: blur(2px);
+  }
+  .project__rocket.is-launching { pointer-events: none; will-change: transform; animation: project-rocket-launch 2.3s linear forwards; }
+  .project__rocket.is-launching .project__rocket-flame { animation: project-rocket-flame 2.3s linear forwards; }
+  .project__rocket.is-launching .project__rocket-flame::before { animation: project-rocket-flicker .11s linear infinite alternate; }
+  .project__rocket.is-launching .project__rocket-flame::after { animation: project-rocket-flicker .07s linear infinite alternate-reverse; }
+  .project__rocket.is-gone { visibility: hidden; }
+  .project__rocket.is-back { animation: project-rocket-return .6s var(--ease) both; }
+  /* Первая треть — предстартовая тряска и «приседание» (линейно), дальше
+     разгон с ускорением: cubic-bezier навешен на кадр 34%, то есть
+     действует на участок 34%→100%, а не на всю анимацию. Уводим строго
+     вверх и чуть влево: сдвиг ВПРАВО за край окна расширил бы область
+     прокрутки и дал бы горизонтальный скролл (вверх — не даёт, наверх
+     scrollable overflow не растёт). */
+  @keyframes project-rocket-launch {
+    0%   { transform: translate3d(0, 0, 0); }
+    5%   { transform: translate3d(-2px, 1px, 0); }
+    10%  { transform: translate3d(2px, 2px, 0); }
+    15%  { transform: translate3d(-3px, 3px, 0); }
+    20%  { transform: translate3d(3px, 2px, 0); }
+    25%  { transform: translate3d(-2px, 4px, 0); }
+    30%  { transform: translate3d(2px, 5px, 0); }
+    34%  { transform: translate3d(0, 7px, 0); animation-timing-function: cubic-bezier(.45,.05,.75,.35); }
+    100% { transform: translate3d(-1vw, -150vh, 0) scale(.45); }
+  }
+  @keyframes project-rocket-flame {
+    0%   { opacity: 0; transform: translateX(-50%) scaleY(.15); }
+    8%   { opacity: 1; transform: translateX(-50%) scaleY(.5); }
+    34%  { opacity: 1; transform: translateX(-50%) scaleY(.95); }
+    100% { opacity: .9; transform: translateX(-50%) scaleY(2.6); }
+  }
+  @keyframes project-rocket-flicker {
+    from { transform: translateX(-50%) scale(1, 1); opacity: .92; }
+    to   { transform: translateX(-50%) scale(.88, 1.1); opacity: 1; }
+  }
+  @keyframes project-rocket-return {
+    from { opacity: 0; transform: translate3d(0, -18px, 0) scale(.94); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Пользователям с prefers-reduced-motion полёт не показываем (это ровно
+     тот класс движения — крупный объект через весь экран, — от которого
+     настройка и защищает): ракета просто гаснет и так же спокойно
+     возвращается, пасхалка при этом не ломается — JS ловит тот же
+     animationend. */
+  @media (prefers-reduced-motion: reduce) {
+    .project__rocket { transition: none; }
+    .project__rocket:hover, .project__rocket:active { transform: none; }
+    .project__rocket.is-launching { animation: project-rocket-launch-calm .45s ease forwards; }
+    .project__rocket.is-launching .project__rocket-flame,
+    .project__rocket.is-launching .project__rocket-flame::before,
+    .project__rocket.is-launching .project__rocket-flame::after { animation: none; }
+    .project__rocket.is-back { animation: project-rocket-return-calm .45s ease both; }
+    @keyframes project-rocket-launch-calm { to { opacity: 0; } }
+    @keyframes project-rocket-return-calm { from { opacity: 0; } to { opacity: 1; } }
+  }
 
   .project__node {
     all: unset; position: absolute; box-sizing: border-box; width: 24px; height: 24px; border-radius: 50%;
@@ -3554,7 +3660,19 @@
         </dl>
         </div>
 
-        <img class="project__rocket" src="project/rocket.png" alt="" width="553" height="1121" aria-hidden="true">
+        <!-- Пасхалка (заход 22): по клику ракета стартует — из сопла бьёт
+             пламя, она уходит за верх экрана, а через пару секунд тихо
+             возвращается на место (иначе правая треть секции осталась бы
+             пустой до перезагрузки страницы). Кликабельный элемент — это
+             <button>, а не img с обработчиком: так пасхалка доступна с
+             клавиатуры и объявляется скринридером; сама картинка остаётся
+             декоративной (alt="" + aria-hidden). Пламя лежит ОТДЕЛЬНЫМ
+             span'ом перед картинкой в DOM и ниже её по z-index — за счёт
+             этого оно естественно уходит за опоры ракеты. -->
+        <button type="button" class="project__rocket" aria-label="Запустить ракету">
+          <span class="project__rocket-flame" aria-hidden="true"></span>
+          <img class="project__rocket-img" src="project/rocket.png" alt="" width="553" height="1121" aria-hidden="true">
+        </button>
       </div>
 
       <div class="project__plate fade-up">
@@ -5218,6 +5336,58 @@
         btn.setAttribute('aria-expanded', 'false');
       });
     });
+
+    // ===== Пасхалка (заход 22): клик по ракете — старт с пламенем =====
+    // Вся анимация живёт в CSS (см. .project__rocket и @keyframes
+    // project-rocket-launch), JS только переключает три состояния:
+    // is-launching → is-gone → is-back. Конец полёта ловим по animationend,
+    // а не по setTimeout на «примерно столько же»: длительность задана в
+    // одном месте — в CSS, и не разъедется при её правке. Событие всплывает
+    // и от пламени тоже, поэтому проверяем и цель, и имя анимации (у
+    // prefers-reduced-motion имя другое — свой спокойный вариант).
+    var rocket = document.querySelector('.project__rocket');
+    if (rocket) {
+      var rocketBackTimer = null, rocketFailsafe = null;
+      // Длительность полёта не дублируется числом в JS — читаем ту же
+      // величину из CSS, чтобы правка анимации не разъезжалась с логикой.
+      function launchMs() {
+        var d = getComputedStyle(rocket).animationDuration || '0s';
+        return (parseFloat(d) || 0) * (d.indexOf('ms') > -1 ? 1 : 1000);
+      }
+      function land() {
+        if (!rocket.classList.contains('is-launching')) return;
+        clearTimeout(rocketFailsafe);
+        rocket.classList.remove('is-launching');
+        rocket.classList.add('is-gone');
+        rocketBackTimer = setTimeout(function () {
+          rocket.classList.remove('is-gone');
+          rocket.classList.add('is-back');
+          // тот же failsafe, что и у полёта: анимация возвращения залита
+          // both, и застрявший класс перебивал бы transform у :hover
+          rocketBackTimer = setTimeout(function () { rocket.classList.remove('is-back'); }, 1200);
+        }, 2200);
+      }
+      rocket.addEventListener('click', function () {
+        if (rocket.classList.contains('is-launching')) return;
+        clearTimeout(rocketBackTimer);
+        rocket.classList.remove('is-back', 'is-gone');
+        // reflow: без него повторный запуск не перезапускает анимацию,
+        // если класс сняли и вернули в одном кадре
+        void rocket.offsetWidth;
+        rocket.classList.add('is-launching');
+        // Подстраховка на случай, когда animationend не придёт: в фоновой
+        // вкладке браузер замораживает таймлайн анимаций, и без неё ракета
+        // осталась бы навсегда «в полёте» за верхним краем экрана
+        // (воспроизводится: кликнуть и сразу уйти на другую вкладку).
+        clearTimeout(rocketFailsafe);
+        rocketFailsafe = setTimeout(land, launchMs() + 400);
+      });
+      rocket.addEventListener('animationend', function (e) {
+        if (e.target !== rocket) return;
+        if (e.animationName === 'project-rocket-launch' || e.animationName === 'project-rocket-launch-calm') land();
+        else if (e.animationName === 'project-rocket-return' || e.animationName === 'project-rocket-return-calm') rocket.classList.remove('is-back');
+      });
+    }
 
     // ===== Правка 1 (заход 3): карусели reviews/video-reviews/stories —
     // один общий механизм на все три (data-carousel/-track/-prev/-next).
