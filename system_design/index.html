@@ -3403,7 +3403,7 @@
     document.addEventListener('click', function (e) {
       var el = e.target.closest && e.target.closest('[data-goal]');
       if (!el || el.hasAttribute('data-gc-open')) return;
-      goal('ms_cta_click', el.getAttribute('data-goal'));
+      goal('sd_cta_click', el.getAttribute('data-goal'));
     });
 
     var modal = document.getElementById('gc-modal');
@@ -3532,7 +3532,7 @@
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body: buildBody(v).toString()
       }).then(function () {
-        goal('ms_form_submit', lastTrigger && lastTrigger.getAttribute('data-goal'));
+        goal('sd_form_submit', lastTrigger && lastTrigger.getAttribute('data-goal'));
         form.hidden = true;
         done.hidden = false;
         if (chatLink) chatLink.focus();
@@ -3596,7 +3596,7 @@
 
     function open(e) {
       if (e) { e.preventDefault(); lastTrigger = e.currentTarget; }
-      goal('ms_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
+      goal('sd_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
       modal.hidden = false; document.body.classList.add('gc-lock');
       backgroundInert(true);
       var firstInput = document.getElementById('gc-name');
