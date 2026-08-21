@@ -160,8 +160,11 @@
      Скрываем через класс на <html>, который ставится до отрисовки body, — блок
      не успевает моргнуть. Правило работает только на выключенной фиче, поэтому
      собственный display блока (grid у .row и т.п.) не теряется. */
-  .f-off-video-sales  [data-feature="video-sales"],
-  .f-off-chat-screens [data-feature="chat-screens"] { display: none !important; }
+  .f-off-video-sales    [data-feature="video-sales"],
+  .f-off-chat-screens   [data-feature="chat-screens"],
+  .f-off-vacancy-shots  [data-feature="vacancy-shots"],
+  .f-off-demo-lesson    [data-feature="demo-lesson"],
+  .f-off-waitlist       [data-feature="waitlist"] { display: none !important; }
 
   :root {
     --bg-primary:   #10171A;
@@ -1726,6 +1729,135 @@
   }
 </style>
 
+<!-- ===== СТИЛИ БЛОКОВ ИТЕРАЦИИ 2 ===== -->
+<style>
+  /* честная граница ЦА под списком «Это про тебя» */
+  .v1__cut {
+    margin: 26px 0 0; padding-left: 18px; border-left: 2px solid var(--border-acc);
+    font-size: 15px; line-height: 1.6; color: var(--text-mute); max-width: 70ch; text-wrap: pretty;
+  }
+
+  /* цена вопроса + доказательство вакансиями */
+  .gate {
+    background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-xl); padding: 56px 60px 48px;
+  }
+  .gate__title {
+    font-family: var(--display); font-size: clamp(23px, 3.2vw, 36px); font-weight: 500;
+    line-height: 1.12; letter-spacing: -.035em; color: var(--text-h);
+    margin: 0 0 20px; max-width: 20ch; text-wrap: balance;
+  }
+  .gate__lead { font-size: 17px; line-height: 1.7; color: var(--text-body); max-width: 68ch; margin: 0; text-wrap: pretty; }
+  .gate__lead b { color: var(--accent); font-weight: 600; }
+  .gate__shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 34px; }
+  .gate__shot { margin: 0; }
+  .gate__ph {
+    aspect-ratio: 16 / 10; border-radius: var(--r-md); display: flex;
+    align-items: center; justify-content: center; text-align: center; padding: 10px;
+    border: 1px dashed var(--text-deco); color: var(--text-deco); background: rgba(255,255,255,.02);
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .gate__shot figcaption { margin-top: 10px; font-size: 13.5px; line-height: 1.45; color: var(--text-mute); }
+  .gate__note { margin: 18px 0 0; font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); }
+
+  /* врезка «зачем этот цирк» — внутри светлого островка */
+  .mech__lead b { color: var(--light-ink); font-weight: 600; }
+  .mech__cut {
+    border-left: 3px solid var(--light-ink);
+    padding: 2px 0 2px 22px; margin: 32px 0 4px; max-width: 68ch;
+  }
+  .mech__cut p { font-size: 17px; line-height: 1.7; color: var(--light-mute); margin: 0 0 12px; text-wrap: pretty; }
+  .mech__cut p:last-child { margin-bottom: 0; }
+  .mech__cut b { color: var(--light-ink); font-weight: 600; }
+  .mech__cut + .mech__lead { margin-top: 34px; }
+
+  /* блок «Что на самом деле происходит на секции» */
+  .truth {
+    background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-xl); padding: 64px 60px 60px;
+  }
+  .truth .section__head { margin-bottom: 28px; }
+  .truth__lead { font-size: 17px; line-height: 1.7; color: var(--text-body); max-width: 68ch; margin: 0 0 26px; text-wrap: pretty; }
+  .truth__lead--mid { margin-top: 34px; }
+  .truth__lead b { color: var(--accent); font-weight: 600; }
+  .truth__check { counter-reset: tc; list-style: none; padding: 0; margin: 0; max-width: 72ch; }
+  .truth__check li {
+    counter-increment: tc; position: relative; padding: 14px 0 14px 48px;
+    border-bottom: 1px solid var(--border-mid); color: var(--text-body); font-size: 16.5px; line-height: 1.5;
+  }
+  .truth__check li:first-child { border-top: 1px solid var(--border-mid); }
+  .truth__check li::before {
+    content: counter(tc, decimal-leading-zero); position: absolute; left: 0; top: 16px;
+    font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .04em;
+  }
+  .truth__errs {
+    list-style: none; padding: 0; margin: 0 0 36px; display: grid; gap: 1px;
+    background: var(--border-mid); border: 1px solid var(--border-mid);
+    border-radius: var(--r-md); overflow: hidden;
+  }
+  .truth__errs li {
+    background: var(--bg-secondary); display: flex; justify-content: space-between;
+    align-items: baseline; gap: 24px; padding: 15px 20px;
+  }
+  .truth__err { color: var(--text-body); font-size: 16px; line-height: 1.45; }
+  .truth__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); white-space: nowrap; }
+  .truth__foot {
+    font-family: var(--display); font-size: 20px; line-height: 1.4; font-weight: 500;
+    color: var(--text-h); max-width: 62ch; margin: 0;
+    padding-left: 22px; border-left: 2px solid var(--accent);
+  }
+
+  /* «загляни внутрь»: открытый урок + его конспект, внутри шага 01 */
+  .demo-card {
+    display: grid; grid-template-columns: minmax(0,1fr) 104px; gap: 18px; align-items: center;
+    margin-top: 24px; padding: 16px; border-radius: var(--r-md);
+    border: 1px solid rgba(223,223,65,.30); background: rgba(223,223,65,.06);
+    text-decoration: none;
+    transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease);
+  }
+  .demo-card:hover { border-color: var(--accent); background: rgba(223,223,65,.11); transform: translateY(-1px); }
+  .demo-card__body { display: flex; align-items: flex-start; gap: 13px; }
+  .demo-card__ico {
+    width: 32px; height: 32px; flex: none; border-radius: 50%; margin-top: 2px;
+    background: var(--accent); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .demo-card__ico svg { width: 13px; height: 13px; margin-left: 2px; }
+  .demo-card__txt { font-size: 13.5px; line-height: 1.5; color: var(--text-mute); }
+  .demo-card__txt b { display: block; font-size: 15.5px; font-weight: 600; color: var(--text-h); margin-bottom: 4px; }
+  .demo-card__shot {
+    aspect-ratio: 3 / 4; border-radius: var(--r-sm); display: flex; text-align: center;
+    align-items: center; justify-content: center; padding: 8px;
+    border: 1px dashed var(--text-deco); color: var(--text-deco); background: rgba(255,255,255,.02);
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase;
+  }
+
+  /* выход для тех, кто ещё не готов. Карточка финала залита акцентом —
+     текст здесь тёмный, светлый на жёлтом не читается */
+  .final__later { margin: 20px 0 0; font-size: 14.5px; line-height: 1.6; color: rgba(0,45,37,.72); }
+  .final__later b { color: var(--accent-ink); font-weight: 600; }
+  .final__later a { color: var(--accent-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .final__later a:hover { text-decoration-thickness: 2px; }
+
+  @media (max-width: 960px) {
+    .gate { padding: 40px 30px 36px; }
+    .truth { padding: 44px 30px 40px; }
+  }
+  @media (max-width: 640px) {
+    .gate { padding: 30px 20px 28px; border-radius: var(--r-lg); }
+    .gate__title { max-width: none; }
+    .gate__lead { font-size: 16px; }
+    .gate__shots { grid-template-columns: 1fr; gap: 20px; margin-top: 26px; }
+    .truth { padding: 32px 20px 30px; border-radius: var(--r-lg); }
+    .truth__foot { font-size: 17px; padding-left: 16px; }
+    .truth__errs li { flex-direction: column; gap: 6px; }
+    .demo-card { grid-template-columns: minmax(0,1fr) 84px; gap: 14px; }
+    .v1__cut { padding-left: 14px; font-size: 14.5px; }
+    .mech__cut { padding-left: 16px; margin-top: 26px; }
+    .mech__cut p { font-size: 16px; }
+  }
+</style>
+
 <!-- ===== ПЕРЕКЛЮЧАТЕЛЬ ФИЧА-ТОГЛОВ =====
      Единственное место, где включаются и выключаются недоделанные блоки.
      true — блок показывается, false — скрыт (разметка остаётся в файле).
@@ -1743,7 +1875,17 @@
 <script>
   var FEATURES = {
     'video-sales':  false,
-    'chat-screens': false
+    'chat-screens': false,
+
+    /* vacancy-shots — полоса скринов вакансий в блоке «Между тобой и грейдом».
+       Текст блока показывается всегда, скрины ждут реальных скриншотов.
+       demo-lesson  — карточка «Посмотреть один урок целиком» в шаге 01.
+                      Включить, когда выбран открытый урок и вставлена ссылка.
+       waitlist     — сбор почт на финальном экране.
+                      Включить, когда есть форма или бот, куда их складывать. */
+    'vacancy-shots': false,
+    'demo-lesson':   false,
+    'waitlist':      false
   };
   (function () {
     var root = document.documentElement;
@@ -1859,6 +2001,8 @@
           <div class="v1__text">Хочешь не&nbsp;просто пройти секцию, а&nbsp;<b>разобраться, как всё это работает под капотом</b>.</div>
         </div>
       </div>
+      <!-- не размываем ЦА: честно говорим, кому рано -->
+      <p class="v1__cut fade-up">А&nbsp;вот кому пока рано: если ты&nbsp;ещё не&nbsp;писал сервисов в&nbsp;проде или идёшь на&nbsp;джуна&nbsp;— секции у&nbsp;тебя на&nbsp;собесе просто не&nbsp;будет. Возвращайся, когда появится.</p>
     </div>
   </section>
 
@@ -1896,7 +2040,7 @@
           </div>
           <div class="block__body">
             <div class="sit-pain">
-              <p class="pain__text">На&nbsp;System Design даже идти боязно: непонятно, что там вообще спрашивают и&nbsp;по&nbsp;каким правилам оценивают. Проще пока не&nbsp;соваться, вот и&nbsp;откладываешь собес месяцами. <span class="pf">А&nbsp;это лишние месяцы на&nbsp;старом грейде и&nbsp;старой зарплате.</span></p>
+              <p class="pain__text">На&nbsp;System Design даже идти боязно: непонятно, что там вообще спрашивают и&nbsp;по&nbsp;каким правилам оценивают. Проще пока не&nbsp;соваться&nbsp;— и&nbsp;ты&nbsp;откладываешь собес месяц за&nbsp;месяцем. <span class="pf">А&nbsp;потом смотришь: те, кто пошёл и&nbsp;завалил, через полгода уже сеньоры, а&nbsp;ты&nbsp;всё ещё собираешься.</span></p>
             </div>
           </div>
         </div><!-- ===== БЛОК 4 · Руками не трогал = боль 5 · монолит + недосягаемый кластер ===== -->
@@ -2030,18 +2174,45 @@
     </div>
   </section>
 
+  <!-- ===== ЦЕНА ВОПРОСА + ДОКАЗАТЕЛЬСТВО ВАКАНСИЯМИ =====
+       Стоит между болью (ситуации) и механикой (почему не получается): человек
+       уже узнал себя — здесь он узнаёт, чего это стоит. Скрины вакансий заодно
+       снимают «это спрашивают не с моей роли»: в вакансии написано «разработчик».
+       ⚠️ полоса скринов под тоглом vacancy-shots — включить, когда будут скриншоты -->
+  <section class="section" id="cena-voprosa">
+    <div class="container">
+      <div class="gate fade-up">
+        <h2 class="gate__title">Между тобой и&nbsp;следующим грейдом стоит одна секция</h2>
+        <p class="gate__lead">Открой вакансии senior в&nbsp;бигтехе&nbsp;— она почти везде в&nbsp;этапах найма. Не&nbsp;в&nbsp;требованиях «стать архитектором», а&nbsp;в&nbsp;списке собеседований, которые ты&nbsp;проходишь на&nbsp;обычного разработчика. <b>Это не&nbsp;отдельная профессия, это фильтр на&nbsp;входе:</b> пока ты&nbsp;его не&nbsp;проходишь, грейд и&nbsp;вилка стоят на&nbsp;месте.</p>
+        <div data-feature="vacancy-shots">
+          <div class="gate__shots">
+            <figure class="gate__shot"><div class="gate__ph">скрин вакансии 1</div><figcaption>этап найма: System&nbsp;Design</figcaption></figure>
+            <figure class="gate__shot"><div class="gate__ph">скрин вакансии 2</div><figcaption>секция проектирования на&nbsp;senior</figcaption></figure>
+            <figure class="gate__shot"><div class="gate__ph">скрин вакансии 3</div><figcaption>в&nbsp;требованиях&nbsp;— разработчик</figcaption></figure>
+          </div>
+          <p class="gate__note">Скриншоты открытых вакансий, август 2026</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== 6. ПОЧЕМУ ТЫ ВАЛИШЬ СЕКЦИЮ (светлый островок — смысловое ядро) ===== -->
   <section class="section">
     <div class="container">
       <div class="mech fade-up">
         <h2 class="mech__title">Почему не&nbsp;получается пройти сисдиз</h2>
         <p class="mech__lead mech__lead--tight">Кажется, что на&nbsp;System Design валят непонятно за&nbsp;что и&nbsp;всё решает везение: какая попадётся задача и&nbsp;какой интервьюер.</p>
-        <p class="mech__lead mech__lead--tight">Человеческий фактор тут есть, глупо это отрицать. Задача может попасться неудобная, да&nbsp;и&nbsp;секцию каждый ведёт по-своему: один копает в&nbsp;базы, другой в&nbsp;отказоустойчивость, третий в&nbsp;оценку нагрузки.</p>
-        <p class="mech__lead mech__lead--tight">Только повлиять на&nbsp;это ты&nbsp;не&nbsp;можешь, а&nbsp;вот на&nbsp;остальное вполне: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор, куда сам увёл разговор.</p>
-        <p class="mech__lead mech__lead--tight">Ошибок, которых можно было не&nbsp;допускать, набирается прилично. Каждая портит впечатление, а&nbsp;из&nbsp;впечатления и&nbsp;складывается решение по&nbsp;секции.</p>
+        <p class="mech__lead mech__lead--tight">Только дело не&nbsp;в&nbsp;везении. На&nbsp;работе ты&nbsp;с&nbsp;System Design почти не&nbsp;сталкиваешься: круды, монолит, задачи по&nbsp;накатанной. Спроектировать ленту или поиск с&nbsp;нуля тебе никто не&nbsp;поручал&nbsp;— такие системы даже сеньоры собирают раз в&nbsp;пару лет, когда запускают новый продукт. А&nbsp;на&nbsp;секции спрашивают так, будто ты&nbsp;это делаешь каждый день.</p>
+        <p class="mech__lead mech__lead--tight"><b>Дело не&nbsp;в&nbsp;тебе и&nbsp;не&nbsp;в&nbsp;твоём опыте&nbsp;— такого опыта на&nbsp;обычной работе взять просто негде.</b> Поэтому его набирают отдельно.</p>
+
+        <!-- врезка «зачем этот цирк» — дыра отстройки, которую не закрывает рынок -->
+        <div class="mech__cut">
+          <p><b>И&nbsp;отдельный разговор&nbsp;— зачем этот цирк вообще.</b> Человека берут на&nbsp;200к писать круды, а&nbsp;гоняют по&nbsp;проектированию ленты, которую он&nbsp;никогда не&nbsp;напишет.</p>
+          <p>Спорить не&nbsp;будем: секция и&nbsp;правда часто оторвана от&nbsp;того, что ты&nbsp;будешь делать руками. Переубеждать тебя мы&nbsp;не&nbsp;собираемся. <b>Любить System Design не&nbsp;обязательно. Обязательно&nbsp;— пройти секцию:</b> за&nbsp;ней стоят оффер и&nbsp;грейд.</p>
+        </div>
         <!-- подводка живёт под тем же тоглом, что и сам ролик: без видео фраза повисает.
              ⚠️ хронометраж "6 минут" — плейсхолдер, сверить перед включением -->
-        <p class="mech__lead" data-feature="video-sales">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;6&nbsp;минут.</p>
+        <p class="mech__lead" data-feature="video-sales">Как это выглядит вживую&nbsp;— разобрал в&nbsp;коротком ролике.</p>
 
         <!-- ⚠️ видеопродажник: пока обложка-заглушка без обработчика клика.
              Перед включением тогла подставить реальный ролик (ссылка/встройка). -->
@@ -2052,7 +2223,43 @@
           </div>
         </div>
 
-        <blockquote class="mech__quote">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ЧТО НА САМОМ ДЕЛЕ ПРОИСХОДИТ НА СЕКЦИИ =====
+       Чек-лист «по чему оценивают» + таблица «ошибка → урок».
+       Мост между болями и программой: после него программа читается как ответ,
+       а не как оглавление. ⚠️ пять пунктов чек-листа — черновик,
+       заменить на реальные ходы из урока 02. -->
+  <section class="section" id="chto-ocenivayut">
+    <div class="container">
+      <div class="truth fade-up">
+        <div class="section__head">
+          <h2 class="section__title">Что на&nbsp;самом деле происходит на&nbsp;секции</h2>
+        </div>
+        <p class="truth__lead">Секция выглядит чёрным ящиком, пока не&nbsp;знаешь, что внутри. А&nbsp;внутри&nbsp;— один и&nbsp;тот&nbsp;же список, по&nbsp;которому интервьюер ведёт тебя все 50&nbsp;минут:</p>
+
+        <ol class="truth__check">
+          <li>уточнил требования до&nbsp;того, как начал рисовать</li>
+          <li>посчитал нагрузку и&nbsp;объём данных, а&nbsp;не&nbsp;назвал наугад</li>
+          <li>предложил схему верхнего уровня и&nbsp;объяснил, зачем в&nbsp;ней каждый кусок</li>
+          <li>выбрал хранилище и&nbsp;обосновал выбор</li>
+          <li>сам довёл разговор до&nbsp;узких мест, а&nbsp;не&nbsp;ждал, пока копнут</li>
+        </ol>
+
+        <p class="truth__lead truth__lead--mid"><b>Это не&nbsp;телепатия, это чек-лист.</b> И&nbsp;ломается он&nbsp;в&nbsp;одних и&nbsp;тех&nbsp;же местах&nbsp;— под каждое в&nbsp;курсе есть свой урок:</p>
+
+        <ul class="truth__errs">
+          <li><span class="truth__err">Кинулся рисовать базы, не&nbsp;спросив ни&nbsp;про что</span><span class="truth__fix">урок 04</span></li>
+          <li><span class="truth__err">Поплыл с&nbsp;калькулятором: сколько это в&nbsp;байтах и&nbsp;запросах</span><span class="truth__fix">урок 05</span></li>
+          <li><span class="truth__err">Назвал базу наугад и&nbsp;не&nbsp;смог объяснить почему</span><span class="truth__fix">урок 13</span></li>
+          <li><span class="truth__err">Копнули в&nbsp;отказ узла&nbsp;— начал плыть</span><span class="truth__fix">уроки 19–21</span></li>
+          <li><span class="truth__err">Не&nbsp;успел за&nbsp;50&nbsp;минут</span><span class="truth__fix">урок 03</span></li>
+          <li><span class="truth__err">Звучал как пересказ ютуб-ролика</span><span class="truth__fix">урок 41</span></li>
+        </ul>
+
+        <p class="truth__foot">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</p>
       </div>
     </div>
   </section>
@@ -2064,6 +2271,7 @@
         <span class="prog-head__pill"><span class="prog-head__dot" aria-hidden="true"></span>программа</span>
         <h2 class="prog-head__title"><b>5&nbsp;недель.</b> От&nbsp;базовых основ до&nbsp;практических кейсов.</h2>
         <p class="prog-head__sub">В&nbsp;программу включил всё нужное, чтобы пройти секцию сисдиза.<br>А&nbsp;в&nbsp;практике <em>сделал упор на&nbsp;популярные системы</em>: их&nbsp;чаще всего и&nbsp;дают на&nbsp;собесах, а&nbsp;внутри каждой столько всего, что на&nbsp;одной задаче применяешь половину курса.</p>
+        <p class="prog-head__sub">Здесь нет теории ради теории и&nbsp;академизма: <em>только то, что реально спрашивают на&nbsp;секциях в&nbsp;русском бигтехе</em>. Системы для практики подобраны по&nbsp;тому&nbsp;же принципу&nbsp;— те, что дают на&nbsp;собесах здесь, а&nbsp;не&nbsp;абстрактное «спроектируй Google» из&nbsp;англоязычных учебников. И&nbsp;объясняю я&nbsp;по-человечески, без душных определений и&nbsp;умных слов ради умных слов.</p>
       </div>
 
       <div class="program">
@@ -2299,6 +2507,18 @@
             <div class="row__text">
               <p>Каждую неделю открывается несколько видеоуроков по&nbsp;теме, плюс живой Q&amp;A, где задаёшь любой вопрос по&nbsp;материалу и&nbsp;собесам. Дедлайнов по&nbsp;неделям нет: не&nbsp;успел на&nbsp;этой, спокойно догоняешь на&nbsp;следующей. Срок один и&nbsp;общий на&nbsp;весь курс, внутри него идёшь в&nbsp;своём темпе.</p>
             </div>
+            <!-- показ внутрянки живёт здесь, а не отдельным экраном: рядом урок и его конспект.
+                 ⚠️ под тоглом demo-lesson — включить, когда выбран урок и есть ссылка -->
+            <a class="demo-card" href="#" data-feature="demo-lesson">
+              <span class="demo-card__body">
+                <span class="demo-card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
+                <span class="demo-card__txt">
+                  <b>Посмотреть один урок целиком</b>
+                  Открыт без оплаты: видео и&nbsp;текстовый конспект к&nbsp;нему&nbsp;— тот самый, со&nbsp;схемами и&nbsp;расчётами. Оцени подачу до&nbsp;покупки.
+                </span>
+              </span>
+              <span class="demo-card__shot" aria-hidden="true">скрин конспекта</span>
+            </a>
           </div>
           <div class="row__visual">
             <!-- схематичная иллюстрация: доска с 5-шаговым алгоритмом (не скрин продукта) -->
@@ -2607,7 +2827,7 @@
               </div>
             </div>
 
-            <div class="case__side case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе.</b> Курс собран из&nbsp;того, что работает на&nbsp;этих собеседованиях, а&nbsp;не&nbsp;из&nbsp;книг</div>
+            <div class="case__side case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе&nbsp;— и&nbsp;сам их&nbsp;провожу как интервьюер.</b> Вижу обе стороны стола: и&nbsp;что помогает пройти, и&nbsp;на&nbsp;чём заваливают. Курс собран из&nbsp;того, что работает на&nbsp;этих собеседованиях, а&nbsp;не&nbsp;из&nbsp;книг</div>
           </div>
 
           <ul class="experience">
@@ -2720,6 +2940,7 @@
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Домашка каждую неделю.</b> Задачи в&nbsp;формате секции: посчитать RPS под свою нагрузку, выбрать ключ шардирования и&nbsp;объяснить, почему дата заказа тут плохой ключ, собрать saga для&nbsp;заказа через три сервиса</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Живой еженедельный Q&amp;A с&nbsp;Олегом.</b> Разбираем все непонятные аспекты, отвечаю на&nbsp;вопросы по&nbsp;материалу и&nbsp;по&nbsp;собесам, иногда проектируем кейс прямо у&nbsp;доски</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Доступ к&nbsp;общему чатику потока</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Доступ к&nbsp;урокам и&nbsp;записям разборов&nbsp;— 2&nbsp;года.</b> Не&nbsp;на&nbsp;время потока: вернёшься к&nbsp;материалу перед любым следующим собесом</li>
             <li class="tier__off"><span class="tier__cross" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2.7 2.7l4.6 4.6M7.3 2.7l-4.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><s>Разбор твоих домашек ментором</s><span class="tier__only">есть в&nbsp;тарифе с&nbsp;практикой</span></li>
             <li class="tier__off"><span class="tier__cross" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M2.7 2.7l4.6 4.6M7.3 2.7l-4.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><s>Групповая практика и&nbsp;защита решения вслух</s><span class="tier__only">есть в&nbsp;тарифе с&nbsp;практикой</span></li>
           </ul>
@@ -2746,6 +2967,7 @@
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Ментор разбирает каждую твою домашку.</b> Читает схему и&nbsp;твои обоснования и&nbsp;пишет подробный разбор: где решение поедет под нагрузкой, какой выбор не&nbsp;объяснён, что на&nbsp;секции спросят следом</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Домашки проверяем 8&nbsp;недель</b>, на&nbsp;три недели дольше самого курса. Ушёл в&nbsp;аврал на&nbsp;работе или отстал на&nbsp;неделю, спокойно догонишь: проверка никуда не&nbsp;денется</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Групповая практика каждую неделю.</b> То, ради чего вообще берут этот тариф</li>
+            <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Доступ к&nbsp;урокам и&nbsp;записям разборов&nbsp;— 2&nbsp;года.</b> Не&nbsp;на&nbsp;время потока: вернёшься к&nbsp;материалу перед любым следующим собесом</li>
           </ul>
           <div class="tier__practice">
             <div class="tier__practice-title">Как проходит практика</div>
@@ -2849,9 +3071,14 @@
           <summary>А&nbsp;я&nbsp;точно смогу применить это на&nbsp;реальном собесе?<span class="faq__icon" aria-hidden="true"></span></summary>
           <div class="faq__answer">Да, каждую неделю ты&nbsp;сам будешь решать задачи с&nbsp;реальных собесов по&nbsp;сисдизу. Поэтому после курса, к&nbsp;моменту реального собеса, у&nbsp;тебя будет навык, который ты&nbsp;отработал руками, и&nbsp;понимание, что и&nbsp;как работает. В&nbsp;итоге секция перестанет вызывать хоть какие-то проблемы.</div>
         </details>
+        <!-- вопрос «это лотерея» переехал в блок «Что на самом деле происходит на секции» -->
         <details class="faq__item fade-up">
-          <summary>Кажется, к&nbsp;System Design вообще нельзя подготовиться, это лотерея<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__answer">System Design только кажется чёрным ящиком, где непонятно, что спросят и&nbsp;как оценивают. Никакой лотереи нет: есть понятная причина, почему валятся, и&nbsp;способ это починить. Ты&nbsp;не&nbsp;угадываешь, что у&nbsp;интервьюера в&nbsp;голове, а&nbsp;берёшь понятный порядок разбора и&nbsp;понимаешь, как эти системы устроены. Тогда даже незнакомая задача раскладывается по&nbsp;шагам)</div>
+          <summary>Зачем платить, если всё это есть на&nbsp;ютубе<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">На&nbsp;ютубе (в&nbsp;том числе у&nbsp;меня) неплохо объясняют, <b>как устроены системы</b>. А&nbsp;секция&nbsp;— про то, как ты&nbsp;рассуждаешь вслух 50&nbsp;минут, когда тебя перебивают, копают вглубь и&nbsp;меняют условия на&nbsp;ходу. Это другой навык, и&nbsp;по&nbsp;видео он&nbsp;не&nbsp;ставится: нужен разбор твоего решения и&nbsp;практика под давлением. Смотреть ролики и&nbsp;не&nbsp;платить&nbsp;— нормальный вариант, если готов сам собрать систему из&nbsp;кусочков и&nbsp;найти, с&nbsp;кем тренироваться)</div>
+        </details>
+        <details class="faq__item fade-up">
+          <summary>У&nbsp;меня собес раньше старта потока. Успею?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Частично&nbsp;— и&nbsp;это честный ответ. Каркас разбора и&nbsp;чек-лист первых пяти минут дают результат сразу: их&nbsp;можно взять и&nbsp;применить на&nbsp;ближайшем собесе. <b>Полный эффект&nbsp;— за&nbsp;курс</b>, навык ставится практикой, а&nbsp;не&nbsp;чтением. Если собес уже назначен, а&nbsp;поток стартует позже&nbsp;— записи и&nbsp;доступ остаются с&nbsp;тобой на&nbsp;два года, так что следующий заход будет уже подготовленным)</div>
         </details>
         <details class="faq__item fade-up">
           <summary>Чем тариф "С&nbsp;проверкой и&nbsp;практикой" отличается от&nbsp;Стандарта?<span class="faq__icon" aria-hidden="true"></span></summary>
@@ -2899,6 +3126,8 @@
         <h2 class="final__title">Записывайся на&nbsp;поток, пока действует цена предзаписи</h2>
         <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="final">Записаться на&nbsp;поток</a>
         <p class="final__hint">* После нажатия откроется анкета предзаписи</p>
+        <!-- выход для отложенного спроса. ⚠️ под тоглом waitlist: включить, когда есть форма -->
+        <p class="final__later" data-feature="waitlist"><b>Не&nbsp;сейчас?</b> <a href="#">Оставь почту</a>&nbsp;— напишу, когда открою следующий поток. Запускаю раз в&nbsp;полгода, спама не&nbsp;будет.</p>
       </div>
     </div>
   </section>
