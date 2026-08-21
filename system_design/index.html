@@ -1222,7 +1222,7 @@
     .block, .block--flip { grid-template-columns: 260px 1fr; column-gap: 34px; }
     .block__media { position: static; }
     .mech { padding: 48px 34px; border-radius: var(--r-lg); }
-    .mech__title { max-width: none; }
+    .mech__title { max-width: none; white-space: normal; text-wrap: balance; }
     /* тезисы в столбик, видео на всю ширину островка */
     .v1-video { max-width: none; }
     .row, .row--flip { grid-template-columns: 1fr; gap: 30px; }
@@ -1371,7 +1371,7 @@
     .section__title { font-size: 27px; letter-spacing: -0.03em; }
     .stat-card, .visual { padding: 24px 20px 26px; }
     .mech { padding: 28px 18px; }
-    .mech__title { font-size: 26px; } .program__extra { padding: 20px 18px; }
+    .mech__title { font-size: 26px; white-space: normal; text-wrap: balance; } .program__extra { padding: 20px 18px; }
     .program__item summary { padding: 20px 16px; gap: 10px; }
     .program__toggle { width: 38px; height: 38px; }
     .program__body { padding: 2px 16px 22px; }
@@ -2884,7 +2884,7 @@
           <div class="teacher__photo">
             <picture>
               <source srcset="oleg-portrait.webp" type="image/webp">
-              <img src="oleg-portrait.jpg" alt="Олег Козырев, автор курса по System Design" width="720" height="960" loading="lazy">
+              <img src="oleg-portrait.jpg" alt="Олег Козырев, автор курса по System Design" width="720" height="960" loading="lazy" decoding="async">
             </picture>
           </div>
         </div>
@@ -3066,6 +3066,11 @@
         <details class="faq__item fade-up">
           <summary>Какой уровень нужен, чтобы пройти курс?<span class="faq__icon" aria-hidden="true"></span></summary>
           <div class="faq__answer">Комфортно будет с&nbsp;middle и&nbsp;выше: ты&nbsp;уже пишешь сервисы, понимаешь, как ходят запросы по&nbsp;сети, и&nbsp;работал с&nbsp;базой данных. А&nbsp;вот конкретный язык не&nbsp;важен, System Design не&nbsp;про синтаксис. К&nbsp;нам одинаково заходят с&nbsp;Go, Java, Python и&nbsp;C#.</div>
+        </details>
+        <!-- спрашивают в поддержке: вопрос про стек тонул внутри ответа про уровень -->
+        <details class="faq__item fade-up">
+          <summary>А&nbsp;если у&nbsp;меня не&nbsp;Go? Курс привязан к&nbsp;стеку?<span class="faq__icon" aria-hidden="true"></span></summary>
+          <div class="faq__answer">Курс для разработчиков от&nbsp;мидла и&nbsp;выше, а&nbsp;язык не&nbsp;важен: на&nbsp;секции спрашивают одно и&nbsp;то&nbsp;же, хоть ты&nbsp;на&nbsp;Go, хоть на&nbsp;Java, хоть на&nbsp;PHP. Также подойдёт фронтендерам, которые метят в&nbsp;бэкенд, и&nbsp;системным аналитикам, которые хотят разговаривать с&nbsp;разработчиками на&nbsp;одном языке)</div>
         </details>
         <details class="faq__item fade-up">
           <summary>А&nbsp;я&nbsp;точно смогу применить это на&nbsp;реальном собесе?<span class="faq__icon" aria-hidden="true"></span></summary>
