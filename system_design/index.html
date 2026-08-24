@@ -3780,13 +3780,63 @@
     if (!modal || !frameHost || !btn) return;
 
     var closeBtn = modal.querySelector('.vmodal__close');
-    // autoplay намеренно НЕ включаем. С ним ролик стартовал сам, но всегда
-    // без звука: Chrome и Safari не отдают звук автозапуску в стороннем
-    // iframe, а VK-плеер, чтобы точно запуститься, глушит себя сам. Немое
-    // видео на продающем блоке хуже лишнего клика, поэтому плеер ждёт клика
-    // внутри себя — это прямой жест, и звук включается сразу. Параметр muted
-    // тут ни при чём, мы его и не передаём.
-    var EMBED = 'https://vkvideo.ru/video_ext.php?oid=-188550966&id=456239033&hd=2';
+
+    // ===== Автозапуск СО ЗВУКОМ =====
+    // Сам по себе autoplay звука не даёт: Chrome и Safari запрещают
+    // автовоспроизведение со звуком, и VK-плеер, чтобы гарантированно
+    // стартовать, глушит себя сам. Снять глушение можно только командой
+    // плееру, поэтому здесь подключается VK Player API: js_api=1 в адресе
+    // фрейма плюс скрипт videoplayer.js, который даёт объект с unmute().
+    // Скрипт грузится лениво, по первому клику: на холодной странице ничего
+    // стороннего не подтягивается. Нового класса риска он не добавляет —
+    // сам плеер это тот же vk.com в iframe, и он уже грузится тут же.
+    // Если скрипт не отдался (блокировщик, сеть) или API поменяли, всё
+    // молча падает в catch: остаётся обычный автозапуск, человек включит
+    // звук кнопкой в плеере. Ломаться тут нечему.
+    var EMBED = 'https://vkvideo.ru/video_ext.php?oid=-188550966&id=456239033&hd=2&js_api=1&autoplay=1';
+    var SDK_SRC = 'https://vk.com/js/api/videoplayer.js';
+    var sdkPromise = null;
+    var player = null;
+
+    function loadSdk() {
+      if (window.VK && window.VK.VideoPlayer) return Promise.resolve();
+      if (sdkPromise) return sdkPromise;
+      sdkPromise = new Promise(function (resolve, reject) {
+        var sc = document.createElement('script');
+        sc.src = SDK_SRC;
+        sc.async = true;
+        sc.onload = resolve;
+        sc.onerror = reject;
+        document.head.appendChild(sc);
+      });
+      return sdkPromise;
+    }
+
+    // Имена событий сверены с живым API (VK.VideoPlayer.Events): INITED,
+    // STARTED, RESUMED. Событий PLAY и RESUME там нет, не выдумывать.
+    // Отдельно слушаем AUTOPLAY_SOUND_PROHIBITED — плеер сам сообщает им,
+    // что браузер зарубил звук на автозапуске. У нас перед открытием модалки
+    // был клик человека, поэтому снять глушение в ответ обычно разрешают.
+    // Вешаемся на несколько моментов и добиваем парой отложенных попыток:
+    // лишний unmute безвреден, а пропущенный — это немое видео.
+    function attachUnmute(iframe) {
+      loadSdk().then(function () {
+        try {
+          player = window.VK.VideoPlayer(iframe);
+          var unmute = function () {
+            try { player.unmute(); } catch (e) {}
+            try { player.setVolume(100); } catch (e) {}
+          };
+          var ev = window.VK.VideoPlayer.Events || {};
+          ['INITED', 'STARTED', 'RESUMED', 'AUTOPLAY_SOUND_PROHIBITED'].forEach(function (name) {
+            if (ev[name]) { try { player.on(ev[name], unmute); } catch (e) {} }
+          });
+          unmute();
+          setTimeout(unmute, 700);
+          setTimeout(unmute, 1800);
+        } catch (e) { player = null; }
+      }).catch(function () { player = null; });
+    }
 
     // Изоляция фона — тот же приём, что у модалки формы: aria-modal сам по
     // себе фон не отключает, Tab уходил бы на страницу под модалкой.
@@ -3827,6 +3877,7 @@
         iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
         iframe.setAttribute('allowfullscreen', '');
         frameHost.appendChild(iframe);
+        attachUnmute(iframe);
       }
       modal.hidden = false;
       document.body.classList.add('gc-lock');
@@ -3839,6 +3890,14 @@
       modal.hidden = true;
       document.body.classList.remove('gc-lock');
       backgroundInert(false);
+      // Фрейм всё равно сносится следующей строкой, но сначала просим плеер
+      // остановиться и отпустить свои обработчики: иначе объект API живёт
+      // дальше и при следующем открытии их станет два.
+      if (player) {
+        try { player.pause(); } catch (e) {}
+        try { player.destroy(); } catch (e) {}
+        player = null;
+      }
       frameHost.textContent = '';
       btn.focus();
     }
