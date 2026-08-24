@@ -1759,11 +1759,6 @@
 
 <!-- ===== СТИЛИ БЛОКОВ ИТЕРАЦИИ 2 ===== -->
 <style>
-  /* честная граница ЦА под списком «Это про тебя» */
-  .v1__cut {
-    margin: 26px 0 0; padding-left: 18px; border-left: 2px solid var(--border-acc);
-    font-size: 15px; line-height: 1.6; color: var(--text-mute); max-width: 70ch; text-wrap: pretty;
-  }
 
   /* цена вопроса + доказательство вакансиями */
   .gate {
@@ -1880,7 +1875,6 @@
     .truth__foot { font-size: 17px; padding-left: 16px; }
     .truth__errs li { flex-direction: column; gap: 6px; }
     .demo-card { grid-template-columns: minmax(0,1fr) 84px; gap: 14px; }
-    .v1__cut { padding-left: 14px; font-size: 14.5px; }
     .mech__cut { padding-left: 16px; margin-top: 26px; }
     .mech__cut p { font-size: 16px; }
   }
@@ -2029,8 +2023,6 @@
           <div class="v1__text">Хочешь не&nbsp;просто пройти секцию, а&nbsp;<b>разобраться, как всё это работает под капотом</b>.</div>
         </div>
       </div>
-      <!-- не размываем ЦА: честно говорим, кому рано -->
-      <p class="v1__cut fade-up">А&nbsp;вот кому пока рано: если ты&nbsp;ещё не&nbsp;писал сервисов в&nbsp;проде или идёшь на&nbsp;джуна&nbsp;— секции у&nbsp;тебя на&nbsp;собесе просто не&nbsp;будет. Возвращайся, когда появится.</p>
     </div>
   </section>
 
@@ -3256,9 +3248,9 @@
       </div>
       <nav class="footer__links" aria-label="Юридические документы">
         <div class="footer__links-row">
-          <a href="agree" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
-          <a href="marketing-agree" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
-          <a href="policy" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+          <a href="/agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
+          <a href="/marketing-agree.html" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
+          <a href="/policy.html" target="_blank" rel="noopener">Политика обработки персональных данных</a>
           <a href="/system_design_oferta/" target="_blank" rel="noopener">Публичная оферта</a>
         </div>
       </nav>

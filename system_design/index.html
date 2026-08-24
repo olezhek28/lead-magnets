@@ -46,9 +46,9 @@
 <meta property="og:url" content="https://guide.olezhek28.courses/system_design/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- прогреваем соединение под анкету GetCourse: DNS+TCP+TLS делаются заранее,
-     но ничего не загружается и не выполняется — хит в Метрику не уходит,
-     а форма по клику открывается заметно быстрее на плохой сети -->
+<!-- Соединение под отправку заявки: DNS+TCP+TLS делаются заранее, ничего
+     не грузится. Заявка уходит одним POST со страницы (см. FORM_ACTION в
+     конце файла), поэтому handshake из времени отправки уходит целиком. -->
 <link rel="preconnect" href="https://school.olezhek28.courses">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -658,11 +658,63 @@
   /* подводка-лид под заголовком — короткий заход к видео */
   .mech__lead { font-size: 17px; line-height: 1.7; color: var(--light-mute); max-width: 68ch; text-wrap: pretty; margin-bottom: 34px; }
   .mech__lead--tight { margin-bottom: 12px; }
-  /* видеопродажник: заглушка на светлом островке (язык .yt__thumb / .yt__play-btn) */
-  .video { position: relative; border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(16,23,26,.16); box-shadow: 0 34px 80px -46px rgba(0,0,0,.7); cursor: pointer; }
-  .video:hover .yt__play-btn { transform: scale(1.08); }
-  .video__cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 48px 24px 20px; background: linear-gradient(transparent, rgba(0,0,0,.72)); color: var(--text-h); font-family: var(--display); font-weight: 500; font-size: clamp(15px, 1.8vw, 19px); line-height: 1.3; letter-spacing: -0.012em; }
+  /* ===== ВИДЕОПРОДАЖНИК: обложка на светлом островке =====
+     Раньше блок одалживал .yt__thumb / .yt__play-btn у лид-магнитов, и это
+     была мина: оба класса в файле объявлены ДВАЖДЫ (здесь и ещё раз в секции
+     ютуб-канала ниже), выигрывает нижнее объявление — кнопка play уезжала из
+     центра и красилась в ютубовский красный. Поэтому у видео свои классы,
+     ничего общего с .yt__* быть не должно.
+     Это <button>, а не <div>: блок открывает модалку, значит обязан работать
+     с клавиатуры и объявляться скринридеру кнопкой. Отсюда сброс дефолтов —
+     свои border/background/радиус у .video уже есть. */
+  .video { position: relative; display: block; width: 100%; padding: 0; margin: 0; font: inherit; color: inherit; text-align: inherit;
+    -webkit-appearance: none; appearance: none; background: transparent;
+    border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(16,23,26,.16); box-shadow: 0 34px 80px -46px rgba(0,0,0,.7); cursor: pointer; }
+  .video:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  /* Обложка лежит в .video__poster поверх градиента-заглушки: градиент со
+     схемой-сеткой остаётся под ней и работает, если картинка не загрузилась. */
+  .video__thumb { position: relative; aspect-ratio: 16/9; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(150deg, var(--bg-secondary), var(--bg-primary)); }
+  .video__thumb::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 10%, transparent 72%);
+    mask-image: radial-gradient(ellipse at 50% 50%, #000 10%, transparent 72%);
+  }
+  .video__poster { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video__play { position: relative; z-index: 2; width: 64px; height: 64px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 36px -14px rgba(223,223,65,.7);
+    transition: transform .3s var(--ease); }
+  .video__play svg { width: 24px; height: 24px; color: var(--accent-ink); margin-left: 3px; }
+  .video:hover .video__play { transform: scale(1.08); }
   .v1-video { max-width: 760px; margin: 0 auto 36px; }
+
+  /* ===== МОДАЛКА ВИДЕОПРОДАЖНИКА (.vmodal) =====
+     Своя, а не .gc-modal: там панель заточена под форму (560px, вертикальный
+     скролл, паддинги), здесь нужен широкий чёрный прямоугольник 16:9 вообще
+     без внутренних отступов. Общее с gc-modal ровно одно — замок скролла
+     body.gc-lock: второй класс с тем же overflow:hidden заводить незачем. */
+  .vmodal[hidden] { display: none; }
+  .vmodal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .vmodal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.86); backdrop-filter: blur(5px); }
+  .vmodal__panel { position: relative; z-index: 1; width: min(1100px, 94vw); border-radius: var(--r-lg); overflow: hidden;
+    box-shadow: 0 40px 120px -30px rgba(0,0,0,.92); animation: gcPop .28s var(--ease); }
+  /* aspect-ratio висит на обёртке, а iframe растянут абсолютом: VK отдаёт
+     плеер без собственной высоты, и без этого фрейм схлопывается в полоску. */
+  .vmodal__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  .vmodal__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .vmodal__close { position: fixed; top: 22px; right: 26px; z-index: 3; width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(30,39,43,.9); border: 1px solid var(--border-card); color: var(--text-h); cursor: pointer;
+    font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: background .2s;
+    box-shadow: 0 6px 20px -8px rgba(0,0,0,.7); }
+  .vmodal__close:hover { background: rgba(52,63,68,.95); }
+  @media (max-width: 640px) {
+    .vmodal { padding: 0; }
+    .vmodal__panel { width: 100%; border-radius: 0; }
+    .vmodal__close { top: 12px; right: 12px; width: 46px; height: 46px; font-size: 19px; background: #1e272b; }
+  }
+  @media (prefers-reduced-motion: reduce) { .vmodal__panel { animation: none; } }
   /* тезисы — скимабельный остов аргумента для тех, кто не смотрит видео */
   .mech__quote {
     margin-top: 34px; padding: 4px 0 4px 26px; border-left: 2px solid var(--accent);
@@ -1407,12 +1459,25 @@
     .footer__req, .scarcity, .program__result,
     .tier__label, .experience__company-name { overflow-wrap: anywhere; }
   }
-  /* ===== Модалка предзаписи (форма GetCourse) ===== */
+  /* ===== МОДАЛКА ПРЕДЗАПИСИ — СВОЯ ФОРМА =====
+     Здесь жил iframe с анкетой GetCourse и вся обвязка вокруг него: ленивая
+     загрузка, прогрев, приём высоты через postMessage, запасной путь через их
+     штатный скрипт. Всё это чинило чужие проблемы: страница их анкеты тянет
+     62 файла и 440 КБ ради трёх полей, отдаёт каждый файл по 0.4-0.6 с и
+     несёт в себе ту же Метрику, что и лендинг (то есть лишний просмотр у
+     каждого, кто открыл форму). Теперь форма своя, а в GetCourse уходит
+     только POST на тот же публичный эндпоинт, куда постит их собственная
+     анкета: block-public/process?id=2242020431 (вычитан из её разметки;
+     это тот же приём, что уже работает на лендинге микросервисов).
+     Проверено живой отправкой: заявка создаётся и без сессионных параметров
+     (gcSession/gcVisitor/gcVisit из url их формы), ответ success:true, и
+     GetCourse возвращает тот же redirectUrl на чат курса в телеграме, куда
+     уводит оригинальная анкета. */
   .gc-modal[hidden] { display: none; }
   .gc-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: flex-start; justify-content: center;
     padding: 40px 24px 64px; overflow-y: auto; overscroll-behavior: contain; }
   .gc-modal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.8); backdrop-filter: blur(5px); }
-  .gc-modal__panel { position: relative; z-index: 1; width: min(860px, 96vw); display: flex; flex-direction: column;
+  .gc-modal__panel { position: relative; z-index: 1; width: min(560px, 96vw); display: flex; flex-direction: column;
     background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl); overflow: hidden;
     box-shadow: 0 40px 120px -30px rgba(0,0,0,.92); animation: gcPop .28s var(--ease); }
   @keyframes gcPop { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
@@ -1421,20 +1486,46 @@
     font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: background .2s;
     box-shadow: 0 6px 20px -8px rgba(0,0,0,.7); }
   .gc-modal__close:hover { background: rgba(52,63,68,.95); }
-  .gc-modal__body { padding: 8px clamp(8px, 3vw, 40px) clamp(16px, 3vw, 40px); }
-  .gc-modal__body iframe { display: block; width: 100% !important; min-height: 1040px; border: 0 !important; background: var(--bg-card); }
-  .gc-modal__body.is-loading iframe { position: absolute; visibility: hidden; }
-  .gc-modal__loading {
-    min-height: 420px; display: flex; flex-direction: column; gap: 16px;
-    align-items: center; justify-content: center;
-    font-family: var(--mono); font-size: 13px; color: var(--text-mute); text-align: center;
+  .gc-modal__body { padding: clamp(24px, 4vw, 36px); }
+
+  /* [hidden] у .gcform/.gcform__done перебивался бы их собственным
+     display:flex (правило класса специфичнее браузерного [hidden]{display:none}),
+     поэтому скрытие задано явно — иначе после отправки оба состояния,
+     форма и «заявка отправлена», видны одновременно. */
+  .gcform[hidden], .gcform__done[hidden] { display: none; }
+  .gcform { display: flex; flex-direction: column; gap: 18px; }
+  .gcform__title { font-family: var(--display); font-size: 26px; font-weight: 500; line-height: 1.25; color: var(--text-h); }
+  .gcform__lead { margin-top: -10px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
+  .gcform__field { display: flex; flex-direction: column; gap: 8px; }
+  .gcform__label { font-size: 14px; color: var(--text-mute); }
+  .gcform__input {
+    width: 100%; box-sizing: border-box; padding: 14px 16px; font: inherit; font-size: 15px;
+    color: var(--text-h); background: var(--bg-primary); border: 1px solid var(--border-card); border-radius: 14px;
+    transition: border-color .2s var(--ease);
   }
-  .gc-modal__loading a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .gcform__input::placeholder { color: var(--text-faint); }
+  .gcform__input:hover { border-color: rgba(245,247,246,.22); }
+  .gcform__input:focus-visible { outline: none; border-color: var(--accent); }
+  /* Ошибку показываем цветом рамки И текстом рядом: одного цвета мало —
+     дальтоник или скринридер его не получат, поэтому текст ошибки ещё и
+     связан с полем через aria-describedby, а поле помечается aria-invalid. */
+  .gcform__field.is-invalid .gcform__input { border-color: var(--coral); }
+  .gcform__error { font-size: 13px; line-height: 1.45; color: var(--coral); }
+  .gcform__check { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; line-height: 1.5; color: var(--text-mute); cursor: pointer; }
+  .gcform__check input { margin: 2px 0 0; width: 18px; height: 18px; flex: none; accent-color: var(--accent); cursor: pointer; }
+  .gcform__check a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .gcform__field.is-invalid .gcform__check { color: var(--coral); }
+  .gcform__submit { margin-top: 2px; }
+  .gcform__submit[disabled] { opacity: .65; cursor: progress; }
+  .gcform__status { font-size: 13.5px; line-height: 1.5; color: var(--coral); }
+  .gcform__status a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .gcform__done { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .gcform__done p { font-size: 15px; line-height: 1.55; color: var(--text-body); }
+
   @media (max-width: 640px) {
     .gc-modal { padding: 0 0 40px; overflow-x: hidden; }
     .gc-modal__panel { width: 100%; max-width: 100vw; border-radius: 0; border: 0; min-height: 100vh; overflow-x: hidden; }
-    .gc-modal__body { padding: 6px 0 44px; overflow-x: hidden; }
-    .gc-modal__body iframe { width: 100% !important; max-width: 100vw; min-height: 1320px; }
+    .gc-modal__body { padding: 64px 20px 40px; }
     .gc-modal__close { top: 12px; right: 12px; width: 46px; height: 46px; font-size: 19px; background: #1e272b; box-shadow: 0 8px 24px -6px rgba(0,0,0,.85); }
   }
   body.gc-lock { overflow: hidden; }
@@ -1667,13 +1758,6 @@
   /* ===== ВОССТАНОВЛЕНО ИЗ ВЕРСИИ ОЛЕГА =====
      Всё ниже потерялось при переносе текстов, но нужно работающей странице:
      спиннер модалки GetCourse, перелинковка в подвале и адаптив блока тарифов. */
-  .gc-spinner {
-    width: 26px; height: 26px; border-radius: 50%; flex: none;
-    border: 2px solid var(--border-acc); border-top-color: var(--accent);
-    animation: gcSpin .8s linear infinite;
-  }
-  @keyframes gcSpin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .gc-spinner { animation-duration: 2.4s; } }
 
   /* перелинковка на соседние лендинги: без неё страница — тупик, уходить
      некуда ни человеку, которому курс не подошёл, ни краулеру */
@@ -1739,11 +1823,6 @@
 
 <!-- ===== СТИЛИ БЛОКОВ ИТЕРАЦИИ 2 ===== -->
 <style>
-  /* честная граница ЦА под списком «Это про тебя» */
-  .v1__cut {
-    margin: 26px 0 0; padding-left: 18px; border-left: 2px solid var(--border-acc);
-    font-size: 15px; line-height: 1.6; color: var(--text-mute); max-width: 70ch; text-wrap: pretty;
-  }
 
   /* цена вопроса + доказательство вакансиями */
   .gate {
@@ -1860,7 +1939,6 @@
     .truth__foot { font-size: 17px; padding-left: 16px; }
     .truth__errs li { flex-direction: column; gap: 6px; }
     .demo-card { grid-template-columns: minmax(0,1fr) 84px; gap: 14px; }
-    .v1__cut { padding-left: 14px; font-size: 14.5px; }
     .mech__cut { padding-left: 16px; margin-top: 26px; }
     .mech__cut p { font-size: 16px; }
   }
@@ -1870,10 +1948,15 @@
      Единственное место, где включаются и выключаются недоделанные блоки.
      true — блок показывается, false — скрыт (разметка остаётся в файле).
 
-       video-sales   — видеопродажник в секции «Почему не получается пройти сисдиз»
-                       и подводка «разобрал в ролике за 6 минут».
-                       Включить, когда ролик снят и вставлена рабочая ссылка/встройка
-                       (сейчас там обложка-заглушка без обработчика клика).
+       video-sales   — видеопродажник в секции «Почему не получается пройти сисдиз»,
+                       подводка «разобрал в ролике за 8 минут» и модалка с плеером.
+                       Плеер уже подключён (VK Видео, oid=-188550966, id=456239033).
+                       Перед включением проверить два пункта:
+                         1) ролик открывается в анонимном окне, без логина в VK
+                            (на 24.08.2026 отдавал «Видеофайл не найден» —
+                            приватность просмотра должна быть «Все пользователи»);
+                         2) обложка sd-video-poster.jpg положена и совпадает
+                            с превью ролика в VK.
        chat-screens  — блок «А ещё у нас полный комфортик в чатике».
                        Включить, когда в макет телефона добавлены реальные скриншоты
                        чата (сейчас внутри плашка «СКРИНЫ ЧАТА · добавим позже»).
@@ -1882,7 +1965,7 @@
      браузер отрисует body, поэтому скрытый блок не мелькает при загрузке. -->
 <script>
   var FEATURES = {
-    'video-sales':  false,
+    'video-sales':  true,
     'chat-screens': false,
 
     /* vacancy-shots — полоса скринов вакансий в блоке «Между тобой и грейдом».
@@ -1906,6 +1989,30 @@
 <body>
 
 <script>document.documentElement.classList.add('anim-ready');</script>
+<script>
+  // ===== Единая точка отправки целей в Метрику =====
+  // Цели зовут четыре независимых модуля страницы (форма, модалки, аккордеоны,
+  // видео), каждый живёт в своей IIFE, поэтому функция общая и объявлена до
+  // них. ym приезжает из /consent.js и может отсутствовать вовсе: человек
+  // отклонил аналитику в баннере либо сработал блокировщик — тогда молча
+  // выходим, ни один вызов цели не должен ронять страницу.
+  // Второй аргумент — «место»: попадает в параметры визита и позволяет в
+  // отчёте разложить одну цель по кнопкам/секциям, не заводя цель на каждую.
+  (function () {
+    var COUNTER = 96022201;
+    var once = {};
+    window.trackGoal = function (name, place) {
+      if (typeof window.ym !== 'function') return;
+      window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
+    };
+    // для целей, которые осмысленны один раз за визит (доскроллил до тарифов)
+    window.trackGoalOnce = function (name, place) {
+      if (once[name]) return;
+      once[name] = true;
+      window.trackGoal(name, place);
+    };
+  })();
+</script>
 
 <a class="skip-link" href="#top">К содержанию</a>
 
@@ -2009,8 +2116,6 @@
           <div class="v1__text">Хочешь не&nbsp;просто пройти секцию, а&nbsp;<b>разобраться, как всё это работает под капотом</b>.</div>
         </div>
       </div>
-      <!-- не размываем ЦА: честно говорим, кому рано -->
-      <p class="v1__cut fade-up">А&nbsp;вот кому пока рано: если ты&nbsp;ещё не&nbsp;писал сервисов в&nbsp;проде или идёшь на&nbsp;джуна&nbsp;— секции у&nbsp;тебя на&nbsp;собесе просто не&nbsp;будет. Возвращайся, когда появится.</p>
     </div>
   </section>
 
@@ -2219,17 +2324,33 @@
           <p>Спорить не&nbsp;будем: секция и&nbsp;правда часто оторвана от&nbsp;того, что ты&nbsp;будешь делать руками. Переубеждать тебя мы&nbsp;не&nbsp;собираемся. <b>Любить System Design не&nbsp;обязательно. Обязательно&nbsp;— пройти секцию:</b> за&nbsp;ней стоят оффер и&nbsp;грейд.</p>
         </div>
         <!-- подводка живёт под тем же тоглом, что и сам ролик: без видео фраза повисает.
-             ⚠️ хронометраж "6 минут" — плейсхолдер, сверить перед включением -->
-        <p class="mech__lead" data-feature="video-sales">Как это выглядит вживую&nbsp;— разобрал в&nbsp;коротком ролике.</p>
+             Хронометраж 8 минут — со слов автора; ролик на момент правки был
+             закрыт для анонимов, сверить по таймлайну не удалось. -->
+        <p class="mech__lead" data-feature="video-sales">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;8&nbsp;минут.</p>
 
-        <!-- ⚠️ видеопродажник: пока обложка-заглушка без обработчика клика.
-             Перед включением тогла подставить реальный ролик (ссылка/встройка). -->
-        <div class="video v1-video" data-feature="video-sales">
-          <div class="yt__thumb">
-            <span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
-            <div class="video__cap">За&nbsp;6&nbsp;минут: почему валят SD и&nbsp;как перестать плыть</div>
-          </div>
-        </div>
+        <!-- Видеопродажник: VK Видео vkvideo.ru/video-188550966_456239033
+             (oid=-188550966, id=456239033). Плеер открывается в модалке
+             .vmodal внизу файла, iframe создаётся по клику и сносится при
+             закрытии. Внутри <button> можно только строчное содержимое,
+             поэтому обёртки — span, а не div.
+             ⚠️ обложки-картинки пока нет: .video__thumb рисует градиент с сеткой.
+             Обложка sd-video-poster.jpg/.webp — тот же файл, что залит превью
+             ролика в VK, чтобы карточка на лендинге и в VK читалась одинаково.
+             Подписи-плашки внизу больше нет: заголовок «ПОЧЕМУ ВАЛЯТСЯ НА
+             SYSTEM DESIGN» уже нарисован на самой обложке, дублировать его
+             текстом поверх — шум. Текст на обложке держится в левом верхнем
+             углу намеренно: по центру кадра садится круглая кнопка play и
+             перекрывает всё, что туда попадает. Из-за этого у кнопки не осталось текстового
+             содержимого, поэтому доступное имя задано через aria-label, а у
+             картинки alt пустой: иначе скринридер прочитает одно и то же дважды. -->
+        <button type="button" class="video v1-video" data-feature="video-sales"
+                data-vmodal-open aria-haspopup="dialog"
+                aria-label="Смотреть видео: почему валятся на System Design, 8 минут">
+          <span class="video__thumb">
+            <picture><source srcset="sd-video-poster.webp" type="image/webp"><img class="video__poster" src="sd-video-poster.jpg" alt="" width="1920" height="1080" loading="lazy"></picture>
+            <span class="video__play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
+          </span>
+        </button>
 
       </div>
     </div>
@@ -3236,9 +3357,9 @@
       </div>
       <nav class="footer__links" aria-label="Юридические документы">
         <div class="footer__links-row">
-          <a href="agree" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
-          <a href="marketing-agree" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
-          <a href="policy" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+          <a href="/agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
+          <a href="/marketing-agree.html" target="_blank" rel="noopener">Согласие на&nbsp;информационно-рекламную рассылку</a>
+          <a href="/policy.html" target="_blank" rel="noopener">Политика обработки персональных данных</a>
           <a href="/system_design_oferta/" target="_blank" rel="noopener">Публичная оферта</a>
         </div>
       </nav>
@@ -3528,6 +3649,28 @@
     measure();
     backToTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
+    // ===== Цели: доскролл до тарифов и раскрытие программы =====
+    // «Дошёл до цен, но не открыл форму» — главный разрыв воронки, который
+    // иначе не увидеть. Считаем один раз за визит: прокрутка блока
+    // вверх-вниз интерес не удваивает.
+    var tarifySection = document.getElementById('tarify');
+    if (tarifySection && 'IntersectionObserver' in window) {
+      var tarifyObserver = new IntersectionObserver(function (entries) {
+        if (!entries.some(function (en) { return en.isIntersecting; })) return;
+        window.trackGoalOnce('sd_reach_tariffs', 'scroll');
+        tarifyObserver.disconnect();
+      }, { threshold: 0.25 });
+      tarifyObserver.observe(tarifySection);
+    }
+    // Программа собрана на нативных <details>, поэтому слушаем их же событие
+    // toggle, а не клик по summary: так цель не разъедется, если пункт
+    // раскроют с клавиатуры или скриптом. Считаем только раскрытие.
+    document.querySelectorAll('details.program__item').forEach(function (item, i) {
+      item.addEventListener('toggle', function () {
+        if (item.open) window.trackGoal('sd_program_open', 'week-' + (i + 1));
+      });
+    });
+
     // ===== мобильное меню (CSS-состояния .open / aria-expanded уже описаны) =====
     var menuToggle = document.getElementById('menu-toggle');
     var navMobile = document.getElementById('nav-mobile');
@@ -3569,38 +3712,79 @@
   });
 </script>
 
-<!-- ===== Модалка предзаписи: форма GetCourse (виджет) открывается по кнопкам &quot;Заполнить анкету&quot; ===== -->
+<!-- ===== МОДАЛКА ПРЕДЗАПИСИ — СВОЯ ФОРМА =====
+     Поля один в один с анкетой GetCourse (имя, почта, ник в телеграме и два
+     согласия), но разметка и отправка наши: POST уходит на тот же публичный
+     эндпоинт, куда постит их собственная форма. Имена полей взяты оттуда же
+     и подписаны в JS ниже — 10350615 это «Телеграм», 13965520 «Согласие на
+     обработку персональных данных», 13965522 «Согласие на рекламную
+     рассылку», 11011617-11019090 — utm-метки сделки.
+     Отличие от оригинала осознанное: рекламное согласие у нас отдельная,
+     НЕ обязательная галочка и по умолчанию снята — это разные документы и
+     разные согласия, склеивать их в одно нельзя. Обработка персональных
+     данных обязательна: без неё отправлять нечего. -->
 <div class="gc-modal" id="gc-modal" hidden>
   <div class="gc-modal__backdrop" data-gc-close></div>
-  <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Анкета предзаписи">
+  <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-labelledby="gc-form-title">
     <button type="button" class="gc-modal__close" data-gc-close aria-label="Закрыть">&#10005;</button>
-    <!-- Форма GetCourse СПЕЦИАЛЬНО не стоит здесь в разметке: её iframe
-         (school.olezhek28.courses) отправляет собственный хит в тот же счётчик
-         96022201, и при загрузке вместе со страницей это ломало аналитику —
-         второй просмотр приезжал у каждого посетителя, обнуляя показатель
-         отказов и удваивая глубину просмотра. Поэтому iframe создаётся по
-         первому клику, см. loadWidget() ниже.
-         Пока счётчик внутри виджета общий с лендингом, предзагружать форму
-         заранее (по наведению или по скроллу к тарифам) нельзя — вернётся
-         та же поломка аналитики. -->
-    <div class="gc-modal__body is-loading" id="gc-modal-body">
-      <div class="gc-modal__loading" id="gc-loading" role="status">
-        <span class="gc-spinner" aria-hidden="true"></span>Загружаю анкету…
+    <div class="gc-modal__body">
+      <form class="gcform" id="gc-form" novalidate>
+        <h2 class="gcform__title" id="gc-form-title">Предзапись на курс</h2>
+        <p class="gcform__lead">Оставь контакты — напишем, когда откроется набор на новый поток, и позовём в чат курса.</p>
+
+        <div class="gcform__field" data-field="name">
+          <label class="gcform__label" for="gc-name">Как тебя зовут?</label>
+          <input class="gcform__input" id="gc-name" type="text" name="name" placeholder="Андрей"
+                 maxlength="30" autocomplete="given-name" aria-describedby="gc-name-err" required>
+          <span class="gcform__error" id="gc-name-err" hidden></span>
+        </div>
+
+        <div class="gcform__field" data-field="email">
+          <label class="gcform__label" for="gc-email">Твоя почта</label>
+          <input class="gcform__input" id="gc-email" type="email" name="email" placeholder="gRPC@mail.ru"
+                 maxlength="120" autocomplete="email" inputmode="email" aria-describedby="gc-email-err" required>
+          <span class="gcform__error" id="gc-email-err" hidden></span>
+        </div>
+
+        <div class="gcform__field" data-field="tg">
+          <label class="gcform__label" for="gc-tg">Ник в Telegram</label>
+          <input class="gcform__input" id="gc-tg" type="text" name="tg" placeholder="@microservice"
+                 maxlength="40" autocomplete="username" aria-describedby="gc-tg-err">
+          <span class="gcform__error" id="gc-tg-err" hidden></span>
+        </div>
+
+        <div class="gcform__field" data-field="consent">
+          <label class="gcform__check">
+            <input type="checkbox" id="gc-consent" aria-describedby="gc-consent-err" required>
+            <span>Согласен с <a href="/agree.html" target="_blank" rel="noopener">Согласием на обработку персональных данных</a> и <a href="/policy.html" target="_blank" rel="noopener">Политикой обработки персональных данных</a></span>
+          </label>
+          <span class="gcform__error" id="gc-consent-err" hidden></span>
+        </div>
+
+        <label class="gcform__check">
+          <input type="checkbox" id="gc-promo">
+          <span>Согласен получать <a href="/marketing-agree.html" target="_blank" rel="noopener">информационную и рекламную рассылку</a> (по желанию)</span>
+        </label>
+
+        <p class="gcform__status" id="gc-status" role="alert" hidden></p>
+        <button class="btn btn--primary btn--block gcform__submit" type="submit" id="gc-submit">Отправить заявку</button>
+      </form>
+
+      <div class="gcform__done" id="gc-done" hidden>
+        <h2 class="gcform__title">Заявка отправлена</h2>
+        <p>Открываем чат курса в Telegram — там анонсы и детали набора. Если ничего не произошло, нажми кнопку ниже.</p>
+        <a class="btn btn--primary" id="gc-chat-link" href="https://t.me/+2ggiH5X8vp9hODgy" target="_blank" rel="noopener">Перейти в чат курса</a>
       </div>
     </div>
   </div>
 </div>
 <script>
   (function () {
-    // ===== Цели Яндекс.Метрики =====
-    // ym появляется из /consent.js и может отсутствовать: пользователь отклонил
-    // аналитику в баннере либо сработал блокировщик. Молча пропускаем.
-    var COUNTER = 96022201;
-    function goal(name, place) {
-      if (typeof window.ym !== 'function') return;
-      window.ym(COUNTER, 'reachGoal', name, { place: place || 'unknown' });
-    }
-    // якорные CTA (ведут к #tarify); кнопки анкеты считаются отдельно, в open()
+    // Цели уходят через общий window.trackGoal (объявлен выше по файлу
+    // одним блоком на все модули страницы).
+    var goal = window.trackGoal;
+    // якорные CTA (герой, после программы, тарифы, bigtech и т.д.); кнопки анкеты
+    // считаются отдельно, в open() — иначе клик по ним залогировался бы дважды
     document.addEventListener('click', function (e) {
       var el = e.target.closest && e.target.closest('[data-goal]');
       if (!el || el.hasAttribute('data-gc-open')) return;
@@ -3609,196 +3793,161 @@
 
     var modal = document.getElementById('gc-modal');
     if (!modal) return;
+    var form = document.getElementById('gc-form');
+    var done = document.getElementById('gc-done');
+    var statusEl = document.getElementById('gc-status');
+    var submitBtn = document.getElementById('gc-submit');
+    var chatLink = document.getElementById('gc-chat-link');
     var lastTrigger = null;
     var closeBtn = modal.querySelector('.gc-modal__close');
 
-    // ===== Ленивая загрузка виджета GetCourse =====
-    // Грузим форму только по первому клику. Если вставить её скрипт в разметку,
-    // iframe отправит свой хит в счётчик у каждого посетителя — см. комментарий
-    // у .gc-modal__body.
-    //
-    // Штатный script?id=... ничего не делает, кроме сборки iframe по
-    // предсказуемому URL и подписки на postMessage с высотой. При этом он отдаётся
-    // с Cache-Control: no-store и генерится сервером ~1 секунду, то есть каждый
-    // посетитель платит эту секунду заново, просто чтобы получить строчку с src.
-    // Поэтому iframe собираем сами теми же параметрами, а штатный скрипт держим
-    // как запасной путь на случай, если GetCourse поменяет схему URL.
-    var WIDGET_ID = '899a0f68032eb1a5b3f89a1a2ce8291d864ab292';
-    var WIDGET_SRC = 'https://school.olezhek28.courses/pl/lite/widget/script?id=1633267';
-    var WIDGET_ORIGIN = 'https://school.olezhek28.courses';
-    var FORM_URL = 'https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267';
-    var FRAME_NAME = 'gc-sd-form';
-    var widgetRequested = false;
-    var fallbackRequested = false;
-    var gotHeight = false;
+    // ===== Отправка заявки в GetCourse =====
+    // Тот же публичный эндпоинт, куда постит собственная анкета GetCourse
+    // (её разметку видно в исходнике виджета id=1633267). Имена полей — оттуда
+    // же, читать их без словаря невозможно, поэтому расшифровка здесь:
+    var FORM_ACTION = 'https://school.olezhek28.courses/pl/lite/block-public/process?id=2242020431';
+    var F_TELEGRAM  = 'formParams[userCustomFields][10350615]';   // «Телеграм»
+    var F_CONSENT   = 'formParams[userCustomFields][13965520]';   // согласие на обработку ПД
+    var F_PROMO     = 'formParams[userCustomFields][13965522]';   // согласие на рекламную рассылку
+    var UTM_FIELDS  = {                                           // utm-метки сделки
+      utm_source: 'formParams[dealCustomFields][11011617]',
+      utm_medium: 'formParams[dealCustomFields][11019087]',
+      utm_campaign: 'formParams[dealCustomFields][11019088]',
+      utm_content: 'formParams[dealCustomFields][11019089]',
+      utm_term: 'formParams[dealCustomFields][11019090]'
+    };
+    // Куда GetCourse уводит после успешной отправки своей анкеты (взято из
+    // поля redirectUrl её ответа). Мы ведём туда же — это продолжение воронки.
+    var CHAT_URL = 'https://t.me/+2ggiH5X8vp9hODgy';
+    // Запасной путь для человека, если отправка не удалась: та же анкета
+    // GetCourse отдельной страницей.
+    var FALLBACK_FORM = 'https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267';
 
-    // идемпотентно: зовётся и по load iframe, и по страховочному таймауту
-    function widgetReady() {
-      var body = document.getElementById('gc-modal-body');
-      var ph = document.getElementById('gc-loading');
-      if (body) body.classList.remove('is-loading');
-      if (ph && ph.parentNode) ph.parentNode.removeChild(ph);
-    }
-    function widgetFailed() {
-      var ph = document.getElementById('gc-loading');
-      if (ph) ph.innerHTML = 'Не удалось загрузить анкету. <a href="' + FORM_URL +
-        '">Открыть её отдельной страницей</a>';
-    }
-    // те же параметры, что подставляет штатный скрипт: search нужен, чтобы
-    // в анкету доехали utm-метки, ref и loc GetCourse пишет в заявку
-    function frameSrc() {
-      var src = WIDGET_ORIGIN + '/pl/lite/widget/widget?' + window.location.search.substring(1) +
-        '&id=1633267&ref=' + encodeURIComponent(document.referrer) +
-        '&loc=' + encodeURIComponent(document.location.href);
-      try {
-        if (window.clrtQueryData) {
-          src += '&clrtQueryData=' + encodeURIComponent(JSON.stringify(window.clrtQueryData));
-        }
-      } catch (e) {}
-      return src;
-    }
+    // ===== Проверка полей =====
+    // Проверяем на своей стороне жёстче, чем хотелось бы, по одной причине:
+    // ответ эндпоинта нам не прочитать. Он не отдаёт CORS-заголовков, поэтому
+    // из браузера запрос уходит в режиме no-cors и ответ для нас непрозрачный —
+    // «успех» и «отказ» выглядят одинаково. Правила ниже сняты с живых отказов
+    // самого GetCourse (проверено отправкой): имя длиннее 30 символов — «Слишком
+    // длинное имя», цифра в имени — «Неверные символы в имени».
+    var RE_NAME  = /^[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё\s'-]*$/;
+    var RE_EMAIL = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
+    var RE_TG    = /^@?[A-Za-z0-9_]{3,32}$/;
 
-    // GetCourse шлёт высоту формы через postMessage. Origin проверяем сами:
-    // в их собственном обработчике проверки нет, а слушаем мы весь window.
-    window.addEventListener('message', function (e) {
-      if (e.origin !== WIDGET_ORIGIN) return;
-      var d = e.data;
-      if (!d || d.uniqName !== WIDGET_ID || !d.height) return;
-      // метрики переименовывают iframe, поэтому сравниваем по части до &
-      if (d.iframeName && d.iframeName.split('&')[0] !== FRAME_NAME) return;
-      gotHeight = true; // единственное надёжное доказательство, что внутри наша форма
-      var f = document.getElementById('gc-frame');
-      if (f) f.style.height = d.height + 'px';
-    });
-
-    // заглушку могли уже снять по load — вернём её перед запасной попыткой
-    function ensurePlaceholder() {
-      var body = document.getElementById('gc-modal-body');
-      if (!body || document.getElementById('gc-loading')) return;
-      var ph = document.createElement('div');
-      ph.className = 'gc-modal__loading';
-      ph.id = 'gc-loading';
-      ph.setAttribute('role', 'status');
-      ph.innerHTML = '<span class="gc-spinner" aria-hidden="true"></span>Загружаю анкету…';
-      body.classList.add('is-loading');
-      body.appendChild(ph);
+    function setError(field, message) {
+      var wrap = form.querySelector('[data-field="' + field + '"]');
+      if (!wrap) return;
+      var input = wrap.querySelector('input');
+      var err = wrap.querySelector('.gcform__error');
+      wrap.classList.toggle('is-invalid', !!message);
+      if (input) input.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (err) { err.textContent = message || ''; err.hidden = !message; }
+    }
+    function validate(values) {
+      var errors = [];
+      if (!values.name) errors.push(['name', 'Без имени заявка не уйдёт']);
+      else if (values.name.length > 30) errors.push(['name', 'Слишком длинное имя — до 30 символов']);
+      else if (!RE_NAME.test(values.name)) errors.push(['name', 'Только буквы, пробел и дефис — цифры GetCourse не примет']);
+      if (!values.email) errors.push(['email', 'Без почты заявка не уйдёт']);
+      else if (!RE_EMAIL.test(values.email)) errors.push(['email', 'Проверь адрес: похоже, в нём опечатка']);
+      if (values.tg && !RE_TG.test(values.tg)) errors.push(['tg', 'Ник в формате @microservice — латиница, цифры и _']);
+      if (!values.consent) errors.push(['consent', 'Без согласия на обработку данных заявку отправить нельзя']);
+      return errors;
     }
 
-    // запасной путь: штатный скрипт GetCourse, если прямой iframe не поднялся
-    function loadWidgetViaScript() {
-      if (fallbackRequested) return;
-      fallbackRequested = true;
-      var body = document.getElementById('gc-modal-body');
-      if (!body) return;
-      var broken = document.getElementById('gc-frame');
-      if (broken) broken.parentNode.removeChild(broken);
-      var s = document.createElement('script');
-      s.id = WIDGET_ID;
-      s.src = WIDGET_SRC;
-      s.onerror = widgetFailed;
-      s.onload = function () {
-        // DOMContentLoaded, на который виджет подписывается сам, давно прошёл,
-        // поэтому дёргаем кастомное событие — на него он подписан тоже
-        document.dispatchEvent(new Event('StartWidget' + WIDGET_ID));
-        var frame = body.querySelector('iframe');
-        if (!frame) { widgetFailed(); return; }
-        frame.addEventListener('load', widgetReady);
-        setTimeout(widgetReady, 8000); // не залипаем на заглушке, если load не придёт
+    function collect() {
+      return {
+        name: document.getElementById('gc-name').value.trim(),
+        email: document.getElementById('gc-email').value.trim(),
+        tg: document.getElementById('gc-tg').value.trim(),
+        consent: document.getElementById('gc-consent').checked,
+        promo: document.getElementById('gc-promo').checked
       };
-      body.appendChild(s);
     }
 
-    // ===== Прогрев статики формы =====
-    // Сам iframe заранее не создаём: он тянет за собой счётчик Метрики, который
-    // в GetCourse задаётся одним полем на весь аккаунт, и лишний просмотр
-    // испортил бы статистику лендинга (см. комментарий у .gc-modal__body).
-    // Но 70 файлов, из которых форма состоит, отдаются с max-age=10 лет — их
-    // можно просто скачать заранее. Проверено: iframe потом берёт их из кэша
-    // (fromPrefetchCache), а Метрика молчит, потому что документ формы не
-    // выполняется. Здесь 9 самых тяжёлых вендорных библиотек — 780 КБ.
-    //
-    // Только вендорные: бандлы с хэшем содержимого в имени (dictionary-gen,
-    // superlite-block, custom-form — вместе 844 КБ) прогревать бесполезно.
-    // Проверено: GetCourse пересобирает их, и к моменту открытия формы хэш уже
-    // другой, поэтому в кэш они не попадают ни разу. Не возвращать их в список.
-    //
-    // ВНИМАНИЕ: у оставшихся в адресах зашит ?v=. Когда GetCourse обновит
-    // библиотеки, прогрев тихо промахнётся: форма продолжит работать, но станет
-    // снова медленной, и никто этого не заметит. Раз в несколько месяцев стоит
-    // снять запросы со страницы формы и сверить список.
-    var GC = 'https://school.olezhek28.courses/pl/nassets/';
-    var PREFETCH = [
-      GC + '4b8ca1d0/jquery-ui.min.js?v=1765633902',
-      GC + 'de470cdd/css/all.css?v=1765633899',
-      GC + 'd142fbf/css/bootstrap.min.css?v=1777880033',
-      GC + '2b98cd16/jquery.min.js?v=1765633902',
-      GC + 'cc216a2a/select2.min.js?v=1765633902',
-      GC + 'de470cdd/css/v4-shims.css?v=1765633899',
-      GC + 'ddb7aabd/js/bootstrap-datetimepicker.min.js?v=1765633902',
-      GC + '4b8ca1d0/themes/smoothness/jquery-ui.css?v=1765633902',
-      GC + '5ff1daa/js/bootstrap-datepicker.min.js?v=1765633902'
-    ];
-    var warmed = false;
-    function warmFormAssets() {
-      if (warmed) return;
-      warmed = true;
-      // полтора мегабайта на экономном тарифе или медленной сети — не наш случай
-      var c = navigator.connection;
-      if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
-      PREFETCH.forEach(function (u) {
-        var l = document.createElement('link');
-        l.rel = 'prefetch';
-        l.as = /\.css(\?|$)/.test(u) ? 'style' : 'script';
-        l.href = u;
-        document.head.appendChild(l);
+    function buildBody(v) {
+      var b = new URLSearchParams();
+      b.append('formParams[first_name]', v.name);
+      b.append('formParams[email]', v.email);
+      if (v.tg) b.append(F_TELEGRAM, v.tg.charAt(0) === '@' ? v.tg : '@' + v.tg);
+      // Чекбоксы GetCourse ждёт скаляром: их собственный виджет кладёт в поле
+      // JSON вида {"checked":1}, но при отправке этого JSON эндпоинт отвечает
+      // 500 (проверено, как и вариант с массивом [checked]=1) — принимает
+      // только 1/0. Расхождение их, не наше.
+      b.append(F_CONSENT, v.consent ? '1' : '0');
+      b.append(F_PROMO, v.promo ? '1' : '0');
+      b.append('formParams[in_widget]', '1');
+      b.append('formParams[willCreatePaidDeal]', '0');
+      b.append('__gc__internal__form__helper', 'https://school.olezhek28.courses/pl/lite');
+      // utm-метки: своей сессии GetCourse у нас нет (её ставит их же страница
+      // формы), поэтому источник доезжает до сделки только через эти поля —
+      // ровно так же, как в оригинальной анкете.
+      var q = new URLSearchParams(window.location.search);
+      Object.keys(UTM_FIELDS).forEach(function (k) {
+        var val = q.get(k);
+        if (val) b.append(UTM_FIELDS[k], val.slice(0, 200));
       });
+      return b;
     }
-    // греем на подходе к тарифам: до клика остаётся несколько секунд
-    var tariffs = document.getElementById('tarify');
-    if (tariffs && 'IntersectionObserver' in window) {
-      var warmObserver = new IntersectionObserver(function (entries) {
-        if (entries.some(function (e) { return e.isIntersecting; })) {
-          warmFormAssets();
-          warmObserver.disconnect();
-        }
-      }, { rootMargin: '800px 0px' });
-      warmObserver.observe(tariffs);
-    }
-    // подстраховка: наведение на кнопку анкеты, если до тарифов не доскроллили
-    document.querySelectorAll('[data-gc-open]').forEach(function (b) {
-      b.addEventListener('pointerenter', warmFormAssets, { once: true });
-      b.addEventListener('touchstart', warmFormAssets, { once: true, passive: true });
-    });
 
-    function loadWidget() {
-      if (widgetRequested) return;
-      widgetRequested = true;
-      var body = document.getElementById('gc-modal-body');
-      if (!body) return;
-      var loaded = false;
-      var f = document.createElement('iframe');
-      f.id = 'gc-frame';
-      f.name = FRAME_NAME;
-      f.title = 'Анкета предзаписи';
-      f.src = frameSrc();
-      f.setAttribute('allowfullscreen', 'allowfullscreen');
-      f.addEventListener('load', function () { loaded = true; widgetReady(); });
-      f.addEventListener('error', loadWidgetViaScript);
-      body.appendChild(f);
-      // Откат по признаку «форма не отозвалась», а не «долго грузится»: живая
-      // форма присылает height за 3-4 секунды, а страница ошибки или чужая
-      // разметка по подменённому URL дадут load и промолчат. Ронять медленную,
-      // но рабочую загрузку нельзя — второй заход стоит ещё дороже.
-      setTimeout(function () {
-        if (gotHeight) return;
-        if (loaded) { ensurePlaceholder(); loadWidgetViaScript(); return; }
-        setTimeout(function () {
-          if (gotHeight) return;
-          ensurePlaceholder();
-          loadWidgetViaScript();
-        }, 10000);
-      }, 10000);
-    }
+    var sending = false;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (sending) return;
+      var v = collect();
+      ['name', 'email', 'tg', 'consent'].forEach(function (f) { setError(f, ''); });
+      var errors = validate(v);
+      if (errors.length) {
+        errors.forEach(function (pair) { setError(pair[0], pair[1]); });
+        // place — первое непройденное поле: видно, на чём именно спотыкаются
+        goal('sd_form_error', 'validation:' + errors[0][0]);
+        var firstWrap = form.querySelector('.is-invalid');
+        var firstInput = firstWrap && firstWrap.querySelector('input');
+        if (firstInput) firstInput.focus();
+        return;
+      }
+      sending = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправляю…';
+      statusEl.hidden = true;
+      // no-cors: ответ нам всё равно не прочитать (см. комментарий у RE_NAME),
+      // но сам запрос уходит и заявка создаётся — проверено живой отправкой.
+      fetch(FORM_ACTION, {
+        method: 'POST',
+        mode: 'no-cors',
+        credentials: 'omit',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: buildBody(v).toString()
+      }).then(function () {
+        goal('sd_form_submit', lastTrigger && lastTrigger.getAttribute('data-goal'));
+        form.hidden = true;
+        done.hidden = false;
+        if (chatLink) chatLink.focus();
+        // Оригинал после отправки уводит в чат курса — уводим и мы, но с
+        // паузой, чтобы человек успел увидеть, что заявка принята, и с живой
+        // кнопкой рядом: переход может не сработать (блокировщик, отсутствие
+        // Telegram).
+        setTimeout(function () { window.location.href = CHAT_URL; }, 1400);
+      }).catch(function () {
+        // без этой цели сорвавшаяся отправка неотличима от «передумал»
+        goal('sd_form_error', 'network');
+        sending = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить заявку';
+        statusEl.hidden = false;
+        statusEl.innerHTML = 'Не получилось отправить — похоже, пропала сеть. Попробуй ещё раз или ' +
+          '<a href="' + FALLBACK_FORM + '" target="_blank" rel="noopener">заполни анкету отдельной страницей</a>.';
+      });
+    });
+    // Ошибку у поля снимаем, как только человек начал его править: держать
+    // красным то, что уже исправляют, — раздражение без пользы.
+    form.addEventListener('input', function (e) {
+      var wrap = e.target.closest && e.target.closest('[data-field]');
+      if (wrap) setError(wrap.getAttribute('data-field'), '');
+    });
+    form.addEventListener('change', function (e) {
+      if (e.target.id === 'gc-consent') setError('consent', '');
+    });
 
     // ===== Изоляция фона на время модалки =====
     // aria-modal сам по себе фон не отключает: Tab из формы уходил на страницу
@@ -3818,13 +3967,11 @@
       }
     }
 
-    // Фокус-ловушка: по кругу между крестиком и формой. Когда фокус уже внутри
-    // iframe GetCourse, его keydown до нас не доходит (чужой origin) — там
-    // страховкой работает inert выше.
+    // Фокус-ловушка: по кругу внутри модалки.
     function focusables() {
       return Array.prototype.filter.call(
-        modal.querySelectorAll('button, a[href], iframe, input, select, textarea, [tabindex]:not([tabindex="-1"])'),
-        function (el) { return el.tagName === 'IFRAME' || el.offsetParent !== null; }
+        modal.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+        function (el) { return el.offsetParent !== null; }
       );
     }
     modal.addEventListener('keydown', function (e) {
@@ -3841,8 +3988,9 @@
       goal('sd_form_open', lastTrigger && lastTrigger.getAttribute('data-goal'));
       modal.hidden = false; document.body.classList.add('gc-lock');
       backgroundInert(true);
-      loadWidget();
-      if (closeBtn) closeBtn.focus();
+      var firstInput = document.getElementById('gc-name');
+      if (!form.hidden && firstInput) firstInput.focus();
+      else if (closeBtn) closeBtn.focus();
     }
     function close() {
       modal.hidden = true; document.body.classList.remove('gc-lock');
@@ -3852,6 +4000,103 @@
     document.querySelectorAll('[data-gc-open]').forEach(function (b) { b.addEventListener('click', open); });
     modal.querySelectorAll('[data-gc-close]').forEach(function (b) { b.addEventListener('click', close); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
+  })();
+</script>
+
+<!-- ===== МОДАЛКА ВИДЕОПРОДАЖНИКА =====
+     Под тем же тоглом video-sales, что и кнопка-обложка: пока фича выключена,
+     открывать модалку всё равно нечем, но пусть и она уходит из разметки —
+     иначе Esc и фокус-ловушка живут ради невидимого блока. -->
+<div class="vmodal" id="video-modal" data-feature="video-sales" hidden>
+  <div class="vmodal__backdrop" data-vmodal-close></div>
+  <button type="button" class="vmodal__close" data-vmodal-close aria-label="Закрыть">&#10005;</button>
+  <div class="vmodal__panel" role="dialog" aria-modal="true" aria-label="Видео: почему валят System Design">
+    <div class="vmodal__frame" id="video-modal-frame"></div>
+  </div>
+</div>
+
+<script>
+  // ===== Видеопродажник: модалка с плеером VK Видео =====
+  // Фрейм живёт ровно столько, сколько открыта модалка: при закрытии узел
+  // сносится — вместе с ним глохнет звук, а следующее открытие поднимает
+  // ролик с начала, а не с того места, где его бросили. Тот же приём, что на
+  // лендинге микросервисов. Останавливать плеер через postMessage сознательно
+  // не стали: это потребовало бы тащить на страницу сторонний скрипт с vk.com,
+  // а он ходит за пределы нашего домена и должен был бы жить под баннером
+  // согласия рядом с consent.js — цена выше пользы.
+  (function () {
+    var modal = document.getElementById('video-modal');
+    var frameHost = document.getElementById('video-modal-frame');
+    var btn = document.querySelector('[data-vmodal-open]');
+    if (!modal || !frameHost || !btn) return;
+
+    var closeBtn = modal.querySelector('.vmodal__close');
+    // autoplay здесь безопасен: фрейм создаётся ТОЛЬКО по клику человека,
+    // то есть автозапуска на холодной странице не бывает.
+    var EMBED = 'https://vkvideo.ru/video_ext.php?oid=-188550966&id=456239033&hd=2&autoplay=1';
+
+    // Изоляция фона — тот же приём, что у модалки формы: aria-modal сам по
+    // себе фон не отключает, Tab уходил бы на страницу под модалкой.
+    var inerted = [];
+    function backgroundInert(on) {
+      if (on) {
+        Array.prototype.forEach.call(document.body.children, function (el) {
+          if (el === modal || el.hasAttribute('inert')) return;
+          el.setAttribute('inert', '');
+          inerted.push(el);
+        });
+      } else {
+        inerted.forEach(function (el) { el.removeAttribute('inert'); });
+        inerted = [];
+      }
+    }
+
+    // Фокус-ловушка по кругу. Фокусируемый элемент здесь один — крестик, но
+    // ловушка нужна всё равно: без неё Tab уводит в iframe и обратно уже не
+    // возвращается, человек оказывается заперт в чужом плеере.
+    modal.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var f = Array.prototype.filter.call(
+        modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])'),
+        function (el) { return el.offsetParent !== null; }
+      );
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+
+    function open() {
+      if (!frameHost.firstChild) {
+        var iframe = document.createElement('iframe');
+        iframe.src = EMBED;
+        iframe.title = 'Почему валят System Design — видео';
+        iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', '');
+        frameHost.appendChild(iframe);
+      }
+      modal.hidden = false;
+      document.body.classList.add('gc-lock');
+      backgroundInert(true);
+      if (closeBtn) closeBtn.focus();
+      if (window.trackGoal) window.trackGoal('sd_video_open', 'mech');
+    }
+
+    function close() {
+      modal.hidden = true;
+      document.body.classList.remove('gc-lock');
+      backgroundInert(false);
+      frameHost.textContent = '';
+      btn.focus();
+    }
+
+    btn.addEventListener('click', open);
+    modal.querySelectorAll('[data-vmodal-close]').forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) close();
+    });
   })();
 </script>
 

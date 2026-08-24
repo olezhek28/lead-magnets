@@ -10,3 +10,6 @@ __pycache__/
 
 # рабочая SEO-заметка — только локально, не публикуем
 docs/seo.md
+
+# рабочее пространство subagent-driven-development: леджер, брифы, отчёты
+.superpowers/
