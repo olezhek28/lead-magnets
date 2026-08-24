@@ -655,11 +655,63 @@
   /* подводка-лид под заголовком — короткий заход к видео */
   .mech__lead { font-size: 17px; line-height: 1.7; color: var(--light-mute); max-width: 68ch; text-wrap: pretty; margin-bottom: 34px; }
   .mech__lead--tight { margin-bottom: 12px; }
-  /* видеопродажник: заглушка на светлом островке (язык .yt__thumb / .yt__play-btn) */
-  .video { position: relative; border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(16,23,26,.16); box-shadow: 0 34px 80px -46px rgba(0,0,0,.7); cursor: pointer; }
-  .video:hover .yt__play-btn { transform: scale(1.08); }
-  .video__cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 48px 24px 20px; background: linear-gradient(transparent, rgba(0,0,0,.72)); color: var(--text-h); font-family: var(--display); font-weight: 500; font-size: clamp(15px, 1.8vw, 19px); line-height: 1.3; letter-spacing: -0.012em; }
+  /* ===== ВИДЕОПРОДАЖНИК: обложка на светлом островке =====
+     Раньше блок одалживал .yt__thumb / .yt__play-btn у лид-магнитов, и это
+     была мина: оба класса в файле объявлены ДВАЖДЫ (здесь и ещё раз в секции
+     ютуб-канала ниже), выигрывает нижнее объявление — кнопка play уезжала из
+     центра и красилась в ютубовский красный. Поэтому у видео свои классы,
+     ничего общего с .yt__* быть не должно.
+     Это <button>, а не <div>: блок открывает модалку, значит обязан работать
+     с клавиатуры и объявляться скринридеру кнопкой. Отсюда сброс дефолтов —
+     свои border/background/радиус у .video уже есть. */
+  .video { position: relative; display: block; width: 100%; padding: 0; margin: 0; font: inherit; color: inherit; text-align: inherit;
+    -webkit-appearance: none; appearance: none; background: transparent;
+    border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(16,23,26,.16); box-shadow: 0 34px 80px -46px rgba(0,0,0,.7); cursor: pointer; }
+  .video:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  /* Обложка лежит в .video__poster поверх градиента-заглушки: градиент со
+     схемой-сеткой остаётся под ней и работает, если картинка не загрузилась. */
+  .video__thumb { position: relative; aspect-ratio: 16/9; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(150deg, var(--bg-secondary), var(--bg-primary)); }
+  .video__thumb::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 10%, transparent 72%);
+    mask-image: radial-gradient(ellipse at 50% 50%, #000 10%, transparent 72%);
+  }
+  .video__poster { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video__play { position: relative; z-index: 2; width: 64px; height: 64px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 36px -14px rgba(223,223,65,.7);
+    transition: transform .3s var(--ease); }
+  .video__play svg { width: 24px; height: 24px; color: var(--accent-ink); margin-left: 3px; }
+  .video:hover .video__play { transform: scale(1.08); }
   .v1-video { max-width: 760px; margin: 0 auto 36px; }
+
+  /* ===== МОДАЛКА ВИДЕОПРОДАЖНИКА (.vmodal) =====
+     Своя, а не .gc-modal: там панель заточена под форму (560px, вертикальный
+     скролл, паддинги), здесь нужен широкий чёрный прямоугольник 16:9 вообще
+     без внутренних отступов. Общее с gc-modal ровно одно — замок скролла
+     body.gc-lock: второй класс с тем же overflow:hidden заводить незачем. */
+  .vmodal[hidden] { display: none; }
+  .vmodal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .vmodal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.86); backdrop-filter: blur(5px); }
+  .vmodal__panel { position: relative; z-index: 1; width: min(1100px, 94vw); border-radius: var(--r-lg); overflow: hidden;
+    box-shadow: 0 40px 120px -30px rgba(0,0,0,.92); animation: gcPop .28s var(--ease); }
+  /* aspect-ratio висит на обёртке, а iframe растянут абсолютом: VK отдаёт
+     плеер без собственной высоты, и без этого фрейм схлопывается в полоску. */
+  .vmodal__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  .vmodal__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .vmodal__close { position: fixed; top: 22px; right: 26px; z-index: 3; width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(30,39,43,.9); border: 1px solid var(--border-card); color: var(--text-h); cursor: pointer;
+    font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: background .2s;
+    box-shadow: 0 6px 20px -8px rgba(0,0,0,.7); }
+  .vmodal__close:hover { background: rgba(52,63,68,.95); }
+  @media (max-width: 640px) {
+    .vmodal { padding: 0; }
+    .vmodal__panel { width: 100%; border-radius: 0; }
+    .vmodal__close { top: 12px; right: 12px; width: 46px; height: 46px; font-size: 19px; background: #1e272b; }
+  }
+  @media (prefers-reduced-motion: reduce) { .vmodal__panel { animation: none; } }
   /* тезисы — скимабельный остов аргумента для тех, кто не смотрит видео */
   .mech__quote {
     margin-top: 34px; padding: 4px 0 4px 26px; border-left: 2px solid var(--accent);
@@ -1762,10 +1814,15 @@
      Единственное место, где включаются и выключаются недоделанные блоки.
      true — блок показывается, false — скрыт (разметка остаётся в файле).
 
-       video-sales   — видеопродажник в секции «Почему не получается пройти сисдиз»
-                       и подводка «разобрал в ролике за 6 минут».
-                       Включить, когда ролик снят и вставлена рабочая ссылка/встройка
-                       (сейчас там обложка-заглушка без обработчика клика).
+       video-sales   — видеопродажник в секции «Почему не получается пройти сисдиз»,
+                       подводка «разобрал в ролике за 8 минут» и модалка с плеером.
+                       Плеер уже подключён (VK Видео, oid=-188550966, id=456239033).
+                       Перед включением проверить два пункта:
+                         1) ролик открывается в анонимном окне, без логина в VK
+                            (на 24.08.2026 отдавал «Видеофайл не найден» —
+                            приватность просмотра должна быть «Все пользователи»);
+                         2) обложка sd-video-poster.jpg положена и совпадает
+                            с превью ролика в VK.
        chat-screens  — блок «А ещё у нас полный комфортик в чатике».
                        Включить, когда в макет телефона добавлены реальные скриншоты
                        чата (сейчас внутри плашка «СКРИНЫ ЧАТА · добавим позже»).
@@ -1774,7 +1831,7 @@
      браузер отрисует body, поэтому скрытый блок не мелькает при загрузке. -->
 <script>
   var FEATURES = {
-    'video-sales':  false,
+    'video-sales':  true,
     'chat-screens': false
   };
   (function () {
@@ -2096,17 +2153,33 @@
         <p class="mech__lead mech__lead--tight">Только повлиять на&nbsp;это ты&nbsp;не&nbsp;можешь, а&nbsp;вот на&nbsp;остальное вполне: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор, куда сам увёл разговор.</p>
         <p class="mech__lead mech__lead--tight">Ошибок, которых можно было не&nbsp;допускать, набирается прилично. Каждая портит впечатление, а&nbsp;из&nbsp;впечатления и&nbsp;складывается решение по&nbsp;секции.</p>
         <!-- подводка живёт под тем же тоглом, что и сам ролик: без видео фраза повисает.
-             ⚠️ хронометраж "6 минут" — плейсхолдер, сверить перед включением -->
-        <p class="mech__lead" data-feature="video-sales">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;6&nbsp;минут.</p>
+             Хронометраж 8 минут — со слов автора; ролик на момент правки был
+             закрыт для анонимов, сверить по таймлайну не удалось. -->
+        <p class="mech__lead" data-feature="video-sales">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;8&nbsp;минут.</p>
 
-        <!-- ⚠️ видеопродажник: пока обложка-заглушка без обработчика клика.
-             Перед включением тогла подставить реальный ролик (ссылка/встройка). -->
-        <div class="video v1-video" data-feature="video-sales">
-          <div class="yt__thumb">
-            <span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
-            <div class="video__cap">За&nbsp;6&nbsp;минут: почему валят SD и&nbsp;как перестать плыть</div>
-          </div>
-        </div>
+        <!-- Видеопродажник: VK Видео vkvideo.ru/video-188550966_456239033
+             (oid=-188550966, id=456239033). Плеер открывается в модалке
+             .vmodal внизу файла, iframe создаётся по клику и сносится при
+             закрытии. Внутри <button> можно только строчное содержимое,
+             поэтому обёртки — span, а не div.
+             ⚠️ обложки-картинки пока нет: .video__thumb рисует градиент с сеткой.
+             Обложка sd-video-poster.jpg/.webp — тот же файл, что залит превью
+             ролика в VK, чтобы карточка на лендинге и в VK читалась одинаково.
+             Подписи-плашки внизу больше нет: заголовок «ПОЧЕМУ ВАЛЯТСЯ НА
+             SYSTEM DESIGN» уже нарисован на самой обложке, дублировать его
+             текстом поверх — шум. Текст на обложке держится в левом верхнем
+             углу намеренно: по центру кадра садится круглая кнопка play и
+             перекрывает всё, что туда попадает. Из-за этого у кнопки не осталось текстового
+             содержимого, поэтому доступное имя задано через aria-label, а у
+             картинки alt пустой: иначе скринридер прочитает одно и то же дважды. -->
+        <button type="button" class="video v1-video" data-feature="video-sales"
+                data-vmodal-open aria-haspopup="dialog"
+                aria-label="Смотреть видео: почему валятся на System Design, 8 минут">
+          <span class="video__thumb">
+            <picture><source srcset="sd-video-poster.webp" type="image/webp"><img class="video__poster" src="sd-video-poster.jpg" alt="" width="1920" height="1080" loading="lazy"></picture>
+            <span class="video__play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
+          </span>
+        </button>
 
         <blockquote class="mech__quote">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</blockquote>
       </div>
@@ -3656,6 +3729,103 @@
     document.querySelectorAll('[data-gc-open]').forEach(function (b) { b.addEventListener('click', open); });
     modal.querySelectorAll('[data-gc-close]').forEach(function (b) { b.addEventListener('click', close); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
+  })();
+</script>
+
+<!-- ===== МОДАЛКА ВИДЕОПРОДАЖНИКА =====
+     Под тем же тоглом video-sales, что и кнопка-обложка: пока фича выключена,
+     открывать модалку всё равно нечем, но пусть и она уходит из разметки —
+     иначе Esc и фокус-ловушка живут ради невидимого блока. -->
+<div class="vmodal" id="video-modal" data-feature="video-sales" hidden>
+  <div class="vmodal__backdrop" data-vmodal-close></div>
+  <button type="button" class="vmodal__close" data-vmodal-close aria-label="Закрыть">&#10005;</button>
+  <div class="vmodal__panel" role="dialog" aria-modal="true" aria-label="Видео: почему валят System Design">
+    <div class="vmodal__frame" id="video-modal-frame"></div>
+  </div>
+</div>
+
+<script>
+  // ===== Видеопродажник: модалка с плеером VK Видео =====
+  // Фрейм живёт ровно столько, сколько открыта модалка: при закрытии узел
+  // сносится — вместе с ним глохнет звук, а следующее открытие поднимает
+  // ролик с начала, а не с того места, где его бросили. Тот же приём, что на
+  // лендинге микросервисов. Останавливать плеер через postMessage сознательно
+  // не стали: это потребовало бы тащить на страницу сторонний скрипт с vk.com,
+  // а он ходит за пределы нашего домена и должен был бы жить под баннером
+  // согласия рядом с consent.js — цена выше пользы.
+  (function () {
+    var modal = document.getElementById('video-modal');
+    var frameHost = document.getElementById('video-modal-frame');
+    var btn = document.querySelector('[data-vmodal-open]');
+    if (!modal || !frameHost || !btn) return;
+
+    var closeBtn = modal.querySelector('.vmodal__close');
+    // autoplay здесь безопасен: фрейм создаётся ТОЛЬКО по клику человека,
+    // то есть автозапуска на холодной странице не бывает.
+    var EMBED = 'https://vkvideo.ru/video_ext.php?oid=-188550966&id=456239033&hd=2&autoplay=1';
+
+    // Изоляция фона — тот же приём, что у модалки формы: aria-modal сам по
+    // себе фон не отключает, Tab уходил бы на страницу под модалкой.
+    var inerted = [];
+    function backgroundInert(on) {
+      if (on) {
+        Array.prototype.forEach.call(document.body.children, function (el) {
+          if (el === modal || el.hasAttribute('inert')) return;
+          el.setAttribute('inert', '');
+          inerted.push(el);
+        });
+      } else {
+        inerted.forEach(function (el) { el.removeAttribute('inert'); });
+        inerted = [];
+      }
+    }
+
+    // Фокус-ловушка по кругу. Фокусируемый элемент здесь один — крестик, но
+    // ловушка нужна всё равно: без неё Tab уводит в iframe и обратно уже не
+    // возвращается, человек оказывается заперт в чужом плеере.
+    modal.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var f = Array.prototype.filter.call(
+        modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])'),
+        function (el) { return el.offsetParent !== null; }
+      );
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+
+    function open() {
+      if (!frameHost.firstChild) {
+        var iframe = document.createElement('iframe');
+        iframe.src = EMBED;
+        iframe.title = 'Почему валят System Design — видео';
+        iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', '');
+        frameHost.appendChild(iframe);
+      }
+      modal.hidden = false;
+      document.body.classList.add('gc-lock');
+      backgroundInert(true);
+      if (closeBtn) closeBtn.focus();
+      if (window.trackGoal) window.trackGoal('sd_video_open', 'mech');
+    }
+
+    function close() {
+      modal.hidden = true;
+      document.body.classList.remove('gc-lock');
+      backgroundInert(false);
+      frameHost.textContent = '';
+      btn.focus();
+    }
+
+    btn.addEventListener('click', open);
+    modal.querySelectorAll('[data-vmodal-close]').forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) close();
+    });
   })();
 </script>
 
