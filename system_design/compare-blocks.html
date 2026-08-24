@@ -19,8 +19,7 @@
   .f-off-video-sales    [data-feature="video-sales"],
   .f-off-chat-screens   [data-feature="chat-screens"],
   .f-off-vacancy-shots  [data-feature="vacancy-shots"],
-  .f-off-demo-lesson    [data-feature="demo-lesson"],
-  .f-off-waitlist       [data-feature="waitlist"] { display: none !important; }
+  .f-off-demo-lesson    [data-feature="demo-lesson"] { display: none !important; }
 
   :root {
     --bg-primary:   #10171A;
@@ -826,7 +825,6 @@
   .program__hw { font-size: 15px; line-height: 1.65; color: var(--text-mute); margin: 0 0 10px; max-width: 74ch; text-wrap: pretty; }
   .program__hw:last-child { margin-bottom: 0; }
   .program__hw b { color: var(--text-body); font-weight: 600; }
-  .program__hw--mentor { padding-left: 14px; border-left: 2px solid var(--border-acc); color: var(--text-faint); }
   .program__gains { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 9px; }
   .program__gains li { position: relative; padding-left: 20px; font-size: 15px; line-height: 1.6; color: var(--text-mute); max-width: 74ch; text-wrap: pretty; }
   .program__gains li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
@@ -1773,12 +1771,6 @@
     font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase;
   }
 
-  /* выход для тех, кто ещё не готов. Карточка финала залита акцентом —
-     текст здесь тёмный, светлый на жёлтом не читается */
-  .final__later { margin: 20px 0 0; font-size: 14.5px; line-height: 1.6; color: rgba(0,45,37,.72); }
-  .final__later b { color: var(--accent-ink); font-weight: 600; }
-  .final__later a { color: var(--accent-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-  .final__later a:hover { text-decoration-thickness: 2px; }
 
   @media (max-width: 960px) {
     .gate { padding: 40px 30px 36px; }
@@ -2111,7 +2103,6 @@
         <span class="prog-head__pill"><span class="prog-head__dot" aria-hidden="true"></span>программа</span>
         <h2 class="prog-head__title"><b>5&nbsp;недель.</b> От&nbsp;базовых основ до&nbsp;практических кейсов.</h2>
         <p class="prog-head__sub">В&nbsp;программу включил всё нужное, чтобы пройти секцию сисдиза.<br>А&nbsp;в&nbsp;практике <em>сделал упор на&nbsp;популярные системы</em>: их&nbsp;чаще всего и&nbsp;дают на&nbsp;собесах, а&nbsp;внутри каждой столько всего, что на&nbsp;одной задаче применяешь половину курса.</p>
-        <p class="prog-head__sub">Здесь нет теории ради теории и&nbsp;академизма: <em>только то, что реально спрашивают на&nbsp;секциях в&nbsp;русском бигтехе</em>. Системы для практики подобраны по&nbsp;тому&nbsp;же принципу&nbsp;— те, что дают на&nbsp;собесах здесь, а&nbsp;не&nbsp;абстрактное «спроектируй Google» из&nbsp;англоязычных учебников. И&nbsp;объясняю я&nbsp;по-человечески, без душных определений и&nbsp;умных слов ради умных слов.</p>
       </div></div></div>
     </div>
   </section>
@@ -2349,7 +2340,6 @@
               <p class="program__hw-title">Экстренная выкатка: 50&nbsp;млн устройств за&nbsp;6&nbsp;часов</p>
               <p class="program__hw"><b>Сценарий.</b> В&nbsp;мобильном приложении федерального сервиса нашли критическую уязвимость, и&nbsp;её&nbsp;уже эксплуатируют. Нужно раздать обновление на&nbsp;50&nbsp;млн устройств так, чтобы за&nbsp;шесть часов обновились 90&nbsp;процентов.</p>
               <p class="program__hw"><b>Что сделаешь.</b> Начнёшь с&nbsp;уточняющих вопросов: сначала напишешь свои, потом сверишься с&nbsp;карточкой ответов интервьюера и&nbsp;увидишь, что упустил. Дальше посчитаешь пиковый трафик и&nbsp;счёт за&nbsp;CDN, разведёшь дельты и&nbsp;полные пакеты, придумаешь, как управлять темпом раскатки и&nbsp;что делать, если она пошла не&nbsp;так.</p>
-              <p class="program__hw program__hw--mentor">Ментор разберёт работу и&nbsp;подскажет, какие вопросы стоило задать до&nbsp;того, как ты&nbsp;начал считать.</p>
             </div>
             <div class="program__block">
               <span class="program__label program__label--result">Результат недели</span>
@@ -2394,7 +2384,6 @@
               <p class="program__hw-title">Списать деньги 1,2&nbsp;млрд раз в&nbsp;сутки и&nbsp;не&nbsp;уйти в&nbsp;минус</p>
               <p class="program__hw"><b>Сценарий.</b> Рекламная сеть: 1,2&nbsp;млрд показов в&nbsp;сутки, тысячи кампаний одного клиента тратят один общий кошелёк, и&nbsp;1&nbsp;процент аккаунтов даёт 60&nbsp;процентов всех списаний.</p>
               <p class="program__hw"><b>Что сделаешь.</b> Выберешь базу и&nbsp;ключ шардирования, придумаешь, что делать с&nbsp;аккаунтами, на&nbsp;которые приходится основная нагрузка. Подберёшь уровень изоляции, чтобы баланс не&nbsp;ушёл в&nbsp;минус, а&nbsp;кампания не&nbsp;потратила больше дневного лимита. Каждое решение придётся обосновать письменно: одного названия базы тут не&nbsp;хватит.</p>
-              <p class="program__hw program__hw--mentor">Ментор разбирает работу так&nbsp;же, как интервьюер дожимает на&nbsp;глубоком разборе: спрашивает, что будет при росте нагрузки и&nbsp;почему ты&nbsp;выбрал именно этот вариант.</p>
             </div>
             <div class="program__block">
               <span class="program__label program__label--result">Результат недели</span>
@@ -2681,7 +2670,7 @@
               </div>
             </div>
 
-            <div class="case__side case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе&nbsp;— и&nbsp;сам их&nbsp;провожу как интервьюер.</b> Вижу обе стороны стола: и&nbsp;что помогает пройти, и&nbsp;на&nbsp;чём заваливают. Курс собран из&nbsp;того, что работает на&nbsp;этих собеседованиях, а&nbsp;не&nbsp;из&nbsp;книг</div>
+            <div class="case__side case__text"><b>Секции System Design прохожу сам, в&nbsp;бигтехе.</b> Курс собран из&nbsp;того, что работает на&nbsp;этих собеседованиях, а&nbsp;не&nbsp;из&nbsp;книг</div>
           </div></div></div>
     </div>
   </section>
@@ -3009,14 +2998,6 @@
         </details>
         <!-- вопрос «это лотерея» переехал в блок «Что на самом деле происходит на секции» -->
         <details class="faq__item fade-up">
-          <summary>Зачем платить, если всё это есть на&nbsp;ютубе<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__answer">На&nbsp;ютубе (в&nbsp;том числе у&nbsp;меня) неплохо объясняют, <b>как устроены системы</b>. А&nbsp;секция&nbsp;— про то, как ты&nbsp;рассуждаешь вслух 50&nbsp;минут, когда тебя перебивают, копают вглубь и&nbsp;меняют условия на&nbsp;ходу. Это другой навык, и&nbsp;по&nbsp;видео он&nbsp;не&nbsp;ставится: нужен разбор твоего решения и&nbsp;практика под давлением. Смотреть ролики и&nbsp;не&nbsp;платить&nbsp;— нормальный вариант, если готов сам собрать систему из&nbsp;кусочков и&nbsp;найти, с&nbsp;кем тренироваться)</div>
-        </details>
-        <details class="faq__item fade-up">
-          <summary>У&nbsp;меня собес раньше старта потока. Успею?<span class="faq__icon" aria-hidden="true"></span></summary>
-          <div class="faq__answer">Частично&nbsp;— и&nbsp;это честный ответ. Каркас разбора и&nbsp;чек-лист первых пяти минут дают результат сразу: их&nbsp;можно взять и&nbsp;применить на&nbsp;ближайшем собесе. <b>Полный эффект&nbsp;— за&nbsp;курс</b>, навык ставится практикой, а&nbsp;не&nbsp;чтением. Если собес уже назначен, а&nbsp;поток стартует позже&nbsp;— записи и&nbsp;доступ остаются с&nbsp;тобой на&nbsp;два года, так что следующий заход будет уже подготовленным)</div>
-        </details>
-        <details class="faq__item fade-up">
           <summary>Чем тариф "С&nbsp;проверкой и&nbsp;практикой" отличается от&nbsp;Стандарта?<span class="faq__icon" aria-hidden="true"></span></summary>
           <div class="faq__answer">На&nbsp;Стандарте у&nbsp;тебя все уроки, доп&nbsp;материалы, живой Q&amp;A и&nbsp;общий чат. На&nbsp;тарифе "С&nbsp;проверкой и&nbsp;практикой" добавляется главное: ментор разбирает каждое твоё ДЗ лично, и&nbsp;каждую неделю ты&nbsp;проходишь групповую практику: небольшой командой проектируете задание, а&nbsp;потом вслух защищаете его под вопросами других команд, как на&nbsp;настоящем собесе)</div>
         </details>
@@ -3085,8 +3066,6 @@
         <h2 class="final__title">Записывайся на&nbsp;поток, пока действует цена предзаписи</h2>
         <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="final">Записаться на&nbsp;поток</a>
         <p class="final__hint">* После нажатия откроется анкета предзаписи</p>
-        <!-- выход для отложенного спроса. ⚠️ под тоглом waitlist: включить, когда есть форма -->
-        <p class="final__later" data-feature="waitlist"><b>Не&nbsp;сейчас?</b> <a href="#">Оставь почту</a>&nbsp;— напишу, когда открою следующий поток. Запускаю раз в&nbsp;полгода, спама не&nbsp;будет.</p>
       </div>
     </div>
   </section></div></div>
