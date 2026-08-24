@@ -1717,29 +1717,24 @@
   }
   .truth .section__head { margin-bottom: 28px; }
   .truth__lead { font-size: 17px; line-height: 1.7; color: var(--text-body); max-width: 68ch; margin: 0 0 26px; text-wrap: pretty; }
-  .truth__lead--mid { margin-top: 34px; }
   .truth__lead b { color: var(--accent); font-weight: 600; }
-  .truth__check { counter-reset: tc; list-style: none; padding: 0; margin: 0; max-width: 72ch; }
-  .truth__check li {
-    counter-increment: tc; position: relative; padding: 14px 0 14px 48px;
-    border-bottom: 1px solid var(--border-mid); color: var(--text-body); font-size: 16.5px; line-height: 1.5;
-  }
-  .truth__check li:first-child { border-top: 1px solid var(--border-mid); }
-  .truth__check li::before {
-    content: counter(tc, decimal-leading-zero); position: absolute; left: 0; top: 16px;
-    font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .04em;
-  }
-  .truth__errs {
-    list-style: none; padding: 0; margin: 0 0 36px; display: grid; gap: 1px;
+  /* маршрут секции: шаг интервьюера → где ломаются → где чиним */
+  .route {
+    list-style: none; padding: 0; margin: 0 0 34px; display: grid; gap: 1px;
     background: var(--border-mid); border: 1px solid var(--border-mid);
     border-radius: var(--r-md); overflow: hidden;
   }
-  .truth__errs li {
-    background: var(--bg-secondary); display: flex; justify-content: space-between;
-    align-items: baseline; gap: 24px; padding: 15px 20px;
+  .route__head, .route__row {
+    display: grid; grid-template-columns: 1fr 1.15fr 112px; gap: 20px;
+    padding: 14px 20px; background: var(--bg-secondary); align-items: baseline;
   }
-  .truth__err { color: var(--text-body); font-size: 16px; line-height: 1.45; }
-  .truth__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); white-space: nowrap; }
+  .route__head {
+    background: var(--bg-tertiary); font-family: var(--mono); font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint);
+  }
+  .route__step { color: var(--text-h); font-weight: 600; font-size: 15.5px; line-height: 1.45; }
+  .route__err { color: var(--text-mute); font-size: 15px; line-height: 1.45; }
+  .route__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); text-align: right; white-space: nowrap; }
   .truth__foot {
     font-family: var(--display); font-size: 20px; line-height: 1.4; font-weight: 500;
     color: var(--text-h); max-width: 62ch; margin: 0;
@@ -1783,7 +1778,9 @@
     .gate__shots { grid-template-columns: 1fr; gap: 20px; margin-top: 26px; }
     .truth { padding: 32px 20px 30px; border-radius: var(--r-lg); }
     .truth__foot { font-size: 17px; padding-left: 16px; }
-    .truth__errs li { flex-direction: column; gap: 6px; }
+    .route__head { display: none; }
+    .route__row { grid-template-columns: 1fr; gap: 5px; }
+    .route__fix { text-align: left; }
     .demo-card { grid-template-columns: minmax(0,1fr) 84px; gap: 14px; }
     .mech__cut { padding-left: 16px; margin-top: 26px; }
     .mech__cut p { font-size: 16px; }
@@ -2049,7 +2046,7 @@
       <span class="cmp__sel">#chto-ocenivayut</span>
       <span class="cmp__new">новый блок</span>
     </div>
-    <p class="cmp__note">Новый блок: чек-лист оценки и таблица «ошибка → урок». Мост от болей к программе.</p>
+    <p class="cmp__note">Новый блок: маршрут секции одной сеткой — что делает интервьюер, где на этом шаге ломаются, в каком уроке чиним. Мост от болей к программе.</p>
     <div class="cmp__pair">
       <div class="cmp__col cmp__col--was"><span class="cmp__tag">было · origin/main</span><div class="cmp__view"><p class="cmp-none">этого блока раньше не было</p></div></div>
       <div class="cmp__col cmp__col--now"><span class="cmp__tag">стало · ветка</span><div class="cmp__view"><section class="section" id="chto-ocenivayut">
@@ -2058,25 +2055,16 @@
         <div class="section__head">
           <h2 class="section__title">Что на&nbsp;самом деле происходит на&nbsp;секции</h2>
         </div>
-        <p class="truth__lead">Секция выглядит чёрным ящиком, пока не&nbsp;знаешь, что внутри. А&nbsp;внутри&nbsp;— один и&nbsp;тот&nbsp;же список, по&nbsp;которому интервьюер ведёт тебя все 50&nbsp;минут:</p>
+        <p class="truth__lead">Секция выглядит чёрным ящиком, пока не&nbsp;знаешь, что внутри. А&nbsp;внутри&nbsp;— один и&nbsp;тот&nbsp;же маршрут: интервьюер ведёт тебя по&nbsp;нему все 50&nbsp;минут. Вот он&nbsp;целиком&nbsp;— и&nbsp;то, где на&nbsp;каждом шаге чаще всего ломаются.</p>
 
-        <ol class="truth__check">
-          <li>уточнил требования до&nbsp;того, как начал рисовать</li>
-          <li>посчитал нагрузку и&nbsp;объём данных, а&nbsp;не&nbsp;назвал наугад</li>
-          <li>предложил схему верхнего уровня и&nbsp;объяснил, зачем в&nbsp;ней каждый кусок</li>
-          <li>выбрал хранилище и&nbsp;обосновал выбор</li>
-          <li>сам довёл разговор до&nbsp;узких мест, а&nbsp;не&nbsp;ждал, пока копнут</li>
-        </ol>
-
-        <p class="truth__lead truth__lead--mid"><b>Это не&nbsp;телепатия, это чек-лист.</b> И&nbsp;ломается он&nbsp;в&nbsp;одних и&nbsp;тех&nbsp;же местах&nbsp;— под каждое в&nbsp;курсе есть свой урок:</p>
-
-        <ul class="truth__errs">
-          <li><span class="truth__err">Кинулся рисовать базы, не&nbsp;спросив ни&nbsp;про что</span><span class="truth__fix">урок 04</span></li>
-          <li><span class="truth__err">Поплыл с&nbsp;калькулятором: сколько это в&nbsp;байтах и&nbsp;запросах</span><span class="truth__fix">урок 05</span></li>
-          <li><span class="truth__err">Назвал базу наугад и&nbsp;не&nbsp;смог объяснить почему</span><span class="truth__fix">урок 13</span></li>
-          <li><span class="truth__err">Копнули в&nbsp;отказ узла&nbsp;— начал плыть</span><span class="truth__fix">уроки 19–21</span></li>
-          <li><span class="truth__err">Не&nbsp;успел за&nbsp;50&nbsp;минут</span><span class="truth__fix">урок 03</span></li>
-          <li><span class="truth__err">Звучал как пересказ ютуб-ролика</span><span class="truth__fix">урок 41</span></li>
+        <ul class="route">
+          <li class="route__head"><span>Что делает интервьюер</span><span>Где ломаются</span><span>Где чиним</span></li>
+          <li class="route__row"><span class="route__step">Уточняет требования</span><span class="route__err">Кинулся рисовать, не&nbsp;спросив ни&nbsp;про что</span><span class="route__fix">урок 04</span></li>
+          <li class="route__row"><span class="route__step">Просит посчитать нагрузку</span><span class="route__err">Поплыл: сколько это в&nbsp;байтах и&nbsp;запросах</span><span class="route__fix">урок 05</span></li>
+          <li class="route__row"><span class="route__step">Ждёт схему верхнего уровня</span><span class="route__err">Нарисовал коробки и&nbsp;не&nbsp;объяснил, зачем каждая</span><span class="route__fix">урок 03</span></li>
+          <li class="route__row"><span class="route__step">Копает в&nbsp;хранилище</span><span class="route__err">Назвал базу наугад и&nbsp;не&nbsp;смог обосновать</span><span class="route__fix">урок 13</span></li>
+          <li class="route__row"><span class="route__step">Давит на&nbsp;узкие места</span><span class="route__err">Копнули в&nbsp;отказ узла&nbsp;— начал плыть</span><span class="route__fix">уроки 19–21</span></li>
+          <li class="route__row"><span class="route__step">Слушает, как ты&nbsp;рассуждаешь</span><span class="route__err">Звучал как пересказ ютуб-ролика</span><span class="route__fix">урок 41</span></li>
         </ul>
 
         <p class="truth__foot">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</p>
