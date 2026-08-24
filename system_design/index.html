@@ -6,13 +6,13 @@
 <!-- Cookie-баннер + Яндекс.Метрика (счётчик 96022201, общий для guide.olezhek28.courses) -->
 <script src="/consent.js" defer></script>
 
-<!-- ДАТЫ ПОТОКА (старт 7 сентября 2026, предзапись до 23 августа) зашиты в 13 местах.
+<!-- ДАТЫ ПОТОКА (старт 7 сентября 2026, продажа открывается 27 августа) зашиты в 13 местах.
      При смене потока обновить ВСЕ, иначе разметка и llms-файлы будут противоречить
      тому, что написано на странице:
        этот файл — description; JSON-LD: startDate и два priceValidUntil;
-         бейдж предзаписи в герое; капсула &quot;Старт потока&quot;; в блоке тарифов —
-         плашка предзаписи, карточка &quot;Старт потока&quot; в полосе фактов и строка
-         &quot;цена предзаписи, действует до…&quot; в каждом из двух тарифов;
+         бейдж &quot;Старт продаж&quot; в герое; капсула &quot;Старт потока&quot;; в блоке тарифов —
+         плашка про открытие продажи, карточка &quot;Старт потока&quot; в полосе фактов и
+         строка &quot;старт продаж …&quot; в каждом из двух тарифов;
          бейдж в финальном блоке
        /llms.txt — вводный абзац и строка &quot;Длительность&quot;
        /llms-full.txt — &quot;Статус&quot; и &quot;Старт потока&quot;
@@ -97,26 +97,26 @@
             "lowPrice": "54990",
             "highPrice": "89990",
             "offerCount": "2",
-            "availability": "https://schema.org/PreOrder",
+            "availability": "https://schema.org/OutOfStock",
             "offers": [
               {
                 "@type": "Offer",
                 "name": "Стандарт",
-                "price": "54990",
+                "price": "59990",
                 "priceCurrency": "RUB",
-                "priceValidUntil": "2026-08-23",
-                "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи до 23 августа 2026, обычная цена 59 990 ₽. Цена не зависит от способа оплаты: в рассрочку 4 583 ₽/мес на 12 месяцев, сумма та же. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
+                "priceValidUntil": "2026-09-07",
+                "availability": "https://schema.org/OutOfStock",
+                "description": "Продажа открывается 27 августа 2026. Цена не зависит от способа оплаты: в рассрочку 4 999 ₽/мес на 12 месяцев, сумма та же. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               },
               {
                 "@type": "Offer",
                 "name": "С проверкой и практикой",
-                "price": "86990",
+                "price": "91990",
                 "priceCurrency": "RUB",
-                "priceValidUntil": "2026-08-23",
-                "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи до 23 августа 2026, обычная цена 91 990 ₽. Цена не зависит от способа оплаты: в рассрочку 7 249 ₽/мес на 12 месяцев, сумма та же. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
+                "priceValidUntil": "2026-09-07",
+                "availability": "https://schema.org/OutOfStock",
+                "description": "Продажа открывается 27 августа 2026. Цена не зависит от способа оплаты: в рассрочку 7 666 ₽/мес на 12 месяцев, сумма та же. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               }
             ]
@@ -161,7 +161,12 @@
      не успевает моргнуть. Правило работает только на выключенной фиче, поэтому
      собственный display блока (grid у .row и т.п.) не теряется. */
   .f-off-video-sales  [data-feature="video-sales"],
-  .f-off-chat-screens [data-feature="chat-screens"] { display: none !important; }
+  .f-off-chat-screens [data-feature="chat-screens"],
+  .f-off-preorder-cta [data-feature="preorder-cta"] { display: none !important; }
+  /* .final__title держит 40px снизу под кнопку. Кнопки нет — отступ
+     превращается в дыру в нижней половине жёлтой карточки, поэтому на
+     выключенном тогле он снимается. Вернётся вместе с кнопкой. */
+  .f-off-preorder-cta .final__title { margin-bottom: 0; }
 
   :root {
     --bg-primary:   #10171A;
@@ -1564,11 +1569,14 @@
   .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
   .tier--light .tier__price { color: var(--light-ink); }
   .tier__price b { font-weight: 500; }
-  /* зачёркнутая базовая цена рядом с ценой предзаписи. Скидка привязана
-     к сроку, а не к способу оплаты: п. 4.1 ст. 16.1 ЗоЗПП с 01.04.2026
-     запрещает разные цены в зависимости от того, платит человек сразу
-     или в рассрочку. Базовая цена должна быть настоящей — после
-     23 августа продаём именно по ней, иначе это недостоверная реклама */
+  /* .tier__price-old — зачёркнутая базовая цена рядом со скидочной.
+     СЕЙЧАС НЕ ИСПОЛЬЗУЕТСЯ: предзапись закрылась 23 августа 2026, в тарифах
+     стоят настоящие цены (59 990 и 91 990) без зачёркиваний. Правило оставлено
+     на случай следующей акции, но включать его можно только вместе со сроком:
+     скидка должна быть привязана к сроку, а не к способу оплаты — п. 4.1
+     ст. 16.1 ЗоЗПП с 01.04.2026 запрещает разные цены в зависимости от того,
+     платит человек сразу или в рассрочку. И зачёркнутая цена должна быть
+     настоящей, иначе это недостоверная реклама. */
   .tier__price-old { margin-left: 12px; font-size: .44em; letter-spacing: -0.02em; color: var(--text-deco); white-space: nowrap; }
   .tier__price-old s { text-decoration-thickness: 1px; }
   .tier--light .tier__price-old s { color: var(--light-mute); }
@@ -1823,6 +1831,17 @@
                             приватность просмотра должна быть «Все пользователи»);
                          2) обложка sd-video-poster.jpg положена и совпадает
                             с превью ролика в VK.
+       preorder-cta  — всё, через что открывалась анкета предзаписи: блоки
+                       .tier__cta в обеих карточках тарифов (кнопка плюс
+                       подпись «Это анкета, а не оплата») и кнопка с хинтом
+                       в финальном блоке. В тарифах тогл висит на обёртке, а
+                       не на самой кнопке: иначе подпись остаётся висеть под
+                       пустым местом.
+                       Выключено: предзапись закрыта, срок истёк 23 августа
+                       2026, записаться больше нельзя. Продажа открывается
+                       27 августа — тогда либо вернуть тогл в true, либо
+                       заменить кнопки на оплату (и переименовать заголовок
+                       модалки «Предзапись на курс», строка ниже по файлу).
        chat-screens  — блок «А ещё у нас полный комфортик в чатике».
                        Включить, когда в макет телефона добавлены реальные скриншоты
                        чата (сейчас внутри плашка «СКРИНЫ ЧАТА · добавим позже»).
@@ -1832,7 +1851,8 @@
 <script>
   var FEATURES = {
     'video-sales':  true,
-    'chat-screens': false
+    'chat-screens': false,
+    'preorder-cta': false
   };
   (function () {
     var root = document.documentElement;
@@ -1909,7 +1929,7 @@
   <section class="hero">
     <div class="container">
       <div class="hero__inner">
-        <div class="hero__eyebrow fade-up"><span class="hero__eyebrow-dot" aria-hidden="true"></span>Идёт предзапись&nbsp;· до&nbsp;23 августа</div>
+        <div class="hero__eyebrow fade-up"><span class="hero__eyebrow-dot" aria-hidden="true"></span>Старт продаж&nbsp;· 27 августа</div>
         <!-- Плашка автора стоит внутри h1: визуально она встроена в строку заголовка,
              и вынести её наружу без переверстки героя нельзя. Чтобы она не попадала
              в доступное имя заголовка ("System Design: Олег Козырев автор курса Staff
@@ -2812,7 +2832,7 @@
       <div class="pricing__scarcity fade-up">
         <span class="scarcity">
           <span class="scarcity__dot" aria-hidden="true"></span>
-          <span><b>Идёт предзапись:</b> до&nbsp;23 августа цена ниже. Следующий поток только через полгода</span>
+          <span><b>Продажа откроется 27&nbsp;августа.</b> Предзапись уже закрыта. Следующий поток только через полгода</span>
         </span>
       </div>
 
@@ -2839,9 +2859,9 @@
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
           <div class="tier__tagline">Весь материал и&nbsp;алгоритм. Готовишься сам, вопросы задаёшь на&nbsp;живых Q&amp;A</div>
-          <div class="tier__price"><b>54 990 ₽</b><span class="tier__price-old"><span class="vh">обычная цена </span><s>59 990&nbsp;₽</s></span></div>
-          <div class="tier__price-full">цена предзаписи, действует до&nbsp;<b>23 августа</b></div>
-          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;583&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
+          <div class="tier__price"><b>59 990 ₽</b></div>
+          <div class="tier__price-full">старт продаж&nbsp;<b>27 августа</b></div>
+          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;999&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
           <ul class="tier__list">
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>41 урок: видео плюс подробный текстовый конспект.</b> Алгоритм интервью, сеть и&nbsp;доставка, хранение данных, кэш и&nbsp;очереди, устойчивость под нагрузкой, поведение на&nbsp;секции</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>8 систем, разобранных целиком:</b> Telegram, лента Avito, фото-соцсеть со&nbsp;Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с&nbsp;автодополнением, Яндекс Такси. Каждую систему разбираем как на&nbsp;собесе: требования, нагрузка, узкие места, куда копнёт интервьюер</li>
@@ -2854,7 +2874,7 @@
           </ul>
           <!-- href — фолбэк на случай, если JS не сработал или ссылку открыли в новой вкладке;
                при работающем JS клик перехватывается и форма открывается в модалке -->
-          <div class="tier__cta">
+          <div class="tier__cta" data-feature="preorder-cta">
             <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_standart">Заполнить анкету предзаписи</a>
             <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
           </div>
@@ -2863,9 +2883,9 @@
         <div class="tier tier--light fade-up">
           <div class="tier__label">С&nbsp;проверкой и&nbsp;практикой</div>
           <div class="tier__tagline">Всё то&nbsp;же самое, плюс обратная связь по&nbsp;твоим решениям и&nbsp;репетиция собеса</div>
-          <div class="tier__price"><b>86 990 ₽</b><span class="tier__price-old"><span class="vh">обычная цена </span><s>91 990&nbsp;₽</s></span></div>
-          <div class="tier__price-full">цена предзаписи, действует до&nbsp;<b>23 августа</b></div>
-          <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;249&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
+          <div class="tier__price"><b>91 990 ₽</b></div>
+          <div class="tier__price-full">старт продаж&nbsp;<b>27 августа</b></div>
+          <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;666&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
           <div class="tier__badge">
             <span class="tier__badge-title">Лучший выбор</span>
             <span class="tier__badge-text">Если хочешь сразу закреплять материал с&nbsp;обратной связью и&nbsp;тренироваться в&nbsp;условиях, близких к&nbsp;собесу</span>
@@ -2885,7 +2905,7 @@
             </ol>
             <div class="tier__practice-note">5&nbsp;недель курса, 5&nbsp;таких практик. К&nbsp;реальной секции тебя уже не&nbsp;первый раз гоняют вопросами по&nbsp;твоей же&nbsp;архитектуре</div>
           </div>
-          <div class="tier__cta">
+          <div class="tier__cta" data-feature="preorder-cta">
             <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_mentor">Заполнить анкету предзаписи</a>
             <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
           </div>
@@ -3025,9 +3045,9 @@
           <span class="final__badge">Старт 7 сентября 2026</span>
           <span class="final__badge">60 мест</span>
         </div>
-        <h2 class="final__title">Записывайся на&nbsp;поток, пока действует цена предзаписи</h2>
-        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="final">Записаться на&nbsp;поток</a>
-        <p class="final__hint">* После нажатия откроется анкета предзаписи</p>
+        <h2 class="final__title">Продажа откроется 27&nbsp;августа, старт потока 7&nbsp;сентября</h2>
+        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="final" data-feature="preorder-cta">Записаться на&nbsp;поток</a>
+        <p class="final__hint" data-feature="preorder-cta">* После нажатия откроется анкета предзаписи</p>
       </div>
     </div>
   </section>
@@ -3458,7 +3478,7 @@
     <button type="button" class="gc-modal__close" data-gc-close aria-label="Закрыть">&#10005;</button>
     <div class="gc-modal__body">
       <form class="gcform" id="gc-form" novalidate>
-        <h2 class="gcform__title" id="gc-form-title">Предзапись на курс</h2>
+        <h2 class="gcform__title" id="gc-form-title">Запись на курс</h2>
         <p class="gcform__lead">Оставь контакты — напишем, когда откроется набор на новый поток, и позовём в чат курса.</p>
 
         <div class="gcform__field" data-field="name">
