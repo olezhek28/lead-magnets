@@ -125,7 +125,7 @@
        "left": 825.0
       }
      },
-     "tekst": "Меню t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1211224661');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1211224661');});});"
+     "tekst": "Меню"
     }
    ]
   },
@@ -359,14 +359,14 @@
       }
      },
      "ssylka": "#menu-open",
-     "tekst": "Меню t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1211224666');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1211224666');});});"
+     "tekst": "Меню"
     }
    ]
   },
   {
    "id": "rec1211224671",
    "tip": "450",
-   "tekst": "Что внутри Для кого Преподаватель Забрать урок #rec1211224671 .t-btnflex.t-btnflex_type_button {color:#002d25;background-color:#dfdf41;--border-width:0px;border-style:none !important;border-radius:100px;box-shadow:none !important;font-family:Manrope;font-weight:600;transition-duration:0.2s;transition-property:background-color,color,border-color,box-shadow,opacity,transform,gap;transition-timing-function:ease-in-out;}@media (hover:hover) {#rec1211224671 .t-btnflex.t-btnflex_type_button:not(.t-animate_no-hover):hover {background-color:#c1c139 !important;}#rec1211224671 .t-btnflex.t-btnflex_type_button:not(.t-animate_no-hover):focus-visible {background-color:#c1c139 !important;}} t_onReady(function() {var rec=document.querySelector('#rec1211224671');if(!rec) return;rec.setAttribute('data-animationappear','off');rec.style.opacity=1;t_onFuncLoad('t450_initMenu',function() {t450_initMenu('1211224671');});}); #rec1211224671 .t-menu__link-item{-webkit-transition:color 0.3s ease-in-out,opacity 0.3s ease-in-out;transition:color 0.3s ease-in-out,opacity 0.3s ease-in-out;}#rec1211224671 .t-menu__link-item:not(.t-active):not(.tooltipstered):hover{color:#ffffff !important;}#rec1211224671 .t-menu__link-item:not(.t-active):not(.tooltipstered):focus-visible{color:#ffffff !important;}@supports (overflow:-webkit-marquee) and (justify-content:inherit){#rec1211224671 .t-menu__link-item,#rec1211224671 .t-menu__link-item.t-active{opacity:1 !important;}} #rec1211224671 a.t-menu__link-item{font-size:18px;color:#d1d2d3;} #rec1211224671 .t450__right_langs_lang a{color:#d1d2d3;}",
+   "tekst": "Что внутри Для кого Преподаватель Забрать урок",
    "kartinki": []
   },
   {
@@ -625,7 +625,7 @@
       }
      },
      "ssylka": "#lesson",
-     "tekst": "Забрать урок в Telegram t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1211224681');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1211224681');});});"
+     "tekst": "Забрать урок в Telegram"
     }
    ]
   },
@@ -1399,7 +1399,7 @@
       }
      },
      "ssylka": "#lesson",
-     "tekst": "Забрать урок в Telegram t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1213549316');});});"
+     "tekst": "Забрать урок в Telegram"
     }
    ]
   },
@@ -1603,8 +1603,7 @@
       "960": {
        "height": 173.0
       }
-     },
-     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1211224706');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1211224706');});});"
+     }
     }
    ]
   },
@@ -1624,8 +1623,7 @@
      "tip": "image",
      "left": 9.0,
      "top": -172.0,
-     "width": 422.0,
-     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1211224716');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1211224716');});});"
+     "width": 422.0
     }
    ]
   },
@@ -1637,7 +1635,7 @@
   {
    "id": "rec1211224731",
    "tip": "513",
-   "tekst": "BigTech (под NDA) Staff Engineer Разрабатываю LLM-платформу для создания ИИ продуктов внутри компании BigTech (под NDA) Senior Engineer Разрабатывал внутреннюю платформу для сотен сервисов корпорации Ozon Tech Senior Engineer Разрабатывал сервисы логистики, модерации контента и мониторинга доставки Route 256 Ex-преподаватель и тьютор Менторил и преподавал курсы по построению микросервисов в школе Ozon Tech #rec1211224731 .t513__time{font-size:18px;color:#ffffff;font-family:'Manrope';font-weight:600;}@media screen and (max-width:480px),(orientation:landscape) and (max-height:480px){#rec1211224731 .t513__time{font-size:16px;}}#rec1211224731 .t513__text{font-size:16px;color:#babcbd;}@media screen and (max-width:480px),(orientation:landscape) and (max-height:480px){#rec1211224731 .t513__text{font-size:12px;}}",
+   "tekst": "BigTech (под NDA) Staff Engineer Разрабатываю LLM-платформу для создания ИИ продуктов внутри компании BigTech (под NDA) Senior Engineer Разрабатывал внутреннюю платформу для сотен сервисов корпорации Ozon Tech Senior Engineer Разрабатывал сервисы логистики, модерации контента и мониторинга доставки Route 256 Ex-преподаватель и тьютор Менторил и преподавал курсы по построению микросервисов в школе Ozon Tech",
    "kartinki": []
   },
   {
@@ -1677,15 +1675,14 @@
        "left": 631.0,
        "width": 480.0
       }
-     },
-     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1211224736');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1211224736');});});"
+     }
     }
    ]
   },
   {
    "id": "rec1211224741",
    "tip": "983",
-   "tekst": ">7 000 часов Практики на реальных проектах в Big Tech компаниях 7+ лет Занимаюсь программированием 8 500+ Подписчиков на YouTube-канале t_onReady(function() {t_onFuncLoad('t983_init',function() {t983_init('1211224741');});});function t_onFuncLoadMulti(funcName1,funcName2,okFunc,time) {if(typeof window[funcName1]==='function'&&typeof window[funcName2]==='function') {okFunc();} else {var startTime=Date.now();setTimeout(function checkFuncExist() {var currentTime=Date.now();if(typeof window[funcName1]==='function'&&typeof window[funcName2]==='function') {okFunc();return;};if(document.readyState==='complete'&¤tTime - startTime>5000&&typeof window[funcName1]==='function'&&typeof window[funcName2]==='function') {throw new Error(funcName1 + ' is undefined');} setTimeout(checkFuncExist,time||100);});}} @media screen and (min-width:480px){#rec1211224741 .t-card__title{font-size:30px;}}@media screen and (max-width:480px),(orientation:landscape) and (max-height:480px){#rec1211224741 .t-card__title{font-size:30px;}}#rec1211224741 .t-card__descr{font-size:16px;color:#babcbd;font-family:'Manrope';font-weight:500;}@media screen and (max-width:480px),(orientation:landscape) and (max-height:480px){#rec1211224741 .t-card__descr{font-size:12px;}} #rec1211224741 .t983__card{border-radius:16px;}",
+   "tekst": ">7 000 часов Практики на реальных проектах в Big Tech компаниях 7+ лет Занимаюсь программированием 8 500+ Подписчиков на YouTube-канале",
    "kartinki": []
   },
   {
@@ -1897,8 +1894,7 @@
        "left": 341.0,
        "height": 43.0
       }
-     },
-     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1211224746');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1211224746');});});"
+     }
     }
    ]
   },
@@ -2042,7 +2038,7 @@
       }
      },
      "ssylka": "https://t.me/maksimkoya",
-     "tekst": "Разработка сайта t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1211224751');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1211224751');});});"
+     "tekst": "Разработка сайта"
     }
    ]
   }

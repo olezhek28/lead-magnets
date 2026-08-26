@@ -26,6 +26,8 @@ POLE_RES = re.compile(r'data-field-([a-z0-9]+)-res-(\d+)-value="([^"]*)"')
 TIP_ELEMENTA = re.compile(r"data-elem-type=['\"]([^'\"]*)['\"]")
 TEG = re.compile(r"<[^>]+>")
 PROBELY = re.compile(r"\s+")
+# Инициализация Tilda живёт в <script> и <style> внутри записи — в текст не идёт.
+SKRIPTY = re.compile(r"<(script|style)\b.*?</\1>", re.S | re.I)
 
 # Разметка Zero Block приходит в одинарных кавычках.
 NACHALO_ELEMENTA = re.compile(r"""(?=<div class=['"]t396__elem)""")
@@ -50,7 +52,8 @@ def chislo(znachenie: str):
 
 def tekst(html: str) -> str:
     """Схлопывает HTML-фрагмент в чистую строку."""
-    s = re.sub(r"<br\s*/?>", " ", html)
+    s = SKRIPTY.sub(" ", html)
+    s = re.sub(r"<br\s*/?>", " ", s)
     return PROBELY.sub(" ", unescape(TEG.sub("", s))).strip()
 
 
