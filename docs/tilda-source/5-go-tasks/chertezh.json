@@ -95,7 +95,8 @@
        "top": 11.0,
        "left": 908.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3863-3631-4332-b162-616336663865/ep_menu.svg"
     },
     {
      "tip": "text",
@@ -333,7 +334,8 @@
        "height": 27.0
       }
      },
-     "ssylka": "#menu-open"
+     "ssylka": "#menu-open",
+     "kartinka": "https://static.tildacdn.com/tild3863-3631-4332-b162-616336663865/ep_menu.svg"
     },
     {
      "tip": "text",
@@ -362,17 +364,6 @@
      "tekst": "Меню"
     }
    ]
-  },
-  {
-   "id": "rec1211224671",
-   "tip": "450",
-   "tekst": "Что внутри Для кого Преподаватель Забрать урок",
-   "kartinki": []
-  },
-  {
-   "id": "rec1211224676",
-   "tip": "215",
-   "kartinki": []
   },
   {
    "id": "rec1211224681",
@@ -446,7 +437,8 @@
        "height": 801.0,
        "width": 534.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3736-3937-4166-b266-333932343138/ChatGPT_Image_11__20.png"
     },
     {
      "tip": "button",
@@ -630,11 +622,6 @@
    ]
   },
   {
-   "id": "rec1222097926",
-   "tip": "215",
-   "kartinki": []
-  },
-  {
    "id": "rec1213549316",
    "tip": "396",
    "vysota": 1329.0,
@@ -711,7 +698,8 @@
        "height": 322.0,
        "width": 322.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3434-3136-4039-b535-376165653632/image_54.png"
     },
     {
      "tip": "button",
@@ -866,7 +854,8 @@
        "height": 247.0,
        "width": 197.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3631-6435-4334-a361-343937333335/image_13.png"
     },
     {
      "tip": "button",
@@ -996,7 +985,8 @@
        "height": 246.0,
        "width": 164.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild6133-3366-4131-b335-323161616434/image_53.png"
     },
     {
      "tip": "button",
@@ -1128,7 +1118,8 @@
        "height": 242.0,
        "width": 240.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3533-3166-4539-b838-643930643262/Rectangle_25-Photoro.png"
     },
     {
      "tip": "button",
@@ -1260,7 +1251,8 @@
        "height": 248.0,
        "width": 165.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild6132-6130-4066-a238-613834356432/ChatGPT_Image_14__20.png"
     },
     {
      "tip": "button",
@@ -1402,11 +1394,6 @@
      "tekst": "Забрать урок в Telegram"
     }
    ]
-  },
-  {
-   "id": "rec1211224686",
-   "tip": "215",
-   "kartinki": []
   },
   {
    "id": "rec1211224706",
@@ -1574,7 +1561,8 @@
       "960": {
        "height": 173.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3462-3332-4562-b134-376163373563/Vector_49.svg"
     },
     {
      "tip": "image",
@@ -1603,7 +1591,8 @@
       "960": {
        "height": 173.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3963-6437-4563-b735-316438346566/Vector_49.svg"
     }
    ]
   },
@@ -1623,13 +1612,15 @@
      "tip": "image",
      "left": 9.0,
      "top": -172.0,
-     "width": 422.0
+     "width": 422.0,
+     "kartinka": "https://static.tildacdn.com/tild3462-3332-4562-b134-376163373563/Vector_49.svg"
     }
    ]
   },
   {
-   "id": "rec1211224721",
-   "tip": "215",
+   "id": "rec1211224726",
+   "tip": "33",
+   "tekst": "Преподаватель — Олег Козырев",
    "kartinki": []
   },
   {
@@ -1675,7 +1666,8 @@
        "left": 631.0,
        "width": 480.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3637-3861-4765-b434-323563396364/Frame20335664.png"
     }
    ]
   },
@@ -1683,11 +1675,6 @@
    "id": "rec1211224741",
    "tip": "983",
    "tekst": ">7 000 часов Практики на реальных проектах в Big Tech компаниях 7+ лет Занимаюсь программированием 8 500+ Подписчиков на YouTube-канале",
-   "kartinki": []
-  },
-  {
-   "id": "rec1213552801",
-   "tip": "215",
    "kartinki": []
   },
   {
@@ -1894,7 +1881,8 @@
        "left": 341.0,
        "height": 43.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3966-3330-4633-a563-303033383835/photo.svg"
     }
    ]
   },
@@ -1936,7 +1924,8 @@
        "top": 0.0,
        "left": -230.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3262-3638-4963-b930-336364643035/Frame20335663.jpg"
     },
     {
      "tip": "text",
@@ -2053,12 +2042,32 @@
    "tip": "657"
   },
   {
+   "id": "rec1211224671",
+   "tip": "450"
+  },
+  {
+   "id": "rec1211224676",
+   "tip": "215"
+  },
+  {
+   "id": "rec1222097926",
+   "tip": "215"
+  },
+  {
+   "id": "rec1211224686",
+   "tip": "215"
+  },
+  {
    "id": "rec1211224711",
    "tip": "668"
   },
   {
-   "id": "rec1211224726",
-   "tip": "33"
+   "id": "rec1211224721",
+   "tip": "215"
+  },
+  {
+   "id": "rec1213552801",
+   "tip": "215"
   },
   {
    "id": "rec1211224756",

@@ -95,7 +95,8 @@
        "top": 11.0,
        "left": 908.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3863-3631-4332-b162-616336663865/ep_menu.svg"
     },
     {
      "tip": "text",
@@ -333,7 +334,8 @@
        "height": 27.0
       }
      },
-     "ssylka": "#menu-open"
+     "ssylka": "#menu-open",
+     "kartinka": "https://static.tildacdn.com/tild3863-3631-4332-b162-616336663865/ep_menu.svg"
     },
     {
      "tip": "text",
@@ -362,17 +364,6 @@
      "tekst": "Меню"
     }
    ]
-  },
-  {
-   "id": "rec1002303111",
-   "tip": "450",
-   "tekst": "Что внутри Для кого Преподаватель Забрать подборку",
-   "kartinki": []
-  },
-  {
-   "id": "rec998448261",
-   "tip": "215",
-   "kartinki": []
   },
   {
    "id": "rec998448271",
@@ -623,7 +614,8 @@
        "left": 827.0,
        "height": 56.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3534-3761-4936-a562-313134633261/Go_Logo_Blue.svg"
     },
     {
      "tip": "image",
@@ -654,7 +646,8 @@
        "left": 870.0,
        "height": 55.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3437-6638-4863-b539-666337633233/redis.svg"
     },
     {
      "tip": "image",
@@ -685,7 +678,8 @@
        "left": 776.0,
        "height": 64.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3233-3539-4661-b536-396435623133/jira-icon-2048x2048-.png"
     },
     {
      "tip": "image",
@@ -716,7 +710,8 @@
        "left": 614.0,
        "height": 80.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild6433-6566-4166-b038-656537346165/Kubernetes_logo_with.png"
     },
     {
      "tip": "image",
@@ -747,14 +742,10 @@
        "left": 463.0,
        "height": 56.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3433-6363-4331-b831-623438353864/docker.svg"
     }
    ]
-  },
-  {
-   "id": "rec998448276",
-   "tip": "215",
-   "kartinki": []
   },
   {
    "id": "rec998448281",
@@ -1051,7 +1042,8 @@
       "960": {
        "height": 173.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3462-3332-4562-b134-376163373563/Vector_49.svg"
     },
     {
      "tip": "image",
@@ -1080,7 +1072,8 @@
       "960": {
        "height": 173.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3963-6437-4563-b735-316438346566/Vector_49.svg"
     }
    ]
   },
@@ -1100,13 +1093,15 @@
      "tip": "image",
      "left": 9.0,
      "top": -172.0,
-     "width": 422.0
+     "width": 422.0,
+     "kartinka": "https://static.tildacdn.com/tild3462-3332-4562-b134-376163373563/Vector_49.svg"
     }
    ]
   },
   {
-   "id": "rec998448316",
-   "tip": "215",
+   "id": "rec998448321",
+   "tip": "33",
+   "tekst": "Преподаватель — Олег Козырев",
    "kartinki": []
   },
   {
@@ -1152,7 +1147,8 @@
        "left": 631.0,
        "width": 480.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3637-3861-4765-b434-323563396364/Frame20335664.png"
     }
    ]
   },
@@ -1431,7 +1427,8 @@
        "left": 341.0,
        "height": 43.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3966-3330-4633-a563-303033383835/photo.svg"
     }
    ]
   },
@@ -1473,7 +1470,8 @@
        "top": 0.0,
        "left": -230.0
       }
-     }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3262-3638-4963-b930-336364643035/Frame20335663.jpg"
     },
     {
      "tip": "text",
@@ -1590,12 +1588,24 @@
    "tip": "657"
   },
   {
+   "id": "rec1002303111",
+   "tip": "450"
+  },
+  {
+   "id": "rec998448261",
+   "tip": "215"
+  },
+  {
+   "id": "rec998448276",
+   "tip": "215"
+  },
+  {
    "id": "rec998448306",
    "tip": "668"
   },
   {
-   "id": "rec998448321",
-   "tip": "33"
+   "id": "rec998448316",
+   "tip": "215"
   },
   {
    "id": "rec998448351",

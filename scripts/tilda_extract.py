@@ -17,8 +17,9 @@ from html import unescape
 from pathlib import Path
 
 # Типы записей Tilda, которые не несут содержимого: счётчики, cookie-баннер,
-# служебные скрипты. В чертёж не попадают, но перечисляются отдельно.
-SLUZHEBNYE_TIPY = {"33", "131", "270", "360", "657", "668"}
+# служебные скрипты, отбивки нулевой высоты и дубль меню под мобилку.
+# В чертёж не попадают, но перечисляются отдельно.
+SLUZHEBNYE_TIPY = {"131", "215", "270", "360", "450", "657", "668"}
 
 # Геометрия базовой (широкой) раскладки и переопределения под брейкпоинты.
 POLE = re.compile(r'data-field-([a-z0-9]+)-value="([^"]*)"')
@@ -28,6 +29,12 @@ TEG = re.compile(r"<[^>]+>")
 PROBELY = re.compile(r"\s+")
 # Инициализация Tilda живёт в <script> и <style> внутри записи — в текст не идёт.
 SKRIPTY = re.compile(r"<(script|style)\b.*?</\1>", re.S | re.I)
+
+# Tilda мешает одинарные и двойные кавычки в атрибутах, поэтому везде ('|").
+SSYLKA = re.compile(r"""href=('|")(.*?)\1""")
+KARTINKA = re.compile(
+    r"""(?:data-original|src)=('|")(https://static\.tildacdn[^'"]*)\1"""
+)
 
 # Разметка Zero Block приходит в одинарных кавычках.
 NACHALO_ELEMENTA = re.compile(r"""(?=<div class=['"]t396__elem)""")
@@ -82,13 +89,13 @@ def razobrat_element(kusok: str) -> dict:
     if raskladki:
         el["raskladki"] = {k: raskladki[k] for k in sorted(raskladki, key=int)}
 
-    ssylka = re.search(r'href="([^"]*)"', kusok)
+    ssylka = SSYLKA.search(kusok)
     if ssylka:
-        el["ssylka"] = ssylka.group(1)
+        el["ssylka"] = ssylka.group(2)
 
-    kartinka = re.search(r'(?:data-original|src)="(https://static\.tildacdn[^"]*)"', kusok)
+    kartinka = KARTINKA.search(kusok)
     if kartinka:
-        el["kartinka"] = kartinka.group(1)
+        el["kartinka"] = kartinka.group(2)
 
     soderzhimoe = tekst(kusok)
     if soderzhimoe:
@@ -136,9 +143,7 @@ def razobrat_stranicu(html: str) -> dict:
             soderzhimoe = tekst(kusok)
             if soderzhimoe:
                 zapis["tekst"] = soderzhimoe
-            zapis["kartinki"] = sorted(
-                set(re.findall(r'(?:data-original|src)="(https://static\.tildacdn[^"]*)"', kusok))
-            )
+            zapis["kartinki"] = sorted({m[1] for m in KARTINKA.findall(kusok)})
 
         zapisi.append(zapis)
 
