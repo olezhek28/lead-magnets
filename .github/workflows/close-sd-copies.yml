@@ -1,0 +1,84 @@
+# Закрытие персональных копий System Design в ночь на 27 августа 2026.
+#
+# Зачем: /system_design_booking/ и /system_design_microservices/ — закрытые копии
+# основного лендинга, ссылки на них рассылались в личку до открытия продаж.
+# С открытием продаж на /system_design/ обе копии должны перестать существовать:
+# цены и тексты там свои, и если человек вернётся по старой ссылке из переписки,
+# он увидит условия, которых уже нет. Поэтому копии превращаются в редирект.
+#
+# Почему деплой Pages делается прямо здесь, а не через deploy.yml: пуш, сделанный
+# из воркфлоу с GITHUB_TOKEN, НЕ запускает другие воркфлоу по событию push — это
+# защита GitHub от рекурсии. Если положиться на deploy.yml, коммит уедет в main,
+# а сайт останется старым до следующего ручного пуша. Поэтому шаги сборки и
+# публикации продублированы ниже один в один с deploy.yml.
+name: Закрыть копии System Design
+
+on:
+  schedule:
+    # 21:00 UTC 26 августа = 00:00 МСК 27 августа. Cron в Actions всегда UTC.
+    # Год в cron не задаётся, поэтому запуск повторится и в следующие годы — на
+    # этот случай в шаге стоит проверка "уже закрыто", и повтор ничего не делает.
+    # GitHub может задержать запуск по расписанию на 5-15 минут под нагрузкой;
+    # эти минуты закрывает JS-гейт в самих страницах, он срабатывает секунда
+    # в секунду по часам посетителя.
+    - cron: '0 21 26 8 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  close:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Подменить копии на редирект
+        id: rewrite
+        run: |
+          set -euo pipefail
+          changed=0
+          for dir in system_design_booking system_design_microservices; do
+            if grep -q 'КОПИЯ ЗАКРЫТА' "$dir/index.html"; then
+              echo "$dir: уже закрыт, пропускаю"
+              continue
+            fi
+            cp docs/redirect-sd-copy.html "$dir/index.html"
+            echo "$dir: закрыт"
+            changed=1
+          done
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+
+      - name: Закоммитить и запушить
+        if: steps.rewrite.outputs.changed == '1'
+        run: |
+          set -euo pipefail
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add system_design_booking/index.html system_design_microservices/index.html
+          git commit -m 'System Design: копии booking и microservices закрыты редиректом на основной лендинг'
+          git push origin main
+
+      # Дальше — копия шагов из deploy.yml. Список удаляемого должен совпадать
+      # с deploy.yml: если там что-то добавят в непубличное, добавить и сюда.
+      # Важно, что docs удаляется ПОСЛЕ шага подмены — шаблон редиректа лежит
+      # именно в docs и нужен, пока копии ещё не переписаны.
+      - name: Выкинуть непубличное из артефакта
+        run: rm -rf docs .claude tasks idea-board CLAUDE.md README.md
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
