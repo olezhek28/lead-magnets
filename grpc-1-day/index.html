@@ -173,10 +173,12 @@
     height: 68px;
   }
   .header__logo {
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
+    color: var(--text-body);
+  
   }
   /* В оригинале якорные ссылки лежат в тёмной пилюле по центру шапки */
   .header__nav {
@@ -269,7 +271,7 @@
   .section__title {
     margin: 0 0 48px;
     font-size: 40px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: 1.15;
     letter-spacing: -.02em;
   }
@@ -298,8 +300,8 @@
     margin: 0 0 20px;
     max-width: 580px;
     font-size: 40px;
-    font-weight: 700;
-    line-height: 1.12;
+    font-weight: 500;
+    line-height: 1.1;
     letter-spacing: -.02em;
   }
   .hero__subtitle {
@@ -310,8 +312,9 @@
   .hero__text {
     margin: 0 0 36px;
     max-width: 460px;
-    color: var(--text-body);
+    color: var(--text);
     font-size: 16px;
+    line-height: 1.63;
   }
 
   /* Гофер с часами и облако логотипов вокруг него */
@@ -351,14 +354,14 @@
   .steps {
     padding: 56px 40px 72px;
     background: var(--bg-card);
-    border-radius: 40px;
+    border-radius: 16px;
   }
   .steps__title {
     margin: 0 0 48px;
-    font-size: 37px;
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -.02em;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -.05em;
     text-align: center;
   }
   /* Две колонки со сдвигом правой вниз и тонкой линией по центру — как в оригинале */
@@ -391,7 +394,7 @@
     min-height: 170px;
     padding: 28px 32px;
     background: var(--bg);
-    border-radius: var(--radius);
+    border-radius: 12px;
   }
   .step__pic {
     width: 110px;
@@ -406,13 +409,14 @@
     background: var(--accent);
     color: #000000;
     font-size: 17px;
-    font-weight: 800;
+    font-weight: 900;
     line-height: 1.5;
   }
   .step__title {
     margin: 0;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 400;
+    line-height: 1.28;
   }
 
   .steps__outro {
@@ -447,9 +451,9 @@
   .whom__title {
     margin: 0;
     font-size: 40px;
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -.02em;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -.05em;
   }
   .whom__list {
     margin: 0;
@@ -470,29 +474,40 @@
   }
   .teacher__portrait { width: 260px; border-radius: var(--radius); }
 
+  /* В оригинале места работы идут одной колонкой во всю ширину:
+     компания с должностью в первой трети, описание во второй, третья
+     остаётся под портрет. */
   .teacher__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
   }
   .job {
     display: grid;
-    grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
-    align-items: start;
-    padding: 24px 0;
+    align-items: center;
+    padding: 22px 0;
     border-top: 1px solid var(--bg-raised);
   }
-  .job__where { margin: 0 0 10px; font-size: 17px; font-weight: 700; }
+  .job:last-child { border-bottom: 1px solid var(--bg-raised); }
+  .job__kto {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .job__where { margin: 0; font-size: 18px; font-weight: 600; }
   .job__role {
     display: inline-block;
     padding: 6px 14px;
     border: 1px solid var(--bg-raised);
-    border-radius: 999px;
-    font-size: 13px;
-    color: var(--text-body);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--text-mute);
+    font-weight: 400;
+  
   }
-  .job__desc { margin: 0; color: var(--text-body); font-size: 15px; }
+  .job__desc { margin: 0; color: var(--text-mute); font-size: 16px; }
 
   /* ---------- Цифры ---------- */
 
@@ -500,18 +515,23 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
+    line-height: 1.55;
+  
   }
   .stat {
     padding: 32px;
+    min-height: 241px;
     background: var(--bg-card);
-    border-radius: var(--radius);
+    border-radius: 16px;
   }
   .stat__value {
-    margin: 0 0 10px;
+    margin: 0 0 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .25);
     color: var(--accent);
-    font-size: 40px;
-    font-weight: 800;
-    letter-spacing: -.02em;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -.01em;
   }
   .stat__label { margin: 0; color: var(--text-body); font-size: 15px; }
 
@@ -540,17 +560,17 @@
     margin: 0 auto 40px;
     max-width: 700px;
     font-size: 40px;
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -.02em;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -.035em;
   }
   .final__note { margin: 0 0 12px; font-size: 18px; }
   .final__timer {
     margin: 0 0 36px;
     font-size: 60px;
-    font-weight: 700;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
-    letter-spacing: .02em;
+    letter-spacing: .077em;
   }
   .final .btn {
     padding: 24px 40px;
@@ -614,7 +634,7 @@
 
     .teacher__head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
     .teacher__portrait { width: 200px; }
-    .teacher__grid { grid-template-columns: minmax(0, 1fr); }
+    .job { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
     .stats { grid-template-columns: minmax(0, 1fr); }
 
@@ -644,7 +664,7 @@
     .whom__title { font-size: 26px; }
     .whom__list { font-size: 16px; }
 
-    .job { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .job { grid-template-columns: minmax(0, 1fr); gap: 10px; align-items: start; }
 
     .final { padding: 44px 20px; border-radius: 24px; }
     .final__notch { display: none; }
@@ -830,28 +850,28 @@
       </div>
       <div class="teacher__grid fade-up">
         <article class="job">
-          <div>
+          <div class="job__kto">
             <p class="job__where">BigTech (под NDA)</p>
             <span class="job__role">Staff Engineer</span>
           </div>
           <p class="job__desc">Разрабатываю LLM-платформу для создания ИИ продуктов внутри компании</p>
         </article>
         <article class="job">
-          <div>
+          <div class="job__kto">
             <p class="job__where">BigTech (под NDA)</p>
             <span class="job__role">Senior Engineer</span>
           </div>
           <p class="job__desc">Разрабатывал внутреннюю платформу для сотен сервисов корпорации</p>
         </article>
         <article class="job">
-          <div>
+          <div class="job__kto">
             <p class="job__where">Ozon Tech</p>
             <span class="job__role">Senior Engineer</span>
           </div>
           <p class="job__desc">Разрабатывал сервисы логистики, модерации контента и мониторинга доставки</p>
         </article>
         <article class="job">
-          <div>
+          <div class="job__kto">
             <p class="job__where">Route 256</p>
             <span class="job__role">Ex-преподаватель и тьютор</span>
           </div>
