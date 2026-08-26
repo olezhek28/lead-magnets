@@ -269,7 +269,7 @@
   .section__title {
     margin: 0 0 48px;
     font-size: 40px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: 1.15;
     letter-spacing: -.02em;
   }
@@ -289,8 +289,8 @@
     display: inline-block;
     margin-bottom: 28px;
     padding: 10px 20px;
-    border: 1px solid var(--bg-raised);
-    border-radius: 999px;
+    border: 1px solid #707070;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
   }
@@ -298,8 +298,8 @@
     margin: 0 0 20px;
     max-width: 580px;
     font-size: 40px;
-    font-weight: 700;
-    line-height: 1.12;
+    font-weight: 500;
+    line-height: 1.1;
     letter-spacing: -.02em;
   }
   .hero__subtitle {
@@ -310,8 +310,8 @@
   .hero__text {
     margin: 0 0 36px;
     max-width: 460px;
-    color: var(--text-body);
     font-size: 16px;
+    line-height: 1.6;
   }
 
   /* Гофер с книгой и облако логотипов вокруг него */
@@ -355,9 +355,9 @@
   }
   .inside__title {
     margin: 0 auto 48px;
-    max-width: 900px;
-    font-size: 36px;
-    font-weight: 700;
+    max-width: 1080px;
+    font-size: 42px;
+    font-weight: 500;
     line-height: 1.2;
     letter-spacing: -.02em;
     text-align: center;
@@ -368,10 +368,10 @@
     gap: 20px;
   }
   .card {
-    padding: 28px;
-    background: var(--bg);
-    border: 1px solid var(--bg-raised);
-    border-radius: var(--radius);
+    padding: 32px 30px;
+    min-height: 267px;
+    border: 1px solid #333c43;
+    border-radius: 18px;
   }
   .card__level { width: 74px; height: 12px; margin-bottom: 28px; object-fit: contain; object-position: left; }
   .card__title { margin: 0 0 12px; font-size: 19px; font-weight: 700; }
@@ -400,7 +400,7 @@
   .whom__title {
     margin: 0;
     font-size: 40px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: 1.15;
     letter-spacing: -.02em;
   }
@@ -442,20 +442,29 @@
   }
   .teacher__portrait { width: 260px; border-radius: var(--radius); }
 
+  /* В оригинале места работы идут одной колонкой во всю ширину:
+     компания с должностью в первой трети, описание во второй, третья
+     остаётся под портрет. */
   .teacher__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
   }
   .job {
     display: grid;
-    grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
-    align-items: start;
-    padding: 24px 0;
+    align-items: center;
+    padding: 22px 0;
     border-top: 1px solid var(--bg-raised);
   }
-  .job__where { margin: 0 0 10px; font-size: 17px; font-weight: 700; }
+  .job:last-child { border-bottom: 1px solid var(--bg-raised); }
+  .job__kto {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .job__where { margin: 0; font-size: 17px; font-weight: 700; }
   .job__role {
     display: inline-block;
     padding: 6px 14px;
@@ -475,15 +484,18 @@
   }
   .stat {
     padding: 32px;
+    min-height: 241px;
     background: var(--bg-card);
-    border-radius: var(--radius);
+    border-radius: 16px;
   }
   .stat__value {
-    margin: 0 0 10px;
+    margin: 0 0 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .25);
     color: var(--accent);
-    font-size: 40px;
-    font-weight: 800;
-    letter-spacing: -.02em;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -.01em;
   }
   .stat__label { margin: 0; color: var(--text-body); font-size: 15px; }
 
@@ -523,7 +535,7 @@
     margin: 0 auto 32px;
     max-width: 600px;
     font-size: 40px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: 1.15;
     letter-spacing: -.02em;
   }
@@ -531,9 +543,9 @@
   .final__timer {
     margin: 0 0 40px;
     font-size: 60px;
-    font-weight: 700;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
-    letter-spacing: .02em;
+    letter-spacing: .077em;
   }
   /* На жёлтом фоне кнопка инвертируется в тёмную */
   .final .btn {
@@ -595,7 +607,7 @@
 
     .teacher__head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
     .teacher__portrait { width: 200px; }
-    .teacher__grid { grid-template-columns: minmax(0, 1fr); }
+    .job { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
     .stats { grid-template-columns: minmax(0, 1fr); }
 
@@ -621,7 +633,7 @@
     .whom { padding: 32px 20px; border-radius: 24px; }
     .whom__title { font-size: 26px; }
 
-    .job { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .job { grid-template-columns: minmax(0, 1fr); gap: 10px; align-items: start; }
 
     .final { padding: 40px 18px; border-radius: 24px; }
     .final__tags { flex-wrap: wrap; }
@@ -761,28 +773,28 @@
       </div>
       <div class="teacher__grid fade-up">
         <article class="job">
-          <div>
+          <div class="job__kto">
             <p class="job__where">BigTech (под NDA)</p>
             <span class="job__role">Staff Engineer</span>
           </div>
           <p class="job__desc">Разрабатываю LLM-платформу для создания ИИ продуктов внутри компании</p>
         </article>
         <article class="job">
-          <div>
+          <div class="job__kto">
             <p class="job__where">BigTech (под NDA)</p>
             <span class="job__role">Senior Engineer</span>
           </div>
           <p class="job__desc">Разрабатывал внутреннюю платформу для сотен сервисов корпорации</p>
         </article>
         <article class="job">
-          <div>
+          <div class="job__kto">
             <p class="job__where">Ozon Tech</p>
             <span class="job__role">Senior Engineer</span>
           </div>
           <p class="job__desc">Разрабатывал сервисы логистики, модерации контента и мониторинга доставки</p>
         </article>
         <article class="job">
-          <div>
+          <div class="job__kto">
             <p class="job__where">Route 256</p>
             <span class="job__role">Ex-преподаватель и тьютор</span>
           </div>
