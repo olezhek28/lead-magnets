@@ -1,0 +1,2400 @@
+{
+ "zagolovok": "Освой gRPC за 1 вечер",
+ "opisanie": "Подробный практикум, где ты наконец разберёшься, как устроен gRPC, поймёшь все тонкости, напишешь и запустишь свой сервер и клиент, даже если раньше ничего не получалось.",
+ "zapisi": [
+  {
+   "id": "rec1489509331",
+   "tip": "396",
+   "vysota": 50.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "button",
+     "left": 1078.0,
+     "top": 4.0,
+     "width": 112.0,
+     "height": 43.0,
+     "razmer_shrifta": 12.0,
+     "raskladki": {
+      "320": {
+       "top": 5.0,
+       "left": 224.0,
+       "height": 39.0,
+       "width": 85.0
+      },
+      "480": {
+       "top": 3.0,
+       "left": 358.0
+      },
+      "640": {
+       "top": 4.0,
+       "left": 518.0
+      },
+      "960": {
+       "top": 3.0,
+       "left": 838.0
+      }
+     },
+     "ssylka": "#menu-open"
+    },
+    {
+     "tip": "text",
+     "left": 9.0,
+     "top": 14.0,
+     "width": 197.0,
+     "height": 22.0,
+     "razmer_shrifta": 14.0,
+     "raskladki": {
+      "320": {
+       "top": 16.0,
+       "left": 19.0,
+       "razmer_shrifta": 12.0
+      },
+      "480": {
+       "top": 13.0
+      },
+      "640": {
+       "top": 14.0,
+       "left": 9.0
+      },
+      "960": {
+       "top": 12.0
+      }
+     },
+     "ssylka": "/",
+     "tekst": "{ Олег Козырев }"
+    },
+    {
+     "tip": "image",
+     "left": 1148.0,
+     "top": 12.0,
+     "width": 26.0,
+     "height": 27.0,
+     "raskladki": {
+      "320": {
+       "top": 15.0,
+       "left": 276.0,
+       "width": 20.0
+      },
+      "480": {
+       "top": 13.0,
+       "left": 425.0
+      },
+      "640": {
+       "top": 14.0,
+       "left": 585.0,
+       "width": 22.0
+      },
+      "960": {
+       "top": 11.0,
+       "left": 908.0
+      }
+     }
+    },
+    {
+     "tip": "text",
+     "left": 1065.0,
+     "top": 14.0,
+     "width": 74.0,
+     "height": 22.0,
+     "razmer_shrifta": 14.0,
+     "raskladki": {
+      "320": {
+       "top": 17.0,
+       "left": 208.0,
+       "razmer_shrifta": 10.0
+      },
+      "480": {
+       "top": 14.0,
+       "left": 354.0
+      },
+      "640": {
+       "top": 15.0,
+       "left": 514.0,
+       "width": 62.0,
+       "razmer_shrifta": 12.0
+      },
+      "960": {
+       "top": 12.0,
+       "left": 825.0
+      }
+     },
+     "tekst": "Меню t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509331');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509331');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1489509341",
+   "tip": "396",
+   "vysota": 128.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "shape",
+     "left": -400.0,
+     "top": -1.0,
+     "width": 2000.0,
+     "height": 128.0,
+     "raskladki": {
+      "320": {
+       "height": 87.0
+      },
+      "640": {
+       "left": -680.0,
+       "height": 110.0
+      }
+     }
+    },
+    {
+     "tip": "text",
+     "left": 9.0,
+     "top": 21.0,
+     "width": 197.0,
+     "height": 22.0,
+     "razmer_shrifta": 14.0,
+     "raskladki": {
+      "320": {
+       "top": 17.0,
+       "left": 19.0,
+       "razmer_shrifta": 12.0
+      },
+      "640": {
+       "top": 21.0,
+       "left": 9.0
+      }
+     },
+     "ssylka": "/",
+     "tekst": "{ Олег Козырев }"
+    },
+    {
+     "tip": "shape",
+     "left": 417.0,
+     "top": 7.0,
+     "width": 366.0,
+     "height": 49.0,
+     "raskladki": {
+      "320": {
+       "top": 155.0,
+       "left": 115.0,
+       "height": 40.0,
+       "width": 85.0
+      },
+      "480": {
+       "top": 172.0,
+       "left": 299.0
+      },
+      "640": {
+       "top": 194.0,
+       "left": 355.0,
+       "width": 115.0
+      },
+      "960": {
+       "top": 7.0,
+       "left": 255.0
+      }
+     }
+    },
+    {
+     "tip": "button",
+     "left": 425.0,
+     "top": 10.0,
+     "width": 89.0,
+     "height": 43.0,
+     "razmer_shrifta": 12.0,
+     "raskladki": {
+      "320": {
+       "top": 158.0,
+       "left": 46.0
+      },
+      "480": {
+       "top": 175.0,
+       "left": 90.0
+      },
+      "640": {
+       "top": 197.0,
+       "left": 238.0
+      },
+      "960": {
+       "top": 10.0,
+       "left": 263.0
+      }
+     },
+     "ssylka": "#about-lesson",
+     "tekst": "Что внутри"
+    },
+    {
+     "tip": "button",
+     "left": 522.0,
+     "top": 10.0,
+     "width": 108.0,
+     "height": 43.0,
+     "razmer_shrifta": 12.0,
+     "raskladki": {
+      "320": {
+       "top": 158.0,
+       "left": 143.0
+      },
+      "480": {
+       "top": 175.0,
+       "left": 187.0
+      },
+      "640": {
+       "top": 197.0,
+       "left": 335.0
+      },
+      "960": {
+       "top": 10.0,
+       "left": 360.0
+      }
+     },
+     "ssylka": "#rec998448301",
+     "tekst": "Для кого"
+    },
+    {
+     "tip": "button",
+     "left": 638.0,
+     "top": 10.0,
+     "width": 137.0,
+     "height": 43.0,
+     "razmer_shrifta": 12.0,
+     "raskladki": {
+      "320": {
+       "top": 158.0,
+       "left": 259.0
+      },
+      "480": {
+       "top": 175.0,
+       "left": 303.0
+      },
+      "640": {
+       "top": 197.0,
+       "left": 451.0
+      },
+      "960": {
+       "top": 10.0,
+       "left": 476.0
+      }
+     },
+     "ssylka": "#speaker",
+     "tekst": "Преподаватель"
+    },
+    {
+     "tip": "button",
+     "left": 1015.0,
+     "top": 7.0,
+     "width": 173.0,
+     "height": 50.0,
+     "razmer_shrifta": 12.0,
+     "raskladki": {
+      "960": {
+       "top": -765.0,
+       "left": 341.0
+      }
+     },
+     "ssylka": "https://t.me/olezhek28go/1791",
+     "tekst": "Забрать практикум"
+    },
+    {
+     "tip": "image",
+     "left": 172.0,
+     "top": -577.0,
+     "width": 26.0,
+     "height": 27.0,
+     "raskladki": {
+      "320": {
+       "top": 16.0,
+       "left": 266.0,
+       "height": 21.0,
+       "width": 20.0
+      },
+      "480": {
+       "left": 424.0,
+       "height": 23.0
+      },
+      "640": {
+       "top": 19.0,
+       "left": 584.0,
+       "height": 23.0,
+       "width": 22.0
+      },
+      "960": {
+       "height": 27.0
+      }
+     },
+     "ssylka": "#menu-open"
+    },
+    {
+     "tip": "text",
+     "left": 9.0,
+     "top": -455.0,
+     "width": 197.0,
+     "height": 22.0,
+     "razmer_shrifta": 14.0,
+     "raskladki": {
+      "320": {
+       "top": 18.0,
+       "left": 199.0,
+       "razmer_shrifta": 10.0
+      },
+      "480": {
+       "left": 353.0
+      },
+      "640": {
+       "top": 20.0,
+       "left": 513.0,
+       "width": 62.0,
+       "razmer_shrifta": 12.0
+      }
+     },
+     "ssylka": "#menu-open",
+     "tekst": "Меню t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509341');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509341');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1489509351",
+   "tip": "450",
+   "tekst": "Что внутри Для кого Преподаватель Забрать практикум #rec1489509351 .t-btnflex.t-btnflex_type_button {color:#002d25;background-color:#dfdf41;--border-width:0px;border-style:none !important;border-radius:100px;box-shadow:none !important;font-family:Manrope;font-weight:600;transition-duration:0.2s;transition-property:background-color,color,border-color,box-shadow,opacity,transform,gap;transition-timing-function:ease-in-out;}@media (hover:hover) {#rec1489509351 .t-btnflex.t-btnflex_type_button:not(.t-animate_no-hover):hover {background-color:#c1c139 !important;}#rec1489509351 .t-btnflex.t-btnflex_type_button:not(.t-animate_no-hover):focus-visible {background-color:#c1c139 !important;}} t_onReady(function() {var rec=document.querySelector('#rec1489509351');if(!rec) return;rec.setAttribute('data-animationappear','off');rec.style.opacity=1;t_onFuncLoad('t450_initMenu',function() {t450_initMenu('1489509351');});}); #rec1489509351 .t-menu__link-item{-webkit-transition:color 0.3s ease-in-out,opacity 0.3s ease-in-out;transition:color 0.3s ease-in-out,opacity 0.3s ease-in-out;}#rec1489509351 .t-menu__link-item:not(.t-active):not(.tooltipstered):hover{color:#ffffff !important;}#rec1489509351 .t-menu__link-item:not(.t-active):not(.tooltipstered):focus-visible{color:#ffffff !important;}@supports (overflow:-webkit-marquee) and (justify-content:inherit){#rec1489509351 .t-menu__link-item,#rec1489509351 .t-menu__link-item.t-active{opacity:1 !important;}} #rec1489509351 a.t-menu__link-item{font-size:18px;color:#d1d2d3;} #rec1489509351 .t450__right_langs_lang a{color:#d1d2d3;}",
+   "kartinki": []
+  },
+  {
+   "id": "rec1489509361",
+   "tip": "215",
+   "kartinki": []
+  },
+  {
+   "id": "rec1489509371",
+   "tip": "396",
+   "vysota": 512.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "button",
+     "left": 10.0,
+     "top": 85.0,
+     "width": 124.0,
+     "height": 36.0,
+     "razmer_shrifta": 14.0,
+     "raskladki": {
+      "320": {
+       "top": 10.0,
+       "left": 91.0,
+       "height": 32.0,
+       "width": 138.0,
+       "razmer_shrifta": 13.0
+      },
+      "480": {
+       "top": 10.0,
+       "left": 168.0,
+       "height": 40.0,
+       "width": 144.0,
+       "razmer_shrifta": 12.0
+      },
+      "640": {
+       "top": 10.0,
+       "left": 241.0,
+       "height": 38.0,
+       "width": 157.0
+      },
+      "960": {
+       "top": 67.0,
+       "left": 10.0
+      }
+     },
+     "tekst": "Бесплатно"
+    },
+    {
+     "tip": "text",
+     "left": 10.0,
+     "top": 135.0,
+     "width": 579.0,
+     "height": 44.0,
+     "razmer_shrifta": 40.0,
+     "raskladki": {
+      "320": {
+       "top": 56.0,
+       "left": 10.0,
+       "height": 124.0,
+       "width": 300.0,
+       "razmer_shrifta": 26.0
+      },
+      "480": {
+       "top": 64.0,
+       "left": 10.0,
+       "height": 93.0,
+       "width": 460.0,
+       "razmer_shrifta": 26.0
+      },
+      "640": {
+       "top": 62.0,
+       "left": 15.0,
+       "height": 144.0,
+       "width": 609.0,
+       "razmer_shrifta": 40.0
+      },
+      "960": {
+       "top": 117.0,
+       "left": 10.0,
+       "width": 471.0
+      }
+     },
+     "tekst": "Освой gRPC за 1 вечер"
+    },
+    {
+     "tip": "text",
+     "left": 10.0,
+     "top": 193.0,
+     "width": 581.0,
+     "height": 36.0,
+     "razmer_shrifta": 20.0,
+     "raskladki": {
+      "320": {
+       "top": 101.0,
+       "left": 10.0,
+       "height": 46.0,
+       "width": 300.0,
+       "razmer_shrifta": 15.0
+      },
+      "480": {
+       "top": 109.0,
+       "left": 10.0,
+       "height": 29.0,
+       "width": 460.0,
+       "razmer_shrifta": 16.0
+      },
+      "640": {
+       "top": 220.0,
+       "left": 15.0,
+       "height": 36.0,
+       "width": 609.0
+      },
+      "960": {
+       "top": 175.0,
+       "left": 10.0,
+       "height": 72.0,
+       "width": 422.0
+      }
+     },
+     "tekst": "Пошаговый практикум для быстрого погружения в gRPC"
+    },
+    {
+     "tip": "text",
+     "left": 10.0,
+     "top": 243.0,
+     "width": 460.0,
+     "height": 104.0,
+     "razmer_shrifta": 16.0,
+     "raskladki": {
+      "320": {
+       "top": 161.0,
+       "left": 11.0,
+       "height": 100.0,
+       "width": 298.0,
+       "razmer_shrifta": 13.0
+      },
+      "480": {
+       "top": 152.0,
+       "left": 51.0,
+       "height": 44.0,
+       "width": 379.0,
+       "razmer_shrifta": 14.0
+      },
+      "640": {
+       "top": 270.0,
+       "left": 114.0,
+       "height": 78.0,
+       "width": 412.0
+      },
+      "960": {
+       "top": 261.0,
+       "left": 10.0,
+       "width": 431.0
+      }
+     },
+     "tekst": "Подробный практикум, где ты наконец разберёшься, как устроен gRPC, поймёшь все тонкости, напишешь и запустишь свой сервер и клиент, даже если раньше ничего не получалось."
+    },
+    {
+     "tip": "button",
+     "left": 10.0,
+     "top": 361.0,
+     "width": 323.0,
+     "height": 65.0,
+     "razmer_shrifta": 14.0,
+     "raskladki": {
+      "320": {
+       "top": 275.0,
+       "left": 30.0,
+       "height": 49.0,
+       "width": 260.0,
+       "razmer_shrifta": 12.0
+      },
+      "480": {
+       "top": 254.0,
+       "left": 79.0,
+       "height": 60.0,
+       "width": 323.0,
+       "razmer_shrifta": 12.0
+      },
+      "640": {
+       "top": 388.0,
+       "left": 158.0
+      },
+      "960": {
+       "top": 379.0,
+       "left": 10.0
+      }
+     },
+     "ssylka": "https://t.me/olezhek28go/1791",
+     "tekst": "Забрать практикум в Telegram"
+    },
+    {
+     "tip": "shape",
+     "left": 628.0,
+     "top": 77.0,
+     "width": 515.0,
+     "height": 435.0,
+     "raskladki": {
+      "320": {
+       "top": 364.0,
+       "left": 46.0,
+       "height": 222.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 378.0,
+       "left": 57.0,
+       "height": 335.0,
+       "width": 367.0
+      },
+      "640": {
+       "top": 458.0,
+       "left": 57.0
+      },
+      "960": {
+       "left": 445.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3463-3862-4164-b937-326236313265/_2025-10-28_16285612.png"
+    },
+    {
+     "tip": "image",
+     "left": 1039.0,
+     "top": 304.0,
+     "width": 151.0,
+     "height": 56.0,
+     "raskladki": {
+      "320": {
+       "top": 448.0,
+       "left": 195.0,
+       "height": 39.0,
+       "width": 104.0
+      },
+      "480": {
+       "top": 563.0,
+       "left": 346.0,
+       "height": 46.0,
+       "width": 124.0
+      },
+      "640": {
+       "top": 694.0,
+       "left": 427.0,
+       "height": 56.0
+      },
+      "960": {
+       "top": 290.0,
+       "left": 827.0,
+       "height": 56.0
+      }
+     }
+    },
+    {
+     "tip": "image",
+     "left": 1082.0,
+     "top": 143.0,
+     "width": 64.0,
+     "height": 55.0,
+     "raskladki": {
+      "320": {
+       "top": 380.0,
+       "left": 41.0,
+       "height": 36.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 372.0,
+       "left": 250.0,
+       "height": 55.0,
+       "width": 64.0
+      },
+      "640": {
+       "top": 458.0,
+       "left": 506.0,
+       "height": 55.0
+      },
+      "960": {
+       "top": 140.0,
+       "left": 870.0,
+       "height": 55.0
+      }
+     }
+    },
+    {
+     "tip": "image",
+     "left": 946.0,
+     "top": 30.0,
+     "width": 64.0,
+     "height": 64.0,
+     "raskladki": {
+      "320": {
+       "top": 519.0,
+       "left": 220.0,
+       "height": 42.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 445.0,
+       "left": 376.0,
+       "height": 64.0,
+       "width": 64.0
+      },
+      "640": {
+       "top": 562.0,
+       "left": 506.0,
+       "height": 64.0
+      },
+      "960": {
+       "top": 33.0,
+       "left": 776.0,
+       "height": 64.0
+      }
+     }
+    },
+    {
+     "tip": "image",
+     "left": 628.0,
+     "top": 77.0,
+     "width": 82.0,
+     "height": 80.0,
+     "raskladki": {
+      "320": {
+       "top": 364.0,
+       "left": 205.0,
+       "height": 44.0,
+       "width": 45.0
+      },
+      "480": {
+       "top": 372.0,
+       "left": 35.0,
+       "height": 62.0,
+       "width": 64.0
+      },
+      "640": {
+       "top": 459.0,
+       "left": 70.0,
+       "height": 80.0
+      },
+      "960": {
+       "top": 17.0,
+       "left": 614.0,
+       "height": 80.0
+      }
+     }
+    },
+    {
+     "tip": "image",
+     "left": 667.0,
+     "top": 287.0,
+     "width": 78.0,
+     "height": 56.0,
+     "raskladki": {
+      "320": {
+       "top": 350.0,
+       "left": 118.0,
+       "height": 41.0,
+       "width": 57.0
+      },
+      "480": {
+       "top": 501.0,
+       "left": 36.0,
+       "height": 46.0,
+       "width": 64.0
+      },
+      "640": {
+       "top": 662.0,
+       "left": 57.0,
+       "height": 56.0
+      },
+      "960": {
+       "top": 268.0,
+       "left": 463.0,
+       "height": 56.0
+      }
+     },
+     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509371');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509371');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1489509381",
+   "tip": "215",
+   "kartinki": []
+  },
+  {
+   "id": "rec1528844791",
+   "tip": "396",
+   "vysota": 1923.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "shape",
+     "left": 20.0,
+     "top": 0.0,
+     "width": 1160.0,
+     "height": 1923.0,
+     "raskladki": {
+      "320": {
+       "left": 5.0,
+       "height": 3024.0,
+       "width": 310.0
+      },
+      "480": {
+       "left": 10.0,
+       "height": 1909.0,
+       "width": 460.0
+      },
+      "640": {
+       "top": 0.0,
+       "left": 0.0,
+       "height": 1878.0,
+       "width": 620.0
+      },
+      "960": {
+       "left": 10.0,
+       "height": 2020.0,
+       "width": 940.0
+      }
+     }
+    },
+    {
+     "tip": "text",
+     "left": 0.0,
+     "top": 42.0,
+     "width": 352.0,
+     "height": 50.0,
+     "razmer_shrifta": 37.0,
+     "raskladki": {
+      "320": {
+       "left": 1.0,
+       "width": 223.0,
+       "razmer_shrifta": 26.0
+      },
+      "480": {
+       "left": 0.0,
+       "razmer_shrifta": 26.0
+      },
+      "640": {
+       "left": -10.0
+      },
+      "960": {
+       "left": 0.0
+      }
+     },
+     "tekst": "Состав практикума:"
+    },
+    {
+     "tip": "shape",
+     "left": 68.0,
+     "top": 164.0,
+     "width": 109.0,
+     "height": 109.0,
+     "raskladki": {
+      "320": {
+       "top": 182.0,
+       "left": 106.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "480": {
+       "top": 150.0,
+       "left": 47.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "640": {
+       "left": 58.0
+      },
+      "960": {
+       "left": 58.0,
+       "height": 109.0,
+       "width": 109.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3339-6138-4463-b835-393262326262/3752cf87-471e-47bf-8.png"
+    },
+    {
+     "tip": "button",
+     "left": 209.0,
+     "top": 173.0,
+     "width": 42.0,
+     "height": 26.0,
+     "razmer_shrifta": 17.0,
+     "raskladki": {
+      "320": {
+       "top": 323.0,
+       "left": 139.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 159.0,
+       "left": 188.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "640": {
+       "top": 173.0,
+       "left": 199.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "960": {
+       "top": 173.0,
+       "left": 199.0,
+       "height": 26.0,
+       "width": 42.0
+      }
+     },
+     "tekst": "01"
+    },
+    {
+     "tip": "text",
+     "left": 209.0,
+     "top": 242.0,
+     "width": 353.0,
+     "height": 23.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 392.0,
+       "left": 46.0,
+       "height": 23.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 228.0,
+       "left": 188.0
+      },
+      "640": {
+       "left": 199.0
+      },
+      "960": {
+       "left": 199.0,
+       "height": 23.0,
+       "width": 245.0
+      }
+     },
+     "tekst": "Что такое Protocol Buffer"
+    },
+    {
+     "tip": "shape",
+     "left": 648.0,
+     "top": 379.0,
+     "width": 109.0,
+     "height": 86.0,
+     "raskladki": {
+      "320": {
+       "top": 497.0,
+       "left": 106.0,
+       "height": 86.0,
+       "width": 109.0
+      },
+      "480": {
+       "top": 355.0,
+       "left": 47.0,
+       "height": 86.0,
+       "width": 109.0
+      },
+      "640": {
+       "top": 369.0,
+       "left": 196.0
+      },
+      "960": {
+       "top": 476.0,
+       "left": 516.0,
+       "height": 86.0,
+       "width": 109.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3930-3435-4562-a239-363935356663/4bb3ec72-1275-4369-8.png"
+    },
+    {
+     "tip": "button",
+     "left": 789.0,
+     "top": 376.0,
+     "width": 42.0,
+     "height": 26.0,
+     "razmer_shrifta": 17.0,
+     "raskladki": {
+      "320": {
+       "top": 615.0,
+       "left": 139.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 352.0,
+       "left": 188.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "640": {
+       "top": 366.0,
+       "left": 337.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "960": {
+       "top": 473.0,
+       "left": 657.0,
+       "height": 26.0,
+       "width": 42.0
+      }
+     },
+     "tekst": "02"
+    },
+    {
+     "tip": "text",
+     "left": 789.0,
+     "top": 445.0,
+     "width": 353.0,
+     "height": 23.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 684.0,
+       "left": 46.0,
+       "height": 21.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 421.0,
+       "left": 188.0
+      },
+      "640": {
+       "top": 435.0,
+       "left": 337.0
+      },
+      "960": {
+       "top": 542.0,
+       "left": 657.0,
+       "height": 21.0,
+       "width": 245.0
+      }
+     },
+     "tekst": "Чем protobuf лучше json"
+    },
+    {
+     "tip": "shape",
+     "left": 68.0,
+     "top": 570.0,
+     "width": 109.0,
+     "height": 109.0,
+     "raskladki": {
+      "320": {
+       "top": 789.0,
+       "left": 106.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "480": {
+       "top": 536.0,
+       "left": 47.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "640": {
+       "top": 550.0,
+       "left": 58.0
+      },
+      "960": {
+       "left": 58.0,
+       "height": 109.0,
+       "width": 109.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3333-6239-4061-b438-376664363561/6b216377-487f-41d6-a.png"
+    },
+    {
+     "tip": "button",
+     "left": 209.0,
+     "top": 579.0,
+     "width": 42.0,
+     "height": 26.0,
+     "razmer_shrifta": 17.0,
+     "raskladki": {
+      "320": {
+       "top": 930.0,
+       "left": 139.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 545.0,
+       "left": 188.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "640": {
+       "top": 559.0,
+       "left": 199.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "960": {
+       "top": 579.0,
+       "left": 199.0,
+       "height": 26.0,
+       "width": 42.0
+      }
+     },
+     "tekst": "03"
+    },
+    {
+     "tip": "text",
+     "left": 209.0,
+     "top": 648.0,
+     "width": 353.0,
+     "height": 23.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 999.0,
+       "left": 46.0,
+       "height": 23.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 614.0,
+       "left": 188.0
+      },
+      "640": {
+       "top": 628.0,
+       "left": 199.0
+      },
+      "960": {
+       "left": 199.0,
+       "height": 23.0,
+       "width": 245.0
+      }
+     },
+     "tekst": "Пишем первый.proto файл"
+    },
+    {
+     "tip": "shape",
+     "left": 648.0,
+     "top": 763.0,
+     "width": 109.0,
+     "height": 109.0,
+     "raskladki": {
+      "320": {
+       "top": 1104.0,
+       "left": 106.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "480": {
+       "top": 732.0,
+       "left": 47.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "640": {
+       "top": 746.0,
+       "left": 196.0
+      },
+      "960": {
+       "top": 863.0,
+       "left": 516.0,
+       "height": 109.0,
+       "width": 109.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3539-6539-4366-b961-366530353164/f4308953-492c-454f-a.png"
+    },
+    {
+     "tip": "button",
+     "left": 789.0,
+     "top": 772.0,
+     "width": 42.0,
+     "height": 26.0,
+     "razmer_shrifta": 17.0,
+     "raskladki": {
+      "320": {
+       "top": 1245.0,
+       "left": 139.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 729.0,
+       "left": 188.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "640": {
+       "top": 743.0,
+       "left": 337.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "960": {
+       "top": 860.0,
+       "left": 657.0,
+       "height": 26.0,
+       "width": 42.0
+      }
+     },
+     "tekst": "04"
+    },
+    {
+     "tip": "text",
+     "left": 789.0,
+     "top": 841.0,
+     "width": 353.0,
+     "height": 23.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 1314.0,
+       "left": 46.0,
+       "height": 46.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 798.0,
+       "left": 188.0
+      },
+      "640": {
+       "top": 812.0,
+       "left": 337.0
+      },
+      "960": {
+       "top": 929.0,
+       "left": 657.0,
+       "height": 46.0,
+       "width": 245.0
+      }
+     },
+     "tekst": "Что такое gRPC и чем он лучше HTTP"
+    },
+    {
+     "tip": "shape",
+     "left": 68.0,
+     "top": 966.0,
+     "width": 109.0,
+     "height": 109.0,
+     "raskladki": {
+      "320": {
+       "top": 1440.0,
+       "left": 106.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "480": {
+       "top": 931.0,
+       "left": 47.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "640": {
+       "top": 941.0,
+       "left": 58.0
+      },
+      "960": {
+       "top": 969.0,
+       "left": 58.0,
+       "height": 109.0,
+       "width": 109.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild6462-3539-4362-b039-383163326530/d21e7fc0-922b-47c6-b.png"
+    },
+    {
+     "tip": "button",
+     "left": 209.0,
+     "top": 975.0,
+     "width": 42.0,
+     "height": 26.0,
+     "razmer_shrifta": 17.0,
+     "raskladki": {
+      "320": {
+       "top": 1581.0,
+       "left": 139.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 928.0,
+       "left": 188.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "640": {
+       "top": 938.0,
+       "left": 199.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "960": {
+       "top": 966.0,
+       "left": 199.0,
+       "height": 26.0,
+       "width": 42.0
+      }
+     },
+     "tekst": "05"
+    },
+    {
+     "tip": "text",
+     "left": 209.0,
+     "top": 1044.0,
+     "width": 353.0,
+     "height": 23.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 1650.0,
+       "left": 46.0,
+       "height": 46.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 997.0,
+       "left": 188.0
+      },
+      "640": {
+       "top": 1007.0,
+       "left": 199.0
+      },
+      "960": {
+       "top": 1035.0,
+       "left": 199.0,
+       "height": 46.0,
+       "width": 245.0
+      }
+     },
+     "tekst": "Генерируем и поднимаем gRPC-сервер"
+    },
+    {
+     "tip": "shape",
+     "left": 648.0,
+     "top": 1169.0,
+     "width": 109.0,
+     "height": 109.0,
+     "raskladki": {
+      "320": {
+       "top": 1776.0,
+       "left": 106.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "480": {
+       "top": 1127.0,
+       "left": 47.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "640": {
+       "top": 1133.0,
+       "left": 196.0
+      },
+      "960": {
+       "top": 1266.0,
+       "left": 516.0,
+       "height": 109.0,
+       "width": 109.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3263-3666-4134-a166-386335313636/2138181c-cf7a-4b6d-b.png"
+    },
+    {
+     "tip": "button",
+     "left": 789.0,
+     "top": 1178.0,
+     "width": 42.0,
+     "height": 26.0,
+     "razmer_shrifta": 17.0,
+     "raskladki": {
+      "320": {
+       "top": 1917.0,
+       "left": 139.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 1136.0,
+       "left": 188.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "640": {
+       "top": 1142.0,
+       "left": 337.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "960": {
+       "top": 1275.0,
+       "left": 657.0,
+       "height": 26.0,
+       "width": 42.0
+      }
+     },
+     "tekst": "06"
+    },
+    {
+     "tip": "text",
+     "left": 789.0,
+     "top": 1247.0,
+     "width": 353.0,
+     "height": 23.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 1986.0,
+       "left": 46.0,
+       "height": 21.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 1205.0,
+       "left": 188.0
+      },
+      "640": {
+       "top": 1211.0,
+       "left": 337.0
+      },
+      "960": {
+       "top": 1344.0,
+       "left": 657.0,
+       "height": 23.0,
+       "width": 353.0
+      }
+     },
+     "tekst": "Пишем свой gRPC-клиент"
+    },
+    {
+     "tip": "shape",
+     "left": 68.0,
+     "top": 1375.0,
+     "width": 109.0,
+     "height": 109.0,
+     "raskladki": {
+      "320": {
+       "top": 2093.0,
+       "left": 108.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "480": {
+       "top": 1323.0,
+       "left": 47.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "640": {
+       "top": 1329.0,
+       "left": 58.0
+      },
+      "960": {
+       "left": 58.0,
+       "height": 109.0,
+       "width": 109.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3835-6535-4132-b130-316131666639/86631921-fe38-4d6e-b.png"
+    },
+    {
+     "tip": "button",
+     "left": 209.0,
+     "top": 1372.0,
+     "width": 42.0,
+     "height": 26.0,
+     "razmer_shrifta": 17.0,
+     "raskladki": {
+      "320": {
+       "top": 2234.0,
+       "left": 141.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 1320.0,
+       "left": 188.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "640": {
+       "top": 1326.0,
+       "left": 199.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "960": {
+       "top": 1372.0,
+       "left": 199.0,
+       "height": 26.0,
+       "width": 42.0
+      }
+     },
+     "tekst": "07"
+    },
+    {
+     "tip": "text",
+     "left": 209.0,
+     "top": 1441.0,
+     "width": 343.0,
+     "height": 46.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 2303.0,
+       "left": 48.0,
+       "height": 46.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 1389.0,
+       "left": 188.0
+      },
+      "640": {
+       "top": 1395.0,
+       "left": 199.0
+      },
+      "960": {
+       "left": 199.0,
+       "height": 46.0,
+       "width": 245.0
+      }
+     },
+     "tekst": "Учимся работать с gRPC через Postman и gRPCurl"
+    },
+    {
+     "tip": "shape",
+     "left": 648.0,
+     "top": 1570.0,
+     "width": 109.0,
+     "height": 109.0,
+     "raskladki": {
+      "320": {
+       "top": 2433.0,
+       "left": 106.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "480": {
+       "top": 1522.0,
+       "left": 47.0,
+       "height": 109.0,
+       "width": 109.0
+      },
+      "640": {
+       "top": 1524.0,
+       "left": 196.0
+      },
+      "960": {
+       "top": 1667.0,
+       "left": 516.0,
+       "height": 109.0,
+       "width": 109.0
+      }
+     },
+     "kartinka": "https://static.tildacdn.com/tild3362-6432-4032-b362-343663623136/951663b1-b491-4aca-a.png"
+    },
+    {
+     "tip": "button",
+     "left": 789.0,
+     "top": 1567.0,
+     "width": 42.0,
+     "height": 26.0,
+     "razmer_shrifta": 17.0,
+     "raskladki": {
+      "320": {
+       "top": 2574.0,
+       "left": 139.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "480": {
+       "top": 1519.0,
+       "left": 188.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "640": {
+       "top": 1521.0,
+       "left": 337.0,
+       "height": 26.0,
+       "width": 42.0
+      },
+      "960": {
+       "top": 1664.0,
+       "left": 657.0,
+       "height": 26.0,
+       "width": 42.0
+      }
+     },
+     "tekst": "08"
+    },
+    {
+     "tip": "text",
+     "left": 789.0,
+     "top": 1636.0,
+     "width": 343.0,
+     "height": 46.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 2643.0,
+       "left": 46.0,
+       "height": 69.0,
+       "width": 228.0
+      },
+      "480": {
+       "top": 1588.0,
+       "left": 188.0
+      },
+      "640": {
+       "top": 1590.0,
+       "left": 337.0
+      },
+      "960": {
+       "top": 1733.0,
+       "left": 657.0,
+       "height": 46.0,
+       "width": 245.0
+      }
+     },
+     "tekst": "Разбираем типичные вопросы с собесов по gRPC"
+    },
+    {
+     "tip": "text",
+     "left": 172.0,
+     "top": 1750.0,
+     "width": 856.0,
+     "height": 41.0,
+     "razmer_shrifta": 27.0,
+     "raskladki": {
+      "320": {
+       "top": 2784.0,
+       "left": 26.0,
+       "height": 81.0,
+       "width": 268.0
+      },
+      "480": {
+       "top": 1706.0,
+       "left": 44.0,
+       "height": 48.0,
+       "width": 391.0
+      },
+      "640": {
+       "top": 1705.0,
+       "left": 34.0
+      },
+      "960": {
+       "top": 1847.0,
+       "left": 194.0
+      }
+     },
+     "tekst": "И это все бесплатно, поэтому чего ты ждешь, забирай урок скорее"
+    },
+    {
+     "tip": "button",
+     "left": 439.0,
+     "top": 1833.0,
+     "width": 323.0,
+     "height": 65.0,
+     "razmer_shrifta": 14.0,
+     "raskladki": {
+      "320": {
+       "top": 2907.0,
+       "left": 22.0,
+       "height": 65.0,
+       "width": 276.0
+      },
+      "480": {
+       "top": 1802.0,
+       "left": 78.0,
+       "height": 65.0,
+       "width": 323.0
+      },
+      "640": {
+       "top": 1774.0,
+       "left": 158.0
+      },
+      "960": {
+       "top": 1916.0,
+       "left": 318.0
+      }
+     },
+     "ssylka": "https://t.me/olezhek28go/1791",
+     "tekst": "Забрать практикум в Telegram"
+    },
+    {
+     "tip": "shape",
+     "left": 599.0,
+     "top": 134.0,
+     "width": 1.0,
+     "height": 1571.0,
+     "raskladki": {
+      "960": {
+       "left": 589.0
+      }
+     },
+     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1528844791');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1528844791');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1489509391",
+   "tip": "396",
+   "vysota": 0.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "vector",
+     "left": 461.0,
+     "top": -14.0,
+     "width": 279.0,
+     "height": 43.0,
+     "raskladki": {
+      "320": {
+       "top": -10.0,
+       "left": 80.0,
+       "width": 160.0
+      },
+      "480": {
+       "top": -10.0,
+       "left": 140.0,
+       "height": 31.0,
+       "width": 200.0
+      },
+      "640": {
+       "left": 181.0
+      },
+      "960": {
+       "top": -12.0,
+       "left": 341.0
+      }
+     },
+     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509391');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509391');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1489509421",
+   "tip": "396",
+   "vysota": 380.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "shape",
+     "left": 10.0,
+     "top": 0.0,
+     "width": 1180.0,
+     "height": 380.0,
+     "raskladki": {
+      "320": {
+       "left": 5.0,
+       "height": 584.0,
+       "width": 310.0
+      },
+      "480": {
+       "height": 525.0,
+       "width": 460.0
+      },
+      "640": {
+       "height": 611.0,
+       "width": 620.0
+      },
+      "960": {
+       "height": 546.0,
+       "width": 940.0
+      }
+     }
+    },
+    {
+     "tip": "text",
+     "left": 70.0,
+     "top": 60.0,
+     "width": 478.0,
+     "height": 88.0,
+     "razmer_shrifta": 40.0,
+     "raskladki": {
+      "320": {
+       "top": 85.0,
+       "left": 26.0,
+       "width": 244.0,
+       "razmer_shrifta": 26.0
+      },
+      "480": {
+       "top": 41.0,
+       "left": 50.0,
+       "width": 304.0,
+       "razmer_shrifta": 26.0
+      },
+      "640": {
+       "top": 61.0,
+       "left": 70.0,
+       "width": 490.0,
+       "razmer_shrifta": 40.0
+      },
+      "960": {
+       "top": 61.0,
+       "left": 70.0,
+       "width": 471.0
+      }
+     },
+     "tekst": "Этот практикум для тебя, если ты:"
+    },
+    {
+     "tip": "text",
+     "left": 607.0,
+     "top": 60.0,
+     "width": 480.0,
+     "height": 320.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 269.0,
+       "left": 24.0,
+       "height": 273.0,
+       "width": 260.0,
+       "razmer_shrifta": 13.0
+      },
+      "480": {
+       "top": 208.0,
+       "left": 52.0,
+       "width": 347.0,
+       "razmer_shrifta": 14.0
+      },
+      "640": {
+       "top": 291.0,
+       "left": 70.0,
+       "width": 412.0
+      },
+      "960": {
+       "top": 130.0,
+       "left": 548.0,
+       "width": 350.0
+      }
+     },
+     "tekst": "Уже пробовал разобраться с gRPC, но ничего не получилосьХочешь уверенно отвечать на вопросы про gRPC на собеседованияхВ панике, потому что на работе завезли gRPC и ты ничего не понимаешьCидишь на старых технологиях и хочется пощупать что‑то современноеПереходишь на Go с другого языка и непонятен стек вокруг него"
+    },
+    {
+     "tip": "image",
+     "left": 220.0,
+     "top": -1548.0,
+     "width": 422.0,
+     "height": 173.0,
+     "raskladki": {
+      "320": {
+       "top": -1541.0,
+       "left": 73.0,
+       "height": 73.0,
+       "width": 178.0
+      },
+      "480": {
+       "left": 251.0,
+       "height": 90.0,
+       "width": 220.0
+      },
+      "640": {
+       "top": 0.0,
+       "left": 374.0,
+       "height": 105.0,
+       "width": 257.0
+      },
+      "960": {
+       "height": 173.0
+      }
+     }
+    },
+    {
+     "tip": "image",
+     "left": 628.0,
+     "top": -1555.0,
+     "width": 422.0,
+     "height": 173.0,
+     "raskladki": {
+      "320": {
+       "top": 0.0,
+       "left": 4.0,
+       "height": 74.0,
+       "width": 180.0
+      },
+      "480": {
+       "left": 251.0,
+       "height": 90.0,
+       "width": 220.0
+      },
+      "640": {
+       "top": -1273.0,
+       "left": 118.0,
+       "height": 105.0,
+       "width": 257.0
+      },
+      "960": {
+       "height": 173.0
+      }
+     },
+     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509421');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509421');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1489509441",
+   "tip": "396",
+   "vysota": 20.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "image",
+     "left": 9.0,
+     "top": -172.0,
+     "width": 422.0,
+     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509441');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509441');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1489509451",
+   "tip": "215",
+   "kartinki": []
+  },
+  {
+   "id": "rec1296265371",
+   "tip": "121",
+   "tekst": "BigTech (под NDA) Staff Engineer Разрабатываю LLM-платформу для создания ИИ продуктов внутри компании BigTech (под NDA) Senior Engineer Разрабатывал внутреннюю платформу для сотен сервисов корпорации Ozon Tech Senior Engineer Разрабатывал сервисы логистики, модерации контента и мониторинга доставки Route 256 Ex-преподаватель и тьютор Менторил и преподавал курсы по построению микросервисов в школе Ozon Tech #rec1296265371 .t513__time{font-size:18px;color:#ffffff;font-family:'Manrope';font-weight:600;}@media screen and (max-width:480px),(orientation:landscape) and (max-height:480px){#rec1296265371 .t513__time{font-size:16px;}}#rec1296265371 .t513__text{font-size:16px;color:#babcbd;}@media screen and (max-width:480px),(orientation:landscape) and (max-height:480px){#rec1296265371 .t513__text{font-size:12px;}}",
+   "kartinki": []
+  },
+  {
+   "id": "rec1489509481",
+   "tip": "396",
+   "vysota": 20.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "image",
+     "left": 774.0,
+     "top": -547.0,
+     "width": 511.0,
+     "raskladki": {
+      "320": {
+       "top": 0.0,
+       "left": 13.0,
+       "width": 294.0
+      },
+      "480": {
+       "top": 0.0,
+       "left": 104.0,
+       "width": 273.0
+      },
+      "640": {
+       "top": 0.0,
+       "left": 81.0
+      },
+      "960": {
+       "top": -530.0,
+       "left": 631.0,
+       "width": 480.0
+      }
+     },
+     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509481');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509481');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1213545821",
+   "tip": "121",
+   "tekst": ">7 000 часов Практики на реальных проектах в Big Tech компаниях 7+ лет Занимаюсь программированием 8 500+ Подписчиков на YouTube-канале t_onReady(function() {t_onFuncLoad('t983_init',function() {t983_init('1213545821');});});function t_onFuncLoadMulti(funcName1,funcName2,okFunc,time) {if(typeof window[funcName1]==='function'&&typeof window[funcName2]==='function') {okFunc();} else {var startTime=Date.now();setTimeout(function checkFuncExist() {var currentTime=Date.now();if(typeof window[funcName1]==='function'&&typeof window[funcName2]==='function') {okFunc();return;};if(document.readyState==='complete'&¤tTime - startTime>5000&&typeof window[funcName1]==='function'&&typeof window[funcName2]==='function') {throw new Error(funcName1 + ' is undefined');} setTimeout(checkFuncExist,time||100);});}} @media screen and (min-width:480px){#rec1213545821 .t-card__title{font-size:30px;}}@media screen and (max-width:480px),(orientation:landscape) and (max-height:480px){#rec1213545821 .t-card__title{font-size:30px;}}#rec1213545821 .t-card__descr{font-size:16px;color:#babcbd;font-family:'Manrope';font-weight:500;}@media screen and (max-width:480px),(orientation:landscape) and (max-height:480px){#rec1213545821 .t-card__descr{font-size:12px;}} #rec1213545821 .t983__card{border-radius:16px;}",
+   "kartinki": []
+  },
+  {
+   "id": "rec1489509501",
+   "tip": "396",
+   "vysota": 677.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "shape",
+     "left": 10.0,
+     "top": 1.0,
+     "width": 1180.0,
+     "height": 676.0,
+     "raskladki": {
+      "320": {
+       "left": 5.0,
+       "height": 516.0,
+       "width": 310.0
+      },
+      "480": {
+       "height": 760.0,
+       "width": 460.0
+      },
+      "640": {
+       "height": 883.0,
+       "width": 620.0
+      },
+      "960": {
+       "height": 601.0,
+       "width": 940.0
+      }
+     }
+    },
+    {
+     "tip": "text",
+     "left": 34.0,
+     "top": 132.0,
+     "width": 572.0,
+     "height": 96.0,
+     "razmer_shrifta": 40.0,
+     "raskladki": {
+      "320": {
+       "top": 49.0,
+       "left": 31.0,
+       "width": 259.0,
+       "razmer_shrifta": 26.0
+      },
+      "480": {
+       "top": 122.0,
+       "left": 88.0,
+       "width": 304.0,
+       "razmer_shrifta": 26.0
+      },
+      "640": {
+       "top": 125.0,
+       "left": 75.0,
+       "height": 132.0,
+       "width": 490.0,
+       "razmer_shrifta": 40.0
+      },
+      "960": {
+       "top": 81.0,
+       "left": 34.0,
+       "height": 192.0,
+       "width": 415.0
+      }
+     },
+     "tekst": "Забирай бесплатный практикум для полного погружения в gRPC"
+    },
+    {
+     "tip": "text",
+     "left": 34.0,
+     "top": 292.0,
+     "width": 364.0,
+     "height": 32.0,
+     "razmer_shrifta": 18.0,
+     "raskladki": {
+      "320": {
+       "top": 177.0,
+       "left": 34.0,
+       "width": 253.0,
+       "razmer_shrifta": 12.0
+      },
+      "480": {
+       "top": 225.0,
+       "left": 67.0,
+       "width": 347.0,
+       "razmer_shrifta": 12.0
+      },
+      "640": {
+       "top": 273.0,
+       "left": 114.0,
+       "width": 412.0,
+       "razmer_shrifta": 16.0
+      },
+      "960": {
+       "top": 285.0,
+       "left": 34.0,
+       "height": 32.0,
+       "width": 377.0
+      }
+     },
+     "tekst": "Ссылка на практикум будет активна ещё:"
+    },
+    {
+     "tip": "text",
+     "left": 34.0,
+     "top": 356.0,
+     "width": 408.0,
+     "height": 72.0,
+     "razmer_shrifta": 60.0,
+     "raskladki": {
+      "320": {
+       "top": 212.0,
+       "left": 70.0,
+       "width": 181.0,
+       "razmer_shrifta": 29.0
+      },
+      "480": {
+       "top": 263.0,
+       "left": 88.0,
+       "width": 304.0,
+       "razmer_shrifta": 28.0
+      },
+      "640": {
+       "top": 317.0,
+       "left": 70.0,
+       "width": 490.0,
+       "razmer_shrifta": 42.0
+      },
+      "960": {
+       "top": 333.0,
+       "left": 34.0,
+       "width": 471.0
+      }
+     },
+     "ssylka": "#tc-timer",
+     "tekst": "00:00:00:00"
+    },
+    {
+     "tip": "button",
+     "left": 34.0,
+     "top": 460.0,
+     "width": 427.0,
+     "height": 86.0,
+     "razmer_shrifta": 16.0,
+     "raskladki": {
+      "320": {
+       "top": 263.0,
+       "left": 30.0,
+       "height": 49.0,
+       "width": 260.0,
+       "razmer_shrifta": 12.0
+      },
+      "480": {
+       "top": 313.0,
+       "left": 123.0,
+       "height": 50.0,
+       "width": 235.0,
+       "razmer_shrifta": 12.0
+      },
+      "640": {
+       "top": 400.0,
+       "left": 107.0
+      },
+      "960": {
+       "top": 437.0,
+       "left": 34.0
+      }
+     },
+     "ssylka": "https://t.me/olezhek28go/1791",
+     "tekst": "Забрать практикум в Telegram"
+    },
+    {
+     "tip": "image",
+     "left": 461.0,
+     "top": -14.0,
+     "width": 278.0,
+     "height": 43.0,
+     "raskladki": {
+      "320": {
+       "top": -8.0,
+       "left": 80.0,
+       "height": 25.0,
+       "width": 160.0
+      },
+      "480": {
+       "top": -10.0,
+       "left": 140.0,
+       "height": 31.0,
+       "width": 200.0
+      },
+      "640": {
+       "left": 181.0,
+       "height": 43.0
+      },
+      "960": {
+       "top": -14.0,
+       "left": 341.0,
+       "height": 43.0
+      }
+     }
+    },
+    {
+     "tip": "video",
+     "left": 615.0,
+     "top": 62.0,
+     "width": 551.0,
+     "height": 521.0,
+     "raskladki": {
+      "320": {
+       "top": 328.0,
+       "left": 21.0,
+       "height": 156.0,
+       "width": 278.0
+      },
+      "480": {
+       "top": 395.0,
+       "left": 34.0,
+       "width": 412.0
+      },
+      "640": {
+       "top": 518.0,
+       "left": 34.0,
+       "height": 318.0,
+       "width": 572.0
+      },
+      "960": {
+       "top": 45.0,
+       "left": 493.0,
+       "width": 433.0
+      }
+     },
+     "tekst": "t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509501');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509501');});});"
+    }
+   ]
+  },
+  {
+   "id": "rec1489509511",
+   "tip": "396",
+   "vysota": 175.0,
+   "brejkpointy": [
+    "320",
+    "480",
+    "640",
+    "960",
+    "1200"
+   ],
+   "elementy": [
+    {
+     "tip": "image",
+     "left": -210.0,
+     "top": 0.0,
+     "width": 1605.0,
+     "height": 416.0,
+     "raskladki": {
+      "320": {
+       "top": 132.0,
+       "left": -33.0,
+       "width": 394.0
+      },
+      "480": {
+       "top": 106.0,
+       "left": -75.0,
+       "width": 630.0
+      },
+      "640": {
+       "top": 47.0,
+       "left": -92.0,
+       "width": 824.0
+      },
+      "960": {
+       "top": 0.0,
+       "left": -230.0
+      }
+     }
+    },
+    {
+     "tip": "text",
+     "left": 10.0,
+     "top": 9.0,
+     "width": 197.0,
+     "height": 21.0,
+     "razmer_shrifta": 13.0,
+     "raskladki": {
+      "320": {
+       "top": 0.0,
+       "left": 10.0,
+       "width": 206.0,
+       "razmer_shrifta": 12.0
+      },
+      "480": {
+       "top": 0.0,
+       "left": 10.0,
+       "width": 341.0,
+       "razmer_shrifta": 13.0
+      },
+      "640": {
+       "top": 0.0,
+       "left": 10.0,
+       "width": 240.0,
+       "razmer_shrifta": 14.0
+      },
+      "960": {
+       "top": 11.0,
+       "left": 10.0,
+       "width": 271.0,
+       "razmer_shrifta": 12.0
+      }
+     },
+     "tekst": "{ Олег Козырев }, © 2025"
+    },
+    {
+     "tip": "button",
+     "left": 783.0,
+     "top": 8.0,
+     "width": 246.0,
+     "height": 30.0,
+     "razmer_shrifta": 13.0,
+     "raskladki": {
+      "320": {
+       "top": 33.0,
+       "left": 10.0,
+       "height": 40.0,
+       "width": 300.0,
+       "razmer_shrifta": 10.0
+      },
+      "480": {
+       "top": 34.0,
+       "left": 10.0
+      },
+      "640": {
+       "top": -4.0,
+       "left": 282.0
+      },
+      "960": {
+       "top": 5.0,
+       "left": 592.0,
+       "width": 208.0,
+       "razmer_shrifta": 12.0
+      }
+     },
+     "ssylka": "/policy",
+     "tekst": "Политика конфиденциальности"
+    },
+    {
+     "tip": "button",
+     "left": 1041.0,
+     "top": 9.0,
+     "width": 149.0,
+     "height": 29.0,
+     "razmer_shrifta": 13.0,
+     "raskladki": {
+      "320": {
+       "top": 81.0,
+       "left": 10.0,
+       "height": 40.0,
+       "width": 300.0,
+       "razmer_shrifta": 10.0
+      },
+      "480": {
+       "top": 62.0,
+       "left": 10.0
+      },
+      "640": {
+       "top": -4.0,
+       "left": 513.0
+      },
+      "960": {
+       "top": 5.0,
+       "left": 831.0,
+       "height": 28.0,
+       "width": 118.0,
+       "razmer_shrifta": 12.0
+      }
+     },
+     "ssylka": "https://t.me/maksimkoya",
+     "tekst": "Разработка сайта t_onFuncLoad('t396_initialScale',function() {t396_initialScale('1489509511');});t_onReady(function() {t_onFuncLoad('t396_init',function() {t396_init('1489509511');});});"
+    }
+   ]
+  }
+ ],
+ "sluzhebnye": [
+  {
+   "id": "rec1489509301",
+   "tip": "360"
+  },
+  {
+   "id": "rec1489509311",
+   "tip": "657"
+  },
+  {
+   "id": "rec1489509431",
+   "tip": "668"
+  },
+  {
+   "id": "rec1489509461",
+   "tip": "33"
+  },
+  {
+   "id": "rec1489509521",
+   "tip": "131"
+  },
+  {
+   "id": "rec1489509541",
+   "tip": "131"
+  },
+  {
+   "id": "rec1489509581",
+   "tip": "131"
+  },
+  {
+   "id": "rec1489509591",
+   "tip": "131"
+  },
+  {
+   "id": "rec1489509601",
+   "tip": "131"
+  },
+  {
+   "id": "rec1489509611",
+   "tip": "270"
+  }
+ ]
+}

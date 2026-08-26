@@ -13,3 +13,9 @@ docs/seo.md
 
 # рабочее пространство subagent-driven-development: леджер, брифы, отчёты
 .superpowers/
+
+# сырьё Tilda: сохранённые страницы и картинки оригиналов.
+# В гит идут только чертежи (chertezh.json) и карты ассетов —
+# само сырьё скачивается заново через scripts/tilda_sobrat.sh
+docs/tilda-source/*/page.html
+docs/tilda-source/*/assets/
