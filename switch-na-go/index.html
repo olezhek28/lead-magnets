@@ -97,7 +97,7 @@
     overflow-x: hidden;
   }
 
-  img { max-width: 100%; display: block; }
+  img { max-width: 100%; height: auto; display: block; }
 
   a { color: inherit; }
 
@@ -178,10 +178,14 @@
     text-decoration: none;
     white-space: nowrap;
   }
+  /* В оригинале якорные ссылки лежат в тёмной пилюле по центру шапки */
   .header__nav {
     display: flex;
-    gap: 8px;
-    margin-left: auto;
+    gap: 4px;
+    margin: 0 auto;
+    padding: 3px;
+    background: var(--bg-card);
+    border-radius: 999px;
   }
   .header__link {
     padding: 10px 16px;
@@ -192,17 +196,30 @@
     text-decoration: none;
     transition: background .2s ease, color .2s ease;
   }
-  .header__link:hover { background: var(--bg-card); color: var(--text); }
-  .header__cta { padding: 14px 24px; font-size: 13px; }
+  .header__link:hover { background: var(--bg-raised); color: var(--text); }
+  .header__cta { margin-left: auto; padding: 14px 26px; font-size: 13px; }
   .header__burger {
-    display: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-left: auto;
     padding: 8px;
     background: none;
     border: 0;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
   }
   .header__burger img { width: 22px; height: 22px; }
+
+  /* Наверху страницы шапка минимальная — логотип и «Меню», как в оригинале.
+     Якоря и кнопка выезжают, когда страницу прокрутили. */
+  .header__nav, .header__cta { display: none; }
+  .header--razvernuta .header__nav { display: flex; }
+  .header--razvernuta .header__cta { display: inline-flex; }
+  .header--razvernuta .header__burger { display: none; }
 
   /* ---------- Мобильное меню ---------- */
 
@@ -367,7 +384,7 @@
   .whom {
     position: relative;
     overflow: hidden;
-    padding: 56px 64px;
+    padding: 56px 64px 150px;
     background: var(--light-bg);
     border-radius: 40px;
     color: var(--light-ink);
@@ -403,6 +420,16 @@
     font-size: 16px;
   }
   .whom__list li + li { margin-top: 14px; }
+
+  /* Тёмный клин срезает нижний левый угол панели — декор из оригинала */
+  .whom__cut {
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 38%;
+    height: auto;
+    pointer-events: none;
+  }
 
   /* ---------- Преподаватель ---------- */
 
@@ -462,50 +489,60 @@
 
   /* ---------- Финальный блок ---------- */
 
+  /* Жёлтая карточка с вырезом по верхней кромке — как в оригинале */
   .final {
-    padding: 72px 40px;
-    background: var(--bg-card);
+    position: relative;
+    padding: 96px 40px 72px;
+    background: var(--accent);
     border-radius: 40px;
+    color: var(--light-ink);
     text-align: center;
   }
-  .final__portrait {
-    width: 96px;
-    height: 96px;
-    margin: 0 auto 24px;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: top center;
-    background: var(--bg);
+  .final__notch {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    width: 278px;
+    height: auto;
+    transform: translateX(-50%);
   }
   .final__tags {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 24px;
+    gap: 12px;
+    margin-bottom: 28px;
   }
   .final__tag {
-    padding: 8px 18px;
-    border: 1px solid var(--bg-raised);
-    border-radius: 999px;
-    font-size: 14px;
-    color: var(--text-body);
+    padding: 9px 20px;
+    border: 1px solid rgba(24, 32, 35, .35);
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
   }
   .final__title {
     margin: 0 auto 32px;
-    max-width: 700px;
+    max-width: 600px;
     font-size: 40px;
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -.02em;
   }
-  .final__note { margin: 0 0 12px; color: var(--text-body); font-size: 17px; }
+  .final__note { margin: 0 0 14px; font-size: 18px; }
   .final__timer {
-    margin: 0 0 36px;
-    font-size: 56px;
-    font-weight: 800;
+    margin: 0 0 40px;
+    font-size: 60px;
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
-    letter-spacing: -.02em;
+    letter-spacing: .02em;
   }
+  /* На жёлтом фоне кнопка инвертируется в тёмную */
+  .final .btn {
+    padding: 24px 40px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+  }
+  .final .btn:hover { background: #22292c; }
 
   /* ---------- Подвал ---------- */
 
@@ -540,9 +577,9 @@
     .section { padding: 64px 0; }
     .section__title, .whom__title, .final__title { font-size: 32px; }
 
-    .header__nav { display: none; }
-    .header__cta { display: none; }
-    .header__burger { display: block; }
+    .header--razvernuta .header__nav,
+    .header--razvernuta .header__cta { display: none; }
+    .header--razvernuta .header__burger { display: flex; }
 
     .hero { padding: 48px 0 64px; }
     .hero__inner { grid-template-columns: minmax(0, 1fr); gap: 32px; }
@@ -606,8 +643,8 @@
       <a class="header__link" href="#speaker">Преподаватель</a>
     </nav>
     <a class="btn header__cta" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">Забрать подборку</a>
-    <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="drawer">
-      <img src="img/menu.svg" alt="">
+    <button class="header__burger" type="button" aria-expanded="false" aria-controls="drawer">
+      Меню<img src="img/menu.svg" alt="">
     </button>
   </div>
 </header>
@@ -700,6 +737,7 @@
   <section class="section" id="for-whom">
     <div class="shell">
       <div class="whom fade-up">
+        <img class="whom__cut" src="img/whom-cut.svg" alt="" aria-hidden="true" width="519" height="213">
         <div class="whom__inner">
           <h2 class="whom__title">Подборка подойдет для тех, кто хочет свитчнуться на GO</h2>
           <div>
@@ -774,7 +812,7 @@
   <section class="section" id="final">
     <div class="shell">
       <div class="final fade-up">
-        <img class="final__portrait" src="img/oleg-portrait.png" alt="Олег Козырев" width="504" height="560">
+        <img class="final__notch" src="img/notch.svg" alt="" aria-hidden="true" width="278" height="43">
         <div class="final__tags">
           <span class="final__tag">20+ материалов</span>
           <span class="final__tag">Бесплатно</span>
@@ -783,7 +821,7 @@
         <p class="final__note">Ссылка на подборку будет активна ещё:</p>
         <p class="final__timer" data-timer>00:00:00:00</p>
         <a class="btn" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">
-          <img class="btn__icon" src="img/gift.svg" alt="">Забрать подборку в Telegram
+          <img class="btn__icon" src="img/gift-white.svg" alt="">Забрать подборку в Telegram
         </a>
       </div>
     </div>
@@ -814,6 +852,16 @@
   document.querySelectorAll('.fade-up').forEach(function (el) {
     observer.observe(el);
   });
+
+  // Шапка разворачивается, когда страницу прокрутили ниже первого экрана
+  var header = document.querySelector('.header');
+
+  function obnovitShapku() {
+    header.classList.toggle('header--razvernuta', window.scrollY > 120);
+  }
+
+  obnovitShapku();
+  window.addEventListener('scroll', obnovitShapku, { passive: true });
 
   // Мобильное меню
   var burger = document.querySelector('.header__burger');

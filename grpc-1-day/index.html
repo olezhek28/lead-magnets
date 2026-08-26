@@ -97,7 +97,7 @@
     overflow-x: hidden;
   }
 
-  img { max-width: 100%; display: block; }
+  img { max-width: 100%; height: auto; display: block; }
 
   a { color: inherit; }
 
@@ -178,10 +178,14 @@
     text-decoration: none;
     white-space: nowrap;
   }
+  /* В оригинале якорные ссылки лежат в тёмной пилюле по центру шапки */
   .header__nav {
     display: flex;
-    gap: 8px;
-    margin-left: auto;
+    gap: 4px;
+    margin: 0 auto;
+    padding: 3px;
+    background: var(--bg-card);
+    border-radius: 999px;
   }
   .header__link {
     padding: 10px 16px;
@@ -193,16 +197,29 @@
     transition: background .2s ease, color .2s ease;
   }
   .header__link:hover { background: var(--bg-card); color: var(--text); }
-  .header__cta { padding: 14px 24px; font-size: 13px; }
+  .header__cta { margin-left: auto; padding: 14px 26px; font-size: 13px; }
   .header__burger {
-    display: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-left: auto;
     padding: 8px;
     background: none;
     border: 0;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
   }
   .header__burger img { width: 22px; height: 22px; }
+
+  /* Наверху страницы шапка минимальная — логотип и «Меню», как в оригинале.
+     Якоря и кнопка выезжают, когда страницу прокрутили. */
+  .header__nav, .header__cta { display: none; }
+  .header--razvernuta .header__nav { display: flex; }
+  .header--razvernuta .header__cta { display: inline-flex; }
+  .header--razvernuta .header__burger { display: none; }
 
   /* ---------- Мобильное меню ---------- */
 
@@ -576,9 +593,9 @@
     .section { padding: 64px 0; }
     .section__title, .whom__title, .final__title { font-size: 32px; }
 
-    .header__nav { display: none; }
-    .header__cta { display: none; }
-    .header__burger { display: block; }
+    .header--razvernuta .header__nav,
+    .header--razvernuta .header__cta { display: none; }
+    .header--razvernuta .header__burger { display: flex; }
 
     .hero { padding: 48px 0 64px; }
     .hero__inner { grid-template-columns: minmax(0, 1fr); gap: 32px; }
@@ -649,8 +666,8 @@
       <a class="header__link" href="#speaker">Преподаватель</a>
     </nav>
     <a class="btn header__cta" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">Забрать практикум</a>
-    <button class="header__burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="drawer">
-      <img src="img/menu.svg" alt="">
+    <button class="header__burger" type="button" aria-expanded="false" aria-controls="drawer">
+      Меню<img src="img/menu.svg" alt="">
     </button>
   </div>
 </header>
@@ -900,6 +917,16 @@
   document.querySelectorAll('.fade-up').forEach(function (el) {
     observer.observe(el);
   });
+
+  // Шапка разворачивается, когда страницу прокрутили ниже первого экрана
+  var header = document.querySelector('.header');
+
+  function obnovitShapku() {
+    header.classList.toggle('header--razvernuta', window.scrollY > 120);
+  }
+
+  obnovitShapku();
+  window.addEventListener('scroll', obnovitShapku, { passive: true });
 
   // Мобильное меню
   var burger = document.querySelector('.header__burger');
