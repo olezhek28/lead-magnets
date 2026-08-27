@@ -24,10 +24,11 @@ jobs:
       - uses: actions/checkout@v4
       # Артефакт собирается из всего репозитория (path: .), поэтому служебное
       # надо выкинуть — иначе оно отдаётся с guide.olezhek28.courses по прямым
-      # ссылкам: планы продуктов, инструкции ассистента, исходники idea-board.
+      # ссылкам: планы продуктов, инструкции ассистента, исходники idea-board,
+      # скрипты сборки черновых превью.
       # Удаляется только в раннере, в репозитории всё остаётся на месте.
       - name: Выкинуть непубличное из артефакта
-        run: rm -rf docs .claude tasks idea-board CLAUDE.md README.md
+        run: rm -rf docs scripts .claude tasks idea-board CLAUDE.md README.md
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
