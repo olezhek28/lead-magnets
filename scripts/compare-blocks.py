@@ -15,7 +15,7 @@ import sys
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else 'origin/main'
 PAGE = 'system_design/index.html'
-OUT = 'system_design/compare-blocks.html'
+OUT = sys.argv[2] if len(sys.argv) > 2 else 'system_design/compare-blocks.html'
 
 # что показываем: селектор → как подписать
 BLOCKS = [
