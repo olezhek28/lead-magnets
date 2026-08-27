@@ -6,13 +6,13 @@
 <!-- Cookie-баннер + Яндекс.Метрика (счётчик 96022201, общий для guide.olezhek28.courses) -->
 <script src="/consent.js" defer></script>
 
-<!-- ДАТЫ ПОТОКА (старт 7 сентября 2026, предзапись до 23 августа) зашиты в 13 местах.
+<!-- ДАТЫ ПОТОКА (старт 7 сентября 2026, продажа открывается 27 августа) зашиты в 13 местах.
      При смене потока обновить ВСЕ, иначе разметка и llms-файлы будут противоречить
      тому, что написано на странице:
        этот файл — description; JSON-LD: startDate и два priceValidUntil;
-         бейдж предзаписи в герое; капсула &quot;Старт потока&quot;; в блоке тарифов —
-         плашка предзаписи, карточка &quot;Старт потока&quot; в полосе фактов и строка
-         &quot;цена предзаписи, действует до…&quot; в каждом из двух тарифов;
+         бейдж &quot;Старт продаж&quot; в герое; капсула &quot;Старт потока&quot;; в блоке тарифов —
+         плашка про открытие продажи, карточка &quot;Старт потока&quot; в полосе фактов и
+         строка &quot;старт продаж …&quot; в каждом из двух тарифов;
          бейдж в финальном блоке
        /llms.txt — вводный абзац и строка &quot;Длительность&quot;
        /llms-full.txt — &quot;Статус&quot; и &quot;Старт потока&quot;
@@ -97,26 +97,26 @@
             "lowPrice": "54990",
             "highPrice": "89990",
             "offerCount": "2",
-            "availability": "https://schema.org/PreOrder",
+            "availability": "https://schema.org/OutOfStock",
             "offers": [
               {
                 "@type": "Offer",
                 "name": "Стандарт",
-                "price": "54990",
+                "price": "59990",
                 "priceCurrency": "RUB",
-                "priceValidUntil": "2026-08-23",
-                "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи до 23 августа 2026, обычная цена 59 990 ₽. Цена не зависит от способа оплаты: в рассрочку 4 583 ₽/мес на 12 месяцев, сумма та же. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
+                "priceValidUntil": "2026-09-07",
+                "availability": "https://schema.org/OutOfStock",
+                "description": "Продажа открывается 27 августа 2026. Цена не зависит от способа оплаты: в рассрочку 4 999 ₽/мес на 12 месяцев, сумма та же. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               },
               {
                 "@type": "Offer",
                 "name": "С проверкой и практикой",
-                "price": "86990",
+                "price": "91990",
                 "priceCurrency": "RUB",
-                "priceValidUntil": "2026-08-23",
-                "availability": "https://schema.org/PreOrder",
-                "description": "Цена предзаписи до 23 августа 2026, обычная цена 91 990 ₽. Цена не зависит от способа оплаты: в рассрочку 7 249 ₽/мес на 12 месяцев, сумма та же. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
+                "priceValidUntil": "2026-09-07",
+                "availability": "https://schema.org/OutOfStock",
+                "description": "Продажа открывается 27 августа 2026. Цена не зависит от способа оплаты: в рассрочку 7 666 ₽/мес на 12 месяцев, сумма та же. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
                 "url": "https://guide.olezhek28.courses/system_design/#tarify"
               }
             ]
@@ -162,8 +162,13 @@
      собственный display блока (grid у .row и т.п.) не теряется. */
   .f-off-video-sales    [data-feature="video-sales"],
   .f-off-chat-screens   [data-feature="chat-screens"],
+  .f-off-preorder-cta   [data-feature="preorder-cta"],
   .f-off-vacancy-shots  [data-feature="vacancy-shots"],
   .f-off-demo-lesson    [data-feature="demo-lesson"] { display: none !important; }
+  /* .final__title держит 40px снизу под кнопку. Кнопки нет — отступ
+     превращается в дыру в нижней половине жёлтой карточки, поэтому на
+     выключенном тогле он снимается. Вернётся вместе с кнопкой. */
+  .f-off-preorder-cta .final__title { margin-bottom: 0; }
 
   :root {
     --bg-primary:   #10171A;
@@ -699,7 +704,7 @@
   .vmodal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.86); backdrop-filter: blur(5px); }
   .vmodal__panel { position: relative; z-index: 1; width: min(1100px, 94vw); border-radius: var(--r-lg); overflow: hidden;
     box-shadow: 0 40px 120px -30px rgba(0,0,0,.92); animation: gcPop .28s var(--ease); }
-  /* aspect-ratio висит на обёртке, а iframe растянут абсолютом: VK отдаёт
+  /* aspect-ratio висит на обёртке, а iframe растянут абсолютом: RUTUBE отдаёт
      плеер без собственной высоты, и без этого фрейм схлопывается в полоску. */
   .vmodal__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
   .vmodal__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -1573,11 +1578,14 @@
   .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
   .tier--light .tier__price { color: var(--light-ink); }
   .tier__price b { font-weight: 500; }
-  /* зачёркнутая базовая цена рядом с ценой предзаписи. Скидка привязана
-     к сроку, а не к способу оплаты: п. 4.1 ст. 16.1 ЗоЗПП с 01.04.2026
-     запрещает разные цены в зависимости от того, платит человек сразу
-     или в рассрочку. Базовая цена должна быть настоящей — после
-     23 августа продаём именно по ней, иначе это недостоверная реклама */
+  /* .tier__price-old — зачёркнутая базовая цена рядом со скидочной.
+     СЕЙЧАС НЕ ИСПОЛЬЗУЕТСЯ: предзапись закрылась 23 августа 2026, в тарифах
+     стоят настоящие цены (59 990 и 91 990) без зачёркиваний. Правило оставлено
+     на случай следующей акции, но включать его можно только вместе со сроком:
+     скидка должна быть привязана к сроку, а не к способу оплаты — п. 4.1
+     ст. 16.1 ЗоЗПП с 01.04.2026 запрещает разные цены в зависимости от того,
+     платит человек сразу или в рассрочку. И зачёркнутая цена должна быть
+     настоящей, иначе это недостоверная реклама. */
   .tier__price-old { margin-left: 12px; font-size: .44em; letter-spacing: -0.02em; color: var(--text-deco); white-space: nowrap; }
   .tier__price-old s { text-decoration-thickness: 1px; }
   .tier--light .tier__price-old s { color: var(--light-mute); }
@@ -1939,13 +1947,25 @@
 
        video-sales   — видеопродажник в секции «Почему не получается пройти сисдиз»,
                        подводка «разобрал в ролике за 8 минут» и модалка с плеером.
-                       Плеер уже подключён (VK Видео, oid=-188550966, id=456239033).
+                       Плеер уже подключён (RUTUBE, приватная ссылка с токеном
+                       доступа p= — без него фрейм отдаёт «видео не найдено»).
                        Перед включением проверить два пункта:
-                         1) ролик открывается в анонимном окне, без логина в VK
-                            (на 24.08.2026 отдавал «Видеофайл не найден» —
-                            приватность просмотра должна быть «Все пользователи»);
+                         1) ролик открывается в анонимном окне по адресу вида
+                            rutube.ru/play/embed/<id>/?p=<токен> (VK Видео убрали
+                            24.08.2026: лагал и не проигрывался у части людей);
                          2) обложка sd-video-poster.jpg положена и совпадает
-                            с превью ролика в VK.
+                            с превью ролика на RUTUBE.
+       preorder-cta  — всё, через что открывалась анкета предзаписи: блоки
+                       .tier__cta в обеих карточках тарифов (кнопка плюс
+                       подпись «Это анкета, а не оплата») и кнопка с хинтом
+                       в финальном блоке. В тарифах тогл висит на обёртке, а
+                       не на самой кнопке: иначе подпись остаётся висеть под
+                       пустым местом.
+                       Выключено: предзапись закрыта, срок истёк 23 августа
+                       2026, записаться больше нельзя. Продажа открывается
+                       27 августа — тогда либо вернуть тогл в true, либо
+                       заменить кнопки на оплату (и переименовать заголовок
+                       модалки «Предзапись на курс», строка ниже по файлу).
        chat-screens  — блок «А ещё у нас полный комфортик в чатике».
                        Включить, когда в макет телефона добавлены реальные скриншоты
                        чата (сейчас внутри плашка «СКРИНЫ ЧАТА · добавим позже»).
@@ -1956,6 +1976,7 @@
   var FEATURES = {
     'video-sales':  true,
     'chat-screens': false,
+    'preorder-cta': false,
 
     /* vacancy-shots — полоса скринов вакансий в блоке «Между тобой и грейдом».
        Текст блока показывается всегда, скрины ждут реальных скриншотов.
@@ -2039,7 +2060,7 @@
   <section class="hero">
     <div class="container">
       <div class="hero__inner">
-        <div class="hero__eyebrow fade-up"><span class="hero__eyebrow-dot" aria-hidden="true"></span>Идёт предзапись&nbsp;· до&nbsp;23 августа</div>
+        <div class="hero__eyebrow fade-up"><span class="hero__eyebrow-dot" aria-hidden="true"></span>Старт продаж&nbsp;· 27 августа</div>
         <!-- Плашка автора стоит внутри h1: визуально она встроена в строку заголовка,
              и вынести её наружу без переверстки героя нельзя. Чтобы она не попадала
              в доступное имя заголовка ("System Design: Олег Козырев автор курса Staff
@@ -2314,14 +2335,15 @@
              закрыт для анонимов, сверить по таймлайну не удалось. -->
         <p class="mech__lead" data-feature="video-sales">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;8&nbsp;минут.</p>
 
-        <!-- Видеопродажник: VK Видео vkvideo.ru/video-188550966_456239033
-             (oid=-188550966, id=456239033). Плеер открывается в модалке
+        <!-- Видеопродажник: RUTUBE, приватный ролик
+             6092cedd9d8ec261a621b354be79225e (токен доступа в параметре p=).
+             Плеер открывается в модалке
              .vmodal внизу файла, iframe создаётся по клику и сносится при
              закрытии. Внутри <button> можно только строчное содержимое,
              поэтому обёртки — span, а не div.
              ⚠️ обложки-картинки пока нет: .video__thumb рисует градиент с сеткой.
              Обложка sd-video-poster.jpg/.webp — тот же файл, что залит превью
-             ролика в VK, чтобы карточка на лендинге и в VK читалась одинаково.
+             ролика на RUTUBE, чтобы карточка на лендинге и в плеере читалась одинаково.
              Подписи-плашки внизу больше нет: заголовок «ПОЧЕМУ ВАЛЯТСЯ НА
              SYSTEM DESIGN» уже нарисован на самой обложке, дублировать его
              текстом поверх — шум. Текст на обложке держится в левом верхнем
@@ -3043,7 +3065,7 @@
       <div class="pricing__scarcity fade-up">
         <span class="scarcity">
           <span class="scarcity__dot" aria-hidden="true"></span>
-          <span><b>Идёт предзапись:</b> до&nbsp;23 августа цена ниже. Следующий поток только через полгода</span>
+          <span><b>Продажа откроется 27&nbsp;августа.</b> Предзапись уже закрыта. Следующий поток только через полгода</span>
         </span>
       </div>
 
@@ -3070,9 +3092,9 @@
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
           <div class="tier__tagline">Весь материал и&nbsp;алгоритм. Готовишься сам, вопросы задаёшь на&nbsp;живых Q&amp;A</div>
-          <div class="tier__price"><b>54 990 ₽</b><span class="tier__price-old"><span class="vh">обычная цена </span><s>59 990&nbsp;₽</s></span></div>
-          <div class="tier__price-full">цена предзаписи, действует до&nbsp;<b>23 августа</b></div>
-          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;583&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
+          <div class="tier__price"><b>59 990 ₽</b></div>
+          <div class="tier__price-full">старт продаж&nbsp;<b>27 августа</b></div>
+          <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;999&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
           <ul class="tier__list">
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>41 урок: видео плюс подробный текстовый конспект.</b> Алгоритм интервью, сеть и&nbsp;доставка, хранение данных, кэш и&nbsp;очереди, устойчивость под нагрузкой, поведение на&nbsp;секции</li>
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>8 систем, разобранных целиком:</b> Telegram, лента Avito, фото-соцсеть со&nbsp;Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с&nbsp;автодополнением, Яндекс Такси. Каждую систему разбираем как на&nbsp;собесе: требования, нагрузка, узкие места, куда копнёт интервьюер</li>
@@ -3086,7 +3108,7 @@
           </ul>
           <!-- href — фолбэк на случай, если JS не сработал или ссылку открыли в новой вкладке;
                при работающем JS клик перехватывается и форма открывается в модалке -->
-          <div class="tier__cta">
+          <div class="tier__cta" data-feature="preorder-cta">
             <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_standart">Заполнить анкету предзаписи</a>
             <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
           </div>
@@ -3095,9 +3117,9 @@
         <div class="tier tier--light fade-up">
           <div class="tier__label">С&nbsp;проверкой и&nbsp;практикой</div>
           <div class="tier__tagline">Всё то&nbsp;же самое, плюс обратная связь по&nbsp;твоим решениям и&nbsp;репетиция собеса</div>
-          <div class="tier__price"><b>86 990 ₽</b><span class="tier__price-old"><span class="vh">обычная цена </span><s>91 990&nbsp;₽</s></span></div>
-          <div class="tier__price-full">цена предзаписи, действует до&nbsp;<b>23 августа</b></div>
-          <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;249&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
+          <div class="tier__price"><b>91 990 ₽</b></div>
+          <div class="tier__price-full">старт продаж&nbsp;<b>27 августа</b></div>
+          <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;666&nbsp;₽/мес на&nbsp;12&nbsp;месяцев<br>без переплаты: сумма та&nbsp;же, что при оплате целиком</div>
           <div class="tier__badge">
             <span class="tier__badge-title">Лучший выбор</span>
             <span class="tier__badge-text">Если хочешь сразу закреплять материал с&nbsp;обратной связью и&nbsp;тренироваться в&nbsp;условиях, близких к&nbsp;собесу</span>
@@ -3118,7 +3140,7 @@
             </ol>
             <div class="tier__practice-note">5&nbsp;недель курса, 5&nbsp;таких практик. К&nbsp;реальной секции тебя уже не&nbsp;первый раз гоняют вопросами по&nbsp;твоей же&nbsp;архитектуре</div>
           </div>
-          <div class="tier__cta">
+          <div class="tier__cta" data-feature="preorder-cta">
             <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="tarif_mentor">Заполнить анкету предзаписи</a>
             <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
           </div>
@@ -3260,9 +3282,9 @@
           <span class="final__badge">Старт 7 сентября 2026</span>
           <span class="final__badge">60 мест</span>
         </div>
-        <h2 class="final__title">Записывайся на&nbsp;поток, пока действует цена предзаписи</h2>
-        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="final">Записаться на&nbsp;поток</a>
-        <p class="final__hint">* После нажатия откроется анкета предзаписи</p>
+        <h2 class="final__title">Продажа откроется 27&nbsp;августа, старт потока 7&nbsp;сентября</h2>
+        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open data-goal="final" data-feature="preorder-cta">Записаться на&nbsp;поток</a>
+        <p class="final__hint" data-feature="preorder-cta">* После нажатия откроется анкета предзаписи</p>
       </div>
     </div>
   </section>
@@ -3693,7 +3715,7 @@
     <button type="button" class="gc-modal__close" data-gc-close aria-label="Закрыть">&#10005;</button>
     <div class="gc-modal__body">
       <form class="gcform" id="gc-form" novalidate>
-        <h2 class="gcform__title" id="gc-form-title">Предзапись на курс</h2>
+        <h2 class="gcform__title" id="gc-form-title">Запись на курс</h2>
         <p class="gcform__lead">Оставь контакты — напишем, когда откроется набор на новый поток, и позовём в чат курса.</p>
 
         <div class="gcform__field" data-field="name">
@@ -3980,14 +4002,16 @@
 </div>
 
 <script>
-  // ===== Видеопродажник: модалка с плеером VK Видео =====
+  // ===== Видеопродажник: модалка с плеером RUTUBE =====
   // Фрейм живёт ровно столько, сколько открыта модалка: при закрытии узел
   // сносится — вместе с ним глохнет звук, а следующее открытие поднимает
   // ролик с начала, а не с того места, где его бросили. Тот же приём, что на
-  // лендинге микросервисов. Останавливать плеер через postMessage сознательно
-  // не стали: это потребовало бы тащить на страницу сторонний скрипт с vk.com,
-  // а он ходит за пределы нашего домена и должен был бы жить под баннером
-  // согласия рядом с consent.js — цена выше пользы.
+  // лендинге микросервисов.
+  // Раньше тут стоял VK Видео: у части людей ролик лагал или не проигрывался
+  // вовсе, поэтому 24.08.2026 переехали на RUTUBE. Заодно со страницы ушёл
+  // сторонний скрипт vk.com/js/api/videoplayer.js — у RUTUBE плеером управляют
+  // через postMessage, грузить нечего, и вопрос с баннером согласия рядом
+  // с consent.js отпал сам собой.
   (function () {
     var modal = document.getElementById('video-modal');
     var frameHost = document.getElementById('video-modal-frame');
@@ -3995,9 +4019,72 @@
     if (!modal || !frameHost || !btn) return;
 
     var closeBtn = modal.querySelector('.vmodal__close');
-    // autoplay здесь безопасен: фрейм создаётся ТОЛЬКО по клику человека,
-    // то есть автозапуска на холодной странице не бывает.
-    var EMBED = 'https://vkvideo.ru/video_ext.php?oid=-188550966&id=456239033&hd=2&autoplay=1';
+
+    // Ролик приватный: без токена доступа в параметре p= фрейм отдаёт
+    // «видео не найдено». Токен всё равно светится в исходнике страницы —
+    // это ссылка «по секрету», а не защита, для лендинга-продажника норм.
+    // autoStart=true просит плеер стартовать сам, без второго клика внутри
+    // модалки.
+    var EMBED = 'https://rutube.ru/play/embed/6092cedd9d8ec261a621b354be79225e/' +
+                '?p=nFGjgZV4zFAc3LFJwTR1MA&autoStart=true';
+    var frame = null;
+
+    // ===== Автозапуск СО ЗВУКОМ =====
+    // Сам по себе autoStart звука не даёт: Chrome и Safari запрещают
+    // автовоспроизведение со звуком, и плеер, чтобы гарантированно
+    // стартовать, глушит себя сам. Снять глушение можно только командой
+    // плееру — у RUTUBE это postMessage с JSON-строкой в iframe, никакого
+    // стороннего скрипта на странице не нужно. Перед открытием модалки был
+    // клик человека, поэтому снять глушение браузер обычно разрешает.
+    // Если API поменяют, команды просто уйдут в никуда: останется обычный
+    // автозапуск, человек включит звук кнопкой в плеере. Ломаться нечему.
+    function send(type, data) {
+      if (!frame || !frame.contentWindow) return;
+      try {
+        frame.contentWindow.postMessage(JSON.stringify({ type: type, data: data || {} }), '*');
+      } catch (e) {}
+    }
+
+    // Окно доводки звука. Попытки снять глушение имеют смысл только первые
+    // пару секунд после открытия: дальше замолкаем, иначе, если человек сам
+    // приглушит плеер, мы будем упрямо возвращать звук обратно.
+    var soundTimers = [];
+    var soundOpen = false;
+
+    function unmute() {
+      if (!soundOpen) return;
+      send('player:unMute');
+      send('player:setVolume', { volume: 1 });
+    }
+
+    function startSound() {
+      stopSound();
+      soundOpen = true;
+      unmute();
+      soundTimers.push(setTimeout(unmute, 800));
+      soundTimers.push(setTimeout(unmute, 2000));
+      soundTimers.push(setTimeout(function () { soundOpen = false; }, 4000));
+    }
+
+    function stopSound() {
+      soundOpen = false;
+      soundTimers.forEach(function (t) { clearTimeout(t); });
+      soundTimers = [];
+    }
+
+    // Плеер отвечает сообщениями вида {"type":"player:ready", ...}. Источник
+    // проверяем обязательно: иначе слушатель отзовётся на postMessage от любой
+    // чужой врезки на странице. player:play шлём только на ready — если слать
+    // его на каждую смену состояния, человек не сможет поставить на паузу.
+    window.addEventListener('message', function (e) {
+      if (!frame || !e.source || e.source !== frame.contentWindow) return;
+      if (typeof e.data !== 'string') return;
+      var msg;
+      try { msg = JSON.parse(e.data); } catch (err) { return; }
+      if (!msg || !msg.type) return;
+      if (msg.type === 'player:ready') { send('player:play'); unmute(); }
+      else if (msg.type === 'player:changeState') { unmute(); }
+    });
 
     // Изоляция фона — тот же приём, что у модалки формы: aria-modal сам по
     // себе фон не отключает, Tab уходил бы на страницу под модалкой.
@@ -4032,12 +4119,13 @@
 
     function open() {
       if (!frameHost.firstChild) {
-        var iframe = document.createElement('iframe');
-        iframe.src = EMBED;
-        iframe.title = 'Почему валят System Design — видео';
-        iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
-        iframe.setAttribute('allowfullscreen', '');
-        frameHost.appendChild(iframe);
+        frame = document.createElement('iframe');
+        frame.src = EMBED;
+        frame.title = 'Почему валят System Design — видео';
+        frame.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+        frame.setAttribute('allowfullscreen', '');
+        frameHost.appendChild(frame);
+        startSound();
       }
       modal.hidden = false;
       document.body.classList.add('gc-lock');
@@ -4050,7 +4138,13 @@
       modal.hidden = true;
       document.body.classList.remove('gc-lock');
       backgroundInert(false);
+      // Фрейм всё равно сносится следующими строками, но сначала просим плеер
+      // встать на паузу: снос узла и так глушит звук, а пауза страхует на
+      // случай, если браузер придержит выгрузку фрейма на пару кадров.
+      send('player:pause');
+      stopSound();
       frameHost.textContent = '';
+      frame = null;
       btn.focus();
     }
 

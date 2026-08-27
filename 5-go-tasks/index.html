@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+      ym(96022201, 'init', {webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/96022201" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  <title>5 гошных задач, которые надо уметь решать, если хочешь оффер на 300к+</title>
+  <meta name="description" content="Подробный урок от Senior+ Go-разработчика из BigTech. Разберись в самых популярных задачах с собеседований в BigTech, их ловушках и нюансах. Преподаватель — Олег Козырев.">
+  <meta name="keywords" content="go, golang, задачи go, собеседование go, слайсы, мапы, горутины, интерфейсы, асинхронные паттерны, bigtech">
+  <meta name="author" content="Олег Козырев">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://guide.olezhek28.courses/5-go-tasks/">
+  <meta property="og:title" content="5 гошных задач, которые надо уметь решать, если хочешь оффер на 300к+">
+  <meta property="og:description" content="Подробный урок от Senior+ Go-разработчика из BigTech. Слайсы, мапы, интерфейсы, горутины и асинхронные паттерны. Бесплатно.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://guide.olezhek28.courses/5-go-tasks/">
+  <meta property="og:image" content="https://guide.olezhek28.courses/5-go-tasks/og-image.jpg">
+  <meta property="og:image:width" content="1680">
+  <meta property="og:image:height" content="882">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Олег Козырев · Гайды">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="5 гошных задач, которые надо уметь решать, если хочешь оффер на 300к+">
+  <meta name="twitter:description" content="Подробный урок от Senior+ Go-разработчика из BigTech. Слайсы, мапы, интерфейсы, горутины и асинхронные паттерны. Бесплатно.">
+  <meta name="twitter:image" content="https://guide.olezhek28.courses/5-go-tasks/og-image.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="img/gopher.png" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "5 гошных задач, которые надо уметь решать, если хочешь оффер на 300к+",
+    "description": "Подробный урок от Senior+ Go-разработчика из BigTech: слайсы, мапы, интерфейсы, горутины и асинхронные паттерны — ловушки и нюансы задач с собеседований.",
+    "provider": {
+      "@type": "Person",
+      "name": "Олег Козырев",
+      "jobTitle": "Staff Engineer",
+      "url": "https://guide.olezhek28.courses"
+    },
+    "isAccessibleForFree": true,
+    "inLanguage": "ru",
+    "url": "https://guide.olezhek28.courses/5-go-tasks/",
+    "image": "https://guide.olezhek28.courses/5-go-tasks/og-image.jpg",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "RUB",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
+  <style>
+  :root {
+    --bg:          #182023;
+    --bg-card:     #22282d;
+    --bg-raised:   #31383f;
+    --accent:      #dfdf41;
+    --accent-dim:  #c1c139;
+    --accent-ink:  #002d25;
+    --light-bg:    #e9e8ed;
+    --light-ink:   #182023;
+    --text:        #ffffff;
+    --text-body:   #d1d2d3;
+    --text-mute:   #babcbd;
+    --shell:       1200px;
+    --radius:      24px;
+    --radius-sm:   12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  img { max-width: 100%; height: auto; display: block; }
+
+  a { color: inherit; }
+
+  .shell {
+    width: 100%;
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Появление блоков при скролле */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .fade-up { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ---------- Кнопки ---------- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 32px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background .2s ease, transform .2s ease;
+  }
+  .btn:hover { background: var(--accent-dim); transform: translateY(-2px); }
+  .btn__icon { width: 22px; height: 22px; flex: none; }
+
+  /* Тёмная кнопка — на жёлтой панели финального блока */
+  .btn--dark { background: var(--bg); color: var(--text); }
+  .btn--dark:hover { background: #0f1517; }
+
+  .btn--ghost {
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid var(--bg-raised);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .btn--ghost:hover { background: var(--bg-card); transform: none; }
+
+  /* ---------- Шапка ---------- */
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(24, 32, 35, .88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(49, 56, 63, .6);
+  }
+  .header__inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 68px;
+  }
+  .header__logo {
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--text-body);
+  
+  }
+  /* В оригинале якорные ссылки лежат в тёмной пилюле по центру шапки */
+  .header__nav {
+    display: flex;
+    gap: 4px;
+    margin: 0 auto;
+    padding: 3px;
+    background: var(--bg-card);
+    border-radius: 999px;
+  }
+  .header__link {
+    padding: 10px 16px;
+    border-radius: 999px;
+    color: var(--text-body);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .2s ease, color .2s ease;
+  }
+  .header__link:hover { background: var(--bg-card); color: var(--text); }
+  .header__cta { margin-left: auto; padding: 14px 26px; font-size: 13px; }
+  .header__burger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    padding: 8px;
+    background: none;
+    border: 0;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .header__burger img { width: 22px; height: 22px; }
+
+  /* Наверху страницы шапка минимальная — логотип и «Меню», как в оригинале.
+     Якоря и кнопка выезжают, когда страницу прокрутили. */
+  .header__nav, .header__cta { display: none; }
+  .header--razvernuta .header__nav { display: flex; }
+  .header--razvernuta .header__cta { display: inline-flex; }
+  .header--razvernuta .header__burger { display: none; }
+
+  /* ---------- Мобильное меню ---------- */
+
+  .drawer {
+    position: fixed;
+    inset: 68px 0 auto;
+    z-index: 45;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 20px 24px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--bg-raised);
+  }
+  .drawer.open { display: flex; }
+  .drawer__link {
+    padding: 14px 4px;
+    color: var(--text-body);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .drawer__social {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .drawer__social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--bg-raised);
+    border-radius: 50%;
+    color: var(--text-body);
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .drawer__social a:hover { color: var(--accent); border-color: var(--accent); }
+
+  .drawer .btn { margin-top: 12px; }
+
+  /* ---------- Общие заголовки ---------- */
+
+  .section { padding: 80px 0; }
+
+  .section__title {
+    margin: 0 0 48px;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+  }
+
+  .accent { color: var(--accent); }
+
+  /* ---------- Первый экран ---------- */
+
+  .hero { padding: 72px 0 96px; }
+  .hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+  }
+  .hero__badge {
+    display: inline-block;
+    margin-bottom: 28px;
+    padding: 10px 20px;
+    border: 1px solid #707070;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .hero__title {
+    margin: 0 0 20px;
+    max-width: 580px;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+  .hero__subtitle {
+    margin: 0 0 16px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .hero__text {
+    margin: 0 0 36px;
+    max-width: 460px;
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* Гофер с башней из «кирпичей» тем и жёлтое свечение за ним */
+  .hero__art {
+    position: relative;
+    max-width: 460px;
+    margin-left: auto;
+  }
+  .hero__glow {
+    position: absolute;
+    z-index: 0;
+    top: 18%;
+    left: 22%;
+    width: 66%;
+    aspect-ratio: 1 / 1;
+    background: var(--accent);
+    opacity: .45;
+    filter: blur(50px);
+    pointer-events: none;
+  }
+  .hero__gopher {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ---------- Что внутри: 5 задач ---------- */
+
+  .tasks__title {
+    margin: 0 0 56px;
+    max-width: 700px;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -.05em;
+  }
+  /* Одна сетка на все пункты: строки общие, поэтому заголовки стоят
+     на одной линии, как в оригинале. Порядок: 01, код, 02 / 03, 04, 05. */
+  .tasks__cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 56px 40px;
+    align-items: start;
+  }
+
+  /* Площадка под картинку фиксированной высоты: картинки разной формы,
+     и без неё заголовки пунктов разъезжаются по вертикали. В оригинале
+     они стоят на одной линии. */
+  .task__media {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    height: 250px;
+    margin-bottom: 22px;
+  }
+  .task__img {
+    max-height: 100%;
+    max-width: 85%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+  .task__num {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: var(--accent);
+    color: #000;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.55;
+  }
+  .task__title {
+    margin: 0 0 10px;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.54;
+    letter-spacing: normal;
+  }
+  .task__desc {
+    margin: 0;
+    color: var(--text);
+    opacity: .7;
+    font-size: 15px;
+    line-height: 1.53;
+  }
+  /* Декоративный скриншот кода в средней колонке */
+  .tasks__code {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+  }
+
+  .tasks__cta { margin-top: 64px; text-align: center; }
+
+  /* ---------- Для кого ---------- */
+
+  .whom {
+    position: relative;
+    overflow: hidden;
+    padding: 56px 64px;
+    background: var(--light-bg);
+    border-radius: 34px;
+    color: var(--light-ink);
+  }
+  .whom__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+  .whom__title {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -.05em;
+  }
+  .whom__label {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    border: 1px solid #b4b4b5;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .whom__list {
+    margin: 0;
+    padding-left: 22px;
+    color: #374246;
+    font-size: 18px;
+    line-height: 1.8;
+  }
+  .whom__list li + li { margin-top: 10px; }
+
+  /* ---------- Преподаватель ---------- */
+
+  .teacher__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 40px;
+    align-items: end;
+    margin-bottom: 48px;
+  }
+  .teacher__portrait { width: 260px; height: auto; border-radius: var(--radius); }
+
+  /* В оригинале места работы идут одной колонкой во всю ширину:
+     компания с должностью в первой трети, описание во второй, третья
+     остаётся под портрет. */
+  .teacher__grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .job {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: center;
+    padding: 22px 0;
+    border-top: 1px solid var(--bg-raised);
+  }
+  .job:last-child { border-bottom: 1px solid var(--bg-raised); }
+  .job__kto {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .job__where { margin: 0; font-size: 18px; font-weight: 600; }
+  .job__role {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--bg-raised);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--text-mute);
+    font-weight: 400;
+  
+  }
+  .job__desc { margin: 0; color: var(--text-mute); font-size: 16px; }
+
+  /* ---------- Цифры ---------- */
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    line-height: 1.55;
+  
+  }
+  .stat {
+    padding: 32px;
+    min-height: 238px;
+    background: var(--bg-card);
+    border-radius: 16px;
+  }
+  .stat__value {
+    margin: 0 0 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .25);
+    color: var(--accent);
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -.01em;
+  }
+  .stat__label { margin: 0; color: var(--text-body); font-size: 15px; }
+
+  /* ---------- Финальный блок ---------- */
+
+  .final {
+    position: relative;
+    padding: 88px 40px 72px;
+    background: var(--accent);
+    border-radius: 34px;
+    color: var(--light-ink);
+    text-align: center;
+  }
+  /* Тёмная «вырезка» по верхнему краю жёлтой панели — как в оригинале */
+  .final__notch {
+    position: absolute;
+    height: auto;
+    top: -1px;
+    left: 50%;
+    width: 279px;
+    transform: translateX(-50%);
+  }
+  .final__title {
+    margin: 0 auto 24px;
+    max-width: 620px;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -.035em;
+  }
+  .final__note { margin: 0 0 12px; font-size: 18px; opacity: .9; }
+  .final__timer {
+    margin: 0 0 36px;
+    font-size: 60px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .077em;
+  }
+
+  /* ---------- Подвал ---------- */
+
+  .footer {
+    position: relative;
+    margin-top: 96px;
+    padding: 48px 0;
+    background: url("img/footer-bg.jpg") center / cover no-repeat;
+  }
+  .footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(24, 32, 35, .84);
+  }
+  .footer__inner {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+    align-items: center;
+    font-size: 14px;
+    color: var(--text-mute);
+  }
+  .footer__links { display: flex; flex-wrap: wrap; gap: 16px 32px; margin-left: auto; }
+  .footer__links a { color: var(--text-mute); text-decoration: none; }
+  .footer__links a:hover { color: var(--text); }
+
+  /* ---------- Планшет ---------- */
+
+  @media (max-width: 960px) {
+    .section { padding: 64px 0; }
+    .section__title, .whom__title, .final__title, .tasks__title { font-size: 32px; }
+
+    .header--razvernuta .header__nav,
+    .header--razvernuta .header__cta { display: none; }
+    .header--razvernuta .header__burger { display: flex; }
+
+    .hero { padding: 40px 0 64px; }
+    .hero__inner { grid-template-columns: minmax(0, 1fr); gap: 32px; text-align: center; }
+    .hero__title { margin-left: auto; margin-right: auto; font-size: 36px; }
+    .hero__text { margin-left: auto; margin-right: auto; }
+    .hero__art { order: -1; margin: 0 auto; max-width: 360px; }
+
+    .tasks__title { margin-bottom: 40px; }
+    .tasks__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 32px; }
+    .tasks__code { display: none; }
+
+    .whom { padding: 44px 32px; border-radius: 32px; }
+    .whom__inner { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+
+    .teacher__head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .teacher__portrait { width: 200px; }
+    .job { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .stats { grid-template-columns: minmax(0, 1fr); }
+
+    .final { padding: 72px 24px 56px; border-radius: 32px; }
+    .final__timer { font-size: 42px; }
+  }
+
+  /* ---------- Мобильный ---------- */
+
+  @media (max-width: 640px) {
+    .section { padding: 48px 0; }
+    .section__title, .whom__title, .final__title, .tasks__title { font-size: 26px; }
+
+    .hero__title { font-size: 28px; }
+    .hero__subtitle { font-size: 17px; }
+    .hero__text { font-size: 15px; }
+    .btn { width: 100%; padding: 18px 24px; font-size: 14px; }
+
+    .tasks__cols { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+    .task__media { height: 200px; margin-bottom: 18px; }
+    .task__img { height: 200px; }
+    .task__title { font-size: 21px; }
+    .tasks__cta { margin-top: 44px; }
+
+    .whom { padding: 32px 20px; border-radius: 24px; }
+    .whom__title { font-size: 26px; }
+    .whom__list { font-size: 16px; }
+
+    .job { grid-template-columns: minmax(0, 1fr); gap: 10px; align-items: start; }
+
+    .final { padding: 56px 18px 40px; border-radius: 24px; }
+    .final__notch { width: 200px; }
+    .final__note { font-size: 15px; }
+    .final__timer { font-size: 30px; }
+
+    .footer__inner { flex-direction: column; align-items: flex-start; }
+    .footer__links { margin-left: 0; }
+  }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="shell header__inner">
+    <a class="header__logo" href="/">{ Олег Козырев }</a>
+    <nav class="header__nav">
+      <a class="header__link" href="#tasks">Что внутри</a>
+      <a class="header__link" href="#about-lesson">Для кого</a>
+      <a class="header__link" href="#speaker">Преподаватель</a>
+    </nav>
+    <!-- Как в оригинале: кнопка шапки прокручивает к финальному блоку -->
+    <a class="btn header__cta" href="#lesson">Забрать урок</a>
+    <button class="header__burger" type="button" aria-expanded="false" aria-controls="drawer">
+      Меню<img src="img/menu.svg" alt="">
+    </button>
+  </div>
+</header>
+
+<div class="drawer" id="drawer">
+  <a class="drawer__link" href="#tasks">Что внутри</a>
+  <a class="drawer__link" href="#about-lesson">Для кого</a>
+  <a class="drawer__link" href="#speaker">Преподаватель</a>
+  <div class="drawer__social">
+    <a href="https://t.me/olezhek28" target="_blank" rel="noopener" aria-label="Telegram Олега">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-4.9 9-8.1c.4-.3-.1-.5-.6-.2L6.2 12.7 1.4 11.2c-1-.3-1-1 .2-1.5l19-7.3c.9-.3 1.6.2 1.3 1.9z"/></svg>
+    </a>
+    <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener" aria-label="YouTube-канал">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M23 12s0-3.8-.5-5.6a2.9 2.9 0 0 0-2-2C18.7 4 12 4 12 4s-6.7 0-8.5.4a2.9 2.9 0 0 0-2 2C1 8.2 1 12 1 12s0 3.8.5 5.6c.3 1 1 1.7 2 2C5.3 20 12 20 12 20s6.7 0 8.5-.4c1-.3 1.7-1 2-2C23 15.8 23 12 23 12zM9.8 15.4V8.6l5.8 3.4-5.8 3.4z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/in/olezhek28" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.5 4.7 5.9V21h-4v-5.6c0-1.3 0-3-1.9-3s-2.2 1.5-2.2 3V21h-4V9z"/></svg>
+    </a>
+  </div>
+  <a class="btn" href="https://t.me/olezhek28go/1925" target="_blank" rel="noopener">Забрать урок</a>
+</div>
+
+<main>
+
+  <section class="hero">
+    <div class="shell hero__inner">
+      <div>
+        <span class="hero__badge">Бесплатный практикум</span>
+        <h1 class="hero__title">5 гошных задач, которые надо уметь решать, если хочешь <span class="accent">оффер на 300к+</span></h1>
+        <p class="hero__subtitle">Подробный урок от Senior+ Go-разработчика из BigTech</p>
+        <p class="hero__text">Разберись в самых популярных задачах с собеседований в BigTech, их ловушках и нюансах.</p>
+        <!-- Как в оригинале: кнопка первого экрана прокручивает к финальному блоку, а не уводит в Telegram -->
+        <a class="btn" href="#lesson">
+          <img class="btn__icon" src="img/gift.svg" alt="">Забрать урок в Telegram
+        </a>
+      </div>
+      <div class="hero__art">
+        <span class="hero__glow" aria-hidden="true"></span>
+        <img class="hero__gopher" src="img/gopher.png" alt="Гофер держит блок «Слайсы» из башни тем: асинхронность, горутины, интерфейсы, мапы, слайсы" width="640" height="960">
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="tasks">
+    <div class="shell">
+      <h2 class="tasks__title fade-up">На уроке ты разберёшься, как решать каждый тип задач, их ловушки и нюансы:</h2>
+      <div class="tasks__cols fade-up">
+
+        <article class="task">
+            <div class="task__media">
+              <img class="task__img" src="img/task-slices.png" alt="Сердитый гофер ломает клавиатуру" loading="lazy" width="512" height="512">
+              <span class="task__num">01</span>
+            </div>
+            <h3 class="task__title">Слайсы</h3>
+            <p class="task__desc">Почему append() может сломать весь код и как избежать memory leak? Классическая ловушка для 90% кандидатов.</p>
+          </article>
+
+        <img class="tasks__code" src="img/task-code.png" alt="Пример кода на Go с проверкой интерфейса на nil" loading="lazy" width="576" height="580">
+
+        <article class="task">
+            <div class="task__media">
+              <img class="task__img" src="img/task-maps.png" alt="Гофер читает книгу" loading="lazy" width="446" height="560">
+              <span class="task__num">02</span>
+            </div>
+            <h3 class="task__title">Мапы</h3>
+            <p class="task__desc">Что происходит при конкурентном доступе к map и почему твой код падает в рандомный момент?</p>
+          </article>
+
+        <article class="task">
+            <div class="task__media">
+              <img class="task__img" src="img/task-interfaces.png" alt="Чёрный кот выглядывает из коробки" loading="lazy" width="373" height="560">
+              <span class="task__num">03</span>
+            </div>
+            <h3 class="task__title">Интерфейсы</h3>
+            <p class="task__desc">Когда nil-интерфейс не равен nil и как это использовать в своих интересах?</p>
+          </article>
+
+        <article class="task">
+            <div class="task__media">
+              <img class="task__img" src="img/task-goroutines.png" alt="Грустный гофер у захлопнувшегося капкана" loading="lazy" width="554" height="560">
+              <span class="task__num">04</span>
+            </div>
+            <h3 class="task__title">Горутины</h3>
+            <p class="task__desc">Почему возникает deadlock в этом коде и как его исправить за 30 секунд?</p>
+          </article>
+
+        <article class="task">
+            <div class="task__media">
+              <img class="task__img" src="img/task-async.png" alt="Испуганный разработчик за ноутбуком" loading="lazy" width="373" height="560">
+              <span class="task__num">05</span>
+            </div>
+            <h3 class="task__title">Асинхронные паттерны</h3>
+            <p class="task__desc">Как правильно синхронизировать горутины, чтобы избежать race conditions в production?</p>
+          </article>
+
+      </div>
+      <div class="tasks__cta">
+        <a class="btn" href="#lesson">
+          <img class="btn__icon" src="img/gift.svg" alt="">Забрать урок в Telegram
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about-lesson">
+    <div class="shell">
+      <div class="whom fade-up">
+        <div class="whom__inner">
+          <h2 class="whom__title">Урок для тех, кто хочет уверенно проходить собеседования на Go</h2>
+          <div>
+            <span class="whom__label">Подойдёт для:</span>
+            <ul class="whom__list">
+              <li>Тех, кто хочет свитчнуться на&nbsp;Go</li>
+              <li>Go-разработчиков, которые хотят освежить знания перед собеседованиями</li>
+              <li>Тех, кто испытывает трудности с&nbsp;собеседованиями</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="speaker">
+    <div class="shell">
+      <div class="teacher__head fade-up">
+        <h2 class="section__title" style="margin:0">Преподаватель — Олег Козырев</h2>
+        <img class="teacher__portrait" src="img/oleg-portrait.png" alt="Олег Козырев" loading="lazy" width="504" height="560">
+      </div>
+      <div class="teacher__grid fade-up">
+        <article class="job">
+          <div class="job__kto">
+            <p class="job__where">BigTech (под NDA)</p>
+            <span class="job__role">Staff Engineer</span>
+          </div>
+          <p class="job__desc">Разрабатываю LLM-платформу для создания ИИ продуктов внутри компании</p>
+        </article>
+        <article class="job">
+          <div class="job__kto">
+            <p class="job__where">BigTech (под NDA)</p>
+            <span class="job__role">Senior Engineer</span>
+          </div>
+          <p class="job__desc">Разрабатывал внутреннюю платформу для сотен сервисов корпорации</p>
+        </article>
+        <article class="job">
+          <div class="job__kto">
+            <p class="job__where">Ozon Tech</p>
+            <span class="job__role">Senior Engineer</span>
+          </div>
+          <p class="job__desc">Разрабатывал сервисы логистики, модерации контента и мониторинга доставки</p>
+        </article>
+        <article class="job">
+          <div class="job__kto">
+            <p class="job__where">Route 256</p>
+            <span class="job__role">Ex-преподаватель и тьютор</span>
+          </div>
+          <p class="job__desc">Менторил и преподавал курсы по построению микросервисов в школе Ozon Tech</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell stats fade-up">
+      <div class="stat">
+        <p class="stat__value">&gt;7 000 часов</p>
+        <p class="stat__label">Практики на реальных проектах в Big Tech компаниях</p>
+      </div>
+      <div class="stat">
+        <p class="stat__value">7+ лет</p>
+        <p class="stat__label">Занимаюсь программированием</p>
+      </div>
+      <div class="stat">
+        <p class="stat__value">8 500+</p>
+        <p class="stat__label">Подписчиков на YouTube-канале</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="lesson">
+    <div class="shell">
+      <div class="final fade-up">
+        <img class="final__notch" src="img/final-notch.svg" alt="" aria-hidden="true" width="278" height="44">
+        <h2 class="final__title">Забирай подробный урок с разбором задач бесплатно</h2>
+        <p class="final__note">Ссылка на урок будет активна ещё:</p>
+        <p class="final__timer" data-timer>00:00:00:00</p>
+        <a class="btn btn--dark" href="https://t.me/olezhek28go/1925" target="_blank" rel="noopener">
+          <img class="btn__icon" src="img/gift-white.svg" alt="">Забрать урок в Telegram
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="shell footer__inner">
+    <span>{ Олег Козырев }, © 2025</span>
+    <div class="footer__links">
+      <a href="/policy.html">Политика конфиденциальности</a>
+      <a href="https://t.me/maksimkoya" target="_blank" rel="noopener">Разработка сайта</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Появление блоков при скролле
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(function (el) {
+    observer.observe(el);
+  });
+
+  // Шапка разворачивается, когда страницу прокрутили ниже первого экрана
+  var header = document.querySelector('.header');
+
+  function obnovitShapku() {
+    header.classList.toggle('header--razvernuta', window.scrollY > 120);
+  }
+
+  obnovitShapku();
+  window.addEventListener('scroll', obnovitShapku, { passive: true });
+
+  // Мобильное меню
+  var burger = document.querySelector('.header__burger');
+  var drawer = document.getElementById('drawer');
+
+  burger.addEventListener('click', function () {
+    var otkryto = drawer.classList.toggle('open');
+    burger.setAttribute('aria-expanded', String(otkryto));
+  });
+
+  drawer.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      drawer.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Таймер обратного отсчёта: 15 минут, переживает перезагрузку,
+  // по нулям запускается заново — как на исходной странице.
+  (function () {
+    var tablo = document.querySelector('[data-timer]');
+    if (!tablo) return;
+
+    var DLINA = 15 * 60 * 1000;
+    var KLYUCH = '5-go-tasks:timer-do';
+
+    function prochitat() {
+      try {
+        return parseInt(localStorage.getItem(KLYUCH), 10) || 0;
+      } catch (e) {
+        return 0;  // приватный режим — просто считаем от загрузки страницы
+      }
+    }
+
+    function zapisat(do_) {
+      try { localStorage.setItem(KLYUCH, String(do_)); } catch (e) {}
+    }
+
+    var konec = prochitat();
+    if (!konec || konec <= Date.now()) {
+      konec = Date.now() + DLINA;
+      zapisat(konec);
+    }
+
+    function dvuznak(n) { return n < 10 ? '0' + n : String(n); }
+
+    function shag() {
+      var ostalos = konec - Date.now();
+      if (ostalos <= 0) {
+        konec = Date.now() + DLINA;
+        zapisat(konec);
+        ostalos = DLINA;
+      }
+      var sekund = Math.floor(ostalos / 1000);
+      tablo.textContent = [
+        dvuznak(Math.floor(sekund / 86400)),
+        dvuznak(Math.floor(sekund % 86400 / 3600)),
+        dvuznak(Math.floor(sekund % 3600 / 60)),
+        dvuznak(sekund % 60)
+      ].join(':');
+    }
+
+    shag();
+    setInterval(shag, 1000);
+  })();
+</script>
+
+</body>
+</html>
