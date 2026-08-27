@@ -1834,15 +1834,99 @@
     <p>Скрипты сайта здесь не подключены: аккордеоны и гифки работают сами, а модалка видеопродажника
     и счётчики не запустятся — по кнопке плеера смотрим только вёрстку.</p>
     <nav class="cmp-nav">
-    <a href="#b0">Что на самом деле происходит на секции <i>новый</i></a>
-    <a href="#b1">Программа · недели</a>
-    <a href="#b2">Как устроено обучение · шаг 01</a>
-    <a href="#b3">Тарифы</a>
-    <a href="#b4">FAQ</a>
+    <a href="#b0">Почему не получается пройти сисдиз</a>
+    <a href="#b1">Что на самом деле происходит на секции <i>новый</i></a>
+    <a href="#b2">Программа · недели</a>
+    <a href="#b3">Как устроено обучение · шаг 01</a>
+    <a href="#b4">Тарифы</a>
+    <a href="#b5">FAQ</a>
     </nav>
   </div>
 
   <section class="cmp" id="b0">
+    <div class="cmp__head">
+      <h2>Почему не получается пройти сисдиз</h2>
+      <span class="cmp__sel">.mech</span>
+      
+    </div>
+    <p class="cmp__note">Правки отменены, блок авторский.</p>
+    <div class="cmp__pair">
+      <div class="cmp__col cmp__col--was"><span class="cmp__tag">было · origin/main</span><div class="cmp__view"><div class="mech fade-up">
+        <h2 class="mech__title">Почему не&nbsp;получается пройти сисдиз</h2>
+        <p class="mech__lead mech__lead--tight">Кажется, что на&nbsp;System Design валят непонятно за&nbsp;что и&nbsp;всё решает везение: какая попадётся задача и&nbsp;какой интервьюер.</p>
+        <p class="mech__lead mech__lead--tight">Человеческий фактор тут есть, глупо это отрицать. Задача может попасться неудобная, да&nbsp;и&nbsp;секцию каждый ведёт по-своему: один копает в&nbsp;базы, другой в&nbsp;отказоустойчивость, третий в&nbsp;оценку нагрузки.</p>
+        <p class="mech__lead mech__lead--tight">Только повлиять на&nbsp;это ты&nbsp;не&nbsp;можешь, а&nbsp;вот на&nbsp;остальное вполне: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор, куда сам увёл разговор.</p>
+        <p class="mech__lead mech__lead--tight">Ошибок, которых можно было не&nbsp;допускать, набирается прилично. Каждая портит впечатление, а&nbsp;из&nbsp;впечатления и&nbsp;складывается решение по&nbsp;секции.</p>
+        <!-- подводка живёт под тем же тоглом, что и сам ролик: без видео фраза повисает.
+             Хронометраж 8 минут — со слов автора; ролик на момент правки был
+             закрыт для анонимов, сверить по таймлайну не удалось. -->
+        <p class="mech__lead" data-feature="video-sales">Самые частые ошибки разобрал в&nbsp;ролике за&nbsp;8&nbsp;минут.</p>
+
+        <!-- Видеопродажник: RUTUBE, приватный ролик
+             6092cedd9d8ec261a621b354be79225e (токен доступа в параметре p=).
+             Плеер открывается в модалке
+             .vmodal внизу файла, iframe создаётся по клику и сносится при
+             закрытии. Внутри <button> можно только строчное содержимое,
+             поэтому обёртки — span, а не div.
+             ⚠️ обложки-картинки пока нет: .video__thumb рисует градиент с сеткой.
+             Обложка sd-video-poster.jpg/.webp — тот же файл, что залит превью
+             ролика на RUTUBE, чтобы карточка на лендинге и в плеере читалась одинаково.
+             Подписи-плашки внизу больше нет: заголовок «ПОЧЕМУ ВАЛЯТСЯ НА
+             SYSTEM DESIGN» уже нарисован на самой обложке, дублировать его
+             текстом поверх — шум. Текст на обложке держится в левом верхнем
+             углу намеренно: по центру кадра садится круглая кнопка play и
+             перекрывает всё, что туда попадает. Из-за этого у кнопки не осталось текстового
+             содержимого, поэтому доступное имя задано через aria-label, а у
+             картинки alt пустой: иначе скринридер прочитает одно и то же дважды. -->
+        <button type="button" class="video v1-video" data-feature="video-sales"
+                data-vmodal-open aria-haspopup="dialog"
+                aria-label="Смотреть видео: почему валятся на System Design, 8 минут">
+          <span class="video__thumb">
+            <picture><source srcset="sd-video-poster.webp" type="image/webp"><img class="video__poster" src="sd-video-poster.jpg" alt="" width="1920" height="1080" loading="lazy"></picture>
+            <span class="video__play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
+          </span>
+        </button>
+
+        <blockquote class="mech__quote">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</blockquote>
+      </div></div></div>
+      <div class="cmp__col cmp__col--now"><span class="cmp__tag">стало · ветка</span><div class="cmp__view"><div class="mech fade-up">
+        <h2 class="mech__title">Почему не&nbsp;получается пройти сисдиз</h2>
+        <p class="mech__lead mech__lead--tight">Кажется, что на&nbsp;System Design валят непонятно за&nbsp;что и&nbsp;всё решает везение: какая попадётся задача и&nbsp;какой интервьюер.</p>
+        <p class="mech__lead mech__lead--tight">Человеческий фактор тут есть, глупо это отрицать. Задача может попасться неудобная, да&nbsp;и&nbsp;секцию каждый ведёт по-своему: один копает в&nbsp;базы, другой в&nbsp;отказоустойчивость, третий в&nbsp;оценку нагрузки.</p>
+        <p class="mech__lead mech__lead--tight">Только повлиять на&nbsp;это ты&nbsp;не&nbsp;можешь, а&nbsp;вот на&nbsp;остальное вполне: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор, куда сам увёл разговор.</p>
+        <p class="mech__lead mech__lead--tight">Ошибок, которых можно было не&nbsp;допускать, набирается прилично, и&nbsp;самые частые из&nbsp;них я&nbsp;разобрал в&nbsp;видео за&nbsp;8&nbsp;минут.</p>
+
+        <!-- Видеопродажник: RUTUBE, приватный ролик
+             6092cedd9d8ec261a621b354be79225e (токен доступа в параметре p=).
+             Плеер открывается в модалке
+             .vmodal внизу файла, iframe создаётся по клику и сносится при
+             закрытии. Внутри <button> можно только строчное содержимое,
+             поэтому обёртки — span, а не div.
+             ⚠️ обложки-картинки пока нет: .video__thumb рисует градиент с сеткой.
+             Обложка sd-video-poster.jpg/.webp — тот же файл, что залит превью
+             ролика на RUTUBE, чтобы карточка на лендинге и в плеере читалась одинаково.
+             Подписи-плашки внизу больше нет: заголовок «ПОЧЕМУ ВАЛЯТСЯ НА
+             SYSTEM DESIGN» уже нарисован на самой обложке, дублировать его
+             текстом поверх — шум. Текст на обложке держится в левом верхнем
+             углу намеренно: по центру кадра садится круглая кнопка play и
+             перекрывает всё, что туда попадает. Из-за этого у кнопки не осталось текстового
+             содержимого, поэтому доступное имя задано через aria-label, а у
+             картинки alt пустой: иначе скринридер прочитает одно и то же дважды. -->
+        <button type="button" class="video v1-video" data-feature="video-sales"
+                data-vmodal-open aria-haspopup="dialog"
+                aria-label="Смотреть видео: почему валятся на System Design, 8 минут">
+          <span class="video__thumb">
+            <picture><source srcset="sd-video-poster.webp" type="image/webp"><img class="video__poster" src="sd-video-poster.jpg" alt="" width="1920" height="1080" loading="lazy"></picture>
+            <span class="video__play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
+          </span>
+        </button>
+
+        <blockquote class="mech__quote">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</blockquote>
+      </div></div></div>
+    </div>
+  </section>
+
+  <section class="cmp" id="b1">
     <div class="cmp__head">
       <h2>Что на самом деле происходит на секции</h2>
       <span class="cmp__sel">#chto-ocenivayut</span>
@@ -1899,7 +1983,7 @@
     </div>
   </section>
 
-  <section class="cmp" id="b1">
+  <section class="cmp" id="b2">
     <div class="cmp__head">
       <h2>Программа · недели</h2>
       <span class="cmp__sel">.program</span>
@@ -2319,7 +2403,7 @@
     </div>
   </section>
 
-  <section class="cmp" id="b2">
+  <section class="cmp" id="b3">
     <div class="cmp__head">
       <h2>Как устроено обучение · шаг 01</h2>
       <span class="cmp__sel">#kak-uchimsya .row</span>
@@ -2356,7 +2440,7 @@
             <div class="row__label">Шаг 01</div>
             <h3 class="row__title">Смотришь уроки и&nbsp;ходишь на&nbsp;живые разборы</h3>
             <div class="row__text">
-              <p>Каждую неделю открывается несколько видеоуроков по&nbsp;теме, плюс живой Q&amp;A, где задаёшь любой вопрос по&nbsp;материалу и&nbsp;собесам. Дедлайнов по&nbsp;неделям нет: не&nbsp;успел на&nbsp;этой, спокойно догоняешь на&nbsp;следующей. Срок один и&nbsp;общий на&nbsp;весь курс, внутри него идёшь в&nbsp;своём темпе.</p>
+              <p>Каждую неделю открывается несколько видеоуроков по&nbsp;теме, плюс живой Q&amp;A, где задаёшь любой вопрос по&nbsp;материалу и&nbsp;собесам. Дедлайнов по&nbsp;неделям нет: не&nbsp;успел на&nbsp;этой, спокойно догоняешь на&nbsp;следующей.</p>
             </div>
             <!-- показ внутрянки живёт здесь, а не отдельным экраном: рядом урок и его конспект.
                  ⚠️ под тоглом demo-lesson — включить, когда выбран урок и есть ссылка -->
@@ -2390,7 +2474,7 @@
     </div>
   </section>
 
-  <section class="cmp" id="b3">
+  <section class="cmp" id="b4">
     <div class="cmp__head">
       <h2>Тарифы</h2>
       <span class="cmp__sel">#tarify</span>
@@ -2625,7 +2709,7 @@
     </div>
   </section>
 
-  <section class="cmp" id="b4">
+  <section class="cmp" id="b5">
     <div class="cmp__head">
       <h2>FAQ</h2>
       <span class="cmp__sel">#faq</span>
