@@ -1841,40 +1841,46 @@
   .truth .section__head { margin-bottom: 28px; }
   .truth__lead { font-size: 17px; line-height: 1.7; color: var(--text-body); max-width: 68ch; margin: 0 0 26px; text-wrap: pretty; }
   .truth__lead b { color: var(--accent); font-weight: 600; }
-  /* конвейер секции: требование → где валятся → урок */
-  .pl { position: relative; padding-top: 6px; margin-bottom: 26px; }
+  /* конвейер секции: слева подписи рядов, справа пять шагов */
+  .pl { position: relative; padding-top: 6px; margin-bottom: 22px; }
   .pl__rail {
-    position: absolute; left: 0; right: 0; top: 28px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-acc) 8%, var(--border-acc) 92%, transparent);
+    position: absolute; left: 168px; right: 0; top: 28px; height: 1px;
+    background: linear-gradient(90deg, var(--border-acc), var(--border-acc) 92%, transparent);
   }
-  .pl__grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; position: relative; }
-  .pl__step { display: grid; gap: 8px; justify-items: start; align-content: start; }
+  .pl__grid {
+    display: grid; grid-template-columns: 150px repeat(5, 1fr);
+    column-gap: 18px; row-gap: 14px; align-items: start; position: relative;
+  }
+  .pl__legend {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-deco); align-self: center; line-height: 1.5;
+  }
   .pl__ico {
     width: 44px; height: 44px; border-radius: 50%; background: var(--bg-primary);
     border: 1px solid rgba(223,223,65,.35); color: var(--accent);
     display: flex; align-items: center; justify-content: center;
   }
   .pl__ico svg { width: 22px; height: 22px; }
-  .pl__req { color: var(--text-h); font-size: 15px; font-weight: 600; line-height: 1.35; margin-top: 4px; }
+  .pl__req { color: var(--text-h); font-size: 15px; font-weight: 600; line-height: 1.35; }
   .pl__err { color: var(--text-mute); font-size: 13.5px; line-height: 1.45; }
-  .pl__err i {
-    display: block; font-style: normal; font-family: var(--mono); font-size: 10px;
-    letter-spacing: .08em; text-transform: uppercase; color: var(--text-deco); margin-bottom: 4px;
-  }
   .pl__fix {
-    font-family: var(--mono); font-size: 11.5px; color: var(--accent);
+    font-family: var(--mono); font-size: 11.5px; color: var(--accent); justify-self: start;
     border: 1px solid rgba(223,223,65,.28); border-radius: 5px; padding: 4px 8px;
   }
-  /* шаги проявляются по очереди — слева направо, как сам разбор */
-  .pl__grid > .fade-up:nth-child(2) { transition-delay: .09s; }
-  .pl__grid > .fade-up:nth-child(3) { transition-delay: .18s; }
-  .pl__grid > .fade-up:nth-child(4) { transition-delay: .27s; }
-  .pl__grid > .fade-up:nth-child(5) { transition-delay: .36s; }
+  /* колонки проявляются по очереди — слева направо, как сам разбор */
+  .anim-ready .pl.pre .pl__grid > * { opacity: 0; transform: translate3d(0,14px,0); }
+  .pl.visible .pl__grid > * { opacity: 1; transform: none; transition: opacity .5s var(--ease), transform .5s var(--ease); }
+  .pl.visible .c1 { transition-delay: .05s; }
+  .pl.visible .c2 { transition-delay: .13s; }
+  .pl.visible .c3 { transition-delay: .21s; }
+  .pl.visible .c4 { transition-delay: .29s; }
+  .pl.visible .c5 { transition-delay: .37s; }
   .pl__src { font-family: var(--mono); font-size: 11px; line-height: 1.6; color: var(--text-faint); margin: 0 0 26px; max-width: 74ch; }
   .pl__bridge {
     font-size: 16.5px; line-height: 1.6; color: var(--text-body); margin: 0;
-    padding-left: 20px; border-left: 2px solid var(--accent); max-width: 68ch; text-wrap: pretty;
+    padding-left: 20px; border-left: 2px solid var(--accent); max-width: 70ch; text-wrap: pretty;
   }
+  .pl__bridge b { color: var(--text-h); font-weight: 600; }
 
   /* «загляни внутрь»: открытый урок + его конспект, внутри шага 01 */
   .demo-card {
@@ -1904,12 +1910,14 @@
 
   @media (max-width: 960px) {
     .truth { padding: 44px 30px 40px; }
-    .pl__grid { grid-template-columns: repeat(2, 1fr); gap: 26px; }
-    .pl__rail { display: none; }
+    .pl__grid { grid-template-columns: 118px repeat(3, 1fr); }
+    .pl__rail { left: 136px; }
   }
   @media (max-width: 640px) {
     .truth { padding: 32px 20px 30px; border-radius: var(--r-lg); }
-    .pl__grid { grid-template-columns: 1fr; gap: 26px; }
+    .pl__grid { grid-template-columns: 1fr; row-gap: 6px; }
+    .pl__legend { margin-top: 22px; }
+    .pl__legend:empty { display: none; }
     .pl__rail { display: none; }
     .pl__bridge { font-size: 15.5px; padding-left: 14px; }
     .demo-card { grid-template-columns: minmax(0,1fr) 84px; gap: 14px; }
@@ -2324,45 +2332,39 @@
         </div>
         <p class="truth__lead">Требования к&nbsp;секции компании публикуют сами. Вот что ждёт от&nbsp;тебя Яндекс&nbsp;— и&nbsp;где на&nbsp;каждом шаге чаще всего валятся.</p>
 
-        <div class="pl">
+        <div class="pl fade-up">
           <div class="pl__rail" aria-hidden="true"></div>
           <div class="pl__grid">
-            <div class="pl__step fade-up">
-              <span class="pl__ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="8" width="14" height="10" rx="2"/><rect x="28" y="8" width="14" height="10" rx="2"/><rect x="17" y="30" width="14" height="10" rx="2"/><path d="M13 18v6h22v-6M24 24v6"/></svg></span>
-              <span class="pl__req">Спроектировать систему под заданную нагрузку</span>
-              <span class="pl__err"><i>чаще всего валятся тут</i>Начал рисовать, а&nbsp;требования не&nbsp;спросил</span>
-              <span class="pl__fix">разбираем: уроки 03–04</span>
-            </div>
-            <div class="pl__step fade-up">
-              <span class="pl__ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="3"/><path d="M16 14h16M16 24h4M22 24h4M28 24h4M16 32h4M22 32h4M28 32h4"/></svg></span>
-              <span class="pl__req">Посчитать нагрузку и&nbsp;ресурсы</span>
-              <span class="pl__err"><i>чаще всего валятся тут</i>Попросили прикинуть нагрузку&nbsp;— и&nbsp;всё поплыло</span>
-              <span class="pl__fix">разбираем: урок 05</span>
-            </div>
-            <div class="pl__step fade-up">
-              <span class="pl__ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="24" cy="12" rx="14" ry="5"/><path d="M10 12v24c0 2.8 6.3 5 14 5s14-2.2 14-5V12"/><path d="M10 24c0 2.8 6.3 5 14 5s14-2.2 14-5"/></svg></span>
-              <span class="pl__req">Обосновать, как хранишь данные</span>
-              <span class="pl__err"><i>чаще всего валятся тут</i>Назвал базу, а&nbsp;объяснить выбор не&nbsp;смог</span>
-              <span class="pl__fix">разбираем: уроки 13–23</span>
-            </div>
-            <div class="pl__step fade-up">
-              <span class="pl__ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="14" r="5"/><circle cx="36" cy="14" r="5"/><circle cx="24" cy="36" r="5"/><path d="M16 17l5 15M32 17l-5 15"/><path d="M31 9l10 10M41 9L31 19"/></svg></span>
-              <span class="pl__req">Отвечать за&nbsp;отказы и&nbsp;балансировку</span>
-              <span class="pl__err"><i>чаще всего валятся тут</i>Спросили, что будет, если узел упадёт</span>
-              <span class="pl__fix">разбираем: уроки 08, 29–32</span>
-            </div>
-            <div class="pl__step fade-up">
-              <span class="pl__ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10h24a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H18l-8 6v-6a3 3 0 0 1-2-3V13a3 3 0 0 1 3-3z"/><path d="M15 17h12M15 23h7"/></svg></span>
-              <span class="pl__req">Рассуждать вслух и&nbsp;внятно формулировать</span>
-              <span class="pl__err"><i>чаще всего валятся тут</i>Отвечал заученными фразами из&nbsp;ютуб-разбора</span>
-              <span class="pl__fix">разбираем: урок 41</span>
-            </div>
+            <span class="pl__legend"></span>
+            <span class="pl__ico c1"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="8" width="14" height="10" rx="2"/><rect x="28" y="8" width="14" height="10" rx="2"/><rect x="17" y="30" width="14" height="10" rx="2"/><path d="M13 18v6h22v-6M24 24v6"/></svg></span>
+            <span class="pl__ico c2"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="3"/><path d="M16 14h16M16 24h4M22 24h4M28 24h4M16 32h4M22 32h4M28 32h4"/></svg></span>
+            <span class="pl__ico c3"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="24" cy="12" rx="14" ry="5"/><path d="M10 12v24c0 2.8 6.3 5 14 5s14-2.2 14-5V12"/><path d="M10 24c0 2.8 6.3 5 14 5s14-2.2 14-5"/></svg></span>
+            <span class="pl__ico c4"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="14" r="5"/><circle cx="36" cy="14" r="5"/><circle cx="24" cy="36" r="5"/><path d="M16 17l5 15M32 17l-5 15"/><path d="M31 9l10 10M41 9L31 19"/></svg></span>
+            <span class="pl__ico c5"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10h24a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H18l-8 6v-6a3 3 0 0 1-2-3V13a3 3 0 0 1 3-3z"/><path d="M15 17h12M15 23h7"/></svg></span>
+            <span class="pl__legend">просят сделать</span>
+            <span class="pl__req c1">Спроектировать систему под заданную нагрузку</span>
+            <span class="pl__req c2">Посчитать нагрузку и&nbsp;ресурсы</span>
+            <span class="pl__req c3">Обосновать, как хранишь данные</span>
+            <span class="pl__req c4">Отвечать за&nbsp;отказы и&nbsp;балансировку</span>
+            <span class="pl__req c5">Рассуждать вслух и&nbsp;внятно формулировать</span>
+            <span class="pl__legend">чаще всего валятся</span>
+            <span class="pl__err c1">Начал рисовать, а&nbsp;требования не&nbsp;спросил</span>
+            <span class="pl__err c2">Попросили прикинуть нагрузку&nbsp;— и&nbsp;всё поплыло</span>
+            <span class="pl__err c3">Назвал базу, а&nbsp;объяснить выбор не&nbsp;смог</span>
+            <span class="pl__err c4">Спросили, что будет, если узел упадёт</span>
+            <span class="pl__err c5">Отвечал заученными фразами из&nbsp;ютуб-разбора</span>
+            <span class="pl__legend">разбираем</span>
+            <span class="pl__fix c1">уроки 03–04</span>
+            <span class="pl__fix c2">урок 05</span>
+            <span class="pl__fix c3">уроки 13–23</span>
+            <span class="pl__fix c4">уроки 08, 29–32</span>
+            <span class="pl__fix c5">урок 41</span>
           </div>
         </div>
 
         <p class="pl__src">Требования&nbsp;— со&nbsp;страницы Яндекса «Как мы&nbsp;нанимаем бэкенд-разработчиков», раздел «Архитектурная секция».</p>
 
-        <p class="pl__bridge">Каждый шаг разложен на&nbsp;уроки: пять недель, 41&nbsp;урок и&nbsp;домашка каждую неделю. Ниже&nbsp;— вся программа.</p>
+        <p class="pl__bridge">На&nbsp;секции ты&nbsp;пройдёшь этот маршрут <b>один раз, без подсказок и&nbsp;права переиграть</b>. До&nbsp;неё у&nbsp;тебя есть пять недель, чтобы отработать каждый шаг: сначала разбираем, потом делаешь сам, потом защищаешь решение вслух.</p>
 
       </div>
     </div>
