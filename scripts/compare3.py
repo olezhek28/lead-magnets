@@ -3,11 +3,14 @@
 
 Запуск: python3 scripts/compare3.py
 """
-import io, re, subprocess
+import io, re, subprocess, sys
 
+# «short» — сравнение без списков уроков: только обзац недели, домашка и результат
+SHORT = 'short' in sys.argv
 PAGE = 'system_design/index.html'
 HUM  = 'system_design/index-humanized.html'
-OUT  = 'system_design/compare3-program.html'
+OUT  = ('system_design/compare3-program-short.html' if SHORT
+        else 'system_design/compare3-program.html')
 VOID = {'br','img','meta','link','input','source','hr','area','col','embed','param','track','wbr'}
 
 def block(doc, cls):
@@ -26,6 +29,28 @@ now = io.open(PAGE, encoding='utf-8').read()
 hum = io.open(HUM, encoding='utf-8').read()
 prod = subprocess.run(['git', 'show', 'main:' + PAGE], capture_output=True, check=True).stdout.decode('utf-8')
 
+def drop_lessons(mk):
+    """Убирает блоки со списками уроков: остаются обзац недели, домашка и результат."""
+    while True:
+        m = re.search(r'<div class="program__block">', mk)
+        found = None
+        for m in re.finditer(r'<div class="program__block">', mk):
+            start = m.start()
+            depth = 0
+            for t in re.finditer(r'<(/?)div\b[^>]*>', mk[start:]):
+                depth += -1 if t.group(1) else 1
+                if depth == 0:
+                    end = start + t.end()
+                    break
+            else:
+                continue
+            if '<ul class="program__list">' in mk[start:end]:
+                found = (start, end)
+                break
+        if not found:
+            return mk
+        mk = mk[:found[0]] + mk[found[1]:]
+
 COLS = [
     ('на сайте сейчас', 'main', block(prod, 'program'), 'was'),
     ('наша версия', 'ветка', block(now, 'program'), 'now'),
@@ -35,6 +60,8 @@ COLS = [
 cols = []
 for i, (title, tag, mk, cls) in enumerate(COLS):
     mk = (mk or '<p>блок не найден</p>').replace('name="program-week"', 'name="pw-%d"' % i)
+    if SHORT:
+        mk = drop_lessons(mk)
     cols.append("""    <section class="c3__col c3__col--%s">
       <header class="c3__head"><b>%s</b><span>%s</span></header>
       <div class="c3__view">%s</div>
@@ -80,11 +107,11 @@ HTML = """<!DOCTYPE html>
 </head>
 <body class="anim-ready">
   <div class="c3-top">
-    <h1>Программа: три версии рядом</h1>
+    <h1>@@H1@@</h1>
     <p>Слева — то, что <b>на боевой странице сейчас</b>: домашка и результат недели по одной строке.
     В центре — <b>наша версия</b>: развёрнутые домашки и результаты, уже сокращённые.
     Справа — <b>та же наша версия без машинного текста</b>: те же факты, но разные начала фраз, разбитый ритм буллетов, живая речь.</p>
-    <p>Недели раскрываются в каждой колонке независимо. Списки уроков и обещания недель во всех трёх колонках авторские, их не трогали.</p>
+    <p>@@NOTE@@</p>
   </div>
   <div class="c3">
 @@COLS@@
@@ -92,7 +119,11 @@ HTML = """<!DOCTYPE html>
 </body>
 </html>
 """
+H1 = 'Программа без уроков: три версии' if SHORT else 'Программа: три версии рядом'
+NOTE = ('Списки уроков и названия модулей убраны намеренно: сравниваем только то, что мы писали сами — '
+        'обзац недели, домашку и результат.' if SHORT else
+        'Недели раскрываются в каждой колонке независимо. Списки уроков и обещания недель во всех трёх колонках авторские.')
 out = (HTML.replace('@@FONTS@@', fonts).replace('@@STYLES@@', styles)
-           .replace('@@COLS@@', '\n'.join(cols)))
+           .replace('@@COLS@@', '\n'.join(cols)).replace('@@H1@@', H1).replace('@@NOTE@@', NOTE))
 io.open(OUT, 'w', encoding='utf-8').write(out)
 print('готово: %s, %.0f КБ' % (OUT, len(out.encode()) / 1024))
