@@ -1083,7 +1083,7 @@
   .case__value { font-family: var(--mono); font-size: clamp(20px, 2vw, 26px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; color: var(--accent); font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .case__unit { font-size: 13px; line-height: 1.45; color: var(--text-faint); }
   .case__tradeoffs { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 28px; margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--border-card); }
-  .case__tradeoff-label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 9px; }
+  .case__tradeoffs-title { grid-column: 1 / -1; font-size: 15px; font-weight: 600; color: var(--text-h); margin-bottom: -6px; }
   .case__text { font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
   /* та же цитатная линия, что у .teacher__quote — блок читается как реплика автора */
   .case__side { margin-top: 26px; padding: 2px 0 2px 20px; border-left: 2px solid var(--accent); }
@@ -2963,12 +2963,11 @@
             </div>
 
             <div class="case__tradeoffs">
+              <div class="case__tradeoffs-title">Какие компромиссы решал</div>
               <div>
-                <div class="case__tradeoff-label">Второй фактор</div>
                 <div class="case__text">Разменивал безопасность на&nbsp;сроки: Google Authenticator не&nbsp;подходит сервисам с&nbsp;общими аккаунтами</div>
               </div>
               <div>
-                <div class="case__tradeoff-label">Персональные данные</div>
                 <div class="case__text">Разменивал изоляцию ПДн на&nbsp;задержку: данные лежат отдельно, а&nbsp;сессию проверять надо быстро</div>
               </div>
             </div>
@@ -3158,7 +3157,7 @@
     <div class="container">
       <div class="yt__head fade-up">
         <h2 class="yt__title" id="yt-title">Ещё я&nbsp;веду YouTube<br>и&nbsp;ламповый TG-канальчик</h2>
-        <p class="section__sub" style="margin-top:14px;max-width:680px">Разбираю Go, архитектуру и&nbsp;собесы. Материал там другой, чем на&nbsp;курсе, зато видно, как я&nbsp;объясняю, и&nbsp;можно просто со&nbsp;мной познакомиться. На&nbsp;YouTube 13&nbsp;000 подписчиков, в&nbsp;Telegram 11&nbsp;000. В&nbsp;комментариях сижу сам: закидывай любой вопрос, отвечу.</p>
+        <p class="section__sub" style="margin-top:14px;max-width:680px">Разбираю Go, архитектуру и&nbsp;собесы. Материал там другой, чем на&nbsp;курсе, зато видно, как я&nbsp;объясняю, и&nbsp;можно просто со&nbsp;мной познакомиться.</p>
       </div>
 
       <div class="yt__grid">
