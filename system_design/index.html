@@ -1853,16 +1853,6 @@
   .gate__shot figcaption { margin-top: 10px; font-size: 13.5px; line-height: 1.45; color: var(--text-mute); }
   .gate__note { margin: 18px 0 0; font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); }
 
-  /* врезка «зачем этот цирк» — внутри светлого островка */
-  .mech__lead b { color: var(--light-ink); font-weight: 600; }
-  .mech__cut {
-    border-left: 3px solid var(--light-ink);
-    padding: 2px 0 2px 22px; margin: 32px 0 4px; max-width: 68ch;
-  }
-  .mech__cut p { font-size: 17px; line-height: 1.7; color: var(--light-mute); margin: 0 0 12px; text-wrap: pretty; }
-  .mech__cut p:last-child { margin-bottom: 0; }
-  .mech__cut b { color: var(--light-ink); font-weight: 600; }
-  .mech__cut + .mech__lead { margin-top: 34px; }
 
   /* блок «Что на самом деле происходит на секции» */
   .truth {
@@ -1889,11 +1879,6 @@
   .route__step { color: var(--text-h); font-weight: 600; font-size: 15.5px; line-height: 1.45; }
   .route__err { color: var(--text-mute); font-size: 15px; line-height: 1.45; }
   .route__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); text-align: right; white-space: nowrap; }
-  .truth__foot {
-    font-family: var(--display); font-size: 20px; line-height: 1.4; font-weight: 500;
-    color: var(--text-h); max-width: 62ch; margin: 0;
-    padding-left: 22px; border-left: 2px solid var(--accent);
-  }
 
   /* «загляни внутрь»: открытый урок + его конспект, внутри шага 01 */
   .demo-card {
@@ -1931,13 +1916,10 @@
     .gate__lead { font-size: 16px; }
     .gate__shots { grid-template-columns: 1fr; gap: 20px; margin-top: 26px; }
     .truth { padding: 32px 20px 30px; border-radius: var(--r-lg); }
-    .truth__foot { font-size: 17px; padding-left: 16px; }
     .route__head { display: none; }
     .route__row { grid-template-columns: 1fr; gap: 5px; }
     .route__fix { text-align: left; }
     .demo-card { grid-template-columns: minmax(0,1fr) 84px; gap: 14px; }
-    .mech__cut { padding-left: 16px; margin-top: 26px; }
-    .mech__cut p { font-size: 16px; }
   }
 </style>
 
@@ -2160,7 +2142,7 @@
           </div>
           <div class="block__body">
             <div class="sit-pain">
-              <p class="pain__text">На&nbsp;System Design даже идти боязно: непонятно, что там вообще спрашивают и&nbsp;по&nbsp;каким правилам оценивают. Проще пока не&nbsp;соваться&nbsp;— и&nbsp;ты&nbsp;откладываешь собес месяц за&nbsp;месяцем. <span class="pf">А&nbsp;потом смотришь: те, кто пошёл и&nbsp;завалил, через полгода уже сеньоры, а&nbsp;ты&nbsp;всё ещё собираешься.</span></p>
+              <p class="pain__text">На&nbsp;System Design даже идти боязно: непонятно, что там вообще спрашивают и&nbsp;по&nbsp;каким правилам оценивают. Проще пока не&nbsp;соваться, вот и&nbsp;откладываешь собес месяцами. <span class="pf">А&nbsp;это лишние месяцы на&nbsp;старом грейде и&nbsp;старой зарплате.</span></p>
             </div>
           </div>
         </div><!-- ===== БЛОК 4 · Руками не трогал = боль 5 · монолит + недосягаемый кластер ===== -->
@@ -2322,14 +2304,9 @@
       <div class="mech fade-up">
         <h2 class="mech__title">Почему не&nbsp;получается пройти сисдиз</h2>
         <p class="mech__lead mech__lead--tight">Кажется, что на&nbsp;System Design валят непонятно за&nbsp;что и&nbsp;всё решает везение: какая попадётся задача и&nbsp;какой интервьюер.</p>
-        <p class="mech__lead mech__lead--tight">Только дело не&nbsp;в&nbsp;везении. На&nbsp;работе ты&nbsp;с&nbsp;System Design почти не&nbsp;сталкиваешься: круды, монолит, задачи по&nbsp;накатанной. Спроектировать ленту или поиск с&nbsp;нуля тебе никто не&nbsp;поручал&nbsp;— такие системы даже сеньоры собирают раз в&nbsp;пару лет, когда запускают новый продукт. А&nbsp;на&nbsp;секции спрашивают так, будто ты&nbsp;это делаешь каждый день.</p>
-        <p class="mech__lead mech__lead--tight"><b>Дело не&nbsp;в&nbsp;тебе и&nbsp;не&nbsp;в&nbsp;твоём опыте&nbsp;— такого опыта на&nbsp;обычной работе взять просто негде.</b> Поэтому его набирают отдельно.</p>
-
-        <!-- врезка «зачем этот цирк» — дыра отстройки, которую не закрывает рынок -->
-        <div class="mech__cut">
-          <p><b>И&nbsp;отдельный разговор&nbsp;— зачем этот цирк вообще.</b> Человека берут на&nbsp;200к писать круды, а&nbsp;гоняют по&nbsp;проектированию ленты, которую он&nbsp;никогда не&nbsp;напишет.</p>
-          <p>Спорить не&nbsp;будем: секция и&nbsp;правда часто оторвана от&nbsp;того, что ты&nbsp;будешь делать руками. Переубеждать тебя мы&nbsp;не&nbsp;собираемся. <b>Любить System Design не&nbsp;обязательно. Обязательно&nbsp;— пройти секцию:</b> за&nbsp;ней стоят оффер и&nbsp;грейд.</p>
-        </div>
+        <p class="mech__lead mech__lead--tight">Человеческий фактор тут есть, глупо это отрицать. Задача может попасться неудобная, да&nbsp;и&nbsp;секцию каждый ведёт по-своему: один копает в&nbsp;базы, другой в&nbsp;отказоустойчивость, третий в&nbsp;оценку нагрузки.</p>
+        <p class="mech__lead mech__lead--tight">Только повлиять на&nbsp;это ты&nbsp;не&nbsp;можешь, а&nbsp;вот на&nbsp;остальное вполне: как разложил задачу, что уточнил на&nbsp;старте, чем обосновал выбор, куда сам увёл разговор.</p>
+        <p class="mech__lead mech__lead--tight">Ошибок, которых можно было не&nbsp;допускать, набирается прилично. Каждая портит впечатление, а&nbsp;из&nbsp;впечатления и&nbsp;складывается решение по&nbsp;секции.</p>
         <!-- подводка живёт под тем же тоглом, что и сам ролик: без видео фраза повисает.
              Хронометраж 8 минут — со слов автора; ролик на момент правки был
              закрыт для анонимов, сверить по таймлайну не удалось. -->
@@ -2360,6 +2337,7 @@
           </span>
         </button>
 
+        <blockquote class="mech__quote">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</blockquote>
       </div>
     </div>
   </section>
@@ -2387,7 +2365,6 @@
           <li class="route__row"><span class="route__step">Слушает, как ты&nbsp;рассуждаешь</span><span class="route__err">Звучал как пересказ ютуб-ролика</span><span class="route__fix">урок 41</span></li>
         </ul>
 
-        <p class="truth__foot">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</p>
       </div>
     </div>
   </section>
