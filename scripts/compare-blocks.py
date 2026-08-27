@@ -9,6 +9,7 @@
 """
 import html as H
 import io
+import os
 import re
 import subprocess
 import sys
@@ -82,9 +83,14 @@ def head_links(doc):
     return '\n'.join(m.group(0) for m in re.finditer(r'<link[^>]*fonts\.(?:googleapis|gstatic)[^>]*>', doc))
 
 
-was_doc = subprocess.run(['git', 'show', '%s:%s' % (BASE, PAGE)],
-                         capture_output=True, check=True).stdout.decode('utf-8')
-now_doc = io.open(PAGE, encoding='utf-8').read()
+# BASE — либо git-ревизия, либо путь к файлу: удобно сравнивать две версии страницы
+NEW = sys.argv[3] if len(sys.argv) > 3 else PAGE
+if os.path.exists(BASE):
+    was_doc = io.open(BASE, encoding='utf-8').read()
+else:
+    was_doc = subprocess.run(['git', 'show', '%s:%s' % (BASE, PAGE)],
+                             capture_output=True, check=True).stdout.decode('utf-8')
+now_doc = io.open(NEW, encoding='utf-8').read()
 
 def squash(t):
     return re.sub(r'\s+', ' ', re.sub(r'<!--.*?-->', '', t, flags=re.S)).strip()

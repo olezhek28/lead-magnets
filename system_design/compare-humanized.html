@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design · изменённые блоки: было и стало</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== ФИЧА-ТОГЛЫ =====
+     Блоки, у которых ещё нет контента, помечены data-feature="<имя>" и скрываются,
+     пока фича выключена. Переключатель — объект FEATURES в <head> ниже: поменял
+     false на true, и блок вернулся на место, разметку трогать не надо.
+     Скрываем через класс на <html>, который ставится до отрисовки body, — блок
+     не успевает моргнуть. Правило работает только на выключенной фиче, поэтому
+     собственный display блока (grid у .row и т.п.) не теряется. */
+  .f-off-video-sales    [data-feature="video-sales"],
+  .f-off-chat-screens   [data-feature="chat-screens"],
+  .f-off-preorder-cta   [data-feature="preorder-cta"],
+  .f-off-demo-lesson    [data-feature="demo-lesson"] { display: none !important; }
+  /* .final__title держит 40px снизу под кнопку. Кнопки нет — отступ
+     превращается в дыру в нижней половине жёлтой карточки, поэтому на
+     выключенном тогле он снимается. Вернётся вместе с кнопкой. */
+  .f-off-preorder-cta .final__title { margin-bottom: 0; }
+
+  :root {
+    --bg-primary:   #10171A;
+    --bg-card:      #182023;
+    --bg-secondary: #1E272B;
+    --bg-tertiary:  #2A353B;
+    --accent:       #DFDF41;
+    --accent-dim:   #C7C736;
+    --accent-ink:   #002D25;
+    --light-bg:     #E9E8E3;
+    --light-card:   #F5F4EF;
+    --light-ink:    #10171A;
+    --text-h:       #F5F7F6;   /* 16.8:1 на фоне */
+    --text-body:    #C4CBCA;   /* 10.0:1 на карточке */
+    --text-mute:    #98A2A2;   /*  6.3:1 на карточке */
+    --text-faint:   #8C9896;   /*  6.1:1 на фоне · 5.6:1 на карточке · 5.1:1 на bg-secondary (hover карточек) */
+    --text-deco:    #6B7674;   /* только нетекстовый декор: линии, риски, иконки-плюсы */
+    --light-mute:   #3A4347;   /*  8.3:1 на светлом островке */
+    --light-faint:  #5C6467;   /*  4.9:1 на светлом островке */
+    --light-meta:   #5D6367;   /*  5.0:1 на светлом островке · 5.5:1 на светлой карточке */
+    --coral:        #FF8562;
+    --comment:      #93A09B;   /* моно-комментарии подписей · ≈6.2:1 на базе */
+    --border-coral: rgba(255,133,98,.30);
+    --border-card:  rgba(255,255,255,.075);
+    --border-acc:   rgba(255,255,255,.15);
+    --border-mid:   rgba(255,255,255,.05);
+    --font:    'Geist', 'Manrope', system-ui, -apple-system, sans-serif;
+    --display: 'Space Grotesk', 'Geist', system-ui, sans-serif;
+    --mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --r-xl: 22px; --r-lg: 16px; --r-md: 10px; --r-sm: 6px;
+    --sh-lift: 0 26px 60px -28px rgba(0,0,0,.85), 0 2px 0 rgba(255,255,255,.03) inset;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; font-size: 16px; scroll-padding-top: 96px; overflow-x: clip; }
+  body {
+    font-family: var(--font);
+    background: var(--bg-primary);
+    color: var(--text-body);
+    line-height: 1.55;
+    font-feature-settings: "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+    /* НЕ overflow-x: hidden — на body это делает его отдельным контейнером
+       прокрутки: ломаются переходы по якорям (меню) и window.scrollY отдаёт 0,
+       а от него считается заполнение роадмапа. clip обрезает, но скроллер не создаёт. */
+    overflow-x: clip;
+  }
+  /* фон живёт на собственном фиксированном слое: не перерисовывается при скролле
+     (background-attachment:fixed на body заставлял репейнтить весь вьюпорт каждый кадр) */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-color: var(--bg-primary);
+    background-image:
+      radial-gradient(120% 70% at 50% -10%, rgba(223,223,65,.05) 0%, transparent 55%),
+      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size: 100% 100%, 64px 64px, 64px 64px;
+  }
+  a { color: inherit; text-decoration: none; }
+  img, svg { max-width: 100%; display: block; }
+  button { font: inherit; cursor: pointer; }
+  h1, h2, h3, .display { font-family: var(--display); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  /* фокус-кольцо наследуется вниз по дереву: на светлых поверхностях жёлтый
+     контур давал 1.0–1.2:1 (невидим), поэтому там переключаемся на тёмный */
+  :root { --focus: var(--accent); }
+  .mech, .tier--light, .final__card { --focus: var(--light-ink); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+
+  .container { max-width: 1240px; margin: 0 auto; padding: 0 60px; }
+
+  /* ===== RAIL — прогресс чтения как мини-карта документа =====
+     Вертикальная линия в левом поле: узел = секция, позиция узла пропорциональна
+     её месту в документе, жёлтая часть = сколько уже прочитано.
+     Геометрия скруглённая (язык B): узлы — "скруглённые квадраты", линия с радиусом. */
+  .rail {
+    position: fixed; z-index: 900; pointer-events: none;
+    /* контейнер 1240 + падинг 44 → левый край контента = 50% - 576px;
+       рейка стоит на 24px левее контента и не заходит в него */
+    left: max(18px, calc(50% - 600px)); top: 104px; bottom: 40px; width: 2px;
+    border-radius: 2px; background: var(--border-mid);
+    /* именно layout+style: paint-containment обрезал бы узлы (10px) по ширине линии (2px) */
+    contain: layout style;
+  }
+  .rail::before, .rail::after {
+    content: ''; position: absolute; left: -3px; width: 8px; height: 8px;
+    border-radius: 3px; background: var(--border-acc);
+  }
+  .rail::before { top: -4px; }
+  .rail::after { bottom: -4px; }
+  .rail__fill {
+    position: absolute; left: 0; top: 0; width: 2px; height: 100%; border-radius: 2px;
+    background: linear-gradient(180deg, var(--accent-dim), var(--accent));
+    transform: scaleY(var(--rail-p, 0)); transform-origin: top; will-change: transform;
+  }
+  .rail__node {
+    position: absolute; top: var(--p, 0%); left: -4px; width: 10px; height: 10px;
+    border-radius: 3px; background: var(--bg-primary); border: 1px solid var(--border-acc);
+    transform: translateY(-5px);
+    transition: background .3s var(--ease), border-color .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .rail__node.is-passed { background: var(--accent-dim); border-color: var(--accent-dim); }
+  .rail__node.is-current {
+    background: var(--accent); border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(223,223,65,.14), 0 0 16px -2px rgba(223,223,65,.5);
+  }
+  /* короткая отсечка в поле — "здесь читатель сейчас" */
+  .rail__node.is-current::after {
+    content: ''; position: absolute; left: 15px; top: 4px; width: 8px; height: 2px;
+    border-radius: 1px; background: var(--accent-dim);
+  }
+  /* Узкий экран: бокового поля нет — рейка ложится полосой под верхнюю кромку,
+     тот же маршрут, те же узлы, та же жёлтая часть. */
+  @media (max-width: 1239px) {
+    .rail {
+      left: 0; right: 0; top: 0; bottom: auto; width: auto; height: 3px;
+      border-radius: 0; background: rgba(255,255,255,.06); z-index: 1001;
+    }
+    .rail::before, .rail::after { display: none; }
+    .rail__fill { width: 100%; height: 3px; border-radius: 0 2px 2px 0; transform: scaleX(var(--rail-p, 0)); transform-origin: left; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); }
+    .rail__node {
+      top: 0; left: var(--p, 0%); width: 3px; height: 7px; border: 0; border-radius: 0 0 2px 2px;
+      background: var(--border-acc); transform: translate(-1.5px, 0);
+    }
+    .rail__node.is-passed { background: rgba(223,223,65,.55); }
+    .rail__node.is-current { background: var(--accent); box-shadow: none; height: 9px; }
+    .rail__node.is-current::after { display: none; }
+  }
+  @media print { .rail { display: none; } }
+
+  /* ===== ANIMATIONS ===== */
+  /* только opacity + transform: GPU-композит без репейнта.
+     filter: blur() на крупных секциях держал рендерер занятым весь скролл */
+  .fade-up { transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .anim-ready .fade-up.pre { opacity: 0; transform: translate3d(0,26px,0); }
+  .anim-ready .fade-up.pre.visible { opacity: 1; transform: none; }
+  /* каскад внутри сеток */
+  .merge > .fade-up:nth-child(2),
+  .artifacts > .fade-up:nth-child(2) { transition-delay: .07s; }
+  .artifacts > .fade-up:nth-child(3) { transition-delay: .14s; }
+  .artifacts > .fade-up:nth-child(4) { transition-delay: .21s; }
+  @media (prefers-reduced-motion: reduce) { .fade-up, .fade-up.pre { opacity: 1 !important; transform: none !important; filter: none !important; transition: none; }
+    .pl__grid > * { opacity: 1 !important; transform: none !important; transition: none; } }
+  @media print { .fade-up, .fade-up.pre { opacity: 1 !important; transform: none !important; filter: none !important; } }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    position: relative; overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 18px 40px; border-radius: 999px;
+    font-family: var(--display);
+    font-size: 14.5px; font-weight: 600; line-height: 1; letter-spacing: -0.01em;
+    border: 1px solid transparent; text-align: center;
+    transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease),
+                transform .18s var(--ease), box-shadow .25s var(--ease);
+  }
+  .btn:active { transform: translateY(1px) scale(.994); }
+  .btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 0 rgba(223,223,65,.35); }
+  .btn--primary:hover { background: #EBEB55; transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(223,223,65,.6); }
+  /* вторичные/призрачные — язык пилюль с меньшим радиусом (~30px) */
+  .btn--dark { background: var(--bg-secondary); color: var(--text-h); border-color: var(--border-acc); border-radius: 30px; }
+  .btn--dark:hover { background: var(--bg-tertiary); border-color: rgba(255,255,255,.28); transform: translateY(-2px); }
+  .btn--lg { padding: 21px 46px; font-size: 16px; }
+  .btn--block { display: flex; width: 100%; }
+  .btn__arrow { width: 14px; height: 14px; flex-shrink: 0; transition: transform .3s var(--ease); }
+  .btn--primary:hover .btn__arrow { transform: translateX(4px); }
+
+  /* ===== HEADER ===== */
+  .header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(16, 23, 26, 0.74);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    box-shadow: 0 1px 0 rgba(255,255,255,.03) inset;
+    transition: background .3s var(--ease), border-color .3s var(--ease);
+  }
+  .header.is-scrolled { background: rgba(16,23,26,.92); border-bottom-color: rgba(255,255,255,.1); }
+  .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 78px; position: relative; transition: height .3s var(--ease); }
+  .header.is-scrolled .header__inner { height: 66px; }
+  .header__logo { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); letter-spacing: -0.02em; flex-shrink: 0; }
+  .header__logo b { color: var(--accent); font-weight: 700; }
+  .header__nav { display: flex; gap: 6px; }
+  .header__nav-link {
+    position: relative; font-size: 14px; font-weight: 500; color: var(--text-mute);
+    padding: 8px 12px; border-radius: var(--r-sm);
+    transition: color .2s var(--ease), background .2s var(--ease); white-space: nowrap;
+  }
+  .header__nav-link::after {
+    content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 1px;
+    background: var(--accent); transform: scaleX(0); transform-origin: left;
+    transition: transform .3s var(--ease);
+  }
+  .header__nav-link:hover, .header__nav-link:focus-visible { color: var(--text-h); }
+  .header__nav-link:hover::after, .header__nav-link:focus-visible::after { transform: scaleX(1); }
+  .header__nav-link:active { color: var(--accent); }
+  /* активная секция — обязательная обратная связь "где я" */
+  .header__nav-link.is-current { color: var(--accent); }
+  .header__nav-link.is-current::after { transform: scaleX(1); background: rgba(223,223,65,.55); }
+  .header__cta { padding: 12px 20px; font-size: 13px; flex-shrink: 0; }
+
+  .menu-toggle { display: none; background: none; border: none; padding: 8px; border-radius: var(--r-sm); }
+  .menu-toggle span { display: block; width: 24px; height: 2px; background: var(--text-h); margin: 5px 0; border-radius: 2px; transition: transform .3s var(--ease), opacity .2s var(--ease); }
+  .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-mobile { display: none; }
+  .nav-mobile.open {
+    display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--bg-card); border-bottom: 1px solid var(--border-acc);
+    box-shadow: 0 24px 50px -30px rgba(0,0,0,.9);
+    padding: 16px 0 22px; gap: 4px; z-index: 1001;
+  }
+  .nav-mobile .header__nav-link { font-size: 16px; padding: 13px 12px; }
+  .nav-mobile .btn { margin-top: 12px; }
+
+  /* skip-link для клавиатуры */
+  .skip-link {
+    position: absolute; left: 16px; top: -80px; z-index: 1200;
+    background: var(--accent); color: var(--accent-ink); padding: 12px 20px; border-radius: var(--r-md);
+    font-family: var(--display); font-size: 14px; font-weight: 600;
+    transition: top .2s var(--ease);
+  }
+  .skip-link:focus-visible { top: 14px; }
+
+  /* ===== HERO ===== */
+  /* верхний отступ 208→132: капсула CTA должна попадать в первый экран (800px
+     с поправкой на тулбары Safari ≈ 720 вьюпорта). Воздуха всё равно больше исходного. */
+  .hero { padding: 128px 0 92px; position: relative; overflow: hidden; }
+  .hero__eyebrow { display: inline-flex; align-items: center; gap: 9px; margin: 0 0 22px; padding: 7px 16px 7px 13px; border-radius: 999px;
+    background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28); font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .hero__eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: heroPulse 2s infinite; }
+  @keyframes heroPulse { 0% { box-shadow: 0 0 0 0 rgba(223,223,65,.5); } 70% { box-shadow: 0 0 0 7px rgba(223,223,65,0); } 100% { box-shadow: 0 0 0 0 rgba(223,223,65,0); } }
+  @media (prefers-reduced-motion: reduce) { .hero__eyebrow-dot { animation: none; } }
+  .hero::before {
+    content: ''; position: absolute; top: -320px; left: 50%; transform: translateX(-50%);
+    width: 1100px; height: 900px;
+    background: radial-gradient(ellipse at center, rgba(223,223,65,.10) 0%, rgba(223,223,65,.03) 38%, transparent 68%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(223,223,65,.35), transparent);
+  }
+  /* воздух по бокам: колонка уже контейнера, плюс собственный внутренний отступ */
+  .hero__inner { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 0 16px; text-align: center; }
+  .hero__title {
+    font-family: var(--display);
+    font-size: clamp(34px, 4.6vw, 62px); font-weight: 500; line-height: 1.08;
+    letter-spacing: -0.04em; color: var(--text-h); margin-bottom: 30px;
+  }
+  .hero__title b { font-weight: 700; color: var(--accent); letter-spacing: -0.045em; }
+  /* вторая строка "от паники к алгоритму" + плашка держатся вместе на одной строке,
+     плашка садится справа от заголовка на том же уровне (как на микросервисах) */
+  /* плашка автора идёт инлайн сразу за последними словами подзаголовка,
+     на той же строке — "…большие системы. [плашка]" */
+  /* плашка автора — отдельной строкой по центру между заголовком и подзаголовком */
+  .hero__subtitle { font-size: 18.5px; font-weight: 400; line-height: 1.62; color: var(--text-mute); margin: 0 auto 52px; max-width: 660px; text-align: center; text-wrap: pretty; }
+
+  /* ===== CTA-КАПСУЛА: мета · кнопка · мета в одном скруглённом контейнере ===== */
+  .hero__cta { display: flex; justify-content: center; }
+  .cta-capsule {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 10px; border-radius: 999px;
+    background: rgba(255,255,255,.04); border: 1px solid var(--border-card);
+    box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 26px 60px -40px rgba(0,0,0,.9);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    max-width: 100%;
+  }
+  .cta-capsule__meta {
+    display: flex; flex-direction: column; gap: 5px;
+    padding: 0 30px; min-width: 128px; text-align: center;
+  }
+  .cta-capsule__label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-mute); /* 6.2:1 на фоне капсулы */
+  }
+  .cta-capsule__value {
+    font-family: var(--display); font-size: 16px; font-weight: 500; letter-spacing: -0.01em;
+    color: var(--text-h); white-space: nowrap;
+  }
+  .cta-capsule__value--accent { color: var(--accent); }
+  .cta-capsule .btn { border-radius: 999px; padding: 21px 46px; font-size: 16px; }
+
+  /* ===== ПЛАШКА АВТОРА — встроена в строку заголовка. Роль сверху, позиция снизу.
+     Имя намеренно не выводим (вернём позже); фото Олега остаётся. ===== */
+  .author {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 8px 24px 8px 8px; border-radius: 999px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--border-card);
+    box-shadow: 0 1px 0 rgba(255,255,255,.04) inset;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    text-align: left; vertical-align: middle;
+    /* внутри h1 плашка не должна наследовать дисплейный кегль и интерлиньяж */
+    font-family: var(--font); font-size: 15px; font-weight: 400; line-height: 1.2; letter-spacing: normal;
+    transition: border-color .3s var(--ease), background .3s var(--ease);
+  }
+  .author:hover { border-color: rgba(223,223,65,.32); background: rgba(255,255,255,.065); }
+  .author__ava {
+    width: 44px; height: 44px; border-radius: 50%; overflow: hidden; display: block; flex-shrink: 0;
+    background: var(--bg-card); border: 1px solid rgba(223,223,65,.30);
+  }
+  .author__ava img { width: 100%; height: 100%; object-fit: cover; }
+  .author__txt { display: flex; flex-direction: column; gap: 2px; }
+  .author__role {
+    font-family: var(--display); font-size: 15px; font-weight: 600; line-height: 1.2;
+    letter-spacing: -0.01em; color: var(--text-h); /* 15.0:1 на плашке */
+  }
+  .author__pos {
+    font-family: var(--font); font-size: 13px; font-weight: 400; line-height: 1.25;
+    color: var(--text-mute); white-space: nowrap; /* 6.1:1 на плашке */
+  }
+  /* уменьшенная пилюля автора — встроена в строку заголовка сразу за "System Design" */
+  .hero__t2 { display: block; }
+  .author--sm { gap: 10px; padding: 6px 18px 6px 6px; font-size: 13px; margin-left: 16px; translate: 0 -4px; }
+  .author--sm .author__ava { width: 34px; height: 34px; }
+  .author--sm .author__role { font-size: 12.5px; }
+  .author--sm .author__pos { font-size: 11px; }
+
+  .scarcity {
+    display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
+    padding: 12px 22px; border-radius: var(--r-md);
+    background: rgba(223,223,65,.07); border: 1px solid rgba(223,223,65,.26);
+    font-family: var(--mono); font-size: 12.5px; font-weight: 400; color: var(--text-body);
+    font-variant-numeric: tabular-nums;
+  }
+  .scarcity b { color: var(--accent); font-weight: 700; }
+  .scarcity__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; animation: pulse 2.4s var(--ease) infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(223,223,65,.55); } 60% { box-shadow: 0 0 0 8px rgba(223,223,65,0); } }
+  @media (prefers-reduced-motion: reduce) { .scarcity__dot { animation: none; } }
+
+  .hl { color: var(--text-h); font-weight: 500; background: linear-gradient(transparent 62%, rgba(223,223,65,.32) 62%); padding: 0 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+  /* ===== SECTION SHARED ===== */
+  .section { padding: 96px 0 96px; }
+  .section__head { margin-bottom: 56px; max-width: 780px; }
+  /* сознательно ломаем "всё по центру": шапки секций живут слева, на своей оси */
+  .section__head--center { margin-left: 0; margin-right: auto; text-align: left; }
+  .section__title {
+    position: relative; font-family: var(--display);
+    font-size: clamp(30px, 4vw, 50px); font-weight: 500; line-height: 1.04;
+    color: var(--text-h); margin: 0 0 18px; letter-spacing: -0.035em; text-wrap: balance;
+  }
+  /* акцент-чёрточки у заголовков секций нет намеренно: она жила на left:-44px
+     шириной 26px, то есть в поле контейнера — ровно там, где идёт рейка
+     прогресса, и пересекала её при любой ширине экрана (см. 899093b) */
+  .section__title b { color: var(--accent); font-weight: 700; }
+  .section__sub { font-size: 17px; font-weight: 400; line-height: 1.62; color: var(--text-mute); max-width: 62ch; }
+  .section__cta { margin-top: 52px; text-align: center; }
+
+  /* ===== ЭТО ПРО ТЕБЯ, ЕСЛИ… — объединённый блок (мотивация + узнавание) =====
+     слева — "Почему это важно" (деньги/грейд/senior + бигтех + ловушка),
+     справа — "Узнаёшь себя?" (профили и затык на интервью). Каждый тезис — один раз.
+     На ≤960 колонки складываются в одну. */
+  /* без левой колонки — одна центрированная колонка узнавания */
+  /* левая колонка — мотивация (не используется после удаления, оставлено на всякий) */
+  /* строка с компаниями — реестр бигтеха */
+  /* ловушка — денежный вывод, коралловая отсечка */
+  /* правая колонка — узнавание */
+  /* подсветка под курсором — переиспользует общий обработчик --mx/--my */
+
+  /* ===== "Это про тебя" — лента с узлами (roadmap-мотив) ===== */
+  .v1 { position: relative; max-width: 860px; }
+  /* лента-риска: от центра первого узла к центру последнего */
+  .v1::before {
+    content: ''; position: absolute; left: 25px; top: 46px; bottom: 46px; width: 2px; border-radius: 2px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dim) 22%, var(--border-acc) 100%); opacity: .55;
+  }
+  .v1__row { position: relative; display: grid; grid-template-columns: 52px 1fr; column-gap: 30px; align-items: start; padding: 26px 0; }
+  .v1__row + .v1__row { border-top: 1px solid var(--border-mid); }
+  .v1__node {
+    position: relative; z-index: 2; width: 52px; height: 52px; border-radius: 50%;
+    background: var(--bg-card); border: 1px solid var(--border-acc); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), box-shadow .35s var(--ease), transform .35s var(--ease);
+  }
+  .v1__node svg { width: 23px; height: 23px; }
+  .v1__row:hover .v1__node {
+    background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    box-shadow: 0 0 0 5px rgba(223,223,65,.14), 0 0 26px -2px rgba(223,223,65,.55); transform: translateY(-1px);
+  }
+  /* стоит после базового правила намеренно: выше по файлу оно проигрывало каскад */
+  @media (prefers-reduced-motion: reduce) { .v1__row:hover .v1__node { transform: none; } }
+  .v1__text {
+    font-family: var(--display); font-weight: 400; font-size: clamp(18px, 2.1vw, 23px); line-height: 1.42;
+    letter-spacing: -0.018em; color: var(--text-mute); text-wrap: pretty; align-self: center; transition: color .3s var(--ease);
+  }
+  .v1__row:hover .v1__text { color: var(--text-body); }
+  .v1__text b { font-weight: 600; color: var(--text-h); }
+  .v1__row:hover .v1__text b { color: var(--accent); }
+
+  /* ===== ЗНАКОМАЯ СИТУАЦИЯ (5 смысловых блоков, у каждого своя картинка) ===== */
+  /* слот под гифку/мем (figure), внутри — SVG-сцена-заглушка на случай, если гиф не загрузился */
+  .slot {
+    position: relative; width: 100%; aspect-ratio: 4 / 3;
+    border-radius: var(--r-lg); overflow: hidden;
+    background: var(--bg-secondary); border: 1px solid var(--border-card);
+    transition: border-color .35s var(--ease);
+  }
+  /* мем лежит видео (mp4/webm вместо гифки: те же 5 роликов весили 5.8 МБ, стали 0.5) */
+  .slot img, .slot video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1; }
+  /* когда в слоте есть картинка — прячем SVG-заглушку и таймер */
+  .slot:has(img) .slot__ph, .slot:has(video) .slot__ph { display: none; }
+  .slot__ph {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.02) 0 9px, transparent 9px 18px);
+  }
+  .slot__tag {
+    position: absolute; left: 12px; bottom: 11px;
+    font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text-mute); background: rgba(16,23,26,.62); padding: 4px 8px; border-radius: 999px;
+  }
+  .scene { width: 44%; max-width: 128px; height: auto; opacity: 1; }
+  .scene .ln   { fill: none; stroke: var(--text-mute); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .scene .ln-a { fill: none; stroke: var(--accent);    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .scene .ln-c { fill: none; stroke: var(--coral);     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .scene .fl   { fill: var(--bg-tertiary); stroke: none; }
+  .scene .fl-c { fill: var(--coral); stroke: none; }
+  .scene .dt   { fill: var(--text-mute); stroke: none; }
+
+  /* таймер-циферблат внутри слота (иллюстрация "времени") */
+  .slot__ph--clock { flex-direction: column; gap: 4px; }
+  .dial { position: relative; width: 152px; height: 152px; max-width: 60%; aspect-ratio: 1; }
+  .dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--bg-tertiary); stroke-width: 7; }
+  .ring-fg {
+    fill: none; stroke: var(--coral); stroke-width: 7; stroke-linecap: round;
+    stroke-dasharray: 691.15; stroke-dashoffset: 691.15;
+    transition: stroke-dashoffset .1s linear;
+  }
+  .dial__time { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+  .dial__num { font-family: var(--mono); font-weight: 700; font-size: clamp(24px,4.6vw,32px); letter-spacing: -0.02em; color: var(--text-h); font-variant-numeric: tabular-nums; line-height: 1; }
+  .dial__num.is-up { color: var(--coral); }
+  .dial__tick { font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-mute); }
+
+  /* текст боли (дословный) */
+  .pain__text {
+    position: relative; padding-left: 20px;
+    font-size: 16px; line-height: 1.66; color: var(--text-body); text-wrap: pretty;
+  }
+  .pain__text::before {
+    content: ''; position: absolute; left: 0; top: .48em; bottom: .3em; width: 2px; border-radius: 2px;
+    background: var(--border-coral);
+  }
+  /* добивающий такт — коралл */
+  .pf { color: var(--coral); }
+
+  /* 5 смысловых блоков, чередуют сторону картинки (editorial-ритм) */
+  .blocks { display: flex; flex-direction: column; }
+  .block {
+    display: grid; grid-template-columns: 220px 1fr;
+    grid-template-areas: "head head" "media body";
+    column-gap: 48px; row-gap: 26px; align-items: start;
+    padding: 46px 0; border-top: 1px solid var(--border-card);
+  }
+  .block:first-child { border-top: none; padding-top: 8px; }
+  .block--flip { grid-template-columns: 1fr 220px; grid-template-areas: "head head" "body media"; }
+  .block__head { grid-area: head; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .block__num {
+    font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--accent);
+    font-variant-numeric: tabular-nums; letter-spacing: .04em;
+  }
+  .block__title { font-family: var(--display); font-size: clamp(21px,2.5vw,27px); font-weight: 600; color: var(--text-h); letter-spacing: -0.02em; line-height: 1.1; }
+  .block__media { grid-area: media; min-width: 0; position: sticky; top: 28px; }
+  /* текст боли короткий, а мем-слот высокий: без выравнивания по центру
+     справа от картинки оставалась дыра в половину блока */
+  .block__body { grid-area: body; min-width: 0; align-self: center; display: flex; flex-direction: column; gap: 30px; }
+  .block__body .sit-pain { padding-left: 0; }
+  .block:hover .slot { border-color: var(--border-coral); }
+  .block:hover .pain__text::before { background: var(--coral); }
+
+  @media (max-width: 1180px) {
+    .block { grid-template-columns: 200px 1fr; column-gap: 40px; }
+    .block--flip { grid-template-columns: 1fr 200px; }
+  }
+
+  /* ===== MECHANISM (светлый островок) ===== */
+  .mech {
+    position: relative; background: var(--light-bg); color: var(--light-ink);
+    border-radius: var(--r-xl); padding: 84px 76px 76px;
+    box-shadow: 0 40px 90px -50px rgba(0,0,0,.9);
+  }
+  .mech::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background-image: linear-gradient(rgba(16,23,26,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(16,23,26,.035) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-mask-image: radial-gradient(ellipse at 80% 0%, #000 0%, transparent 70%);
+    mask-image: radial-gradient(ellipse at 80% 0%, #000 0%, transparent 70%);
+  }
+  .mech > * { position: relative; }
+  .mech__title { font-family: var(--display); font-size: clamp(24px, 3.4vw, 42px); font-weight: 500; line-height: 1.05; letter-spacing: -0.04em; color: var(--light-ink); margin-bottom: 24px; white-space: nowrap; }
+  /* подводка-лид под заголовком — короткий заход к видео */
+  .mech__lead { font-size: 17px; line-height: 1.7; color: var(--light-mute); max-width: 68ch; text-wrap: pretty; margin-bottom: 34px; }
+  .mech__lead--tight { margin-bottom: 12px; }
+  /* ===== ВИДЕОПРОДАЖНИК: обложка на светлом островке =====
+     Раньше блок одалживал .yt__thumb / .yt__play-btn у лид-магнитов, и это
+     была мина: оба класса в файле объявлены ДВАЖДЫ (здесь и ещё раз в секции
+     ютуб-канала ниже), выигрывает нижнее объявление — кнопка play уезжала из
+     центра и красилась в ютубовский красный. Поэтому у видео свои классы,
+     ничего общего с .yt__* быть не должно.
+     Это <button>, а не <div>: блок открывает модалку, значит обязан работать
+     с клавиатуры и объявляться скринридеру кнопкой. Отсюда сброс дефолтов —
+     свои border/background/радиус у .video уже есть. */
+  .video { position: relative; display: block; width: 100%; padding: 0; margin: 0; font: inherit; color: inherit; text-align: inherit;
+    -webkit-appearance: none; appearance: none; background: transparent;
+    border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(16,23,26,.16); box-shadow: 0 34px 80px -46px rgba(0,0,0,.7); cursor: pointer; }
+  .video:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  /* Обложка лежит в .video__poster поверх градиента-заглушки: градиент со
+     схемой-сеткой остаётся под ней и работает, если картинка не загрузилась. */
+  .video__thumb { position: relative; aspect-ratio: 16/9; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(150deg, var(--bg-secondary), var(--bg-primary)); }
+  .video__thumb::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 10%, transparent 72%);
+    mask-image: radial-gradient(ellipse at 50% 50%, #000 10%, transparent 72%);
+  }
+  .video__poster { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video__play { position: relative; z-index: 2; width: 64px; height: 64px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 36px -14px rgba(223,223,65,.7);
+    transition: transform .3s var(--ease); }
+  .video__play svg { width: 24px; height: 24px; color: var(--accent-ink); margin-left: 3px; }
+  .video:hover .video__play { transform: scale(1.08); }
+  .v1-video { max-width: 760px; margin: 0 auto 36px; }
+
+  /* ===== МОДАЛКА ВИДЕОПРОДАЖНИКА (.vmodal) =====
+     Своя, а не .gc-modal: там панель заточена под форму (560px, вертикальный
+     скролл, паддинги), здесь нужен широкий чёрный прямоугольник 16:9 вообще
+     без внутренних отступов. Общее с gc-modal ровно одно — замок скролла
+     body.gc-lock: второй класс с тем же overflow:hidden заводить незачем. */
+  .vmodal[hidden] { display: none; }
+  .vmodal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .vmodal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.86); backdrop-filter: blur(5px); }
+  .vmodal__panel { position: relative; z-index: 1; width: min(1100px, 94vw); border-radius: var(--r-lg); overflow: hidden;
+    box-shadow: 0 40px 120px -30px rgba(0,0,0,.92); animation: gcPop .28s var(--ease); }
+  /* aspect-ratio висит на обёртке, а iframe растянут абсолютом: RUTUBE отдаёт
+     плеер без собственной высоты, и без этого фрейм схлопывается в полоску. */
+  .vmodal__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  .vmodal__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .vmodal__close { position: fixed; top: 22px; right: 26px; z-index: 3; width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(30,39,43,.9); border: 1px solid var(--border-card); color: var(--text-h); cursor: pointer;
+    font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: background .2s;
+    box-shadow: 0 6px 20px -8px rgba(0,0,0,.7); }
+  .vmodal__close:hover { background: rgba(52,63,68,.95); }
+  @media (max-width: 640px) {
+    .vmodal { padding: 0; }
+    .vmodal__panel { width: 100%; border-radius: 0; }
+    .vmodal__close { top: 12px; right: 12px; width: 46px; height: 46px; font-size: 19px; background: #1e272b; }
+  }
+  @media (prefers-reduced-motion: reduce) { .vmodal__panel { animation: none; } }
+  /* тезисы — скимабельный остов аргумента для тех, кто не смотрит видео */
+  .mech__quote {
+    margin-top: 34px; padding: 4px 0 4px 26px; border-left: 2px solid var(--accent);
+    font-family: var(--display); font-size: clamp(15px, 1.9vw, 23px); line-height: 1.34;
+    font-weight: 500; letter-spacing: -0.02em; color: var(--light-ink); max-width: 46ch; text-wrap: balance;
+  }
+
+  /* ===== ROAD — "Что получишь" как лента-путь =====
+     Семь пунктов — не список, а хронология самого собеседования: от первой минуты
+     к финалу. Геометрия задана в условных единицах поля 1240 × 1190; --u привязан
+     к ширине контейнера (cqw), поэтому композиция масштабируется целиком.
+     Лента заполняется по прокрутке — прогресс считает общий rAF-тикер страницы.
+
+     ≥1024px — змейка-лента с диагональной штриховкой и "дышащей" кромкой
+     (feTurbulence + feDisplacementMap), крупные номера с пунктирными выносками.
+     <1024px — вертикальная лента: рельса слева, тот же прогресс.
+
+     Отстройка от боковой рейки .rail: рейка живёт в поле страницы (2px-линия,
+     10px-узлы, fixed), лента — внутри контентной колонки. Самая левая точка пути
+     (x=35 из 1240) с учётом полутолщины обводки остаётся правее края контента,
+     так что наезда на рейку нет. */
+  .road-outer { container-type: inline-size; max-width: 1240px; margin: 0 auto; }
+  .road { --u: .0806452cqw; --p: 0; position: relative; aspect-ratio: 1240 / 1420; margin-bottom: -110px; }
+  .road__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+  /* полотно ленты: широкое, с неидеально ровной кромкой */
+  .road__track {
+    fill: none; stroke: var(--bg-secondary); stroke-width: 46;
+    stroke-linecap: round; stroke-linejoin: round; filter: url(#roadWobble);
+  }
+  .road__trackline { fill: none; stroke: rgba(255,255,255,.07); stroke-width: 47.5; stroke-linecap: round; filter: url(#roadWobble); }
+  /* заполнение по прокрутке */
+  .road__fill  { fill: none; stroke: url(#roadGrad); stroke-width: 41; stroke-linecap: round; stroke-linejoin: round; }
+  /* штриховка поверх заполненной части — фактура, а не "рисованность" */
+  .road__hatch { fill: none; stroke: url(#roadHatchPattern); stroke-width: 41; stroke-linecap: round; stroke-linejoin: round; }
+
+  .road__steps { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
+  .road__step {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top:  calc(var(--y) * var(--u));
+    width: 0; height: 0;
+  }
+
+  /* --- точка на ленте --- */
+  .road__dot {
+    position: absolute; left: 0; top: 0; transform: translate(-50%, -50%);
+    width: calc(22 * var(--u)); height: calc(22 * var(--u)); border-radius: 50%;
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 calc(3 * var(--u)) rgba(255,255,255,.22);
+    z-index: 3;
+    transition: box-shadow .4s var(--ease), background .4s var(--ease);
+  }
+  .road__step.is-lit .road__dot {
+    background: var(--accent-ink);
+    box-shadow: 0 0 0 calc(3.5 * var(--u)) var(--accent), 0 0 calc(26 * var(--u)) rgba(223,223,65,.45);
+  }
+
+  /* --- подпись: крупный номер + текст, без карточки --- */
+  .road__card { position: absolute; left: 0; width: calc(342 * var(--u)); transform: translateX(-50%); z-index: 2; }
+  .road__step--above .road__card { bottom: calc(56 * var(--u)); }
+  .road__step--below .road__card { top:    calc(56 * var(--u)); }
+
+  /* пунктирный поводок от подписи к ленте */
+  .road__card::after {
+    content: ''; position: absolute; left: 50%; width: 0;
+    height: calc(30 * var(--u));
+    border-left: 1.5px dashed rgba(223,223,65,.30);
+    transform: translateX(-50%);
+    transition: border-color .4s var(--ease);
+  }
+  .road__step--above .road__card::after { bottom: calc(-32 * var(--u)); }
+  .road__step--below .road__card::after { top:    calc(-32 * var(--u)); }
+  .road__step.is-lit .road__card::after { border-left-color: rgba(223,223,65,.85); }
+
+  .road__num {
+    font-family: var(--display); font-weight: 500;
+    font-size: clamp(30px, calc(56 * var(--u)), 56px);
+    line-height: .96; letter-spacing: -0.05em;
+    color: var(--text-deco);
+    margin-bottom: calc(12 * var(--u));
+    font-variant-numeric: tabular-nums;
+    transition: color .45s var(--ease);
+  }
+  .road__step.is-lit .road__num { color: var(--accent); }
+  .road__num b { font-weight: 500; }
+  .road__num i { font-style: normal; color: rgba(223,223,65,.55); }
+
+  .road__body {
+    font-size: clamp(14px, calc(17 * var(--u)), 17px);
+    line-height: 1.56; color: var(--text-mute);
+    padding-left: calc(14 * var(--u));
+    border-left: 1px solid rgba(255,255,255,.08);
+    transition: color .45s var(--ease), border-color .45s var(--ease);
+  }
+  .road__step.is-lit .road__body { color: var(--text-body); border-left-color: rgba(223,223,65,.4); }
+  .road__step:hover .road__body { color: var(--text-h); }
+
+  /* --- терминальный блок (07) --- */
+  /* держим его в одном ключе с подписями роадмапа: спокойная поверхность, тонкая
+     рамка и скромная левая риска-акцент (как border-left у .road__body), которая
+     догорается при доскролле. Без градиента-переливов, тяжёлой тени и иконки-слоёв. */
+  .road__step--end .road__card { left: 0; transform: none; width: calc(672 * var(--u)); top: 50%; translate: 0 -50%; }
+  .road__step--end .road__card::after { display: none; }
+  .road__step--end .road__dot { display: none; }
+  .road__end {
+    padding: calc(28 * var(--u)) calc(32 * var(--u));
+    border-radius: var(--r-lg);
+    border: 1px solid var(--border-card);
+    border-left: calc(3 * var(--u)) solid rgba(223,223,65,.38);
+    background: var(--bg-card);
+    transition: border-color .4s var(--ease), border-left-color .4s var(--ease);
+  }
+  .road__step--end.is-lit .road__end { border-left-color: var(--accent); }
+  .road__step--end:hover .road__end { border-top-color: var(--border-acc); border-right-color: var(--border-acc); border-bottom-color: var(--border-acc); }
+  .road__end-num {
+    font-family: var(--mono); font-size: clamp(10px, calc(11.5 * var(--u)), 11.5px);
+    letter-spacing: .2em; text-transform: uppercase; color: var(--coral);
+    margin-bottom: calc(9 * var(--u));
+  }
+  .road__end-text {
+    font-family: var(--display);
+    font-size: clamp(16px, calc(23 * var(--u)), 23px);
+    line-height: 1.34; letter-spacing: -0.02em; font-weight: 500;
+    color: var(--text-h); text-wrap: pretty;
+  }
+
+  /* мобильная рельса (рисуется только <1024px) */
+  .road__rail { display: none; }
+
+  /* ===== МОБИЛЬНАЯ ЛЕНТА (<1024px): вертикаль, тот же прогресс ===== */
+  @media (max-width: 1023.98px) {
+    .road { aspect-ratio: auto; --u: 1px; }
+    .road__svg { display: none; }
+    .road__steps { position: relative; inset: auto; display: flex; flex-direction: column; gap: 30px; padding-left: 66px; }
+    .road__rail {
+      display: block; position: absolute; left: 18px; top: 8px; bottom: 30px; width: 14px;
+      border-radius: 8px; background: var(--bg-secondary); box-shadow: 0 0 0 1px rgba(255,255,255,.05);
+      overflow: hidden;
+    }
+    .road__rail i {
+      position: absolute; inset: 0; display: block; border-radius: 8px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent) 68%, var(--coral) 100%);
+      transform: scaleY(var(--p)); transform-origin: top center;
+    }
+    .road__step { position: relative; left: auto; top: auto; width: auto; height: auto; }
+    .road__dot {
+      position: absolute; left: -48px; top: 14px; transform: none;
+      width: 14px; height: 14px;
+      box-shadow: 0 0 0 3px rgba(255,255,255,.22), 0 0 0 6px var(--bg-primary);
+    }
+    .road__step.is-lit .road__dot { box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px var(--bg-primary), 0 0 18px rgba(223,223,65,.5); }
+    .road__card {
+      position: static; width: auto; transform: none;
+      bottom: auto !important; top: auto !important; translate: none !important;
+    }
+    /* терминальная карточка на десктопе width:672*u — на мобиле u=1px давало 672px и вылет за экран */
+    .road__step--end .road__card { position: static; width: auto; transform: none; translate: none; }
+    .road__card::after { display: none; }
+    .road__num { font-size: 34px; margin-bottom: 8px; }
+    .road__body { font-size: 16.5px; padding-left: 13px; }
+    .road__step--end { margin-top: 8px; }
+    .road__end { padding: 24px 24px 26px; border-radius: var(--r-lg); border-left-width: 3px; }
+    .road__end-num { font-size: 10.5px; margin-bottom: 8px; }
+    .road__end-text { font-size: clamp(17px, 2.6vw, 21px); }
+  }
+  @media (max-width: 639.98px) {
+    .road__steps { padding-left: 54px; gap: 26px; }
+    .road__rail { left: 14px; width: 11px; }
+    .road__dot { left: -41px; width: 12px; height: 12px; }
+    .road__num { font-size: 30px; }
+    .road__end { padding: 20px 20px 22px; }
+  }
+
+  /* ===== PROGRAM ===== */
+
+  /* ===== Шапка секции "Программа" (эйброу + конкретика) ===== */
+  .prog-head { text-align: center; max-width: 900px; margin: 0 auto 44px; }
+  .prog-head__pill { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 26px;
+    padding: 9px 20px 9px 16px; border-radius: 999px; background: rgba(223,223,65,.08); border: 1px solid rgba(223,223,65,.28);
+    font-family: var(--mono); font-size: 14px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .prog-head__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: progPulse 2.4s var(--ease) infinite; }
+  @keyframes progPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(223,223,65,.5); } 60% { box-shadow: 0 0 0 8px rgba(223,223,65,0); } }
+  .prog-head__title { font-family: var(--display); font-size: clamp(30px, 4.4vw, 52px); font-weight: 600; line-height: 1.1; letter-spacing: -0.03em; color: var(--text-h); }
+  .prog-head__title b { color: var(--accent); font-weight: 700; }
+  .prog-head__sub { font-size: 17.5px; line-height: 1.6; color: var(--text-mute); max-width: 62ch; margin: 24px auto 0; text-wrap: pretty; }
+  .prog-head__sub em { font-style: normal; color: var(--text-body); }
+  @media (prefers-reduced-motion: reduce) { .prog-head__dot { animation: none; } }
+
+  /* ===== Результат недели: чип в шапке + строка внизу (вариант C) ===== */
+  .program__item:not([open]) .week-chip { display: none; }
+  /* мини-мокапы артефактов */
+
+  /* аккордеон недель: серые скруглённые карточки, плашки-лейблы внутри.
+     Секция намеренно спокойная — жёлтого минимум (только плашка "Результат
+     недели" + активный тогл). Ни таймлайн-рейки, ни бокового артефакта. */
+  .program { max-width: 1080px; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .program__item {
+    background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl);
+    transition: background .3s var(--ease), border-color .3s var(--ease);
+    scroll-margin-top: 84px;
+  }
+  .program__item:hover { border-color: var(--border-acc); }
+  .program__item[open] { background: var(--bg-secondary); border-color: var(--border-acc); }
+  .program__item summary { list-style: none; cursor: pointer; padding: 30px 30px 30px 34px; display: flex; align-items: center; justify-content: space-between; gap: 28px; border-radius: var(--r-xl); }
+  .program__item summary::-webkit-details-marker { display: none; }
+  .program__head { flex: 1; min-width: 0; }
+  .program__step { display: block; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text-faint); margin-bottom: 13px; letter-spacing: .18em; text-transform: uppercase; transition: color .3s var(--ease); }
+  .program__item[open] .program__step { color: var(--accent); }
+  .program__name { font-family: var(--display); font-size: clamp(20px, 2.4vw, 30px); font-weight: 500; color: var(--text-h); line-height: 1.16; letter-spacing: -0.03em; text-wrap: balance; }
+  /* тогл: скруглённый квадрат "+"; в раскрытом состоянии штрихи поворачиваются
+     в "×", сам квадрат остаётся квадратом (не ромбом) */
+  .program__toggle {
+    position: relative; width: 46px; height: 46px; border-radius: var(--r-md);
+    background: var(--bg-primary); color: var(--text-mute); border: 1px solid var(--border-acc);
+    display: flex; align-items: center; justify-content: center; font-size: 0; line-height: 0;
+    flex-shrink: 0;
+    transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .18s var(--ease);
+  }
+  .program__toggle::before, .program__toggle::after {
+    content: ''; position: absolute; background: currentColor; border-radius: 1px;
+    transition: transform .35s var(--ease);
+  }
+  .program__toggle::before { width: 16px; height: 1.5px; }
+  .program__toggle::after  { width: 1.5px; height: 16px; }
+  .program__item:hover .program__toggle { border-color: rgba(223,223,65,.45); color: var(--accent); }
+  .program__item[open] .program__toggle { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .program__item[open] .program__toggle::before { transform: rotate(45deg); }
+  .program__item[open] .program__toggle::after  { transform: rotate(45deg); }
+  .program__item summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-md); }
+  .program__item summary:active .program__toggle { transform: scale(.94); }
+
+  /* тело: одна колонка, содержимое разбито на блоки с плашками-лейблами */
+  .program__body { padding: 2px 34px 34px; }
+  .program__promise { font-size: 16.5px; line-height: 1.56; color: var(--text-h); font-family: var(--display); font-weight: 400; letter-spacing: -0.015em; max-width: 74ch; margin-bottom: 30px; }
+  .program__block + .program__block { margin-top: 34px; }
+  /* плашка-лейбл: тёмная для смысловых блоков, жёлтая — только "Результат недели" */
+  .program__label {
+    display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--text-h);
+    background: var(--bg-primary); border: 1px solid var(--border-card);
+    padding: 9px 16px; border-radius: var(--r-md); margin-bottom: 20px;
+  }
+  .program__label--result { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .program__list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .program__list li { position: relative; padding-left: 22px; font-size: 15.5px; line-height: 1.62; color: var(--text-mute); }
+  .program__list li::before { content: ''; position: absolute; left: 0; top: .68em; width: 9px; height: 1px; background: var(--accent); }
+  .program__list b { color: var(--text-h); font-weight: 600; }
+  .program__result { font-size: 15.5px; line-height: 1.62; color: var(--text-body); max-width: 74ch; }
+  .program__result b { color: var(--text-h); font-weight: 600; }
+
+  .program__hw-title { font-family: var(--display); font-size: 16.5px; font-weight: 600; color: var(--text-h); line-height: 1.35; margin: 0 0 10px; }
+  .program__hw { font-size: 15px; line-height: 1.65; color: var(--text-mute); margin: 0 0 10px; max-width: 74ch; text-wrap: pretty; }
+  .program__hw:last-child { margin-bottom: 0; }
+  .program__hw b { color: var(--text-body); font-weight: 600; }
+  .program__gains { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 9px; }
+  .program__gains li { position: relative; padding-left: 20px; font-size: 15px; line-height: 1.6; color: var(--text-mute); max-width: 74ch; text-wrap: pretty; }
+  .program__gains li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .program__extra { max-width: 1080px; margin: 30px 0 0; padding: 26px 30px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); display: grid; grid-template-columns: 44px 1fr; gap: 20px; align-items: start; }
+  .program__extra-icon { width: 44px; height: 44px; border-radius: var(--r-sm); background: rgba(223,223,65,.09); border: 1px solid rgba(223,223,65,.18); color: var(--accent); display: flex; align-items: center; justify-content: center; }
+  .program__extra-icon svg { width: 22px; height: 22px; }
+  .program__extra-text { font-size: 15px; line-height: 1.65; color: var(--text-body); }
+  .program__extra-text b { color: var(--text-h); font-weight: 600; }
+
+  /* ===== HOW (паттерн "Как всё устроено" — чередующиеся ряды) ===== */
+  /* нагрузка — инлайн акцент-строка (вариант 3) */
+
+  .rows { display: flex; flex-direction: column; gap: 96px; }
+  .row { display: grid; grid-template-columns: 1fr 1.08fr; gap: 72px; align-items: center; }
+  .row--flip { grid-template-columns: 1.08fr 1fr; }
+  .row--flip .row__body { order: 2; }
+  .row--flip .row__visual { order: 1; }
+  .row__label { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+  .row__label--premium { color: var(--accent-ink); background: var(--accent); padding: 6px 12px; border-radius: var(--r-sm); font-weight: 700; }
+  .row__title { font-family: var(--display); font-size: clamp(23px, 2.6vw, 34px); font-weight: 500; color: var(--text-h); line-height: 1.12; letter-spacing: -0.032em; margin-bottom: 18px; text-wrap: balance; }
+  .row__text { font-size: 16px; line-height: 1.72; color: var(--text-mute); max-width: 56ch; text-wrap: pretty; }
+  .row__text p + p { margin-top: 14px; }
+  .row__text b { color: var(--text-h); font-weight: 600; }
+
+  .visual {
+    position: relative; background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-lg); padding: 30px 28px 30px; box-shadow: var(--sh-lift);
+    overflow: hidden;
+  }
+  .visual::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(223,223,65,.5), transparent);
+    border-radius: 0;
+  }
+  .visual__cap { font-family: var(--mono); font-size: 10.5px; color: var(--text-faint); letter-spacing: .18em; text-transform: uppercase; font-weight: 500; margin-bottom: 22px; padding-top: 2px; }
+
+  /* визуал 1 — доска с 5 шагами */
+  .steps { display: flex; flex-direction: column; gap: 8px; }
+  .steps__row { display: grid; grid-template-columns: 32px 1fr; gap: 14px; align-items: center; padding: 12px 14px; background: rgba(255,255,255,.02); border: 1px solid var(--border-mid); border-radius: var(--r-sm); transition: border-color .25s var(--ease); }
+  .steps__row:hover { border-color: rgba(223,223,65,.3); }
+  .steps__num { width: 32px; height: 32px; border-radius: 5px; background: rgba(223,223,65,.10); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; font-family: var(--mono); }
+  .steps__row:first-child .steps__num { background: var(--accent); color: var(--accent-ink); }
+  .steps__name { font-size: 14px; font-weight: 500; color: var(--text-body); }
+  .steps__bar { height: 6px; border-radius: 3px; background: var(--bg-secondary); margin-top: 16px; position: relative; overflow: hidden; }
+  .steps__bar::after { content: ''; position: absolute; inset: 0 62% 0 0; background: var(--accent); border-radius: 3px; }
+  .steps__time { margin-top: 10px; font-size: 12px; color: var(--text-faint); font-family: var(--mono); display: flex; justify-content: space-between; }
+
+  /* визуал 2 — разбор архитектуры с пометками ментора */
+  .arch { display: flex; flex-direction: column; gap: 12px; }
+  .arch__flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: center; }
+  .arch__node { padding: 14px 6px; background: rgba(255,255,255,.02); border: 1px solid var(--border-acc); border-radius: var(--r-sm); text-align: center; font-size: 11.5px; font-family: var(--mono); color: var(--text-body); }
+  .arch__node--hot { border-color: rgba(255,133,98,.6); color: var(--coral); background: rgba(255,133,98,.06); }
+  .arch__arrows { display: grid; grid-template-columns: repeat(4, 1fr); font-size: 13px; color: var(--text-faint); text-align: center; }
+  .note { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: start; padding: 12px 14px; background: var(--bg-secondary); border: 1px solid var(--border-mid); border-radius: var(--r-sm); font-size: 13px; line-height: 1.5; color: var(--text-mute); }
+  .note__ava { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .note--warn { border-color: rgba(255,133,98,.32); }
+
+  /* визуал 3 — групповая практика */
+  .teams { display: flex; flex-direction: column; gap: 12px; }
+  .teams__row { display: flex; align-items: center; gap: 14px; padding: 13px 16px; background: rgba(255,255,255,.02); border: 1px solid var(--border-mid); border-radius: var(--r-sm); }
+  .teams__avas { display: flex; }
+  .teams__ava { width: 30px; height: 30px; border-radius: 8px; background: var(--bg-tertiary); border: 2px solid var(--bg-card); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text-mute); margin-left: -8px; }
+  .teams__ava:first-child { margin-left: 0; }
+  .teams__row--active { border-color: rgba(223,223,65,.35); background: rgba(223,223,65,.04); }
+  .teams__row--active .teams__ava { background: rgba(223,223,65,.16); color: var(--accent); }
+  .teams__name { font-size: 13px; color: var(--text-mute); }
+  .teams__bubble { margin-top: 6px; position: relative; padding: 16px 20px; background: var(--accent); color: var(--accent-ink); border-radius: var(--r-md); font-size: 14px; font-weight: 600; font-family: var(--display); letter-spacing: -0.015em; }
+  .teams__bubble::after { content: ''; position: absolute; left: 28px; top: -6px; width: 12px; height: 12px; background: var(--accent); transform: rotate(45deg); border-radius: 2px; }
+
+  /* визуал 4 — 6 кейсов + мини-схема */
+  .cases { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cases__item { padding: 12px 14px; background: rgba(255,255,255,.02); border: 1px solid var(--border-mid); border-radius: var(--r-sm); font-size: 12.5px; color: var(--text-mute); line-height: 1.4; }
+  .cases__item b { display: block; color: var(--text-h); font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+
+  /* врезка-крючок к лид-магниту */
+
+  /* ===== RESULT (с чем уходишь) ===== */
+  .result { display: grid; grid-template-columns: 1.15fr 1fr; gap: 72px; align-items: center; }
+
+  /* дерево решений (визуал) */
+
+  /* витрина методичек: ровный ряд с общей базовой линией.
+     "лесенка" ломала выравнивание названий и делала блок неопрятным */
+
+  /* мокап 1 — 5-шаговый алгоритм: пронумерованные шаги, первый уже пройден */
+
+  /* мокап 2 — памятка: часть пунктов уже отмечена */
+
+  /* мокап 3 — дерево решений: корень и две ветки */
+
+  /* мокап 4 — сетка паттернов: один рабочий, один отказавший */
+
+  /* ===== TEACHER ===== */
+  .teacher__grid { display: grid; grid-template-columns: 1fr 360px; gap: 72px; align-items: start; }
+  .teacher__name { font-family: var(--display); font-size: clamp(30px, 4vw, 52px); font-weight: 500; line-height: .98; margin-bottom: 44px; color: var(--text-h); letter-spacing: -0.04em; }
+  /* ===== Продовый кейс автора =====
+     Главный аргумент за автора — не перечень компаний, а одна система, которую
+     он реально вёл, с числами и разменами. Размены тут не для красоты: курс
+     ровно про то, как их проговаривать на секции, и блок это показывает
+     на живом примере, а не обещает. Список компаний ниже остаётся как
+     подтверждение масштаба, но первым идёт кейс. */
+  .case { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 30px 34px 32px; margin-bottom: 44px; }
+  .case__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 16px; }
+  .case__title { font-family: var(--display); font-size: clamp(20px, 2.1vw, 26px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.28; color: var(--text-h); margin-bottom: 10px; }
+  .case__sub { font-size: 15px; line-height: 1.55; color: var(--text-mute); }
+  .case__metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 28px; margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--border-card); }
+  .case__value { font-family: var(--mono); font-size: clamp(20px, 2vw, 26px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; color: var(--accent); font-variant-numeric: tabular-nums; margin-bottom: 8px; }
+  .case__unit { font-size: 13px; line-height: 1.45; color: var(--text-faint); }
+  .case__tradeoffs { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 28px; margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--border-card); }
+  .case__tradeoff-label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 9px; }
+  .case__text { font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
+  /* та же цитатная линия, что у .teacher__quote — блок читается как реплика автора */
+  .case__side { margin-top: 26px; padding: 2px 0 2px 20px; border-left: 2px solid var(--accent); }
+  .case__side b { color: var(--text-h); font-weight: 600; }
+  @media (max-width: 640px) {
+    .case { padding: 24px 20px 26px; }
+    .case__metrics { grid-template-columns: 1fr; gap: 18px; }
+    .case__tradeoffs { grid-template-columns: 1fr; }
+  }
+
+  .experience { list-style: none; margin-bottom: 44px; }
+  /* компания и роль — одна колонка в столбик: длинный бейдж больше
+     не выталкивает строку и не ломает выравнивание описаний */
+  .experience__item { display: grid; grid-template-columns: 220px 1fr; gap: 8px 28px; padding: 20px 0; border-top: 1px solid var(--border-card); align-items: start; }
+  .experience__item:last-child { border-bottom: 1px solid var(--border-card); }
+  .experience__company { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .experience__company-name { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--text-h); white-space: nowrap; letter-spacing: -0.02em; line-height: 1.2; }
+  .experience__badge { display: inline-block; padding: 4px 10px; border: 1px solid var(--border-acc); border-radius: var(--r-sm); font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--text-mute); white-space: nowrap; }
+  .experience__desc { padding-top: 2px; }
+  .experience__desc { font-size: 15px; font-weight: 400; color: var(--text-mute); line-height: 1.55; }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .stat-card { background: var(--bg-card); border: 1px solid var(--border-card); color: var(--text-h); border-radius: var(--r-lg); padding: 28px 24px 30px; transition: transform .3s var(--ease), border-color .3s var(--ease); }
+  .stat-card:first-child { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .stat-card:hover { transform: translateY(-3px); border-color: rgba(223,223,65,.35); }
+  .stat-card__number { font-family: var(--mono); font-size: clamp(26px, 2.4vw, 32px); font-weight: 500; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; margin-bottom: 16px; line-height: 1.1; white-space: nowrap; }
+  .stat-card__line { width: 28px; height: 1px; background: rgba(255,255,255,.18); margin-bottom: 14px; }
+  .stat-card:first-child .stat-card__line { background: rgba(0,45,37,.3); }
+  .stat-card__desc { font-size: 13.5px; font-weight: 400; line-height: 1.5; color: var(--text-mute); }
+  .stat-card:first-child .stat-card__desc { color: rgba(0,45,37,.82); }
+  .teacher__side { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 108px; }
+  .teacher__photo { display: block; border-radius: var(--r-lg); background: var(--bg-card); border: 1px solid var(--border-card); overflow: hidden; box-shadow: var(--sh-lift); }
+  .teacher__photo img { display: block; width: 100%; height: auto; object-fit: cover; }
+
+  /* Стили тарифов лежат ниже, в блоке "ТАРИФЫ — стили из версии Олега":
+     маркетолог перенёс их в конец файла, и дубль здесь был мёртвым. */
+
+  /* ===== YOUTUBE / лид-магниты ===== */
+  .yt__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 34px; }
+  .yt__card { border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border-card); background: var(--bg-card); transition: transform .3s var(--ease), border-color .3s var(--ease); }
+  .yt__card:hover { transform: translateY(-3px); border-color: rgba(223,223,65,.3); }
+  /* превью пока заглушки — вместо пустого прямоугольника даём фактуру
+     (схема-подложка + виньетка), чтобы блок не читался недоделанным */
+  .yt__thumb { position: relative; aspect-ratio: 16/9; background: linear-gradient(150deg, var(--bg-secondary), var(--bg-primary)); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .yt__thumb::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 10%, transparent 72%);
+    mask-image: radial-gradient(ellipse at 50% 50%, #000 10%, transparent 72%);
+  }
+  .yt__card:nth-child(2) .yt__thumb { background: linear-gradient(200deg, var(--bg-secondary), var(--bg-primary)); }
+  .yt__card:nth-child(3) .yt__thumb { background: linear-gradient(120deg, var(--bg-secondary), var(--bg-primary)); }
+  .yt__play-btn { position: relative; width: 54px; height: 54px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 36px -14px rgba(223,223,65,.7); transition: transform .3s var(--ease); }
+  .yt__card:hover .yt__play-btn { transform: scale(1.08); }
+  .yt__play-btn svg { width: 20px; height: 20px; color: var(--accent-ink); margin-left: 3px; }
+  .yt__name { padding: 16px 18px; font-size: 13.5px; font-weight: 400; color: var(--text-faint); line-height: 1.45; border-top: 1px solid var(--border-mid); }
+  .yt__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+
+  /* ===== FAQ (не "коробочки", а типографский указатель) ===== */
+  /* сетка, а не columns: при раскрытии ответа вопросы не перепрыгивают
+     из колонки в колонку под курсором */
+  .faq { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; align-items: start; max-width: 100%; margin: 0; }
+  .faq__item { border: none; border-top: 1px solid var(--border-card); border-radius: 0; background: transparent; overflow: hidden; transition: none; }
+  .faq__item[open] { border-color: rgba(223,223,65,.35); }
+  .faq__item:nth-child(1), .faq__item:nth-child(2) { border-top-color: var(--border-acc); }
+  .faq__item summary {
+    list-style: none; padding: 24px 0; font-family: var(--display);
+    font-size: 16.5px; font-weight: 500; letter-spacing: -0.02em; color: var(--text-body); cursor: pointer;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; line-height: 1.34;
+    transition: color .25s var(--ease);
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary:hover { color: var(--text-h); }
+  .faq__item[open] summary { color: var(--accent); }
+  .faq__icon { width: 22px; height: 22px; border-radius: 0; background: none; border: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; color: var(--text-faint); margin-top: 3px; transition: color .25s var(--ease); }
+  .faq__item summary:hover .faq__icon { color: var(--accent); }
+  .faq__icon::before, .faq__icon::after { content: ''; position: absolute; background: currentColor; border-radius: 1px; transition: transform .3s var(--ease), opacity .25s var(--ease); }
+  .faq__icon::before { width: 13px; height: 1.5px; }
+  .faq__icon::after { width: 1.5px; height: 13px; }
+  .faq__item[open] .faq__icon { color: var(--accent); }
+  .faq__item[open] .faq__icon::after { transform: scaleY(0); opacity: 0; }
+  .faq__item summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-sm); }
+  .faq__item summary:active { color: var(--accent); }
+  .faq__answer { padding: 0 40px 28px 0; font-size: 15px; line-height: 1.72; color: var(--text-mute); max-width: 58ch; }
+  .faq__answer a { color: var(--coral); border-bottom: 1px solid rgba(255,133,98,.4); transition: border-color .2s ease; }
+  .faq__answer a:hover { border-bottom-color: var(--coral); }
+
+  /* ===== FINAL CTA + FOOTER ===== */
+  .final { padding: 76px 0 108px; }
+  .final__card {
+    position: relative; overflow: hidden;
+    background: var(--accent); color: var(--accent-ink); border-radius: var(--r-xl);
+    padding: 84px 48px 76px; text-align: center;
+    box-shadow: 0 30px 80px -60px rgba(223,223,65,.45);
+  }
+  .final__card::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(0,45,37,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,45,37,.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 120%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(ellipse at 50% 120%, #000 0%, transparent 72%);
+  }
+  .final__card > * { position: relative; }
+  .final__badges { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 34px; }
+  /* граница .28 давала 1.7:1 к жёлтому — рамка бейджа читалась как артефакт */
+  .final__badge { display: inline-block; padding: 8px 16px; background: rgba(0,45,37,.06); border: 1px solid rgba(0,45,37,.45); border-radius: var(--r-sm); font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .02em; color: var(--accent-ink); white-space: nowrap; }
+  .final__title { font-family: var(--display); font-size: clamp(28px, 4.4vw, 54px); font-weight: 500; line-height: 1.02; letter-spacing: -0.04em; margin-bottom: 40px; text-wrap: balance; max-width: 18ch; margin-left: auto; margin-right: auto; }
+  .final__btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 21px 46px; background: var(--accent-ink); color: #fff; border-radius: 999px; font-family: var(--display); font-size: 17px; font-weight: 600; letter-spacing: -0.015em; transition: background .2s var(--ease), transform .2s var(--ease), box-shadow .25s var(--ease); }
+  .final__btn:hover { background: #014236; transform: translateY(-2px); box-shadow: 0 18px 40px -16px rgba(0,45,37,.7); }
+  .final__btn:active { background: var(--accent-ink); transform: translateY(1px) scale(.994); box-shadow: none; }
+  /* .78 → 6.1:1; на 12px моно этого мало для комфортного чтения — поднято до 7.3:1 */
+  .final__hint { margin-top: 20px; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: rgba(0,45,37,.85); font-weight: 400; max-width: 42ch; margin-left: auto; margin-right: auto; text-wrap: pretty; }
+
+  .footer { padding: 90px 0 80px; border-top: 1px solid var(--border-card); }
+
+  /* верхний блок: карточка "Есть вопрос?" + телеграм-плитка */
+  .footer__top { display: grid; grid-template-columns: 1.02fr .98fr; gap: 22px; margin-bottom: 44px; }
+  .footer__ask {
+    display: flex; flex-direction: column;
+    background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-xl); padding: 52px 48px 44px; min-height: 340px;
+  }
+  .footer__ask-title { font-family: var(--display); font-size: clamp(40px, 5.6vw, 68px); font-weight: 500; line-height: .96; letter-spacing: -0.045em; color: var(--text-h); }
+  .footer__ask-rule { height: 1px; background: var(--border-acc); margin: auto 0 26px; }
+  .footer__ask-note { align-self: flex-start; font-size: 16px; line-height: 1.5; color: var(--text-mute); max-width: 34ch; text-wrap: pretty; transition: color .2s var(--ease); }
+  .footer__ask-note:hover { color: var(--text-h); }
+  .footer__ask-note:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-sm); }
+
+  /* телеграм-плитка → поддержка (support-канал) */
+  .footer__tg {
+    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    min-height: 340px; border-radius: var(--r-xl);
+    background: linear-gradient(155deg, var(--bg-secondary), var(--bg-card));
+    border: 1px solid var(--border-acc);
+    transition: transform .35s var(--ease), border-color .3s var(--ease), box-shadow .35s var(--ease);
+  }
+  /* лёгкая схема-фактура под самолётиком, как на превью-заглушках */
+  .footer__tg::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 30px 30px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 8%, transparent 70%);
+    mask-image: radial-gradient(ellipse at 50% 50%, #000 8%, transparent 70%);
+  }
+  .footer__tg svg { position: relative; width: clamp(104px, 16vw, 176px); height: auto; color: var(--accent); transition: transform .45s var(--ease); }
+  .footer__tg:hover { transform: translateY(-3px); border-color: rgba(223,223,65,.4); box-shadow: 0 30px 70px -46px rgba(223,223,65,.5); }
+  .footer__tg:hover svg { transform: translateX(6px) translateY(-4px); }
+  .footer__tg:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+  /* нижний ряд: реквизиты + ряд юр-ссылок */
+  .footer__bottom { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 48px; padding-top: 34px; border-top: 1px solid var(--border-mid); align-items: start; }
+  .footer__brand { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-h); margin-bottom: 18px; letter-spacing: -0.01em; }
+  .footer__brand b { color: var(--accent); }
+  .footer__req { font-family: var(--mono); font-size: 12px; line-height: 1.85; color: var(--text-faint); max-width: 52ch; }
+  .footer__req b { color: var(--text-mute); font-weight: 500; }
+  .footer__req a { color: var(--coral); border-bottom: 1px solid rgba(255,133,98,.3); transition: color .2s var(--ease), border-color .2s var(--ease); }
+  .footer__req a:hover { color: #FFA184; border-bottom-color: var(--coral); }
+  /* мелкий служебный fine-print: юридическая оговорка, не основной текст.
+     11px, приглушённый --text-faint (6.1:1 на фоне — читаемо), плотный интерлиньяж */
+  .footer__disclaimer { margin-top: 16px; font-size: 11px; color: var(--text-faint); line-height: 1.5; letter-spacing: .005em; max-width: 60ch; text-wrap: pretty; }
+  /* аккуратный юр-футер: мелкие приглушённые ссылки ровной сеткой 2×2,
+     выровнены по правому краю (при стеке футера — слева, одна колонка) */
+  .footer__links { font-size: 11px; }
+  .footer__links-row { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+  .footer__links a {
+    display: inline-block; padding: 1px 0; color: var(--text-faint); text-align: right; white-space: nowrap;
+    border-bottom: 1px solid transparent;
+    transition: color .2s var(--ease), border-color .2s var(--ease);
+  }
+  .footer__links a:hover { color: var(--accent); border-bottom-color: rgba(223,223,65,.5); }
+  .footer__links a:active { color: var(--accent-dim); }
+  .footer__links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-sm); }
+
+  /* ===== BACK TO TOP + STICKY CTA ===== */
+  .back-to-top { position: fixed; bottom: 32px; right: 32px; width: 44px; height: 44px; background: var(--accent); color: var(--accent-ink); border: none; border-radius: 999px; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity .3s, visibility .3s, transform .3s var(--ease), background .2s; z-index: 999; box-shadow: 0 14px 34px -14px rgba(223,223,65,.6); }
+  .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+  .back-to-top:hover { background: #EBEB55; transform: translateY(-2px); }
+  .back-to-top svg { width: 20px; height: 20px; }
+  .sticky-cta { display: none; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1080px) {
+    .header__nav { gap: 2px; }
+    .header__nav-link { font-size: 13.5px; padding: 8px 9px; }
+    .row { gap: 44px; }
+    .rows { gap: 72px; }
+    .mech { padding: 60px 48px; }
+  }
+
+  @media (max-width: 960px) {
+    .container { padding: 0 24px; }
+    .section { padding: 90px 0 94px; }
+    .header__nav { display: none; }
+    .menu-toggle { display: block; }
+    .hero { padding: 160px 0 108px; }
+    .cta-capsule__meta { padding: 0 20px; min-width: 112px; }
+    .cta-capsule .btn { padding: 20px 34px; font-size: 15.5px; }
+    /* объединённый блок: колонки складываются в одну */
+    .block, .block--flip { grid-template-columns: 260px 1fr; column-gap: 34px; }
+    .block__media { position: static; }
+    .mech { padding: 48px 34px; border-radius: var(--r-lg); }
+    .mech__title { max-width: none; white-space: normal; text-wrap: balance; }
+    /* тезисы в столбик, видео на всю ширину островка */
+    .v1-video { max-width: none; }
+    .row, .row--flip { grid-template-columns: 1fr; gap: 30px; }
+    .rows { gap: 64px; }
+    .row--flip .row__body { order: 1; }
+    .row--flip .row__visual { order: 2; }
+    .result { grid-template-columns: 1fr; gap: 36px; }
+    .teacher__grid { grid-template-columns: 1fr; gap: 38px; }
+    .teacher__side { position: static; order: -1; max-width: 400px; }
+    .yt__grid { grid-template-columns: 1fr; max-width: 460px; }
+    /* .faq — grid, а не multi-column: `columns: 1` здесь не действовал,
+       FAQ оставался в две колонки вплоть до 320px */
+    .faq { grid-template-columns: 1fr; }
+    .faq__item:nth-child(2) { border-top-color: var(--border-card); }
+    .footer__top { grid-template-columns: 1fr; gap: 16px; }
+    .footer__ask { min-height: 0; padding: 40px 34px 34px; }
+    .footer__tg { min-height: 240px; }
+    .footer__bottom { grid-template-columns: 1fr; gap: 32px; }
+    .footer__links-row { align-items: flex-start; gap: 8px; }
+    .footer__links a { text-align: left; white-space: normal; }
+  }
+
+  /* планшет-портрет: то, что на 960 ещё держалось в две-четыре колонки */
+  @media (max-width: 768px) {
+    .container { padding: 0 22px; }
+    .v1__row { column-gap: 20px; grid-template-columns: 46px 1fr; padding: 22px 0; }
+    .v1__node { width: 46px; height: 46px; }
+    .v1__node svg { width: 21px; height: 21px; }
+    .v1::before { left: 22px; }
+    .v1__text { font-size: 18px; }
+    /* в узком инлайн больше не читается — плашка съезжает под заголовок отдельной строкой */
+    .hero__title { display: flex; flex-direction: column; align-items: center; }
+    .hero__t1 { order: 1; }
+    .hero__t2 { order: 2; }
+    .hero__title .author--sm { order: 3; display: flex; width: fit-content; margin: 16px auto 0; translate: none; }
+    .cases { grid-template-columns: 1fr; }
+    .arch__flow { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .arch__arrows { display: none; }
+    .experience__item { grid-template-columns: 200px 1fr; gap: 6px 20px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stats-row > :first-child { grid-column: span 2; }
+    .final__card { padding: 64px 32px 58px; }
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 0 20px; }
+    .section { padding: 70px 0 74px; }
+    .header__inner { height: 64px; }
+    .nav-mobile.open { top: 64px; padding: 18px 20px 22px; }
+    .header__logo { font-size: 13px; }
+    .header__cta { display: none; }
+    .hero { padding: 124px 0 76px; }
+    .hero__inner { padding: 0; }
+    .hero__title { letter-spacing: -0.03em; }
+    .hero__subtitle { font-size: 16px; margin-bottom: 40px; }
+    /* капсула разворачивается вертикально: мета → кнопка → мета */
+    .cta-capsule {
+      display: flex; flex-direction: column; align-items: stretch; width: 100%;
+      gap: 14px; padding: 18px 16px; border-radius: 30px;
+    }
+    .cta-capsule__meta { flex-direction: row; align-items: baseline; justify-content: center; gap: 10px; padding: 0; min-width: 0; }
+    .cta-capsule .btn { display: flex; width: 100%; padding: 19px 24px; font-size: 15.5px; }
+    .scarcity { font-size: 11.5px; padding: 12px 16px; line-height: 1.5; }
+    .author { padding: 7px 18px 7px 7px; gap: 12px; }
+    .author__ava { width: 40px; height: 40px; }
+    .author__role { font-size: 14px; }
+    .author__pos { font-size: 12.5px; }
+    .section__head { margin-bottom: 36px; }
+    .block, .block--flip {
+      grid-template-columns: 1fr;
+      grid-template-areas: "head" "media" "body";
+      row-gap: 24px;
+    }
+    .block__media { max-width: 300px; }
+    .mech { padding: 34px 22px; border-radius: var(--r-lg); }
+    .mech__title { margin-bottom: 28px; }
+    .program { gap: 12px; }
+    .program__item summary { padding: 24px 20px; gap: 14px; }
+    .program__toggle { width: 40px; height: 40px; }
+    .program__body { padding: 2px 20px 26px; }
+    .program__extra { grid-template-columns: 1fr; padding: 22px; }
+    .visual { padding: 24px 20px 24px; }
+    .arch__flow { grid-template-columns: 1fr 1fr; }
+    .arch__arrows { display: none; }
+    .cases { grid-template-columns: 1fr; }
+    .experience__item { grid-template-columns: 1fr; gap: 10px; }
+    .stats-row { grid-template-columns: 1fr; }
+    .stats-row > :first-child { grid-column: auto; }
+    .footer { padding-top: 52px; }
+    .footer__req, .footer__disclaimer { max-width: none; }
+    .final__badges { gap: 6px; margin-bottom: 28px; }
+    .final__badge { font-size: 11.5px; padding: 7px 12px; }
+
+    /* три превью 16:9 стопкой давали ~3 экрана пустой фактуры —
+       переводим карточку в горизонтальный формат */
+    .yt__actions .btn { width: 100%; justify-content: center; }
+
+    /* тач-цели ≥44px и перенос длинных реквизитов/ссылок */
+    .footer__links a { padding: 12px 0; min-height: 44px; display: inline-flex; align-items: center; }
+    .footer__links { gap: 4px; }
+    .footer__links-row { gap: 8px; }
+    .footer__req a { padding: 6px 0; }
+    .footer__req, .footer__disclaimer { overflow-wrap: anywhere; word-break: break-word; }
+    .footer__ask { padding: 34px 24px 28px; }
+    .footer__tg { min-height: 190px; }
+
+    /* моноширинная мета: широкий трекинг рвал строки на узком */ .program__step, .program__label,
+    .row__label, .visual__cap,
+    .final__badge { letter-spacing: .08em; }
+    .faq__item summary { padding: 20px 0; font-size: 15.5px; }
+    .faq__answer { padding: 0 0 22px; }
+    .final { padding: 50px 0 74px; }
+    .final__card { padding: 48px 24px 44px; border-radius: var(--r-lg); }
+    .final__btn { padding: 18px 28px; font-size: 15px; width: 100%; }
+    .footer { padding-bottom: 104px; }
+    .back-to-top { bottom: 84px; right: 20px; }
+
+    .sticky-cta {
+      display: block; position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(16,23,26,.94); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      padding: 12px 20px calc(12px + env(safe-area-inset-bottom)); z-index: 998; border-top: 1px solid rgba(255,255,255,.08);
+      opacity: 0; visibility: hidden; transform: translateY(100%);
+      transition: opacity .3s, visibility .3s, transform .35s var(--ease);
+    }
+    .sticky-cta.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+  }
+
+  /* телефон-портрет: последняя ступень — снимаем всё, что ещё держит ширину */
+  @media (max-width: 400px) {
+    .container { padding: 0 16px; }
+    .section { padding: 60px 0 64px; }
+    .hero { padding: 112px 0 66px; }
+    .hero__title { font-size: 34px; letter-spacing: -0.028em; }
+    .hero__subtitle { font-size: 15.5px; margin-bottom: 34px; }
+    .cta-capsule { gap: 12px; padding: 16px 12px; border-radius: 26px; }
+    .cta-capsule .btn { padding: 18px 16px; font-size: 14.5px; }
+    .cta-capsule__label { letter-spacing: .06em; }
+    .cta-capsule__value { font-size: 15px; }
+    .btn { padding: 15px 20px; font-size: 14px; }
+    .btn--lg { padding: 17px 22px; font-size: 15px; }
+    .author__pos { white-space: normal; }
+    /* плашка scarcity: переносится внутри себя, а не растягивает сетку */
+    .scarcity { display: flex; width: 100%; font-size: 11px; padding: 11px 14px; gap: 8px; text-align: left; justify-content: flex-start; }
+
+    .section__head { margin-bottom: 30px; }
+    .section__title { font-size: 27px; letter-spacing: -0.03em; }
+    .stat-card, .visual { padding: 24px 20px 26px; }
+    .mech { padding: 28px 18px; }
+    .mech__title { font-size: 26px; white-space: normal; text-wrap: balance; } .program__extra { padding: 20px 18px; }
+    .program__item summary { padding: 20px 16px; gap: 10px; }
+    .program__toggle { width: 38px; height: 38px; }
+    .program__body { padding: 2px 16px 22px; }
+    .program__list li { font-size: 14.5px; }
+
+    .arch__flow { grid-template-columns: minmax(0,1fr); }
+
+    .faq__item summary { font-size: 15px; gap: 12px; }
+    .final__card { padding: 38px 18px 36px; }
+    .final__title { font-size: 26px; }
+    .final__badge { font-size: 11px; padding: 6px 10px; }
+
+    .footer__req { font-size: 11.5px; line-height: 1.75; }
+    .footer__links-row { gap: 7px; }
+
+    /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */ .program__step, .program__label,
+    .row__label, .visual__cap,
+    .final__badge { letter-spacing: 0; }
+
+    /* nowrap-мета переполняла контейнер */
+    .experience__company-name, .stat-card__number, .experience__badge { white-space: normal; }
+    .experience__company-name { font-size: 17px; }
+
+    /* длинные моноширинные строки без пробелов */
+    .footer__req, .scarcity, .program__result,
+    .tier__label, .experience__company-name { overflow-wrap: anywhere; }
+  }
+  /* ===== МОДАЛКА ПРЕДЗАПИСИ — СВОЯ ФОРМА =====
+     Здесь жил iframe с анкетой GetCourse и вся обвязка вокруг него: ленивая
+     загрузка, прогрев, приём высоты через postMessage, запасной путь через их
+     штатный скрипт. Всё это чинило чужие проблемы: страница их анкеты тянет
+     62 файла и 440 КБ ради трёх полей, отдаёт каждый файл по 0.4-0.6 с и
+     несёт в себе ту же Метрику, что и лендинг (то есть лишний просмотр у
+     каждого, кто открыл форму). Теперь форма своя, а в GetCourse уходит
+     только POST на тот же публичный эндпоинт, куда постит их собственная
+     анкета: block-public/process?id=2242020431 (вычитан из её разметки;
+     это тот же приём, что уже работает на лендинге микросервисов).
+     Проверено живой отправкой: заявка создаётся и без сессионных параметров
+     (gcSession/gcVisitor/gcVisit из url их формы), ответ success:true, и
+     GetCourse возвращает тот же redirectUrl на чат курса в телеграме, куда
+     уводит оригинальная анкета. */
+  .gc-modal[hidden] { display: none; }
+  .gc-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 24px 64px; overflow-y: auto; overscroll-behavior: contain; }
+  .gc-modal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.8); backdrop-filter: blur(5px); }
+  .gc-modal__panel { position: relative; z-index: 1; width: min(560px, 96vw); display: flex; flex-direction: column;
+    background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl); overflow: hidden;
+    box-shadow: 0 40px 120px -30px rgba(0,0,0,.92); animation: gcPop .28s var(--ease); }
+  @keyframes gcPop { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+  .gc-modal__close { position: fixed; top: 22px; right: 26px; z-index: 3; width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(30,39,43,.9); border: 1px solid var(--border-card); color: var(--text-h); cursor: pointer;
+    font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: background .2s;
+    box-shadow: 0 6px 20px -8px rgba(0,0,0,.7); }
+  .gc-modal__close:hover { background: rgba(52,63,68,.95); }
+  .gc-modal__body { padding: clamp(24px, 4vw, 36px); }
+
+  /* [hidden] у .gcform/.gcform__done перебивался бы их собственным
+     display:flex (правило класса специфичнее браузерного [hidden]{display:none}),
+     поэтому скрытие задано явно — иначе после отправки оба состояния,
+     форма и «заявка отправлена», видны одновременно. */
+  .gcform[hidden], .gcform__done[hidden] { display: none; }
+  .gcform { display: flex; flex-direction: column; gap: 18px; }
+  .gcform__title { font-family: var(--display); font-size: 26px; font-weight: 500; line-height: 1.25; color: var(--text-h); }
+  .gcform__lead { margin-top: -10px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
+  .gcform__field { display: flex; flex-direction: column; gap: 8px; }
+  .gcform__label { font-size: 14px; color: var(--text-mute); }
+  .gcform__input {
+    width: 100%; box-sizing: border-box; padding: 14px 16px; font: inherit; font-size: 15px;
+    color: var(--text-h); background: var(--bg-primary); border: 1px solid var(--border-card); border-radius: 14px;
+    transition: border-color .2s var(--ease);
+  }
+  .gcform__input::placeholder { color: var(--text-faint); }
+  .gcform__input:hover { border-color: rgba(245,247,246,.22); }
+  .gcform__input:focus-visible { outline: none; border-color: var(--accent); }
+  /* Ошибку показываем цветом рамки И текстом рядом: одного цвета мало —
+     дальтоник или скринридер его не получат, поэтому текст ошибки ещё и
+     связан с полем через aria-describedby, а поле помечается aria-invalid. */
+  .gcform__field.is-invalid .gcform__input { border-color: var(--coral); }
+  .gcform__error { font-size: 13px; line-height: 1.45; color: var(--coral); }
+  .gcform__check { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; line-height: 1.5; color: var(--text-mute); cursor: pointer; }
+  .gcform__check input { margin: 2px 0 0; width: 18px; height: 18px; flex: none; accent-color: var(--accent); cursor: pointer; }
+  .gcform__check a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .gcform__field.is-invalid .gcform__check { color: var(--coral); }
+  .gcform__submit { margin-top: 2px; }
+  .gcform__submit[disabled] { opacity: .65; cursor: progress; }
+  .gcform__status { font-size: 13.5px; line-height: 1.5; color: var(--coral); }
+  .gcform__status a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .gcform__done { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .gcform__done p { font-size: 15px; line-height: 1.55; color: var(--text-body); }
+
+  @media (max-width: 640px) {
+    .gc-modal { padding: 0 0 40px; overflow-x: hidden; }
+    .gc-modal__panel { width: 100%; max-width: 100vw; border-radius: 0; border: 0; min-height: 100vh; overflow-x: hidden; }
+    .gc-modal__body { padding: 64px 20px 40px; }
+    .gc-modal__close { top: 12px; right: 12px; width: 46px; height: 46px; font-size: 19px; background: #1e272b; box-shadow: 0 8px 24px -6px rgba(0,0,0,.85); }
+  }
+  body.gc-lock { overflow: hidden; }
+  @media (prefers-reduced-motion: reduce) { .gc-modal__panel { animation: none; } }
+
+  /* ===== ТАРИФЫ — стили из версии Олега (перенос) ===== */
+  /* ===== PRICING ===== */
+  /* stretch, а не start: карточки одной высоты — кнопки выстраиваются в одну линию */
+  .pricing__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
+  .tier { border-radius: var(--r-xl); padding: 44px 40px 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; height: 100%; }
+  .tier--dark { background: var(--bg-card); border: 1px solid var(--border-card); }
+  .tier--light {
+    background: var(--light-bg); color: var(--light-ink); border: 1px solid rgba(16,23,26,.22);
+    box-shadow: 0 42px 92px -44px rgba(0,0,0,.95), 0 0 0 1px rgba(223,223,65,.18);
+    padding-bottom: 40px;
+  }
+  .tier--light::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--accent); }
+  /* бейдж стоит ПОД блоком цены, а не над карточкой: над ценой он сдвигал
+     весь контент правой карточки на свою высоту и цены двух тарифов
+     переставали читаться на одной линии */
+  .tier__badge {
+    --badge-gap: 26px;
+    position: relative;
+    display: flex; flex-direction: column; gap: 5px; max-width: 100%; margin: var(--badge-gap) 0;
+    padding: 16px 20px 17px; border-radius: var(--r-md); background: var(--accent); color: var(--accent-ink);
+    box-shadow: 0 16px 36px -26px rgba(16,23,26,.8);
+  }
+  /* разделитель списка перерисовываем НАД бейджем: иначе линейка правой
+     карточки уезжает вниз на его высоту и снова расходится с левой */
+  .tier__badge::before {
+    content: ''; position: absolute; left: 0; right: 0; top: calc(var(--badge-gap) * -1);
+    height: 1px; background: rgba(16,23,26,.12);
+  }
+  .tier__badge + .tier__list { border-top: none; padding-top: 0; }
+  .tier--light .tier__badge { background: var(--light-ink); color: var(--accent); }
+  .tier__badge-title {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .14em; line-height: 1.2; text-transform: uppercase;
+  }
+  .tier__badge-text {
+    font-size: 13.5px; font-weight: 500; line-height: 1.35; letter-spacing: 0; text-transform: none;
+  }
+  .tier__label {
+    font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; line-height: 1.5;
+    margin-bottom: 20px; color: var(--text-faint); min-height: 34px;
+  }
+  .tier--light .tier__label { color: var(--light-meta); }
+  .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+  .tier--light .tier__price { color: var(--light-ink); }
+  .tier__price b { font-weight: 500; }
+  /* .tier__price-old — зачёркнутая базовая цена рядом со скидочной.
+     СЕЙЧАС НЕ ИСПОЛЬЗУЕТСЯ: предзапись закрылась 23 августа 2026, в тарифах
+     стоят настоящие цены (59 990 и 91 990) без зачёркиваний. Правило оставлено
+     на случай следующей акции, но включать его можно только вместе со сроком:
+     скидка должна быть привязана к сроку, а не к способу оплаты — п. 4.1
+     ст. 16.1 ЗоЗПП с 01.04.2026 запрещает разные цены в зависимости от того,
+     платит человек сразу или в рассрочку. И зачёркнутая цена должна быть
+     настоящей, иначе это недостоверная реклама. */
+  .tier__price-old { margin-left: 12px; font-size: .44em; letter-spacing: -0.02em; color: var(--text-deco); white-space: nowrap; }
+  .tier__price-old s { text-decoration-thickness: 1px; }
+  .tier--light .tier__price-old s { color: var(--light-mute); }
+  .tier--light .tier__price-old { color: var(--light-meta); }
+  /* текст только для скринридеров: зачёркнутую цену иначе читают подряд с текущей */
+  .vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+  .tier__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; padding-top: 26px; border-top: 1px solid var(--border-acc); }
+  .tier--light .tier__list { border-top-color: rgba(16,23,26,.12); }
+  .tier__list li { position: relative; padding-left: 32px; font-size: 15px; line-height: 1.58; color: var(--text-mute); }
+  .tier--light .tier__list li { color: var(--light-mute); }
+  .tier__list li b { color: var(--text-h); font-weight: 600; }
+  .tier--light .tier__list li b { color: var(--light-ink); }
+  .tier__check { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(223,223,65,.12); border: 1px solid rgba(223,223,65,.22); display: flex; align-items: center; justify-content: center; }
+  .tier--light .tier__check { background: var(--accent); border-color: var(--accent); }
+  .tier__check svg { width: 10px; height: 10px; color: var(--accent); }
+  .tier--light .tier__check svg { color: var(--accent-ink); }
+  .tier--light .tier__note { color: var(--light-faint); }
+  .tier__cta { margin-top: auto; padding-top: 20px; }
+  .tier--light .btn--primary { background: var(--light-ink); color: var(--accent); }
+  .tier--light .btn--primary:hover { background: #05090b; box-shadow: 0 16px 34px -18px rgba(0,0,0,.8); }
+
+  .pricing__scarcity { margin: 0 0 14px; }
+
+  /* полоса фактов о потоке: формат курса читается до того, как человек дошёл до цены */
+  .pricing__facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 18px; }
+  .fact { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 15px 18px; display: flex; flex-direction: column; gap: 7px; }
+  .fact__label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
+  .fact__value { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; color: var(--text-h); }
+  .fact__value--accent { color: var(--accent); }
+
+  /* позиционная строка тарифа: чем этот тариф отличается по сути, а не по списку пунктов */
+  .tier__tagline { font-family: var(--display); font-size: 18px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; color: var(--text-h); margin-bottom: 22px; min-height: 48px; }
+  .tier--light .tier__tagline { color: var(--light-ink); }
+  /* цена одна для всех способов оплаты (п. 4.1 ст. 16.1 ЗоЗПП), поэтому
+     под ценой идёт не сравнение способов оплаты, а срок действия скидки */
+  .tier__price-full { font-size: 14.5px; line-height: 1.5; color: var(--text-mute); margin-bottom: 12px; }
+  .tier__price-full b { color: var(--accent); font-weight: 600; }
+  .tier--light .tier__price-full { color: var(--light-mute); }
+  .tier--light .tier__price-full b { color: var(--light-ink); }
+  .tier__pay { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; color: var(--text-faint); margin-bottom: 28px; }
+  .tier--light .tier__pay { color: var(--light-meta); }
+  /* после блока практики список продолжается — второй разделитель не нужен */
+  .tier__practice + .tier__list { border-top: none; padding-top: 0; }
+
+  /* чего в тарифе НЕТ: разницу видно глазами, а не вычитанием двух списков */
+  .tier__list li.tier__off { color: var(--text-deco); }
+  .tier--light .tier__list li.tier__off { color: var(--light-faint); }
+  .tier__off s { text-decoration-color: rgba(255,255,255,.22); }
+  .tier__cross { position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 5px; background: rgba(255,255,255,.03); border: 1px solid var(--border-card); display: flex; align-items: center; justify-content: center; color: var(--text-deco); }
+  .tier__cross svg { width: 10px; height: 10px; }
+  .tier__only { display: block; font-family: var(--mono); font-size: 11px; color: var(--text-faint); margin-top: 4px; }
+
+  .tier__practice { margin: -6px 0 28px; padding: 20px 22px 18px; border-radius: var(--r-md); background: rgba(16,23,26,.05); border: 1px solid rgba(16,23,26,.1); }
+  .tier__practice-title { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--light-meta); margin-bottom: 15px; }
+  .tier__steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 11px; }
+  .tier__steps li { counter-increment: step; position: relative; padding-left: 30px; font-size: 14px; line-height: 1.5; color: var(--light-mute); }
+  .tier__steps li::before { content: counter(step); position: absolute; left: 0; top: 1px; width: 20px; height: 20px; border-radius: 5px; background: var(--light-ink); color: var(--accent); font-family: var(--mono); font-size: 11px; display: flex; align-items: center; justify-content: center; }
+  .tier__practice-note { margin-top: 15px; padding-top: 13px; border-top: 1px solid rgba(16,23,26,.1); font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--light-meta); }
+
+  .tier__hint { margin-top: 12px; font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--text-faint); text-align: center; }
+  .tier--light .tier__hint { color: var(--light-faint); }
+
+  /* оплата: главное ценовое возражение снимается рядом с ценой, а не в FAQ */
+  .pricing__pay { margin-top: 18px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 30px 34px; }
+  .pricing__pay-title { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 20px; }
+  .paylist { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 34px; }
+  .paylist li { position: relative; padding-left: 26px; font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
+  .paylist li::before { content: ''; position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; background: var(--accent); opacity: .5; }
+  .paylist b { display: block; color: var(--text-h); font-weight: 600; margin-bottom: 3px; }
+  .paylist a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(223,223,65,.3); }
+  .paylist a:hover { border-bottom-color: var(--accent); }
+
+  /* возврат + честная анти-гарантия: страх живёт рядом с кнопкой, там и снимаем */
+  .honest { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+  .honest__item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-lg); padding: 28px 30px; }
+  .honest__item--anti { border-color: var(--border-coral); }
+  .honest__title { font-family: var(--display); font-size: 17px; font-weight: 500; letter-spacing: -0.02em; color: var(--text-h); margin-bottom: 10px; }
+  .honest__item--anti .honest__title { color: var(--coral); }
+  .honest__text { font-size: 14.5px; line-height: 1.6; color: var(--text-mute); }
+
+  /* мобильная адаптация новых grid-классов тарифов */
+  @media (max-width: 640px) {
+    .pricing__facts { grid-template-columns: 1fr 1fr; }
+    .paylist, .honest { grid-template-columns: 1fr; }
+  }
+
+  /* ===== YOUTUBE/TG — стили с менторства (перенос) ===== */
+  .yt__head { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 44px; }
+  .yt__title { font-size: 28px; font-weight: 500; color: var(--text-h); line-height: 1.2; letter-spacing: -0.5px; max-width: 560px; text-wrap: balance; }
+  .yt__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 36px; }
+  .yt__card { display: block; border-radius: 18px; overflow: hidden; border: 1px solid var(--border-card); background: var(--bg-card); transition: transform .25s ease, border-color .25s ease; }
+  .yt__card:hover { transform: translateY(-3px); border-color: var(--border-acc); }
+  .yt__thumb { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--bg-secondary); }
+  .yt__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .yt__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(24,32,35,.18); transition: background .2s ease; }
+  .yt__card:hover .yt__play { background: rgba(24,32,35,.30); }
+  .yt__play-btn { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,0,0,.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+  .yt__play-btn svg { width: 24px; height: 24px; color: #fff; margin-left: 3px; }
+  .yt__name { padding: 18px 20px; font-size: 15px; font-weight: 500; color: var(--text-h); line-height: 1.4; }
+  .yt__actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  @media (max-width: 860px) {
+    .yt__title { font-size: 28px; }
+    .yt__grid { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
+    .yt__head { grid-template-columns: 1fr; }
+  }
+
+  /* ===== Плашка нагрузки как чат-сообщение от Олега ===== */
+  .chatload { display: flex; align-items: flex-end; gap: 14px; }
+  .chatload__avatar { flex: 0 0 auto; width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border-acc); box-shadow: 0 6px 18px -8px rgba(0,0,0,.7); }
+  .chatload__avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 52% 26%; }
+  .chatload__bubble { position: relative; max-width: 540px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 4px var(--r-lg) var(--r-lg) var(--r-lg); padding: 12px 16px 13px; box-shadow: 0 10px 30px -18px rgba(0,0,0,.8); }
+  .chatload__bubble::before { content: ''; position: absolute; left: -7px; bottom: 0; width: 14px; height: 16px; background: var(--bg-card); border-left: 1px solid var(--border-card); border-bottom: 1px solid var(--border-card); clip-path: path('M14 16 C 7 16, 0 12, 0 0 L 14 0 Z'); border-radius: 0 0 0 3px; }
+  .chatload__name { font-family: var(--display); font-size: .82rem; font-weight: 600; color: var(--accent); margin-bottom: 3px; }
+  .chatload__text { color: var(--text-body); font-size: 1.02rem; line-height: 1.5; }
+  .chatload__text .hl-soft { color: var(--text-h); font-weight: 600; background: none; padding: 0; }
+  @media (max-width: 640px) { .chatload { align-items: flex-start; } .chatload__avatar { width: 44px; height: 44px; } .chatload__text { font-size: .98rem; } }
+
+  /* "Как устроено обучение": заголовок по центру, отступ чат-плашки, акцент на карточках */
+  #kak-uchimsya .section__head { text-align: center; margin-left: auto; margin-right: auto; }
+  #kak-uchimsya .chatload { margin-bottom: 72px; }
+  #kak-uchimsya .cases__item:first-child { background: rgba(223,223,65,.08); border-color: rgba(223,223,65,.35); }
+  #kak-uchimsya .cases__item:first-child b { color: var(--accent); }
+
+  /* блок "комфортик в чатике" — две колонки: слева мокап телефона со скринами чата,
+     справа заголовок + текст (как в блоке про чат на лендинге микросервисов) */
+  .row--chat { margin-top: 96px; align-items: center; }
+  .chatphone { display: flex; justify-content: center; }
+  /* рамка смартфона на CSS: скруглённый корпус + вырез-динамик сверху */
+  .phone {
+    position: relative; width: 100%; max-width: 268px; aspect-ratio: 9 / 18.6;
+    background: linear-gradient(160deg, #232d31, #141b1e);
+    border: 1px solid var(--border-acc); border-radius: 40px;
+    padding: 12px; box-shadow: var(--sh-lift);
+  }
+  /* динамик-вырез */
+  .phone::before {
+    content: ''; position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    width: 54px; height: 6px; border-radius: 999px; background: rgba(0,0,0,.55); z-index: 3;
+  }
+  .phone__screen {
+    position: relative; width: 100%; height: 100%; border-radius: 30px; overflow: hidden;
+    background: var(--bg-primary);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 30px 22px;
+    background-image:
+      linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  /* реальный скриншот, когда его вставят, ляжет поверх заглушки и закроет её */
+  .phone__screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+  .phone__screen:has(img) .phone__ph { display: none; }
+  .phone__ph { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .phone__ico {
+    width: 62px; height: 62px; border-radius: 18px;
+    background: rgba(223,223,65,.10); border: 1px solid rgba(223,223,65,.24); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .phone__ico svg { width: 30px; height: 30px; }
+  .phone__tag { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+  .phone__note { font-family: var(--mono); font-size: 11.5px; line-height: 1.5; color: var(--text-faint); letter-spacing: .02em; }
+  @media (max-width: 640px) { .phone { max-width: 230px; } }
+
+  /* плавное раскрытие недели программы (вместо прыжка) */
+  html { interpolate-size: allow-keywords; }
+  .program__item::details-content {
+    height: 0; overflow: hidden;
+    transition: height .38s var(--ease), content-visibility .38s allow-discrete;
+  }
+  .program__item[open]::details-content { height: auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .program__item::details-content { transition: none; }
+    * { animation: none !important; transition: none !important; }
+  }
+  /* ===== ВОССТАНОВЛЕНО ИЗ ВЕРСИИ ОЛЕГА =====
+     Всё ниже потерялось при переносе текстов, но нужно работающей странице:
+     спиннер модалки GetCourse, перелинковка в подвале и адаптив блока тарифов. */
+
+  /* перелинковка на соседние лендинги: без неё страница — тупик, уходить
+     некуда ни человеку, которому курс не подошёл, ни краулеру */
+  .footer__more { padding-top: 34px; border-top: 1px solid var(--border-mid); margin-bottom: 34px; }
+  .footer__more-label { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
+  .footer__more-row { display: flex; flex-wrap: wrap; gap: 10px 26px; }
+  .footer__more-row a { font-size: 14px; color: var(--text-mute); border-bottom: 1px solid transparent; transition: color .2s var(--ease), border-color .2s var(--ease); }
+  .footer__more-row a:hover { color: var(--accent); border-bottom-color: rgba(223,223,65,.5); }
+  .footer__more-row a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-sm); }
+
+  /* в блоке "честно" снова два пункта — возврат и "чего не обещаем" */
+  .honest { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 960px) {
+    /* карточки встали в столбик — выравнивать высоту слоганов больше не нужно */
+    .tier__tagline { min-height: 0; }
+    .pricing__facts { grid-template-columns: 1fr 1fr; }
+    .paylist, .honest { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 400px) {
+    .tier__tagline { font-size: 16.5px; }
+    .tier__practice { padding: 18px 16px 16px; }
+    .pricing__pay, .honest__item { padding: 24px 18px; }
+    .fact { padding: 13px 15px; }
+    .fact__value { font-size: 15.5px; }
+  }
+
+  /* ===== RESPONSIVE: тарифы и YouTube-блок =====
+     Живёт в самом низу файла намеренно. Базовые стили этих двух секций
+     дописывали позже и вклеили НИЖЕ общей секции RESPONSIVE, поэтому при
+     равной специфичности они перебивали мобильные правила: карточки тарифов
+     оставались в две колонки по 155px на телефоне, старый бейдж висел
+     поверх заголовка, YouTube-карточки не переключались в
+     горизонтальный формат. Переопределения для них должны идти после
+     базовых правил — то есть здесь. Новые мобильные правила для .tier*,
+     .pricing__tiers и .yt__* добавлять сюда, а не в секцию RESPONSIVE выше. */
+  @media (max-width: 960px) {
+    .pricing__tiers { grid-template-columns: 1fr; }
+    .tier__label { min-height: 0; }
+  }
+  @media (max-width: 640px) {
+    .tier { padding: 34px 24px 30px; }
+    .tier__badge { --badge-gap: 22px; padding: 14px 16px 15px; }
+    .tier__label { padding-right: 0; min-height: 0; letter-spacing: .08em; }
+    /* три превью 16:9 стопкой давали ~3 экрана пустой фактуры —
+       переводим карточку в горизонтальный формат */
+    .yt__grid { gap: 10px; }
+    .yt__card { display: grid; grid-template-columns: 132px minmax(0,1fr); align-items: stretch; }
+    .yt__name { border-top: none; border-left: 1px solid var(--border-mid); padding: 14px 16px; display: flex; align-items: center; }
+    .yt__play-btn { width: 40px; height: 40px; }
+    .yt__play-btn svg { width: 15px; height: 15px; }
+  }
+  @media (max-width: 400px) {
+    .tier { padding: 28px 18px 26px; }
+    .tier__price { font-size: 32px; }
+    /* моно-мета: на 390 любой трекинг рвёт строки — обнуляем */
+    .tier__label, .tier__badge-title { letter-spacing: 0; }
+    .yt__card { grid-template-columns: 104px minmax(0,1fr); }
+    .yt__name { padding: 12px 13px; font-size: 12.5px; }
+    .yt__play-btn { width: 34px; height: 34px; }
+    .yt__play-btn svg { width: 13px; height: 13px; }
+  }
+</style>
+<style>
+    background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-xl); padding: 56px 60px 48px;
+  }
+
+
+  /* блок «Что на самом деле происходит на секции» */
+  .truth {
+    background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-xl); padding: 64px 60px 60px;
+  }
+  .truth .section__head { margin-bottom: 28px; }
+  .truth__lead { font-size: 17px; line-height: 1.7; color: var(--text-body); max-width: 68ch; margin: 0 0 26px; text-wrap: pretty; }
+  .truth__lead b { color: var(--accent); font-weight: 600; }
+  /* конвейер секции: слева подписи рядов, справа пять шагов */
+  .pl { position: relative; padding-top: 6px; margin-bottom: 22px; }
+  .pl__rail {
+    position: absolute; left: 168px; right: 0; top: 28px; height: 1px;
+    background: linear-gradient(90deg, var(--border-acc), var(--border-acc) 92%, transparent);
+  }
+  .pl__grid {
+    display: grid; grid-template-columns: 150px repeat(5, 1fr);
+    column-gap: 18px; row-gap: 14px; align-items: start; position: relative;
+  }
+  .pl__legend {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-deco); align-self: center; line-height: 1.5;
+  }
+  .pl__ico {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--bg-primary);
+    border: 1px solid rgba(223,223,65,.35); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pl__ico svg { width: 22px; height: 22px; }
+  .pl__req { color: var(--text-h); font-size: 15px; font-weight: 600; line-height: 1.35; }
+  .pl__err { color: var(--text-mute); font-size: 13.5px; line-height: 1.45; }
+  .pl__fix {
+    font-family: var(--mono); font-size: 11.5px; color: var(--accent); justify-self: start;
+    border: 1px solid rgba(223,223,65,.28); border-radius: 5px; padding: 4px 8px;
+  }
+  /* колонки проявляются по очереди — слева направо, как сам разбор */
+  /* класс .visible приходит поверх .pre, а не вместо него — как у .fade-up выше,
+     поэтому показывающее правило тоже пишем через .pre.visible, иначе оно
+     проигрывает по специфичности и колонки остаются невидимыми */
+  .pl__grid > * { transition: opacity .5s var(--ease), transform .5s var(--ease); }
+  .anim-ready .pl.pre .pl__grid > * { opacity: 0; transform: translate3d(0,14px,0); }
+  .anim-ready .pl.pre.visible .pl__grid > * { opacity: 1; transform: none; }
+  .anim-ready .pl.pre.visible .c1 { transition-delay: .05s; }
+  .anim-ready .pl.pre.visible .c2 { transition-delay: .13s; }
+  .anim-ready .pl.pre.visible .c3 { transition-delay: .21s; }
+  .anim-ready .pl.pre.visible .c4 { transition-delay: .29s; }
+  .anim-ready .pl.pre.visible .c5 { transition-delay: .37s; }
+  .pl__src { font-family: var(--mono); font-size: 11px; line-height: 1.6; color: var(--text-faint); margin: 0 0 26px; max-width: 74ch; }
+  .pl__bridge {
+    font-size: 16.5px; line-height: 1.6; color: var(--text-body); margin: 0;
+    padding-left: 20px; border-left: 2px solid var(--accent); max-width: 70ch; text-wrap: pretty;
+  }
+  .pl__bridge b { color: var(--text-h); font-weight: 600; }
+
+  /* «загляни внутрь»: открытый урок + его конспект, внутри шага 01 */
+  .demo-card {
+    display: grid; grid-template-columns: minmax(0,1fr) 104px; gap: 18px; align-items: center;
+    margin-top: 24px; padding: 16px; border-radius: var(--r-md);
+    border: 1px solid rgba(223,223,65,.30); background: rgba(223,223,65,.06);
+    text-decoration: none;
+    transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease);
+  }
+  .demo-card:hover { border-color: var(--accent); background: rgba(223,223,65,.11); transform: translateY(-1px); }
+  .demo-card__body { display: flex; align-items: flex-start; gap: 13px; }
+  .demo-card__ico {
+    width: 32px; height: 32px; flex: none; border-radius: 50%; margin-top: 2px;
+    background: var(--accent); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .demo-card__ico svg { width: 13px; height: 13px; margin-left: 2px; }
+  .demo-card__txt { font-size: 13.5px; line-height: 1.5; color: var(--text-mute); }
+  .demo-card__txt b { display: block; font-size: 15.5px; font-weight: 600; color: var(--text-h); margin-bottom: 4px; }
+  .demo-card__shot {
+    aspect-ratio: 3 / 4; border-radius: var(--r-sm); display: flex; text-align: center;
+    align-items: center; justify-content: center; padding: 8px;
+    border: 1px dashed var(--text-deco); color: var(--text-deco); background: rgba(255,255,255,.02);
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase;
+  }
+
+
+  @media (max-width: 960px) {
+    .truth { padding: 44px 30px 40px; }
+    .pl__grid { grid-template-columns: 118px repeat(3, 1fr); }
+    .pl__rail { left: 136px; }
+  }
+  @media (max-width: 640px) {
+    .truth { padding: 32px 20px 30px; border-radius: var(--r-lg); }
+    .pl__grid { grid-template-columns: 1fr; row-gap: 6px; }
+    .pl__legend { margin-top: 22px; }
+    .pl__legend:empty { display: none; }
+    .pl__rail { display: none; }
+    .pl__bridge { font-size: 15.5px; padding-left: 14px; }
+    .demo-card { grid-template-columns: minmax(0,1fr) 84px; gap: 14px; }
+  }
+</style>
+<style>
+  /* ——— оболочка сравнения. Стили сайта выше, здесь только рамка вокруг них ——— */
+  html { scroll-behavior: auto; }
+  body { background: #0b0f11; margin: 0; padding: 0; }
+  .cmp-top { padding: 34px 26px 22px; border-bottom: 1px solid rgba(255,255,255,.14); }
+  .cmp-top h1 { font-family: var(--display); font-size: 30px; font-weight: 500; letter-spacing: -.03em;
+                color: var(--text-h); margin: 0 0 12px; }
+  .cmp-top p { color: var(--text-mute); font-size: 15px; margin: 0 0 8px; max-width: 88ch; line-height: 1.6; }
+  .cmp-top b { color: var(--text-h); }
+  .cmp-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .cmp-nav a { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--text-mute);
+               border: 1px solid rgba(255,255,255,.14); border-radius: 7px; padding: 7px 11px; text-decoration: none; }
+  .cmp-nav a:hover { border-color: var(--accent); color: var(--accent); }
+  .cmp-nav a i { font-style: normal; color: var(--accent); }
+  .cmp { padding: 40px 26px 10px; border-top: 1px solid rgba(255,255,255,.08); scroll-margin-top: 10px; }
+  .cmp__head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .cmp__head h2 { font-family: var(--display); font-size: 22px; font-weight: 500; letter-spacing: -.03em;
+                  color: var(--text-h); margin: 0; }
+  .cmp__sel { font-family: var(--mono); font-size: 11px; color: var(--text-faint); }
+  .cmp__new { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+              background: var(--accent); color: var(--accent-ink); padding: 3px 7px; border-radius: 4px; font-weight: 700; }
+  .cmp__note { color: var(--text-mute); font-size: 14.5px; margin: 8px 0 20px; max-width: 92ch; line-height: 1.6; }
+  .cmp__pair { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .cmp__col { border: 1px solid rgba(255,255,255,.1); border-radius: 14px; overflow: hidden; background: var(--bg-primary); }
+  .cmp__col--was { border-color: rgba(255,133,98,.28); }
+  .cmp__col--now { border-color: rgba(223,223,65,.3); }
+  .cmp__tag { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+              padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .cmp__col--was .cmp__tag { color: #FF8562; }
+  .cmp__col--now .cmp__tag { color: var(--accent); }
+  .cmp__view { padding: 22px 18px; }
+  .cmp__view .section, .cmp__view section { padding: 0 !important; }
+  .cmp__view .container { padding: 0 !important; max-width: none !important; }
+  .cmp-none { font-family: var(--mono); font-size: 12px; color: var(--text-deco); padding: 40px 0; text-align: center; }
+  /* блоки внутри сравнения показываем сразу, без ожидания скролла */
+  .cmp__view .fade-up { opacity: 1 !important; transform: none !important; }
+  /* колонка уже окна, а медиазапросы смотрят на окно: разрешаем перенос вручную */
+  .cmp__view .mech__title, .cmp__view .gate__title, .cmp__view .prog-head__title,
+  .cmp__view .section__title, .cmp__view .final__title { white-space: normal; max-width: none; }
+  .cmp__view .mech { padding: 40px 32px 34px; }
+  .cmp__view .truth, .cmp__view .gate { padding: 34px 26px 30px; }
+  @media (max-width: 1100px) { .cmp__pair { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body class="anim-ready">
+  <div class="cmp-top">
+    <h1>Изменённые блоки: было и стало</h1>
+    <p>Слева версия из <b>system_design/index.html</b>, справа — рабочее дерево ветки. Блоки живые: аккордеоны раскрываются, гифки играют, ховеры работают.</p>
+    <p>Блоки, спрятанные фича-тоглами на сайте (скрины вакансий, карточка открытого урока, сбор почт), <b>здесь показаны</b> — чтобы было видно, что появится, когда приедут материалы.</p>
+    <p>Скрипты сайта здесь не подключены: аккордеоны и гифки работают сами, а модалка видеопродажника
+    и счётчики не запустятся — по кнопке плеера смотрим только вёрстку.</p>
+    <nav class="cmp-nav">
+    <a href="#b0">Программа · недели</a>
+    </nav>
+  </div>
+
+  <section class="cmp" id="b0">
+    <div class="cmp__head">
+      <h2>Программа · недели</h2>
+      <span class="cmp__sel">.program</span>
+      
+    </div>
+    <p class="cmp__note">Новые названия 41 урока, домашки развёрнуты в «задача → сценарий → что сделаешь», результаты недель — лид и три буллета.</p>
+    <div class="cmp__pair">
+      <div class="cmp__col cmp__col--was"><span class="cmp__tag">было · system_design/index.html</span><div class="cmp__view"><div class="program">
+        <details class="program__item fade-up" name="program-week-was" open>
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 01 · уроки 01-12</span>
+              <h3 class="program__name">Алгоритм интервью и&nbsp;первый слой архитектуры</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">К&nbsp;концу недели у&nbsp;тебя есть каркас, по&nbsp;которому раскладывается любая задача, и&nbsp;понимание, с&nbsp;чего вообще начинается проектирование любой системы.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 1 · Алгоритм SD-интервью</span>
+              <ul class="program__list">
+                <li><b>01. Как устроено SD-интервью и&nbsp;почему на&nbsp;нём валятся сильные.</b> Три формата секции и&nbsp;как разложить 50-минутный слот.</li>
+                <li><b>02. Что оценивает интервьюер: сигналы, а&nbsp;не&nbsp;угадайка.</b> Восемь ходов, которые работают в&nbsp;плюс, и&nbsp;что портит впечатление.</li>
+                <li><b>03. Пять шагов разбора задачи: каркас на&nbsp;случай паники.</b> Что происходит на&nbsp;каждом шаге и&nbsp;какими фразами переходить между ними.</li>
+                <li><b>04. Уточняющие вопросы: первые пять минут, в&nbsp;которых и&nbsp;валят.</b> Десять вопросов на&nbsp;старте и&nbsp;пять тем, которые легко пропустить.</li>
+                <li><b>05. Оценка нагрузки: как считать в&nbsp;уме через ×10&nbsp;DAU.</b> Три источника цифр, базовые формулы и&nbsp;сквозной прогон на&nbsp;каталоге магазина.</li>
+                <li><b>06. REST API на&nbsp;собесе: Idempotency-Key и&nbsp;«сначала монолит».</b> Шаблон ручки из&nbsp;семи пунктов и&nbsp;с&nbsp;чего вообще начинать проектировать.</li>
+                <li><b>07. Сквозной кейс: Лента Avito от&nbsp;первого вопроса до&nbsp;глубокого разбора.</b> Прогоняем все пять шагов на&nbsp;живом примере.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Модуль 2 · Сеть и&nbsp;доставка</span>
+              <ul class="program__list">
+                <li><b>08. Балансировка нагрузки.</b> L4 против L7, восемь алгоритмов и&nbsp;почему gRPC ломает обычную балансировку.</li>
+                <li><b>09. Консистентное хеширование.</b> Кольцо и&nbsp;виртуальные ноды, сколько данных реально переезжает, миграция шардов Notion за&nbsp;четыре фазы.</li>
+                <li><b>10. API Gateway и&nbsp;обратный прокси.</b> Что gateway добавляет к&nbsp;прокси, зачем BFF и&nbsp;как не&nbsp;отрастить толстый gateway.</li>
+                <li><b>11. CDN.</b> Push против pull, многоуровневый кэш, ключ кэша, инвалидация и&nbsp;подписанные ссылки.</li>
+                <li><b>12. DNS.</b> Иерархия и&nbsp;резолвинг, типы записей, TTL и&nbsp;миф про&nbsp;десять секунд после деплоя.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Экстренная выкатка: 50&nbsp;млн устройств за&nbsp;6&nbsp;часов</p>
+              <p class="program__hw"><b>Сценарий.</b> В&nbsp;приложении федерального сервиса нашли критическую уязвимость, и&nbsp;её&nbsp;уже эксплуатируют. Обновление надо раздать на&nbsp;50&nbsp;млн устройств за&nbsp;шесть часов.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Соберёшь требования вопросами, посчитаешь пиковый трафик и&nbsp;счёт за&nbsp;CDN, придумаешь, как управлять темпом раскатки и&nbsp;что делать, если она пошла не&nbsp;так.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Ты&nbsp;знаешь, что делать в&nbsp;первые пять минут секции&nbsp;— там она чаще всего и&nbsp;валится.</p>
+              <ul class="program__gains">
+                <li>Раскладываешь незнакомую задачу на&nbsp;пять шагов и&nbsp;в&nbsp;каждый момент понимаешь, какой следующий</li>
+                <li>Вытягиваешь требования вопросами и&nbsp;считаешь нагрузку до&nbsp;того, как начал рисовать схему</li>
+                <li>Проводишь запрос по&nbsp;слоям&nbsp;— DNS, CDN, балансировщик, API&nbsp;Gateway&nbsp;— и&nbsp;объясняешь, зачем нужен каждый</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="program__item fade-up" name="program-week-was">
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 02 · уроки 13-23</span>
+              <h3 class="program__name">Ядро баз данных</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">Самая большая неделя курса, одиннадцать уроков. Начинаем с&nbsp;того, как база кладёт данные на&nbsp;диск и&nbsp;почему запрос идёт через индекс, дальше берём транзакции и&nbsp;уровни изоляции, а&nbsp;заканчиваем тем, что происходит с&nbsp;данными, когда они перестают помещаться на&nbsp;один узел. Именно на&nbsp;этих вопросах на&nbsp;секции сыпется большинство, поэтому уроков здесь больше всего.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 3 · Хранение данных</span>
+              <ul class="program__list">
+                <li><b>13. Модели данных и&nbsp;выбор БД.</b> SQL против NoSQL, типы хранилищ и&nbsp;как базу выбирают под конкретную задачу.</li>
+                <li><b>14. Как база хранит данные: WAL и&nbsp;страницы.</b> Страницы и&nbsp;куча, журнал раньше данных, почему коммит ждёт диск, восстановление после крэша.</li>
+                <li><b>15. Индексы под собес.</b> B-Tree против LSM, ловушка порядка колонок в&nbsp;составном индексе и&nbsp;когда индекс вредит.</li>
+                <li><b>16. Транзакции и&nbsp;ACID.</b> Что стоит за&nbsp;каждой буквой и&nbsp;почему ACID и&nbsp;BASE это не&nbsp;противоположности.</li>
+                <li><b>17. Конкурентный доступ: блокировки против версий (MVCC).</b> 2PL, гранулярность, deadlock, снапшот и&nbsp;vacuum.</li>
+                <li><b>18. Уровни изоляции и&nbsp;аномалии: любимое место дожима.</b> Четыре уровня как контракт, а&nbsp;не&nbsp;шкала, и&nbsp;матрица "уровень против аномалии".</li>
+                <li><b>19. Репликация: с&nbsp;одним лидером и&nbsp;без лидера.</b> Отставание реплики и&nbsp;три аномалии чтения, кворум, раскол и&nbsp;фенсинг.</li>
+                <li><b>20. Репликация с&nbsp;несколькими лидерами (multi-master).</b> Три класса конфликтов, четыре стратегии резолюции, топологии обмена.</li>
+                <li><b>21. Консенсус: сколько реально надо знать про Raft и&nbsp;Paxos.</b> Term, голоса и&nbsp;лог, split vote при разрыве сети, шесть систем консенсуса в&nbsp;проде.</li>
+                <li><b>22. Партиционирование и&nbsp;шардирование.</b> Пять техник, гибридный шардинг, горячий ключ и&nbsp;плохие ключи шардирования.</li>
+                <li><b>23. CAP и&nbsp;PACELC: что отвечать про согласованность.</b> Почему CAP смотрят по&nbsp;фичам, а&nbsp;не&nbsp;по&nbsp;системе, и&nbsp;как обосновать выбор.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Списать деньги 1,2&nbsp;млрд раз в&nbsp;сутки и&nbsp;не&nbsp;уйти в&nbsp;минус</p>
+              <p class="program__hw"><b>Сценарий.</b> Рекламная сеть: 1,2&nbsp;млрд показов в&nbsp;сутки, тысячи кампаний тратят один общий кошелёк, а&nbsp;1&nbsp;процент аккаунтов даёт 60&nbsp;процентов списаний.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Выберешь базу и&nbsp;ключ шардирования, подберёшь уровень изоляции, чтобы баланс не&nbsp;ушёл в&nbsp;минус. Каждое решение обосновываешь письменно: одного названия базы тут не&nbsp;хватит.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Ты&nbsp;объясняешь выбор базы так, что дополнительные вопросы тебя не&nbsp;сбивают.</p>
+              <ul class="program__gains">
+                <li>Объясняешь, почему выбрал именно эту базу&nbsp;— через модель данных и&nbsp;паттерн запросов</li>
+                <li>Держишь дожим по&nbsp;индексам, транзакциям и&nbsp;аномалиям изоляции: на&nbsp;этом блоке топят чаще всего</li>
+                <li>Сам проговариваешь, что сломается при шардировании и&nbsp;репликации, и&nbsp;как ты&nbsp;это чинишь</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="program__item fade-up" name="program-week-was">
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 03 · уроки 24-32</span>
+              <h3 class="program__name">Кэш, очереди и&nbsp;устойчивость</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">Кэш, очереди и&nbsp;всё, что держит систему на&nbsp;ногах под нагрузкой: чем ускоряют чтение и&nbsp;чем за&nbsp;это платят, как сервисы обмениваются событиями и&nbsp;не&nbsp;теряют их, что делать, когда нагрузка выросла в&nbsp;десять раз или узел упал.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 4 · Кэш и&nbsp;очереди</span>
+              <ul class="program__list">
+                <li><b>24. Кэширование: стратегии и&nbsp;архитектура.</b> Кто ходит в&nbsp;базу на&nbsp;промахе, пять ролей Redis, вытеснение и&nbsp;два уровня кэша.</li>
+                <li><b>25. Проблемы кэша и&nbsp;инвалидация: горячий ключ и&nbsp;лавина.</b> Пять проблем и&nbsp;чем лечится каждая, чем убирать устаревшее, холодный кэш и&nbsp;сто процентов промахов.</li>
+                <li><b>26. Очереди и&nbsp;брокеры.</b> Очередь против лога, гарантии доставки, DLQ и&nbsp;антипаттерн "топик на&nbsp;юзера".</li>
+                <li><b>27. Идемпотентность и&nbsp;transactional outbox: повтор без дублей.</b> Где на&nbsp;самом деле проходит контракт, outbox против двойной записи, где ловить дубли.</li>
+                <li><b>28. Распределённые транзакции: 2PC, 3PC, сага.</b> Blocking problem, почему компенсация это не&nbsp;откат, резерв вместо компенсации в&nbsp;TCC.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Модуль 5 · Устойчивость и&nbsp;масштабирование</span>
+              <ul class="program__list">
+                <li><b>29. Ретраи, таймауты и&nbsp;backoff.</b> Почему наивные ретраи дают каскад: jitter, дедлайны через всю цепочку, потолок повторов.</li>
+                <li><b>30. Circuit breaker и&nbsp;bulkhead.</b> Три состояния, при каких условиях размыкается, изоляция ресурсов и&nbsp;логика на&nbsp;клиенте.</li>
+                <li><b>31. Rate limiting.</b> Три способа счёта и&nbsp;их&nbsp;отношение к&nbsp;всплеску, где держать счётчик, почему нельзя считать по&nbsp;IP.</li>
+                <li><b>32. Масштабирование и&nbsp;плавная деградация: что выключаем первым.</b> Вертикально или горизонтально, почему процессор плохая метрика и&nbsp;что такое стадо запросов.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Чёрная пятница в&nbsp;Ozon: пик ×20 и&nbsp;подвижные цены</p>
+              <p class="program__hw"><b>Сценарий.</b> Нагрузка на&nbsp;маркетплейс выросла в&nbsp;двадцать раз, цены пересчитываются каждые пять минут, а&nbsp;боты выгребают товар быстрее живых покупателей.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Разложишь кэш так, чтобы обновление цены не&nbsp;уронило базу, соберёшь заказ сагой на&nbsp;три сервиса и&nbsp;решишь, что выключаешь первым, когда система перестанет тянуть.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Вопрос «а&nbsp;если нагрузка вырастет в&nbsp;двадцать раз» тебя больше не&nbsp;пугает: ты&nbsp;понимаешь, из&nbsp;чего собирается ответ.</p>
+              <ul class="program__gains">
+                <li>Решаешь, что кэшировать и&nbsp;как инвалидировать, чтобы сброс кэша не&nbsp;положил базу</li>
+                <li>Разводишь синхронное и&nbsp;асинхронное и&nbsp;объясняешь, почему повтор запроса не&nbsp;спишет деньги дважды</li>
+                <li>Отвечаешь, что делает система, когда лёг соседний сервис: таймауты, circuit breaker, лимиты&nbsp;— и&nbsp;что выключаешь первым</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="program__item fade-up" name="program-week-was">
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 04 · уроки 33-37</span>
+              <h3 class="program__name">Боевые кейсы: соцсети и&nbsp;медиа</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">Пять систем разбираем целиком: мессенджер, лента, фото-соцсеть со&nbsp;Stories, видеоплатформа и&nbsp;музыкальный стриминг. Каждую ведём в&nbsp;том же&nbsp;порядке, что и&nbsp;на&nbsp;секции: требования, модель данных, API, общая схема, углубление в&nbsp;узкое место.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 6 · Боевые кейсы: соцсети и&nbsp;медиа</span>
+              <ul class="program__list">
+                <li><b>33. Мессенджер: Telegram.</b> Как держать 50-100&nbsp;млн соединений, доставка и&nbsp;порядок сообщений, большой чат и&nbsp;всплеск звезды, presence и&nbsp;синхронизация между устройствами.</li>
+                <li><b>34. Лента: Avito Объявления.</b> Fan-out и&nbsp;горячий источник. Плюс почему это не&nbsp;"лента Twitter" и&nbsp;почему это стоит сказать первым.</li>
+                <li><b>35. Фото-соцсеть со&nbsp;Stories.</b> Три числа и&nbsp;три разных горлышка, двухфазная загрузка, медиа-пайплайн.</li>
+                <li><b>36. Видеоплатформа: YouTube.</b> Конвейер транскодирования, доставка через ABR и&nbsp;CDN, счётчик просмотров без инкремента в&nbsp;транзакции.</li>
+                <li><b>37. Музыкальный стриминг: Яндекс.Музыка и&nbsp;Spotify.</b> Почему аудио это не&nbsp;видео и&nbsp;как устроены доставка и&nbsp;плейбек.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Twitch: прямой эфир на&nbsp;5&nbsp;млн зрителей и&nbsp;живой чат</p>
+              <p class="program__hw"><b>Сценарий.</b> Футбольный матч смотрят пять миллионов человек, и&nbsp;все пишут в&nbsp;чат одновременно. Видео рождается прямо сейчас, и&nbsp;лишняя секунда задержки&nbsp;— уже спойлер.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Спроектируешь захват и&nbsp;доставку живого видео, фанаут чата на&nbsp;миллионы подключений и&nbsp;деградацию качества, когда канал проседает.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Ты&nbsp;понимаешь, как собирается система целиком: от&nbsp;требований до&nbsp;узких мест.</p>
+              <ul class="program__gains">
+                <li>Разбираешь реальную задачу за&nbsp;один заход, от&nbsp;требований до&nbsp;глубокого разбора, и&nbsp;не&nbsp;теряешь нить</li>
+                <li>Знаешь, как устроены ленты, доставка медиа и&nbsp;рассылка на&nbsp;миллионы подписчиков&nbsp;— на&nbsp;пяти разобранных системах</li>
+                <li>Замечаешь решения, которые повторяются из&nbsp;задачи в&nbsp;задачу, и&nbsp;переносишь их&nbsp;на&nbsp;систему, которую видишь впервые</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="program__item fade-up" name="program-week-was">
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 05 · уроки 38-41</span>
+              <h3 class="program__name">Сложные кейсы и&nbsp;поведение на&nbsp;собесе</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">Билеты с&nbsp;double booking, автодополнение в&nbsp;поиске и&nbsp;заказ такси. Три кейса, где всё упирается в&nbsp;конкуренцию за&nbsp;ресурс, релевантность и&nbsp;геоданные. Плюс отдельный модуль про&nbsp;то, как вести себя в&nbsp;слоте: думать вслух, отвечать, когда копают, и&nbsp;выбираться из&nbsp;тупика.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 7 · Боевые кейсы: конкуренция, поиск, гео</span>
+              <ul class="program__list">
+                <li><b>38. Билеты: Яндекс Афиша и&nbsp;double booking.</b> Четыре уровня защиты от&nbsp;двойной продажи, резерв с&nbsp;TTL и&nbsp;идемпотентная оплата.</li>
+                <li><b>39. Поиск: Яндекс Поиск, Google и&nbsp;autocomplete.</b> Trie с&nbsp;предрассчитанным топ-K для&nbsp;подсказок, scatter-gather по&nbsp;шардам и&nbsp;ранжирование для&nbsp;поиска.</li>
+                <li><b>40. Заказ такси: Яндекс Такси и&nbsp;Uber.</b> Почему Trip и&nbsp;Order это разные объекты, два потока вместо одного, гео-индекс и&nbsp;матчинг.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Модуль 8 · Поведение на&nbsp;SD-интервью</span>
+              <ul class="program__list">
+                <li><b>41. Как не&nbsp;звучать как YouTube-видео.</b> Думать вслух, реагировать, когда копают, и&nbsp;выбираться из&nbsp;тупика, вместо пересказа заученного.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Airbnb: последнее свободное жильё и&nbsp;поиск по&nbsp;карте</p>
+              <p class="program__hw"><b>Сценарий.</b> В&nbsp;Сочи на&nbsp;праздники осталось несколько сотен свободных вариантов, а&nbsp;ищут их&nbsp;два миллиона человек. И&nbsp;двое жмут «забронировать» на&nbsp;одну квартиру в&nbsp;одну секунду.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Спроектируешь поиск с&nbsp;фильтрами, выдачу «рядом со&nbsp;мной» и&nbsp;бронирование без двойной продажи. Финал курса идёт с&nbsp;таймбоксом: сорок пять минут, как на&nbsp;собесе.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Ты&nbsp;проходишь секцию под давлением, в&nbsp;условиях нехватки времени.</p>
+              <ul class="program__gains">
+                <li>Разбираешь задачи, где легко утонуть: конкуренция за&nbsp;дефицитный ресурс, поиск, гео</li>
+                <li>Работаешь в&nbsp;таймбоксе: успеть за&nbsp;отведённое время&nbsp;— отдельный навык, и&nbsp;он&nbsp;тренируется</li>
+                <li>Проговариваешь компромиссы вслух на&nbsp;языке, который слышит интервьюер</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+      </div></div></div>
+      <div class="cmp__col cmp__col--now"><span class="cmp__tag">стало · ветка</span><div class="cmp__view"><div class="program">
+        <details class="program__item fade-up" name="program-week" open>
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 01 · уроки 01-12</span>
+              <h3 class="program__name">Алгоритм интервью и&nbsp;первый слой архитектуры</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">К&nbsp;концу недели у&nbsp;тебя есть каркас, по&nbsp;которому раскладывается любая задача, и&nbsp;понимание, с&nbsp;чего вообще начинается проектирование любой системы.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 1 · Алгоритм SD-интервью</span>
+              <ul class="program__list">
+                <li><b>01. Как устроено SD-интервью и&nbsp;почему на&nbsp;нём валятся сильные.</b> Три формата секции и&nbsp;как разложить 50-минутный слот.</li>
+                <li><b>02. Что оценивает интервьюер: сигналы, а&nbsp;не&nbsp;угадайка.</b> Восемь ходов, которые работают в&nbsp;плюс, и&nbsp;что портит впечатление.</li>
+                <li><b>03. Пять шагов разбора задачи: каркас на&nbsp;случай паники.</b> Что происходит на&nbsp;каждом шаге и&nbsp;какими фразами переходить между ними.</li>
+                <li><b>04. Уточняющие вопросы: первые пять минут, в&nbsp;которых и&nbsp;валят.</b> Десять вопросов на&nbsp;старте и&nbsp;пять тем, которые легко пропустить.</li>
+                <li><b>05. Оценка нагрузки: как считать в&nbsp;уме через ×10&nbsp;DAU.</b> Три источника цифр, базовые формулы и&nbsp;сквозной прогон на&nbsp;каталоге магазина.</li>
+                <li><b>06. REST API на&nbsp;собесе: Idempotency-Key и&nbsp;«сначала монолит».</b> Шаблон ручки из&nbsp;семи пунктов и&nbsp;с&nbsp;чего вообще начинать проектировать.</li>
+                <li><b>07. Сквозной кейс: Лента Avito от&nbsp;первого вопроса до&nbsp;глубокого разбора.</b> Прогоняем все пять шагов на&nbsp;живом примере.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Модуль 2 · Сеть и&nbsp;доставка</span>
+              <ul class="program__list">
+                <li><b>08. Балансировка нагрузки.</b> L4 против L7, восемь алгоритмов и&nbsp;почему gRPC ломает обычную балансировку.</li>
+                <li><b>09. Консистентное хеширование.</b> Кольцо и&nbsp;виртуальные ноды, сколько данных реально переезжает, миграция шардов Notion за&nbsp;четыре фазы.</li>
+                <li><b>10. API Gateway и&nbsp;обратный прокси.</b> Что gateway добавляет к&nbsp;прокси, зачем BFF и&nbsp;как не&nbsp;отрастить толстый gateway.</li>
+                <li><b>11. CDN.</b> Push против pull, многоуровневый кэш, ключ кэша, инвалидация и&nbsp;подписанные ссылки.</li>
+                <li><b>12. DNS.</b> Иерархия и&nbsp;резолвинг, типы записей, TTL и&nbsp;миф про&nbsp;десять секунд после деплоя.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Экстренная выкатка: 50&nbsp;млн устройств за&nbsp;6&nbsp;часов</p>
+              <p class="program__hw"><b>Сценарий.</b> В&nbsp;приложении федерального сервиса нашли критическую уязвимость, и&nbsp;её&nbsp;уже эксплуатируют. Обновление надо раздать на&nbsp;50&nbsp;млн устройств за&nbsp;шесть часов.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Соберёшь требования вопросами, посчитаешь пиковый трафик и&nbsp;счёт за&nbsp;CDN. И&nbsp;решишь, что делать, если раскатка пошла не&nbsp;так.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Первые пять минут секции&nbsp;— самое опасное место. Теперь ты&nbsp;знаешь, что там делать.</p>
+              <ul class="program__gains">
+                <li>Незнакомая задача больше не&nbsp;выглядит чистым листом: есть пять шагов, и&nbsp;понятно, какой следующий</li>
+                <li>Сначала спрашиваешь, потом считаешь и&nbsp;только потом рисуешь</li>
+                <li>Ведёшь запрос по&nbsp;слоям и&nbsp;объясняешь, зачем в&nbsp;цепочке каждый: DNS, CDN, балансировщик, gateway</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="program__item fade-up" name="program-week">
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 02 · уроки 13-23</span>
+              <h3 class="program__name">Ядро баз данных</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">Самая большая неделя курса, одиннадцать уроков. Начинаем с&nbsp;того, как база кладёт данные на&nbsp;диск и&nbsp;почему запрос идёт через индекс, дальше берём транзакции и&nbsp;уровни изоляции, а&nbsp;заканчиваем тем, что происходит с&nbsp;данными, когда они перестают помещаться на&nbsp;один узел. Именно на&nbsp;этих вопросах на&nbsp;секции сыпется большинство, поэтому уроков здесь больше всего.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 3 · Хранение данных</span>
+              <ul class="program__list">
+                <li><b>13. Модели данных и&nbsp;выбор БД.</b> SQL против NoSQL, типы хранилищ и&nbsp;как базу выбирают под конкретную задачу.</li>
+                <li><b>14. Как база хранит данные: WAL и&nbsp;страницы.</b> Страницы и&nbsp;куча, журнал раньше данных, почему коммит ждёт диск, восстановление после крэша.</li>
+                <li><b>15. Индексы под собес.</b> B-Tree против LSM, ловушка порядка колонок в&nbsp;составном индексе и&nbsp;когда индекс вредит.</li>
+                <li><b>16. Транзакции и&nbsp;ACID.</b> Что стоит за&nbsp;каждой буквой и&nbsp;почему ACID и&nbsp;BASE это не&nbsp;противоположности.</li>
+                <li><b>17. Конкурентный доступ: блокировки против версий (MVCC).</b> 2PL, гранулярность, deadlock, снапшот и&nbsp;vacuum.</li>
+                <li><b>18. Уровни изоляции и&nbsp;аномалии: любимое место дожима.</b> Четыре уровня как контракт, а&nbsp;не&nbsp;шкала, и&nbsp;матрица "уровень против аномалии".</li>
+                <li><b>19. Репликация: с&nbsp;одним лидером и&nbsp;без лидера.</b> Отставание реплики и&nbsp;три аномалии чтения, кворум, раскол и&nbsp;фенсинг.</li>
+                <li><b>20. Репликация с&nbsp;несколькими лидерами (multi-master).</b> Три класса конфликтов, четыре стратегии резолюции, топологии обмена.</li>
+                <li><b>21. Консенсус: сколько реально надо знать про Raft и&nbsp;Paxos.</b> Term, голоса и&nbsp;лог, split vote при разрыве сети, шесть систем консенсуса в&nbsp;проде.</li>
+                <li><b>22. Партиционирование и&nbsp;шардирование.</b> Пять техник, гибридный шардинг, горячий ключ и&nbsp;плохие ключи шардирования.</li>
+                <li><b>23. CAP и&nbsp;PACELC: что отвечать про согласованность.</b> Почему CAP смотрят по&nbsp;фичам, а&nbsp;не&nbsp;по&nbsp;системе, и&nbsp;как обосновать выбор.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Списать деньги 1,2&nbsp;млрд раз в&nbsp;сутки и&nbsp;не&nbsp;уйти в&nbsp;минус</p>
+              <p class="program__hw"><b>Сценарий.</b> Рекламная сеть: 1,2&nbsp;млрд показов в&nbsp;сутки, тысячи кампаний тратят один общий кошелёк, а&nbsp;1&nbsp;процент аккаунтов даёт 60&nbsp;процентов списаний.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Выберешь базу, ключ шардирования и&nbsp;уровень изоляции, при котором баланс не&nbsp;уйдёт в&nbsp;минус. Назвать базу мало&nbsp;— каждое решение обосновываешь письменно.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Выбор базы перестаёт быть угадайкой: называешь её&nbsp;и&nbsp;сразу объясняешь почему.</p>
+              <ul class="program__gains">
+                <li>Обосновываешь выбор моделью данных и&nbsp;запросами, а&nbsp;не&nbsp;тем, что «все так делают»</li>
+                <li>Держишь дожим по&nbsp;индексам, транзакциям и&nbsp;изоляции. На&nbsp;этом блоке топят чаще всего</li>
+                <li>Сам заводишь разговор о&nbsp;том, что сломается при шардировании, и&nbsp;как это чинить</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="program__item fade-up" name="program-week">
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 03 · уроки 24-32</span>
+              <h3 class="program__name">Кэш, очереди и&nbsp;устойчивость</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">Кэш, очереди и&nbsp;всё, что держит систему на&nbsp;ногах под нагрузкой: чем ускоряют чтение и&nbsp;чем за&nbsp;это платят, как сервисы обмениваются событиями и&nbsp;не&nbsp;теряют их, что делать, когда нагрузка выросла в&nbsp;десять раз или узел упал.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 4 · Кэш и&nbsp;очереди</span>
+              <ul class="program__list">
+                <li><b>24. Кэширование: стратегии и&nbsp;архитектура.</b> Кто ходит в&nbsp;базу на&nbsp;промахе, пять ролей Redis, вытеснение и&nbsp;два уровня кэша.</li>
+                <li><b>25. Проблемы кэша и&nbsp;инвалидация: горячий ключ и&nbsp;лавина.</b> Пять проблем и&nbsp;чем лечится каждая, чем убирать устаревшее, холодный кэш и&nbsp;сто процентов промахов.</li>
+                <li><b>26. Очереди и&nbsp;брокеры.</b> Очередь против лога, гарантии доставки, DLQ и&nbsp;антипаттерн "топик на&nbsp;юзера".</li>
+                <li><b>27. Идемпотентность и&nbsp;transactional outbox: повтор без дублей.</b> Где на&nbsp;самом деле проходит контракт, outbox против двойной записи, где ловить дубли.</li>
+                <li><b>28. Распределённые транзакции: 2PC, 3PC, сага.</b> Blocking problem, почему компенсация это не&nbsp;откат, резерв вместо компенсации в&nbsp;TCC.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Модуль 5 · Устойчивость и&nbsp;масштабирование</span>
+              <ul class="program__list">
+                <li><b>29. Ретраи, таймауты и&nbsp;backoff.</b> Почему наивные ретраи дают каскад: jitter, дедлайны через всю цепочку, потолок повторов.</li>
+                <li><b>30. Circuit breaker и&nbsp;bulkhead.</b> Три состояния, при каких условиях размыкается, изоляция ресурсов и&nbsp;логика на&nbsp;клиенте.</li>
+                <li><b>31. Rate limiting.</b> Три способа счёта и&nbsp;их&nbsp;отношение к&nbsp;всплеску, где держать счётчик, почему нельзя считать по&nbsp;IP.</li>
+                <li><b>32. Масштабирование и&nbsp;плавная деградация: что выключаем первым.</b> Вертикально или горизонтально, почему процессор плохая метрика и&nbsp;что такое стадо запросов.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Чёрная пятница в&nbsp;Ozon: пик ×20 и&nbsp;подвижные цены</p>
+              <p class="program__hw"><b>Сценарий.</b> Нагрузка на&nbsp;маркетплейс выросла в&nbsp;двадцать раз, цены пересчитываются каждые пять минут, а&nbsp;боты выгребают товар быстрее живых покупателей.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Разложишь кэш так, чтобы обновление цены не&nbsp;уронило базу, и&nbsp;соберёшь заказ сагой на&nbsp;три сервиса. А&nbsp;потом решишь, чем жертвовать, когда система перестанет тянуть.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">«А&nbsp;если нагрузка вырастет в&nbsp;двадцать раз?»&nbsp;— вопрос, после которого раньше становилось неуютно. Теперь есть из&nbsp;чего собрать ответ.</p>
+              <ul class="program__gains">
+                <li>Знаешь, что кэшировать, а&nbsp;что нет, и&nbsp;почему сброс кэша иногда кладёт базу</li>
+                <li>Объясняешь, почему повторный запрос не&nbsp;спишет деньги дважды</li>
+                <li>Отвечаешь, что делает система, когда лёг соседний сервис, и&nbsp;что выключаешь первым</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="program__item fade-up" name="program-week">
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 04 · уроки 33-37</span>
+              <h3 class="program__name">Боевые кейсы: соцсети и&nbsp;медиа</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">Пять систем разбираем целиком: мессенджер, лента, фото-соцсеть со&nbsp;Stories, видеоплатформа и&nbsp;музыкальный стриминг. Каждую ведём в&nbsp;том же&nbsp;порядке, что и&nbsp;на&nbsp;секции: требования, модель данных, API, общая схема, углубление в&nbsp;узкое место.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 6 · Боевые кейсы: соцсети и&nbsp;медиа</span>
+              <ul class="program__list">
+                <li><b>33. Мессенджер: Telegram.</b> Как держать 50-100&nbsp;млн соединений, доставка и&nbsp;порядок сообщений, большой чат и&nbsp;всплеск звезды, presence и&nbsp;синхронизация между устройствами.</li>
+                <li><b>34. Лента: Avito Объявления.</b> Fan-out и&nbsp;горячий источник. Плюс почему это не&nbsp;"лента Twitter" и&nbsp;почему это стоит сказать первым.</li>
+                <li><b>35. Фото-соцсеть со&nbsp;Stories.</b> Три числа и&nbsp;три разных горлышка, двухфазная загрузка, медиа-пайплайн.</li>
+                <li><b>36. Видеоплатформа: YouTube.</b> Конвейер транскодирования, доставка через ABR и&nbsp;CDN, счётчик просмотров без инкремента в&nbsp;транзакции.</li>
+                <li><b>37. Музыкальный стриминг: Яндекс.Музыка и&nbsp;Spotify.</b> Почему аудио это не&nbsp;видео и&nbsp;как устроены доставка и&nbsp;плейбек.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Twitch: прямой эфир на&nbsp;5&nbsp;млн зрителей и&nbsp;живой чат</p>
+              <p class="program__hw"><b>Сценарий.</b> Футбольный матч смотрят пять миллионов человек, и&nbsp;все пишут в&nbsp;чат одновременно. Видео рождается прямо сейчас, и&nbsp;лишняя секунда задержки&nbsp;— уже спойлер.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Спроектируешь доставку живого видео и&nbsp;чат на&nbsp;миллионы подключений. Плюс придумаешь, что показывать зрителю, у&nbsp;которого просел канал.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Ты&nbsp;видел, как систему собирают целиком. Пять раз, на&nbsp;живых примерах.</p>
+              <ul class="program__gains">
+                <li>Проходишь задачу за&nbsp;один заход и&nbsp;не&nbsp;теряешь нить</li>
+                <li>Знаешь, как устроены ленты, доставка медиа и&nbsp;рассылка на&nbsp;миллионы подписчиков</li>
+                <li>Замечаешь решения, которые кочуют из&nbsp;задачи в&nbsp;задачу, и&nbsp;переносишь их&nbsp;на&nbsp;незнакомую систему</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="program__item fade-up" name="program-week">
+          <summary>
+            <div class="program__head">
+              <span class="program__step">Неделя 05 · уроки 38-41</span>
+              <h3 class="program__name">Сложные кейсы и&nbsp;поведение на&nbsp;собесе</h3>
+            </div>
+            <span class="program__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="program__body">
+            <p class="program__promise">Билеты с&nbsp;double booking, автодополнение в&nbsp;поиске и&nbsp;заказ такси. Три кейса, где всё упирается в&nbsp;конкуренцию за&nbsp;ресурс, релевантность и&nbsp;геоданные. Плюс отдельный модуль про&nbsp;то, как вести себя в&nbsp;слоте: думать вслух, отвечать, когда копают, и&nbsp;выбираться из&nbsp;тупика.</p>
+            <div class="program__block">
+              <span class="program__label">Модуль 7 · Боевые кейсы: конкуренция, поиск, гео</span>
+              <ul class="program__list">
+                <li><b>38. Билеты: Яндекс Афиша и&nbsp;double booking.</b> Четыре уровня защиты от&nbsp;двойной продажи, резерв с&nbsp;TTL и&nbsp;идемпотентная оплата.</li>
+                <li><b>39. Поиск: Яндекс Поиск, Google и&nbsp;autocomplete.</b> Trie с&nbsp;предрассчитанным топ-K для&nbsp;подсказок, scatter-gather по&nbsp;шардам и&nbsp;ранжирование для&nbsp;поиска.</li>
+                <li><b>40. Заказ такси: Яндекс Такси и&nbsp;Uber.</b> Почему Trip и&nbsp;Order это разные объекты, два потока вместо одного, гео-индекс и&nbsp;матчинг.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Модуль 8 · Поведение на&nbsp;SD-интервью</span>
+              <ul class="program__list">
+                <li><b>41. Как не&nbsp;звучать как YouTube-видео.</b> Думать вслух, реагировать, когда копают, и&nbsp;выбираться из&nbsp;тупика, вместо пересказа заученного.</li>
+              </ul>
+            </div>
+            <div class="program__block">
+              <span class="program__label">Домашка недели</span>
+              <p class="program__hw-title">Airbnb: последнее свободное жильё и&nbsp;поиск по&nbsp;карте</p>
+              <p class="program__hw"><b>Сценарий.</b> В&nbsp;Сочи на&nbsp;праздники осталось несколько сотен свободных вариантов, а&nbsp;ищут их&nbsp;два миллиона человек. И&nbsp;двое жмут «забронировать» на&nbsp;одну квартиру в&nbsp;одну секунду.</p>
+              <p class="program__hw"><b>Что сделаешь.</b> Спроектируешь поиск с&nbsp;фильтрами, выдачу «рядом со&nbsp;мной» и&nbsp;бронирование, в&nbsp;котором последний вариант не&nbsp;уедет двоим сразу. На&nbsp;всё сорок пять минут, как на&nbsp;собесе.</p>
+            </div>
+            <div class="program__block">
+              <span class="program__label program__label--result">Результат недели</span>
+              <p class="program__result">Финал: та&nbsp;же секция, только с&nbsp;таймером.</p>
+              <ul class="program__gains">
+                <li>Разбираешь задачи, где тонут почти все: дефицитный ресурс, поиск, гео</li>
+                <li>Успеваешь в&nbsp;отведённое время. Это отдельный навык, и&nbsp;он&nbsp;тренируется</li>
+                <li>Проговариваешь компромиссы вслух так, как их&nbsp;слышит интервьюер</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+      </div></div></div>
+    </div>
+  </section>
+</body>
+</html>
