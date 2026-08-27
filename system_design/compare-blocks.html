@@ -1685,12 +1685,6 @@
 <style>
 
 
-  /* мостик от ошибок к программе, живёт в светлом островке */
-  .mech__bridge {
-    font-family: var(--display); font-size: clamp(20px, 2.6vw, 28px); font-weight: 500;
-    line-height: 1.2; letter-spacing: -.03em; color: var(--light-ink);
-    margin: 34px 0 0; padding-left: 20px; border-left: 3px solid var(--accent-dim);
-  }
 
   /* скрин продукта в блоке «Как устроено обучение».
      min-width: 0 обязателен: у грид-элемента минимальная ширина по умолчанию
@@ -1790,11 +1784,12 @@
     и счётчики не запустятся — по кнопке плеера смотрим только вёрстку.</p>
     <nav class="cmp-nav">
     <a href="#b0">Почему не получается пройти сисдиз</a>
-    <a href="#b1">Программа · недели</a>
-    <a href="#b2">Как устроено обучение · шаг 01</a>
-    <a href="#b3">Автор · продовый кейс</a>
-    <a href="#b4">Тарифы</a>
-    <a href="#b5">FAQ</a>
+    <a href="#b1">Программа · подводка</a>
+    <a href="#b2">Программа · недели</a>
+    <a href="#b3">Как устроено обучение · шаг 01</a>
+    <a href="#b4">Автор · продовый кейс</a>
+    <a href="#b5">Тарифы</a>
+    <a href="#b6">FAQ</a>
     </nav>
   </div>
 
@@ -1879,12 +1874,32 @@
         <blockquote class="mech__quote">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</blockquote>
 
         <!-- мостик к программе: от ошибок выше к тому, что с ними делаем -->
-        <p class="mech__bridge">Исправь эти ошибки за&nbsp;5&nbsp;недель</p>
       </div></div></div>
     </div>
   </section>
 
   <section class="cmp" id="b1">
+    <div class="cmp__head">
+      <h2>Программа · подводка</h2>
+      <span class="cmp__sel">.prog-head</span>
+      
+    </div>
+    <p class="cmp__note">Правка отменена, подводка авторская.</p>
+    <div class="cmp__pair">
+      <div class="cmp__col cmp__col--was"><span class="cmp__tag">было · origin/main</span><div class="cmp__view"><div class="prog-head fade-up">
+        <span class="prog-head__pill"><span class="prog-head__dot" aria-hidden="true"></span>программа</span>
+        <h2 class="prog-head__title"><b>5&nbsp;недель.</b> От&nbsp;базовых основ до&nbsp;практических кейсов.</h2>
+        <p class="prog-head__sub">В&nbsp;программу включил всё нужное, чтобы пройти секцию сисдиза.<br>А&nbsp;в&nbsp;практике <em>сделал упор на&nbsp;популярные системы</em>: их&nbsp;чаще всего и&nbsp;дают на&nbsp;собесах, а&nbsp;внутри каждой столько всего, что на&nbsp;одной задаче применяешь половину курса.</p>
+      </div></div></div>
+      <div class="cmp__col cmp__col--now"><span class="cmp__tag">стало · ветка</span><div class="cmp__view"><div class="prog-head fade-up">
+        <span class="prog-head__pill"><span class="prog-head__dot" aria-hidden="true"></span>программа</span>
+        <h2 class="prog-head__title">Исправь эти ошибки за&nbsp;<b>5&nbsp;недель</b></h2>
+        <p class="prog-head__sub">В&nbsp;программу включил всё нужное, чтобы пройти секцию сисдиза.<br>А&nbsp;в&nbsp;практике <em>сделал упор на&nbsp;популярные системы</em>: их&nbsp;чаще всего и&nbsp;дают на&nbsp;собесах, а&nbsp;внутри каждой столько всего, что на&nbsp;одной задаче применяешь половину курса.</p>
+      </div></div></div>
+    </div>
+  </section>
+
+  <section class="cmp" id="b2">
     <div class="cmp__head">
       <h2>Программа · недели</h2>
       <span class="cmp__sel">.program</span>
@@ -2304,7 +2319,7 @@
     </div>
   </section>
 
-  <section class="cmp" id="b2">
+  <section class="cmp" id="b3">
     <div class="cmp__head">
       <h2>Как устроено обучение · шаг 01</h2>
       <span class="cmp__sel">#kak-uchimsya .row</span>
@@ -2368,7 +2383,7 @@
     </div>
   </section>
 
-  <section class="cmp" id="b3">
+  <section class="cmp" id="b4">
     <div class="cmp__head">
       <h2>Автор · продовый кейс</h2>
       <span class="cmp__sel">#avtor .case</span>
@@ -2444,7 +2459,7 @@
     </div>
   </section>
 
-  <section class="cmp" id="b4">
+  <section class="cmp" id="b5">
     <div class="cmp__head">
       <h2>Тарифы</h2>
       <span class="cmp__sel">#tarify</span>
@@ -2679,7 +2694,7 @@
     </div>
   </section>
 
-  <section class="cmp" id="b5">
+  <section class="cmp" id="b6">
     <div class="cmp__head">
       <h2>FAQ</h2>
       <span class="cmp__sel">#faq</span>
