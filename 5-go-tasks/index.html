@@ -356,34 +356,30 @@
     line-height: 1.1;
     letter-spacing: -.05em;
   }
+  /* Одна сетка на все пункты: строки общие, поэтому заголовки стоят
+     на одной линии, как в оригинале. Порядок: 01, код, 02 / 03, 04, 05. */
   .tasks__cols {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 44px 40px;
+    gap: 56px 40px;
     align-items: start;
   }
-  .tasks__col {
-    display: flex;
-    flex-direction: column;
-    gap: 56px;
-  }
-  /* Средняя колонка в оригинале идёт со сдвигом — повторяем ступеньку */
-  .tasks__col--mid { padding-top: 0; }
-  .tasks__col--mid .task { margin-top: 24px; }
 
+  /* Площадка под картинку фиксированной высоты: картинки разной формы,
+     и без неё заголовки пунктов разъезжаются по вертикали. В оригинале
+     они стоят на одной линии. */
   .task__media {
     position: relative;
     display: flex;
     align-items: flex-end;
-    min-height: 250px;
+    height: 250px;
     margin-bottom: 22px;
   }
   .task__img {
-    /* Высота задана явно: иначе незагруженная картинка схлопывается в ноль,
-       не попадает в зону видимости и lazy-загрузка не срабатывает никогда. */
-    height: 250px;
-    width: auto;
+    max-height: 100%;
     max-width: 85%;
+    width: auto;
+    height: auto;
     object-fit: contain;
   }
   .task__num {
@@ -621,8 +617,6 @@
 
     .tasks__title { margin-bottom: 40px; }
     .tasks__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 32px; }
-    .tasks__col { gap: 44px; }
-    .tasks__col--mid { padding-top: 0; }
     .tasks__code { display: none; }
 
     .whom { padding: 44px 32px; border-radius: 32px; }
@@ -650,8 +644,7 @@
     .btn { width: 100%; padding: 18px 24px; font-size: 14px; }
 
     .tasks__cols { grid-template-columns: minmax(0, 1fr); gap: 40px; }
-    .tasks__col { gap: 40px; }
-    .task__media { min-height: 200px; margin-bottom: 18px; }
+    .task__media { height: 200px; margin-bottom: 18px; }
     .task__img { height: 200px; }
     .task__title { font-size: 21px; }
     .tasks__cta { margin-top: 44px; }
@@ -734,8 +727,7 @@
       <h2 class="tasks__title fade-up">На уроке ты разберешься как решать каждый тип задач, их ловушки и нюансы:</h2>
       <div class="tasks__cols fade-up">
 
-        <div class="tasks__col">
-          <article class="task">
+        <article class="task">
             <div class="task__media">
               <img class="task__img" src="img/task-slices.png" alt="Сердитый гофер ломает клавиатуру" loading="lazy" width="512" height="512">
               <span class="task__num">01</span>
@@ -743,30 +735,10 @@
             <h3 class="task__title">Слайсы</h3>
             <p class="task__desc">Почему append () может сломать весь код и как избежать memory leak? Классическая ловушка для 90% кандидатов.</p>
           </article>
-          <article class="task">
-            <div class="task__media">
-              <img class="task__img" src="img/task-interfaces.png" alt="Чёрный кот выглядывает из коробки" loading="lazy" width="373" height="560">
-              <span class="task__num">03</span>
-            </div>
-            <h3 class="task__title">Интерфейсы</h3>
-            <p class="task__desc">Когда nil-интерфейс не равен nil и как это использовать в своих интересах?</p>
-          </article>
-        </div>
 
-        <div class="tasks__col tasks__col--mid">
-          <img class="tasks__code" src="img/task-code.png" alt="Пример кода на Go с проверкой интерфейса на nil" loading="lazy" width="576" height="580">
-          <article class="task">
-            <div class="task__media">
-              <img class="task__img" src="img/task-goroutines.png" alt="Грустный гофер у захлопнувшегося капкана" loading="lazy" width="554" height="560">
-              <span class="task__num">04</span>
-            </div>
-            <h3 class="task__title">Горутины</h3>
-            <p class="task__desc">Почему возникает deadlock в этом коде и как его исправить за 30 секунд?</p>
-          </article>
-        </div>
+        <img class="tasks__code" src="img/task-code.png" alt="Пример кода на Go с проверкой интерфейса на nil" loading="lazy" width="576" height="580">
 
-        <div class="tasks__col">
-          <article class="task">
+        <article class="task">
             <div class="task__media">
               <img class="task__img" src="img/task-maps.png" alt="Гофер читает книгу" loading="lazy" width="446" height="560">
               <span class="task__num">02</span>
@@ -774,7 +746,26 @@
             <h3 class="task__title">Мапы</h3>
             <p class="task__desc">Что происходит при конкурентном доступе к map и почему твой код падает в рандомный момент?</p>
           </article>
-          <article class="task">
+
+        <article class="task">
+            <div class="task__media">
+              <img class="task__img" src="img/task-interfaces.png" alt="Чёрный кот выглядывает из коробки" loading="lazy" width="373" height="560">
+              <span class="task__num">03</span>
+            </div>
+            <h3 class="task__title">Интерфейсы</h3>
+            <p class="task__desc">Когда nil-интерфейс не равен nil и как это использовать в своих интересах?</p>
+          </article>
+
+        <article class="task">
+            <div class="task__media">
+              <img class="task__img" src="img/task-goroutines.png" alt="Грустный гофер у захлопнувшегося капкана" loading="lazy" width="554" height="560">
+              <span class="task__num">04</span>
+            </div>
+            <h3 class="task__title">Горутины</h3>
+            <p class="task__desc">Почему возникает deadlock в этом коде и как его исправить за 30 секунд?</p>
+          </article>
+
+        <article class="task">
             <div class="task__media">
               <img class="task__img" src="img/task-async.png" alt="Испуганный разработчик за ноутбуком" loading="lazy" width="373" height="560">
               <span class="task__num">05</span>
@@ -782,7 +773,6 @@
             <h3 class="task__title">Асинхронные паттерны</h3>
             <p class="task__desc">Как правильно синхронизировать горутины, чтобы избежать race conditions в production?</p>
           </article>
-        </div>
 
       </div>
       <div class="tasks__cta">
