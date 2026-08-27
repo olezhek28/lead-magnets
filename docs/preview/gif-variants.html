@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Варианты зацикленной анимации — System Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #10171A;
+    --card: #182023;
+    --line: rgba(255,255,255,.10);
+    --accent: #DFDF41;
+    --text: #ffffff;
+    --muted: rgba(255,255,255,.62);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  /* Шапка */
+  .head { border-bottom: 1px solid var(--line); padding-bottom: 32px; margin-bottom: 40px; }
+  .head__tag {
+    display: inline-block;
+    font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid rgba(223,223,65,.4);
+    border-radius: 999px; padding: 6px 14px; margin-bottom: 20px;
+  }
+  .head__title { font-size: 40px; font-weight: 800; line-height: 1.15; margin: 0 0 16px; }
+  .head__desc { font-size: 17px; color: var(--muted); max-width: 760px; margin: 0 0 14px; }
+  .head__desc b { color: var(--text); font-weight: 600; }
+  .head__note {
+    font-size: 15px; color: var(--muted); max-width: 760px; margin: 18px 0 0;
+    background: rgba(223,223,65,.07); border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0; padding: 14px 18px;
+  }
+
+  /* Карточки */
+  .grid { display: grid; gap: 28px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+  }
+  .card__head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+  .card__num {
+    font-size: 14px; font-weight: 800; color: #10171A; background: var(--accent);
+    border-radius: 8px; padding: 3px 10px; letter-spacing: .04em;
+  }
+  .card__name { font-size: 24px; font-weight: 800; margin: 0; }
+  .card__lead { color: var(--muted); font-size: 16px; margin: 6px 0 22px; }
+
+  .media { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .media__col { min-width: 0; }
+  .media__label {
+    font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 10px; display: flex; gap: 8px; align-items: center;
+  }
+  .media__label span { color: var(--accent); font-weight: 800; letter-spacing: 0; text-transform: none; font-size: 13px; }
+  .media__box {
+    background: #0B1113; border: 1px solid var(--line); border-radius: 14px;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+    min-height: 120px;
+  }
+  .media__box img, .media__box video { display: block; width: 100%; height: auto; max-width: 100%; }
+  .media__box--square img, .media__box--square video { max-width: 420px; margin: 0 auto; }
+
+  .meta { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .meta li {
+    font-size: 13px; color: var(--muted);
+    background: rgba(255,255,255,.05); border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 12px;
+  }
+  .meta li b { color: var(--text); font-weight: 600; }
+
+  .foot { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
+  .foot b { color: var(--text); }
+
+  @media (max-width: 960px) {
+    .head__title { font-size: 32px; }
+    .media { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 32px 16px 64px; }
+    .head__title { font-size: 26px; }
+    .card { padding: 18px; border-radius: 16px; }
+    .card__name { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="head">
+    <div class="head__tag">Выбор варианта</div>
+    <h1 class="head__title">Варианты зацикленной анимации для лендинга System Design</h1>
+    <p class="head__desc">
+      Шесть коротких петель, нарезанных из вашего ролика. Каждый вариант показан <b>в двух форматах</b>:
+      слева — GIF (как вы просили), справа — та же петля в MP4. Картинка одинаковая, но MP4 весит
+      примерно в <b>семь раз меньше</b> и на сайте грузится заметно быстрее.
+    </p>
+    <p class="head__desc">
+      Все петли играют бесконечно и без звука. Отличаются не только таймингом, но и подачей:
+      полный кадр, крупный кроп, замедление, бумеранг, приглушённый цвет, виньетка.
+    </p>
+    <p class="head__note">
+      <b>Что нужно от вас:</b> посмотреть и назвать номер понравившегося варианта (например, «вариант 2»).
+      Если хочется смешать — скажите, например: «кадр как в 4, но цвет как в 5». Соберём.
+    </p>
+  </header>
+
+  <div class="grid">
+
+    <!-- 1 -->
+    <section class="card">
+      <div class="card__head">
+        <span class="card__num">Вариант 1</span>
+        <h2 class="card__name">Начало ролика, полный кадр</h2>
+      </div>
+      <p class="card__lead">Самые первые секунды, которые вам нравились: спокойная речь, кадр целиком, ничего не обрезано.</p>
+      <div class="media">
+        <div class="media__col">
+          <div class="media__label">GIF <span>1,20 МБ</span></div>
+          <div class="media__box"><img src="gif-variants/v1-start-full.gif" alt="Вариант 1, GIF"></div>
+        </div>
+        <div class="media__col">
+          <div class="media__label">MP4-петля <span>164 КБ</span></div>
+          <div class="media__box"><video src="gif-variants/v1-start-full.mp4" poster="gif-variants/v1-start-full-poster.jpg" autoplay muted loop playsinline></video></div>
+        </div>
+      </div>
+      <ul class="meta">
+        <li>Тайминг исходника: <b>0:00,2 — 0:03,3</b></li>
+        <li>Длительность: <b>3,1 с</b></li>
+        <li>GIF: <b>480×270, 10 fps</b></li>
+        <li>MP4: <b>760×428, 30 fps</b></li>
+        <li>Отличие: <b>базовый вариант, кадр без обработки</b></li>
+      </ul>
+    </section>
+
+    <!-- 2 -->
+    <section class="card">
+      <div class="card__head">
+        <span class="card__num">Вариант 2</span>
+        <h2 class="card__name">Крупный квадратный кроп</h2>
+      </div>
+      <p class="card__lead">Тот же спикер, но кадр обрезан в квадрат и приближен к лицу — эмоция читается даже в маленьком блоке.</p>
+      <div class="media">
+        <div class="media__col">
+          <div class="media__label">GIF <span>1,01 МБ</span></div>
+          <div class="media__box media__box--square"><img src="gif-variants/v2-face-square.gif" alt="Вариант 2, GIF"></div>
+        </div>
+        <div class="media__col">
+          <div class="media__label">MP4-петля <span>147 КБ</span></div>
+          <div class="media__box media__box--square"><video src="gif-variants/v2-face-square.mp4" poster="gif-variants/v2-face-square-poster.jpg" autoplay muted loop playsinline></video></div>
+        </div>
+      </div>
+      <ul class="meta">
+        <li>Тайминг исходника: <b>0:18,8 — 0:21,8</b></li>
+        <li>Длительность: <b>3,0 с</b></li>
+        <li>GIF: <b>400×400, 10 fps</b></li>
+        <li>MP4: <b>620×620, 30 fps</b></li>
+        <li>Отличие: <b>квадрат 1:1, крупный план лица</b></li>
+      </ul>
+    </section>
+
+    <!-- 3 -->
+    <section class="card">
+      <div class="card__head">
+        <span class="card__num">Вариант 3</span>
+        <h2 class="card__name">Жест с замедлением ×0,8</h2>
+      </div>
+      <p class="card__lead">Активная жестикуляция, чуть замедленная — движение становится плавнее и меньше «дёргает» глаз при бесконечном повторе.</p>
+      <div class="media">
+        <div class="media__col">
+          <div class="media__label">GIF <span>870 КБ</span></div>
+          <div class="media__box"><img src="gif-variants/v3-gesture-slow.gif" alt="Вариант 3, GIF"></div>
+        </div>
+        <div class="media__col">
+          <div class="media__label">MP4-петля <span>181 КБ</span></div>
+          <div class="media__box"><video src="gif-variants/v3-gesture-slow.mp4" poster="gif-variants/v3-gesture-slow-poster.jpg" autoplay muted loop playsinline></video></div>
+        </div>
+      </div>
+      <ul class="meta">
+        <li>Тайминг исходника: <b>0:32,2 — 0:35,0</b></li>
+        <li>Длительность: <b>3,5 с</b> (2,8 с исходника)</li>
+        <li>GIF: <b>460×258, 9 fps</b></li>
+        <li>MP4: <b>760×428, 30 fps</b></li>
+        <li>Отличие: <b>скорость 0,8× — мягкое, «дышащее» движение</b></li>
+      </ul>
+    </section>
+
+    <!-- 4 -->
+    <section class="card">
+      <div class="card__head">
+        <span class="card__num">Вариант 4</span>
+        <h2 class="card__name">Бумеранг: туда и обратно</h2>
+      </div>
+      <p class="card__lead">Фрагмент проигрывается вперёд, а потом назад. Петля замыкается идеально — стыка не видно вообще.</p>
+      <div class="media">
+        <div class="media__col">
+          <div class="media__label">GIF <span>1,10 МБ</span></div>
+          <div class="media__box"><img src="gif-variants/v4-boomerang.gif" alt="Вариант 4, GIF"></div>
+        </div>
+        <div class="media__col">
+          <div class="media__label">MP4-петля <span>201 КБ</span></div>
+          <div class="media__box"><video src="gif-variants/v4-boomerang.mp4" poster="gif-variants/v4-boomerang-poster.jpg" autoplay muted loop playsinline></video></div>
+        </div>
+      </div>
+      <ul class="meta">
+        <li>Тайминг исходника: <b>1:02,3 — 1:04,3</b></li>
+        <li>Длительность: <b>4,0 с</b> (2 с вперёд + 2 с назад)</li>
+        <li>GIF: <b>440×248, 9 fps</b></li>
+        <li>MP4: <b>700×394, 30 fps</b></li>
+        <li>Отличие: <b>бесшовный цикл без «рывка» на склейке</b></li>
+      </ul>
+    </section>
+
+    <!-- 5 -->
+    <section class="card">
+      <div class="card__head">
+        <span class="card__num">Вариант 5</span>
+        <h2 class="card__name">Приглушённый, почти ч/б</h2>
+      </div>
+      <p class="card__lead">Цвет убран почти полностью, контраст чуть поднят. Не спорит с жёлтым акцентом сайта и аккуратно ложится на тёмный фон.</p>
+      <div class="media">
+        <div class="media__col">
+          <div class="media__label">GIF <span>1,21 МБ</span></div>
+          <div class="media__box"><img src="gif-variants/v5-mono-dark.gif" alt="Вариант 5, GIF"></div>
+        </div>
+        <div class="media__col">
+          <div class="media__label">MP4-петля <span>130 КБ</span></div>
+          <div class="media__box"><video src="gif-variants/v5-mono-dark.mp4" poster="gif-variants/v5-mono-dark-poster.jpg" autoplay muted loop playsinline></video></div>
+        </div>
+      </div>
+      <ul class="meta">
+        <li>Тайминг исходника: <b>1:11,5 — 1:15,1</b></li>
+        <li>Длительность: <b>3,6 с</b></li>
+        <li>GIF: <b>480×270, 10 fps</b></li>
+        <li>MP4: <b>700×394, 30 fps</b></li>
+        <li>Отличие: <b>обесцвечивание под тёмную тему лендинга</b></li>
+      </ul>
+    </section>
+
+    <!-- 6 -->
+    <section class="card">
+      <div class="card__head">
+        <span class="card__num">Вариант 6</span>
+        <h2 class="card__name">Полный кадр с виньеткой</h2>
+      </div>
+      <p class="card__lead">Цвет сохранён, но края кадра мягко затемнены — прямоугольник видео растворяется в тёмном фоне страницы.</p>
+      <div class="media">
+        <div class="media__col">
+          <div class="media__label">GIF <span>1,14 МБ</span></div>
+          <div class="media__box"><img src="gif-variants/v6-vignette.gif" alt="Вариант 6, GIF"></div>
+        </div>
+        <div class="media__col">
+          <div class="media__label">MP4-петля <span>145 КБ</span></div>
+          <div class="media__box"><video src="gif-variants/v6-vignette.mp4" poster="gif-variants/v6-vignette-poster.jpg" autoplay muted loop playsinline></video></div>
+        </div>
+      </div>
+      <ul class="meta">
+        <li>Тайминг исходника: <b>1:24,0 — 1:27,4</b></li>
+        <li>Длительность: <b>3,4 с</b></li>
+        <li>GIF: <b>480×270, 10 fps</b></li>
+        <li>MP4: <b>760×428, 30 fps</b></li>
+        <li>Отличие: <b>затемнённые края, кадр «тонет» в фоне</b></li>
+      </ul>
+    </section>
+
+  </div>
+
+  <p class="foot">
+    Технически: GIF ограничен 256 цветами и не умеет сжимать движение, поэтому даже в 480 px он весит около мегабайта.
+    MP4 при том же кадре укладывается в 130–200 КБ. <b>На сайт рекомендуем ставить MP4-петлю</b>, а GIF использовать там,
+    где видео не поддерживается (например, в письмах). Исходное качество и тайминг у обоих форматов одинаковые.
+  </p>
+
+</div>
+</body>
+</html>
