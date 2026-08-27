@@ -1842,6 +1842,19 @@
   .truth .section__head { margin-bottom: 28px; }
   .truth__lead { font-size: 17px; line-height: 1.7; color: var(--text-body); max-width: 68ch; margin: 0 0 26px; text-wrap: pretty; }
   .truth__lead b { color: var(--accent); font-weight: 600; }
+  /* скрин продукта в блоке «Как устроено обучение».
+     min-width: 0 обязателен: у грид-элемента минимальная ширина по умолчанию
+     равна min-content, а у картинки это её собственные 1600px — без сброса
+     колонка отказывается сжиматься и разъезжается вся сетка блока. */
+  .shot { margin: 0; min-width: 0; }
+  .row__visual { min-width: 0; }
+  .shot__img {
+    max-width: 100%;
+    display: block; width: 100%; height: auto; border-radius: var(--r-lg);
+    border: 1px solid var(--border-card); box-shadow: var(--sh-lift);
+  }
+  .shot__cap { margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--text-mute); text-wrap: pretty; }
+
   /* конвейер секции: слева подписи рядов, справа пять шагов */
   .pl { position: relative; padding-top: 6px; margin-bottom: 22px; }
   .pl__rail {
@@ -1889,8 +1902,7 @@
 
   /* «загляни внутрь»: открытый урок + его конспект, внутри шага 01 */
   .demo-card {
-    display: grid; grid-template-columns: minmax(0,1fr) 104px; gap: 18px; align-items: center;
-    margin-top: 24px; padding: 16px; border-radius: var(--r-md);
+    display: block; margin-top: 24px; padding: 16px; border-radius: var(--r-md);
     border: 1px solid rgba(223,223,65,.30); background: rgba(223,223,65,.06);
     text-decoration: none;
     transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease);
@@ -1968,7 +1980,7 @@
 
     /* demo-lesson — карточка «Посмотреть один урок целиком» в шаге 01.
        Включить, когда выбран открытый урок и вставлена ссылка. */
-    'demo-lesson':   false
+    'demo-lesson':   true
   };
   (function () {
     var root = document.documentElement;
@@ -2365,7 +2377,7 @@
 
         <p class="pl__src">Требования&nbsp;— со&nbsp;страницы Яндекса «Как мы&nbsp;нанимаем бэкенд-разработчиков», раздел «Архитектурная секция».</p>
 
-        <p class="pl__bridge">На&nbsp;секции ты&nbsp;пройдёшь этот маршрут <b>один раз, без подсказок и&nbsp;права переиграть</b>. До&nbsp;неё у&nbsp;тебя есть пять недель, чтобы отработать каждый шаг: сначала разбираем, потом делаешь сам, потом защищаешь решение вслух.</p>
+        <p class="pl__bridge">Даже если часть этого ты&nbsp;делаешь в&nbsp;проде, <b>объяснить всё вслух за&nbsp;50&nbsp;минут это отдельный навык</b>. Его и&nbsp;разбираем по&nbsp;шагам.</p>
 
       </div>
     </div>
@@ -2649,32 +2661,25 @@
               <p>Каждую неделю открывается несколько видеоуроков по&nbsp;теме, плюс живой Q&amp;A, где задаёшь любой вопрос по&nbsp;материалу и&nbsp;собесам. Дедлайнов по&nbsp;неделям нет: не&nbsp;успел на&nbsp;этой, спокойно догоняешь на&nbsp;следующей.</p>
             </div>
             <!-- показ внутрянки живёт здесь, а не отдельным экраном: рядом урок и его конспект.
-                 ⚠️ под тоглом demo-lesson — включить, когда выбран урок и есть ссылка -->
-            <a class="demo-card" href="#" data-feature="demo-lesson">
+                 Открытый урок 6 на RUTUBE: ссылка приватная, токен доступа в параметре p=. -->
+            <a class="demo-card" href="https://rutube.ru/video/private/5bb9940a5d201a6714c166ecee467d4b/?p=ih8Rn83176ATO_FvIEoMGw" target="_blank" rel="noopener" data-feature="demo-lesson">
               <span class="demo-card__body">
                 <span class="demo-card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
                 <span class="demo-card__txt">
                   <b>Посмотреть один урок целиком</b>
-                  Открыт без оплаты: видео и&nbsp;текстовый конспект к&nbsp;нему&nbsp;— тот самый, со&nbsp;схемами и&nbsp;расчётами. Оцени подачу до&nbsp;покупки.
+                  «REST API на&nbsp;собесе»: шаблон ручки, Idempotency-Key, монолит или микросервисы. 20&nbsp;минут, открыт без оплаты.
                 </span>
               </span>
-              <span class="demo-card__shot" aria-hidden="true">скрин конспекта</span>
+              
             </a>
           </div>
           <div class="row__visual">
-            <!-- схематичная иллюстрация: доска с 5-шаговым алгоритмом (не скрин продукта) -->
-            <div class="visual">
-              <div class="visual__cap">5-шаговый разбор задачи</div>
-              <div class="steps">
-                <div class="steps__row"><span class="steps__num">1</span><span class="steps__name">Функциональные требования: что система делает</span></div>
-                <div class="steps__row"><span class="steps__num">2</span><span class="steps__name">Нефункциональные: RPS, объём данных, latency</span></div>
-                <div class="steps__row"><span class="steps__num">3</span><span class="steps__name">Модель данных и&nbsp;API</span></div>
-                <div class="steps__row"><span class="steps__num">4</span><span class="steps__name">Схема верхнего уровня</span></div>
-                <div class="steps__row"><span class="steps__num">5</span><span class="steps__name">Узкие места и&nbsp;trade-offs</span></div>
-              </div>
-              <div class="steps__bar" aria-hidden="true"></div>
-              <div class="steps__time"><span>00:00</span><span>50:00</span></div>
-            </div>
+            <!-- скрин личного кабинета: показываем продукт, а не схему.
+                 Раньше здесь стояла нарисованная доска с пятишаговым разбором, но
+                 те же пять шагов теперь есть в блоке «Вот что от тебя ждут на секции». -->
+            <figure class="shot">
+              <img class="shot__img" src="lesson-ui.jpg" alt="Урок внутри курса: слева программа недели, по центру плеер, справа оглавление урока" width="1200" height="610" loading="lazy" decoding="async">
+            </figure>
           </div>
         </div>
 
