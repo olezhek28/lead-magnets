@@ -164,7 +164,11 @@
      собственный display блока (grid у .row и т.п.) не теряется. */
   .f-off-video-sales  [data-feature="video-sales"],
   .f-off-chat-screens [data-feature="chat-screens"],
+  .f-off-pay-cta      [data-feature="pay-cta"],
   .f-off-demo-lesson  [data-feature="demo-lesson"] { display: none !important; }
+  /* .final__title держит 40px снизу под кнопку. Кнопки нет — отступ
+     превращается в дыру в нижней половине жёлтой карточки. */
+  .f-off-pay-cta .final__title { margin-bottom: 0; }
 
   :root {
     --bg-primary:   #10171A;
@@ -1859,6 +1863,8 @@
                             24.08.2026: лагал и не проигрывался у части людей);
                          2) обложка sd-video-poster.jpg положена и совпадает
                             с превью ролика на RUTUBE.
+       pay-cta       — кнопки оплаты в тарифах и кнопка в финальном блоке.
+                       Выключить, когда продажи закрыты.
        chat-screens  — блок «А ещё у нас полный комфортик в чатике».
                        Включить, когда в макет телефона добавлены реальные скриншоты
                        чата (сейчас внутри плашка «СКРИНЫ ЧАТА · добавим позже»).
@@ -1869,6 +1875,14 @@
   var FEATURES = {
     'video-sales':  true,
     'chat-screens': false,
+
+    /* pay-cta — всё, чем платят: блоки .tier__cta в обеих карточках тарифов
+       (кнопка «Оплатить» плюс подпись про рассрочку) и кнопка с хинтом
+       в финальном блоке. Финальная кнопка ведёт якорем к тарифам, поэтому
+       без кнопок оплаты вела бы в пустой блок — гасим её вместе с ними.
+       Выключаем, когда продажи закрыты: страница остаётся живой и
+       читаемой, просто без маршрута к оплате. */
+    'pay-cta':      true,
 
     /* demo-lesson — карточка «Посмотреть один урок целиком» в шаге 01.
        Включить, когда выбран открытый урок и вставлена ссылка. */
@@ -2934,7 +2948,7 @@
           </ul>
           <!-- href — фолбэк на случай, если JS не сработал или ссылку открыли в новой вкладке;
                при работающем JS клик перехватывается и форма открывается в модалке -->
-          <div class="tier__cta">
+          <div class="tier__cta" data-feature="pay-cta">
             <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1639196" data-gc-open="standart" data-goal="tarif_standart">Оплатить</a>
             <p class="tier__hint">Картой или в&nbsp;рассрочку до&nbsp;12 месяцев</p>
           </div>
@@ -2965,7 +2979,7 @@
             </ol>
             <div class="tier__practice-note">5&nbsp;недель курса, 5&nbsp;таких практик. К&nbsp;реальной секции тебя уже не&nbsp;первый раз гоняют вопросами по&nbsp;твоей же&nbsp;архитектуре</div>
           </div>
-          <div class="tier__cta">
+          <div class="tier__cta" data-feature="pay-cta">
             <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1639245" data-gc-open="mentor" data-goal="tarif_mentor">Оплатить</a>
             <p class="tier__hint">Картой или в&nbsp;рассрочку до&nbsp;12 месяцев</p>
           </div>
@@ -3108,8 +3122,8 @@
           <span class="final__badge">60 мест</span>
         </div>
         <h2 class="final__title">Забирай место на&nbsp;потоке</h2>
-        <a class="final__btn" href="#tarify" data-goal="final">Залететь на&nbsp;курс</a>
-        <p class="final__hint">* Выбираешь тариф&nbsp;— и&nbsp;сразу к&nbsp;оплате</p>
+        <a class="final__btn" href="#tarify" data-goal="final" data-feature="pay-cta">Залететь на&nbsp;курс</a>
+        <p class="final__hint" data-feature="pay-cta">* Выбираешь тариф&nbsp;— и&nbsp;сразу к&nbsp;оплате</p>
       </div>
     </div>
   </section>
