@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Design · варианты блока «Что происходит на секции»</title>
+<title>System Design · варианты блока про секцию</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,12 @@
      собственный display блока (grid у .row и т.п.) не теряется. */
   .f-off-video-sales    [data-feature="video-sales"],
   .f-off-chat-screens   [data-feature="chat-screens"],
-  .f-off-vacancy-shots  [data-feature="vacancy-shots"],
+  .f-off-preorder-cta   [data-feature="preorder-cta"],
   .f-off-demo-lesson    [data-feature="demo-lesson"] { display: none !important; }
+  /* .final__title держит 40px снизу под кнопку. Кнопки нет — отступ
+     превращается в дыру в нижней половине жёлтой карточки, поэтому на
+     выключенном тогле он снимается. Вернётся вместе с кнопкой. */
+  .f-off-preorder-cta .final__title { margin-bottom: 0; }
 
   :root {
     --bg-primary:   #10171A;
@@ -555,7 +559,7 @@
   .vmodal__backdrop { position: fixed; inset: 0; background: rgba(6,10,12,.86); backdrop-filter: blur(5px); }
   .vmodal__panel { position: relative; z-index: 1; width: min(1100px, 94vw); border-radius: var(--r-lg); overflow: hidden;
     box-shadow: 0 40px 120px -30px rgba(0,0,0,.92); animation: gcPop .28s var(--ease); }
-  /* aspect-ratio висит на обёртке, а iframe растянут абсолютом: VK отдаёт
+  /* aspect-ratio висит на обёртке, а iframe растянут абсолютом: RUTUBE отдаёт
      плеер без собственной высоты, и без этого фрейм схлопывается в полоску. */
   .vmodal__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
   .vmodal__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -1429,11 +1433,14 @@
   .tier__price { font-family: var(--display); font-size: clamp(34px, 4vw, 50px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--text-h); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
   .tier--light .tier__price { color: var(--light-ink); }
   .tier__price b { font-weight: 500; }
-  /* зачёркнутая базовая цена рядом с ценой предзаписи. Скидка привязана
-     к сроку, а не к способу оплаты: п. 4.1 ст. 16.1 ЗоЗПП с 01.04.2026
-     запрещает разные цены в зависимости от того, платит человек сразу
-     или в рассрочку. Базовая цена должна быть настоящей — после
-     23 августа продаём именно по ней, иначе это недостоверная реклама */
+  /* .tier__price-old — зачёркнутая базовая цена рядом со скидочной.
+     СЕЙЧАС НЕ ИСПОЛЬЗУЕТСЯ: предзапись закрылась 23 августа 2026, в тарифах
+     стоят настоящие цены (59 990 и 91 990) без зачёркиваний. Правило оставлено
+     на случай следующей акции, но включать его можно только вместе со сроком:
+     скидка должна быть привязана к сроку, а не к способу оплаты — п. 4.1
+     ст. 16.1 ЗоЗПП с 01.04.2026 запрещает разные цены в зависимости от того,
+     платит человек сразу или в рассрочку. И зачёркнутая цена должна быть
+     настоящей, иначе это недостоверная реклама. */
   .tier__price-old { margin-left: 12px; font-size: .44em; letter-spacing: -0.02em; color: var(--text-deco); white-space: nowrap; }
   .tier__price-old s { text-decoration-thickness: 1px; }
   .tier--light .tier__price-old s { color: var(--light-mute); }
@@ -1675,40 +1682,10 @@
   }
 </style>
 <style>
-
-  /* цена вопроса + доказательство вакансиями */
-  .gate {
     background: var(--bg-card); border: 1px solid var(--border-card);
     border-radius: var(--r-xl); padding: 56px 60px 48px;
   }
-  .gate__title {
-    font-family: var(--display); font-size: clamp(23px, 3.2vw, 36px); font-weight: 500;
-    line-height: 1.12; letter-spacing: -.035em; color: var(--text-h);
-    margin: 0 0 20px; max-width: 20ch; text-wrap: balance;
-  }
-  .gate__lead { font-size: 17px; line-height: 1.7; color: var(--text-body); max-width: 68ch; margin: 0; text-wrap: pretty; }
-  .gate__lead b { color: var(--accent); font-weight: 600; }
-  .gate__shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 34px; }
-  .gate__shot { margin: 0; }
-  .gate__ph {
-    aspect-ratio: 16 / 10; border-radius: var(--r-md); display: flex;
-    align-items: center; justify-content: center; text-align: center; padding: 10px;
-    border: 1px dashed var(--text-deco); color: var(--text-deco); background: rgba(255,255,255,.02);
-    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
-  }
-  .gate__shot figcaption { margin-top: 10px; font-size: 13.5px; line-height: 1.45; color: var(--text-mute); }
-  .gate__note { margin: 18px 0 0; font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); }
 
-  /* врезка «зачем этот цирк» — внутри светлого островка */
-  .mech__lead b { color: var(--light-ink); font-weight: 600; }
-  .mech__cut {
-    border-left: 3px solid var(--light-ink);
-    padding: 2px 0 2px 22px; margin: 32px 0 4px; max-width: 68ch;
-  }
-  .mech__cut p { font-size: 17px; line-height: 1.7; color: var(--light-mute); margin: 0 0 12px; text-wrap: pretty; }
-  .mech__cut p:last-child { margin-bottom: 0; }
-  .mech__cut b { color: var(--light-ink); font-weight: 600; }
-  .mech__cut + .mech__lead { margin-top: 34px; }
 
   /* блок «Что на самом деле происходит на секции» */
   .truth {
@@ -1717,34 +1694,24 @@
   }
   .truth .section__head { margin-bottom: 28px; }
   .truth__lead { font-size: 17px; line-height: 1.7; color: var(--text-body); max-width: 68ch; margin: 0 0 26px; text-wrap: pretty; }
-  .truth__lead--mid { margin-top: 34px; }
   .truth__lead b { color: var(--accent); font-weight: 600; }
-  .truth__check { counter-reset: tc; list-style: none; padding: 0; margin: 0; max-width: 72ch; }
-  .truth__check li {
-    counter-increment: tc; position: relative; padding: 14px 0 14px 48px;
-    border-bottom: 1px solid var(--border-mid); color: var(--text-body); font-size: 16.5px; line-height: 1.5;
-  }
-  .truth__check li:first-child { border-top: 1px solid var(--border-mid); }
-  .truth__check li::before {
-    content: counter(tc, decimal-leading-zero); position: absolute; left: 0; top: 16px;
-    font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .04em;
-  }
-  .truth__errs {
-    list-style: none; padding: 0; margin: 0 0 36px; display: grid; gap: 1px;
+  /* маршрут секции: шаг интервьюера → где ломаются → где чиним */
+  .route {
+    list-style: none; padding: 0; margin: 0 0 34px; display: grid; gap: 1px;
     background: var(--border-mid); border: 1px solid var(--border-mid);
     border-radius: var(--r-md); overflow: hidden;
   }
-  .truth__errs li {
-    background: var(--bg-secondary); display: flex; justify-content: space-between;
-    align-items: baseline; gap: 24px; padding: 15px 20px;
+  .route__head, .route__row {
+    display: grid; grid-template-columns: 1fr 1.15fr 112px; gap: 20px;
+    padding: 14px 20px; background: var(--bg-secondary); align-items: baseline;
   }
-  .truth__err { color: var(--text-body); font-size: 16px; line-height: 1.45; }
-  .truth__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); white-space: nowrap; }
-  .truth__foot {
-    font-family: var(--display); font-size: 20px; line-height: 1.4; font-weight: 500;
-    color: var(--text-h); max-width: 62ch; margin: 0;
-    padding-left: 22px; border-left: 2px solid var(--accent);
+  .route__head {
+    background: var(--bg-tertiary); font-family: var(--mono); font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint);
   }
+  .route__step { color: var(--text-h); font-weight: 600; font-size: 15.5px; line-height: 1.45; }
+  .route__err { color: var(--text-mute); font-size: 15px; line-height: 1.45; }
+  .route__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); text-align: right; white-space: nowrap; }
 
   /* «загляни внутрь»: открытый урок + его конспект, внутри шага 01 */
   .demo-card {
@@ -1773,20 +1740,14 @@
 
 
   @media (max-width: 960px) {
-    .gate { padding: 40px 30px 36px; }
     .truth { padding: 44px 30px 40px; }
   }
   @media (max-width: 640px) {
-    .gate { padding: 30px 20px 28px; border-radius: var(--r-lg); }
-    .gate__title { max-width: none; }
-    .gate__lead { font-size: 16px; }
-    .gate__shots { grid-template-columns: 1fr; gap: 20px; margin-top: 26px; }
     .truth { padding: 32px 20px 30px; border-radius: var(--r-lg); }
-    .truth__foot { font-size: 17px; padding-left: 16px; }
-    .truth__errs li { flex-direction: column; gap: 6px; }
+    .route__head { display: none; }
+    .route__row { grid-template-columns: 1fr; gap: 5px; }
+    .route__fix { text-align: left; }
     .demo-card { grid-template-columns: minmax(0,1fr) 84px; gap: 14px; }
-    .mech__cut { padding-left: 16px; margin-top: 26px; }
-    .mech__cut p { font-size: 16px; }
   }
 </style>
 <style>
@@ -1794,200 +1755,215 @@
   body { background: var(--bg-primary); margin: 0; padding: 0 0 90px; }
   .vr-top { padding: 40px 26px 26px; border-bottom: 1px solid rgba(255,255,255,.14); }
   .vr-top h1 { font-family: var(--display); font-size: 30px; font-weight: 500; letter-spacing: -.03em; color: var(--text-h); margin: 0 0 12px; }
-  .vr-top p { color: var(--text-mute); font-size: 15px; line-height: 1.6; margin: 0 0 8px; max-width: 90ch; }
+  .vr-top p { color: var(--text-mute); font-size: 15px; line-height: 1.6; margin: 0 0 8px; max-width: 94ch; }
+  .vr-top b { color: var(--text-h); }
   .vr-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
-  .vr-nav a { font-family: var(--mono); font-size: 11px; color: var(--text-mute); border: 1px solid rgba(255,255,255,.14);
-              border-radius: 7px; padding: 7px 11px; text-decoration: none; }
+  .vr-nav a { font-family: var(--mono); font-size: 11px; color: var(--text-mute); border: 1px solid rgba(255,255,255,.14); border-radius: 7px; padding: 7px 11px; text-decoration: none; }
   .vr-nav a:hover { border-color: var(--accent); color: var(--accent); }
   .vr { padding: 44px 26px 0; border-top: 1px solid rgba(255,255,255,.08); scroll-margin-top: 8px; }
   .vr__head h2 { font-family: var(--display); font-size: 22px; font-weight: 500; letter-spacing: -.03em; color: var(--text-h); margin: 0; }
-  .vr__note { color: var(--text-mute); font-size: 14.5px; line-height: 1.6; margin: 8px 0 22px; max-width: 92ch; }
+  .vr__note { color: var(--text-mute); font-size: 14.5px; line-height: 1.6; margin: 8px 0 22px; max-width: 96ch; }
   .vr__stage { max-width: 1080px; }
   .vr__stage .section { padding: 0 !important; }
   .vr__stage .fade-up { opacity: 1 !important; transform: none !important; }
   .vr__stage .truth { padding: 40px 34px 34px; }
+  .vr__stage .truth--slim { padding: 34px 30px 28px; }
 
-  /* — вариант A: одна сетка — */
-  .vA { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 1px; background: var(--border-mid);
-        border: 1px solid var(--border-mid); border-radius: var(--r-md); overflow: hidden; }
-  .vA__head, .vA__row { display: grid; grid-template-columns: 1fr 1.15fr 110px; gap: 20px; padding: 14px 20px; background: var(--bg-secondary); align-items: baseline; }
-  .vA__head { background: var(--bg-tertiary); font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
-              text-transform: uppercase; color: var(--text-faint); }
-  .vA__step { color: var(--text-h); font-weight: 600; font-size: 15.5px; }
-  .vA__err { color: var(--text-mute); font-size: 15px; }
-  .vA__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); text-align: right; white-space: nowrap; }
+  .q1 { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 1px; background: var(--border-mid); border: 1px solid var(--border-mid); border-radius: var(--r-md); overflow: hidden; }
+  .q1__head, .q1__row { display: grid; grid-template-columns: 1.5fr 1fr 118px; gap: 20px; padding: 15px 20px; background: var(--bg-secondary); align-items: baseline; }
+  .q1__head { background: var(--bg-tertiary); font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint); }
+  .q1__req { color: var(--text-h); font-size: 15px; line-height: 1.45; }
+  .q1__err { color: var(--text-mute); font-size: 14.5px; line-height: 1.45; }
+  .q1__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); text-align: right; white-space: nowrap; }
+  .q1__src { font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); margin: 0; line-height: 1.6; max-width: 80ch; }
 
-  /* — вариант B: таймлайн слота — */
-  .vB { list-style: none; padding: 0; margin: 0 0 30px; }
-  .vB__row { display: grid; grid-template-columns: 108px 1fr 110px; gap: 22px; padding: 16px 0 16px 0;
-             border-bottom: 1px solid var(--border-mid); align-items: baseline; position: relative; }
-  .vB__row:first-child { border-top: 1px solid var(--border-mid); }
-  .vB__time { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .04em; }
-  .vB__body { color: var(--text-mute); font-size: 15px; line-height: 1.55; }
-  .vB__body b { display: block; color: var(--text-h); font-size: 16px; font-weight: 600; margin-bottom: 3px; }
-  .vB__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); text-align: right; white-space: nowrap; }
+  .q2 { display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 26px; align-items: start; }
+  .q2__shot { margin: 0; }
+  .q2__ph { aspect-ratio: 3 / 4; border: 1px dashed var(--text-deco); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px; color: var(--text-deco); font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; background: rgba(255,255,255,.02); }
+  .q2__shot figcaption { margin-top: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-faint); }
+  .q2__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+  .q2__list li { display: grid; gap: 5px; padding-bottom: 14px; border-bottom: 1px solid var(--border-mid); }
+  .q2__list li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .q2__list b { color: var(--text-h); font-size: 15px; font-weight: 600; line-height: 1.45; }
+  .q2__err { color: var(--text-mute); font-size: 14.5px; }
+  .q2__fix { font-family: var(--mono); font-size: 12px; color: var(--accent); }
 
-  /* — вариант C: карточки — */
-  .vC { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 30px; }
-  .vC__card { background: var(--bg-secondary); border: 1px solid var(--border-card); border-radius: var(--r-md);
-              padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 7px; }
-  .vC__n { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; }
-  .vC__step { color: var(--text-h); font-size: 16px; font-weight: 600; line-height: 1.3; }
-  .vC__err { color: var(--text-mute); font-size: 14.5px; line-height: 1.5; flex: 1; }
-  .vC__fix { font-family: var(--mono); font-size: 12px; color: var(--accent); padding-top: 8px; border-top: 1px solid var(--border-mid); }
+  .q3 { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 1px; background: var(--border-mid); border: 1px solid var(--border-mid); border-radius: var(--r-md); overflow: hidden; }
+  .q3__row { display: grid; grid-template-columns: minmax(0,1fr) 118px; gap: 20px; padding: 14px 20px; background: var(--bg-secondary); align-items: baseline; }
+  .q3__err { color: var(--text-body); font-size: 15.5px; }
+  .q3__fix { font-family: var(--mono); font-size: 12.5px; color: var(--accent); text-align: right; white-space: nowrap; }
+
+  .q4__quote { font-family: var(--display); font-size: clamp(17px, 2vw, 22px); line-height: 1.45; font-weight: 500;
+               color: var(--text-h); margin: 0 0 10px; padding-left: 22px; border-left: 2px solid var(--accent); max-width: 74ch; }
+  .q4__from { font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); margin: 0 0 26px; padding-left: 24px; }
+  .q4 { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 1px; background: var(--border-mid); border: 1px solid var(--border-mid); border-radius: var(--r-md); overflow: hidden; }
+  .q4__row { display: grid; grid-template-columns: 1fr 1fr 118px; gap: 20px; padding: 14px 20px; background: var(--bg-secondary); align-items: baseline; }
+  .q4__part { color: var(--accent); font-size: 15px; }
+  .q4__err { color: var(--text-mute); font-size: 14.5px; }
+  .q4__fix { font-family: var(--mono); font-size: 12.5px; color: var(--text-h); text-align: right; white-space: nowrap; }
+  .q5 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 30px; }
+  .q5__col { background: var(--bg-secondary); border: 1px solid var(--border-card); border-radius: var(--r-md); padding: 18px 20px 16px; }
+  .q5__name { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .q5__col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+  .q5__col li { position: relative; padding-left: 18px; color: var(--text-body); font-size: 15px; line-height: 1.45; }
+  .q5__col li::before { content: "—"; position: absolute; left: 0; color: var(--text-deco); }
 
   @media (max-width: 900px) {
-    .vA__head { display: none; }
-    .vA__row, .vB__row { grid-template-columns: 1fr; gap: 6px; }
-    .vA__fix, .vB__fix { text-align: left; }
-    .vC { grid-template-columns: 1fr; }
+    .q4__row { grid-template-columns: 1fr; gap: 5px; }
+    .q4__fix { text-align: left; }
+    .q5 { grid-template-columns: 1fr; }
+    .q1__head { display: none; }
+    .q1__row, .q3__row { grid-template-columns: 1fr; gap: 6px; }
+    .q1__fix, .q3__fix { text-align: left; }
+    .q2 { grid-template-columns: 1fr; }
     .vr__stage .truth { padding: 26px 18px 22px; }
   }
 </style>
 </head>
 <body class="anim-ready">
   <div class="vr-top">
-    <h1>Блок «Что происходит на секции»: варианты</h1>
-    <p>Во всех трёх одна и та же фактура — меняется только форма подачи. Тексты черновые: пять шагов надо
-    сверить с уроком 02, тайминги в варианте B — тоже.</p>
+    <h1>Блок про секцию: три варианта</h1>
+    <p>Во всех трёх ось — <b>официальные требования Яндекса</b> к архитектурной секции, дословно с их страницы найма. Меняется логика: в первом требования стоят в таблице рядом с ошибками, во втором показываем скрин документа и разбираем по пунктам, в третьем требований почти нет — только мост к программе.</p>
+    <p>Связки «требование → урок» проставил я по программе курса, их надо сверить.</p>
     <nav class="vr-nav">
-      <a href="#v0">сейчас</a><a href="#v1">A · один маршрут</a><a href="#v2">B · по времени</a><a href="#v3">C · карточки</a>
+      <a href="#v0">сейчас</a><a href="#v1">1 · требования как ось</a><a href="#v2">2 · скрин и разбор</a><a href="#v3">3 · только ошибки</a><a href="#v4">4 · цитата Т-Банка</a><a href="#v5">5 · два источника</a>
     </nav>
   </div>
 
   <section class="vr" id="v0">
-    <div class="vr__head"><h2>Сейчас</h2></div>
-    <p class="vr__note">Чек-лист из пяти пунктов, потом отдельная таблица «ошибка → урок». Два списка подряд об одном и том же, читателю приходится их мысленно склеивать.</p>
+    <div class="vr__head"><h2>Сейчас · маршрут секции</h2></div>
+    <p class="vr__note">Наш маршрут: что делает интервьюер, где ломаются, где чиним. Шаги — наше утверждение, ничем не подтверждённое, и первая колонка повторяет пятишаговый визуал из блока «Как устроено обучение».</p>
     <div class="vr__stage"><section class="section" id="chto-ocenivayut">
     <div class="container">
       <div class="truth fade-up">
         <div class="section__head">
           <h2 class="section__title">Что на&nbsp;самом деле происходит на&nbsp;секции</h2>
         </div>
-        <p class="truth__lead">Секция выглядит чёрным ящиком, пока не&nbsp;знаешь, что внутри. А&nbsp;внутри&nbsp;— один и&nbsp;тот&nbsp;же список, по&nbsp;которому интервьюер ведёт тебя все 50&nbsp;минут:</p>
+        <p class="truth__lead">Секция выглядит чёрным ящиком, пока не&nbsp;знаешь, что внутри. А&nbsp;внутри&nbsp;— один и&nbsp;тот&nbsp;же маршрут: интервьюер ведёт тебя по&nbsp;нему все 50&nbsp;минут. Вот он&nbsp;целиком&nbsp;— и&nbsp;то, где на&nbsp;каждом шаге чаще всего ломаются.</p>
 
-        <ol class="truth__check">
-          <li>уточнил требования до&nbsp;того, как начал рисовать</li>
-          <li>посчитал нагрузку и&nbsp;объём данных, а&nbsp;не&nbsp;назвал наугад</li>
-          <li>предложил схему верхнего уровня и&nbsp;объяснил, зачем в&nbsp;ней каждый кусок</li>
-          <li>выбрал хранилище и&nbsp;обосновал выбор</li>
-          <li>сам довёл разговор до&nbsp;узких мест, а&nbsp;не&nbsp;ждал, пока копнут</li>
-        </ol>
-
-        <p class="truth__lead truth__lead--mid"><b>Это не&nbsp;телепатия, это чек-лист.</b> И&nbsp;ломается он&nbsp;в&nbsp;одних и&nbsp;тех&nbsp;же местах&nbsp;— под каждое в&nbsp;курсе есть свой урок:</p>
-
-        <ul class="truth__errs">
-          <li><span class="truth__err">Кинулся рисовать базы, не&nbsp;спросив ни&nbsp;про что</span><span class="truth__fix">урок 04</span></li>
-          <li><span class="truth__err">Поплыл с&nbsp;калькулятором: сколько это в&nbsp;байтах и&nbsp;запросах</span><span class="truth__fix">урок 05</span></li>
-          <li><span class="truth__err">Назвал базу наугад и&nbsp;не&nbsp;смог объяснить почему</span><span class="truth__fix">урок 13</span></li>
-          <li><span class="truth__err">Копнули в&nbsp;отказ узла&nbsp;— начал плыть</span><span class="truth__fix">уроки 19–21</span></li>
-          <li><span class="truth__err">Не&nbsp;успел за&nbsp;50&nbsp;минут</span><span class="truth__fix">урок 03</span></li>
-          <li><span class="truth__err">Звучал как пересказ ютуб-ролика</span><span class="truth__fix">урок 41</span></li>
+        <ul class="route">
+          <li class="route__head"><span>Что делает интервьюер</span><span>Где ломаются</span><span>Где чиним</span></li>
+          <li class="route__row"><span class="route__step">Уточняет требования</span><span class="route__err">Кинулся рисовать, не&nbsp;спросив ни&nbsp;про что</span><span class="route__fix">урок 04</span></li>
+          <li class="route__row"><span class="route__step">Просит посчитать нагрузку</span><span class="route__err">Поплыл: сколько это в&nbsp;байтах и&nbsp;запросах</span><span class="route__fix">урок 05</span></li>
+          <li class="route__row"><span class="route__step">Ждёт схему верхнего уровня</span><span class="route__err">Нарисовал коробки и&nbsp;не&nbsp;объяснил, зачем каждая</span><span class="route__fix">урок 03</span></li>
+          <li class="route__row"><span class="route__step">Копает в&nbsp;хранилище</span><span class="route__err">Назвал базу наугад и&nbsp;не&nbsp;смог обосновать</span><span class="route__fix">урок 13</span></li>
+          <li class="route__row"><span class="route__step">Давит на&nbsp;узкие места</span><span class="route__err">Копнули в&nbsp;отказ узла&nbsp;— начал плыть</span><span class="route__fix">уроки 19–21</span></li>
+          <li class="route__row"><span class="route__step">Слушает, как ты&nbsp;рассуждаешь</span><span class="route__err">Звучал как пересказ ютуб-ролика</span><span class="route__fix">урок 41</span></li>
         </ul>
 
-        <p class="truth__foot">Сисдиз проходят не&nbsp;самые умные, а&nbsp;те, у&nbsp;кого есть понятный алгоритм решения и&nbsp;понимание всей необходимой базы.</p>
       </div>
     </div>
   </section></div>
   </section>
 
   <section class="vr" id="v1">
-    <div class="vr__head"><h2>Вариант A · один маршрут</h2></div>
-    <p class="vr__note">Чек-лист и ошибки склеены в одну сетку: что делает интервьюер, где на этом шаге ломаются, где чиним. Самый короткий, читается за один проход.</p>
+    <div class="vr__head"><h2>Вариант 1 · требования компании как ось</h2></div>
+    <p class="vr__note">Вместо наших шагов — дословные требования Яндекса, каждое связано с ошибкой и уроком. Логика: «не мы придумали, вот что от тебя ждут — и вот где мы это закрываем». Доказательство встроено в саму таблицу, скрин необязателен.</p>
     <div class="vr__stage"><section class="section">
       <div class="truth">
-        <div class="section__head"><h2 class="section__title">Что на&nbsp;самом деле происходит на&nbsp;секции</h2></div>
-        <p class="truth__lead">Секция выглядит чёрным ящиком, пока не знаешь, что внутри. А внутри — один и тот же маршрут: интервьюер ведёт тебя по нему все 50 минут. Вот он целиком — и то, где на каждом шаге чаще всего ломаются.</p>
-        <ul class="vA">
-          <li class="vA__head"><span>Что делает интервьюер</span><span>Где ломаются</span><span>Где чиним</span></li>
-        <li class="vA__row"><span class="vA__step">Уточняет требования</span><span class="vA__err">Кинулся рисовать, не спросив ни про что</span><span class="vA__fix">урок 04</span></li>
-        <li class="vA__row"><span class="vA__step">Просит посчитать нагрузку</span><span class="vA__err">Поплыл: сколько это в байтах и запросах</span><span class="vA__fix">урок 05</span></li>
-        <li class="vA__row"><span class="vA__step">Ждёт схему верхнего уровня</span><span class="vA__err">Нарисовал коробки, не объяснил зачем каждая</span><span class="vA__fix">урок 03</span></li>
-        <li class="vA__row"><span class="vA__step">Копает в хранилище</span><span class="vA__err">Назвал базу наугад и не смог обосновать</span><span class="vA__fix">урок 13</span></li>
-        <li class="vA__row"><span class="vA__step">Давит на узкие места</span><span class="vA__err">Копнули в отказ узла — начал плыть</span><span class="vA__fix">уроки 19–21</span></li>
+        <div class="section__head"><h2 class="section__title">Вот что от&nbsp;тебя ждут на&nbsp;секции</h2></div>
+        <p class="truth__lead">Это не&nbsp;наши догадки: крупные компании публикуют требования сами. Слева&nbsp;— дословно то, что Яндекс пишет про архитектурную секцию. Справа&nbsp;— где на&nbsp;этом чаще всего ломаются и&nbsp;в&nbsp;каком уроке мы&nbsp;это разбираем.</p>
+        <ul class="q1">
+          <li class="q1__head"><span>Что требуют</span><span>Где ломаются</span><span>Где чиним</span></li>
+          <li class="q1__row"><span class="q1__req">Спроектировать распределённую систему или её часть, которая будет соответствовать выбранным задачам, нагрузке, доступности и другим требованиям</span><span class="q1__err">Кинулся рисовать, не спросив ни про что</span><span class="q1__fix">уроки 03–04</span></li>
+          <li class="q1__row"><span class="q1__req">Оценить производительность системы, а также объём вычислительных ресурсов, необходимый для её штатного функционирования</span><span class="q1__err">Поплыл: сколько это в байтах и запросах</span><span class="q1__fix">урок 05</span></li>
+          <li class="q1__row"><span class="q1__req">Показать понимание проблем хранения и обработки данных в распределённых системах, рассказать о достоинствах и недостатках подходов</span><span class="q1__err">Назвал базу наугад и не смог обосновать</span><span class="q1__fix">уроки 13–23</span></li>
+          <li class="q1__row"><span class="q1__req">Показать понимание аспектов эксплуатации: балансировки нагрузки, обеспечения отказоустойчивости, требований по доступности</span><span class="q1__err">Копнули в отказ узла — начал плыть</span><span class="q1__fix">уроки 08, 29–32</span></li>
+          <li class="q1__row"><span class="q1__req">Продемонстрировать аналитическое и критическое мышление, широкий кругозор, умение корректно формулировать свои мысли</span><span class="q1__err">Звучал как пересказ ютуб-ролика</span><span class="q1__fix">урок 41</span></li>
         </ul>
-        <p class="truth__foot">Сисдиз проходят не самые умные, а те, у кого есть понятный алгоритм решения и понимание всей необходимой базы.</p>
+        <p class="q1__src">Требования — со страницы «Как мы нанимаем бэкенд-разработчиков» на сайте Яндекса, раздел «Архитектурная секция». Уроки проставлены по программе курса.</p>
       </div></section></div>
   </section>
 
   <section class="vr" id="v2">
-    <div class="vr__head"><h2>Вариант B · 50 минут по времени</h2></div>
-    <p class="vr__note">То же самое, но с таймингом слота. Заодно закрывает вторую боль ЦА — «не успеваю за 50 минут»: видно, сколько времени занимает каждый шаг.</p>
+    <div class="vr__head"><h2>Вариант 2 · скрин документа и разбор по пунктам</h2></div>
+    <p class="vr__note">Слева скрин официальной страницы, справа разбор. Логика: сначала показываем документ, потом объясняем. Доказательство работает визуально, до чтения. Ждёт один скриншот.</p>
     <div class="vr__stage"><section class="section">
       <div class="truth">
-        <div class="section__head"><h2 class="section__title">Как проходят твои 50&nbsp;минут</h2></div>
-        <p class="truth__lead">Секция выглядит чёрным ящиком, пока не знаешь, что внутри. А внутри — один и тот же маршрут: интервьюер ведёт тебя по нему все 50 минут. Вот он целиком — и то, где на каждом шаге чаще всего ломаются.</p>
-        <ol class="vB">
-        <li class="vB__row">
-          <span class="vB__time">00:00–05:00</span>
-          <span class="vB__body"><b>Уточняет требования</b>Кинулся рисовать, не спросив ни про что</span>
-          <span class="vB__fix">урок 04</span>
-        </li>
-        <li class="vB__row">
-          <span class="vB__time">05:00–15:00</span>
-          <span class="vB__body"><b>Просит посчитать нагрузку</b>Поплыл: сколько это в байтах и запросах</span>
-          <span class="vB__fix">урок 05</span>
-        </li>
-        <li class="vB__row">
-          <span class="vB__time">15:00–25:00</span>
-          <span class="vB__body"><b>Ждёт схему верхнего уровня</b>Нарисовал коробки, не объяснил зачем каждая</span>
-          <span class="vB__fix">урок 03</span>
-        </li>
-        <li class="vB__row">
-          <span class="vB__time">25:00–35:00</span>
-          <span class="vB__body"><b>Копает в хранилище</b>Назвал базу наугад и не смог обосновать</span>
-          <span class="vB__fix">урок 13</span>
-        </li>
-        <li class="vB__row">
-          <span class="vB__time">35:00–50:00</span>
-          <span class="vB__body"><b>Давит на узкие места</b>Копнули в отказ узла — начал плыть</span>
-          <span class="vB__fix">уроки 19–21</span>
-        </li>
-        </ol>
-        <p class="truth__foot">Сисдиз проходят не самые умные, а те, у кого есть понятный алгоритм решения и понимание всей необходимой базы.</p>
+        <div class="section__head"><h2 class="section__title">Секция описана публично&nbsp;— просто её&nbsp;мало кто читал</h2></div>
+        <p class="truth__lead">Яндекс выложил требования к&nbsp;архитектурной секции у&nbsp;себя на&nbsp;сайте. Пять пунктов, и&nbsp;под каждым&nbsp;— место, где чаще всего ломаются, и&nbsp;урок, в&nbsp;котором мы&nbsp;это закрываем.</p>
+        <div class="q2">
+          <figure class="q2__shot">
+            <div class="q2__ph">скрин страницы Яндекса</div>
+            <figcaption>yandex.ru/jobs · «Архитектурная секция»</figcaption>
+          </figure>
+          <ul class="q2__list">
+            <li><b>Спроектировать распределённую систему или её часть, которая будет соответствовать выбранным задачам, нагрузке, доступности и другим требованиям</b><span class="q2__err">Кинулся рисовать, не спросив ни про что</span><span class="q2__fix">уроки 03–04</span></li>
+            <li><b>Оценить производительность системы, а также объём вычислительных ресурсов, необходимый для её штатного функционирования</b><span class="q2__err">Поплыл: сколько это в байтах и запросах</span><span class="q2__fix">урок 05</span></li>
+            <li><b>Показать понимание проблем хранения и обработки данных в распределённых системах, рассказать о достоинствах и недостатках подходов</b><span class="q2__err">Назвал базу наугад и не смог обосновать</span><span class="q2__fix">уроки 13–23</span></li>
+            <li><b>Показать понимание аспектов эксплуатации: балансировки нагрузки, обеспечения отказоустойчивости, требований по доступности</b><span class="q2__err">Копнули в отказ узла — начал плыть</span><span class="q2__fix">уроки 08, 29–32</span></li>
+            <li><b>Продемонстрировать аналитическое и критическое мышление, широкий кругозор, умение корректно формулировать свои мысли</b><span class="q2__err">Звучал как пересказ ютуб-ролика</span><span class="q2__fix">урок 41</span></li>
+          </ul>
+        </div>
       </div></section></div>
   </section>
 
   <section class="vr" id="v3">
-    <div class="vr__head"><h2>Вариант C · карточки</h2></div>
-    <p class="vr__note">Пять карточек вместо строк. Легче на мобиле, каждый шаг читается отдельно, но занимает больше высоты и сильнее дробит внимание.</p>
+    <div class="vr__head"><h2>Вариант 3 · только ошибки и уроки</h2></div>
+    <p class="vr__note">Минимальная версия: колонки со шагами нет, остаётся мост к программе. Не спорит с пятишаговым визуалом, вдвое ниже. Требования упомянуты одной фразой в лиде.</p>
+    <div class="vr__stage"><section class="section">
+      <div class="truth truth--slim">
+        <div class="section__head"><h2 class="section__title">Где на&nbsp;секции ломаются чаще всего</h2></div>
+        <p class="truth__lead">Требования компании пишут почти одинаково: спроектировать систему под заданную нагрузку, оценить ресурсы, обосновать хранилище, ответить за&nbsp;отказы. Ломаются тоже в&nbsp;одних и&nbsp;тех&nbsp;же местах&nbsp;— и&nbsp;под каждое в&nbsp;курсе есть свой урок.</p>
+        <ul class="q3">
+          <li class="q3__row"><span class="q3__err">Кинулся рисовать, не спросив ни про что</span><span class="q3__fix">уроки 03–04</span></li>
+          <li class="q3__row"><span class="q3__err">Поплыл: сколько это в байтах и запросах</span><span class="q3__fix">урок 05</span></li>
+          <li class="q3__row"><span class="q3__err">Назвал базу наугад и не смог обосновать</span><span class="q3__fix">уроки 13–23</span></li>
+          <li class="q3__row"><span class="q3__err">Копнули в отказ узла — начал плыть</span><span class="q3__fix">уроки 08, 29–32</span></li>
+          <li class="q3__row"><span class="q3__err">Звучал как пересказ ютуб-ролика</span><span class="q3__fix">урок 41</span></li>
+        </ul>
+        <p class="q1__src">Требования — со страницы «Как мы нанимаем бэкенд-разработчиков» на сайте Яндекса, раздел «Архитектурная секция». Уроки проставлены по программе курса.</p>
+      </div></section></div>
+  </section>
+
+  <section class="vr" id="v4">
+    <div class="vr__head"><h2>Вариант 4 · Т-Банк: одно предложение, в котором вся секция</h2></div>
+    <p class="vr__note">Ось — одна цитата Т-Банка: четыре глагола, которые и есть план секции. Дальше разбор по частям. Логика: не список требований, а один документ, который читается за десять секунд.</p>
     <div class="vr__stage"><section class="section">
       <div class="truth">
-        <div class="section__head"><h2 class="section__title">Что на&nbsp;самом деле происходит на&nbsp;секции</h2></div>
-        <p class="truth__lead">Секция выглядит чёрным ящиком, пока не знаешь, что внутри. А внутри — один и тот же маршрут: интервьюер ведёт тебя по нему все 50 минут. Вот он целиком — и то, где на каждом шаге чаще всего ломаются.</p>
-        <div class="vC">
-        <div class="vC__card">
-          <span class="vC__n">01</span>
-          <b class="vC__step">Уточняет требования</b>
-          <span class="vC__err">Кинулся рисовать, не спросив ни про что</span>
-          <span class="vC__fix">урок 04</span>
+        <div class="section__head"><h2 class="section__title">Одно предложение, в&nbsp;котором вся секция</h2></div>
+        <blockquote class="q4__quote">Вам будет предложен набор функциональных требований к системе. В течение часа Вам предстоит формализовать задачу, спроектировать API системы, оценить нагрузку и необходимые мощности, спроектировать модели и потоки данных.</blockquote>
+        <p class="q4__from">Т-Банк, описание секции системного дизайна</p>
+        <p class="truth__lead">Четыре глагола&nbsp;— и&nbsp;это весь план секции. Разбираем по&nbsp;частям: где спотыкаются и&nbsp;в&nbsp;каком уроке мы&nbsp;это закрываем.</p>
+        <ul class="q4">
+          <li class="q4__row"><span class="q4__part">формализовать задачу</span><span class="q4__err">Кинулся рисовать, не спросив ни про что</span><span class="q4__fix">урок 04</span></li>
+          <li class="q4__row"><span class="q4__part">спроектировать API системы</span><span class="q4__err">Ручка «как получится», без идемпотентности</span><span class="q4__fix">урок 06</span></li>
+          <li class="q4__row"><span class="q4__part">оценить нагрузку и необходимые мощности</span><span class="q4__err">Поплыл: сколько это в байтах и запросах</span><span class="q4__fix">урок 05</span></li>
+          <li class="q4__row"><span class="q4__part">спроектировать модели и потоки данных</span><span class="q4__err">Назвал базу наугад и не смог обосновать</span><span class="q4__fix">уроки 13, 26–27</span></li>
+        </ul>
+        <p class="q1__src">Дословно из открытого репозитория Tinkoff/career на GitHub, файл «Секция системного дизайна в Тинькофф».</p>
+      </div></section></div>
+  </section>
+
+  <section class="vr" id="v5">
+    <div class="vr__head"><h2>Вариант 5 · два источника рядом</h2></div>
+    <p class="vr__note">Т-Банк и Яндекс в двух колонках: названия разные, список одинаковый. Логика: доказательство через повторяемость — «это не лотерея и не настроение интервьюера». Снимает возражение «а вдруг у нас спросят иначе».</p>
+    <div class="vr__stage"><section class="section">
+      <div class="truth">
+        <div class="section__head"><h2 class="section__title">Секция везде одна и&nbsp;та&nbsp;же</h2></div>
+        <p class="truth__lead">Две компании, которые описали секцию публично. Названия разные, список&nbsp;— один. Значит, готовиться есть к&nbsp;чему: это не&nbsp;лотерея и&nbsp;не&nbsp;настроение интервьюера.</p>
+        <div class="q5">
+          <div class="q5__col"><span class="q5__name">Т-Банк</span><ul>
+            <li>формализовать задачу</li>
+            <li>спроектировать API системы</li>
+            <li>оценить нагрузку и необходимые мощности</li>
+            <li>спроектировать модели и потоки данных</li>
+          </ul></div>
+          <div class="q5__col"><span class="q5__name">Яндекс</span><ul>
+            <li>спроектировать распределённую систему или её часть</li>
+            <li>оценить производительность системы</li>
+            <li>показать понимание проблем хранения и обработки данных в распределённых системах</li>
+            <li>показать понимание аспектов эксплуатации: балансировки нагрузки</li>
+          </ul></div>
         </div>
-        <div class="vC__card">
-          <span class="vC__n">02</span>
-          <b class="vC__step">Просит посчитать нагрузку</b>
-          <span class="vC__err">Поплыл: сколько это в байтах и запросах</span>
-          <span class="vC__fix">урок 05</span>
-        </div>
-        <div class="vC__card">
-          <span class="vC__n">03</span>
-          <b class="vC__step">Ждёт схему верхнего уровня</b>
-          <span class="vC__err">Нарисовал коробки, не объяснил зачем каждая</span>
-          <span class="vC__fix">урок 03</span>
-        </div>
-        <div class="vC__card">
-          <span class="vC__n">04</span>
-          <b class="vC__step">Копает в хранилище</b>
-          <span class="vC__err">Назвал базу наугад и не смог обосновать</span>
-          <span class="vC__fix">урок 13</span>
-        </div>
-        <div class="vC__card">
-          <span class="vC__n">05</span>
-          <b class="vC__step">Давит на узкие места</b>
-          <span class="vC__err">Копнули в отказ узла — начал плыть</span>
-          <span class="vC__fix">уроки 19–21</span>
-        </div>
-        </div>
-        <p class="truth__foot">Сисдиз проходят не самые умные, а те, у кого есть понятный алгоритм решения и понимание всей необходимой базы.</p>
+        <p class="truth__lead">И&nbsp;ломаются на&nbsp;этом списке одинаково&nbsp;— под каждое место в&nbsp;курсе есть свой урок:</p>
+        <ul class="q3">
+          <li class="q3__row"><span class="q3__err">Кинулся рисовать, не спросив ни про что</span><span class="q3__fix">урок 04</span></li>
+          <li class="q3__row"><span class="q3__err">Ручка «как получится», без идемпотентности</span><span class="q3__fix">урок 06</span></li>
+          <li class="q3__row"><span class="q3__err">Поплыл: сколько это в байтах и запросах</span><span class="q3__fix">урок 05</span></li>
+          <li class="q3__row"><span class="q3__err">Назвал базу наугад и не смог обосновать</span><span class="q3__fix">уроки 13, 26–27</span></li>
+        </ul>
+        <p class="q1__src">Дословно из открытого репозитория Tinkoff/career на GitHub, файл «Секция системного дизайна в Тинькофф».</p>
       </div></section></div>
   </section>
 </body>
