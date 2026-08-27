@@ -310,7 +310,8 @@
   .artifacts > .fade-up:nth-child(2) { transition-delay: .07s; }
   .artifacts > .fade-up:nth-child(3) { transition-delay: .14s; }
   .artifacts > .fade-up:nth-child(4) { transition-delay: .21s; }
-  @media (prefers-reduced-motion: reduce) { .fade-up, .fade-up.pre { opacity: 1 !important; transform: none !important; filter: none !important; transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .fade-up, .fade-up.pre { opacity: 1 !important; transform: none !important; filter: none !important; transition: none; }
+    .pl__grid > * { opacity: 1 !important; transform: none !important; transition: none; } }
   @media print { .fade-up, .fade-up.pre { opacity: 1 !important; transform: none !important; filter: none !important; } }
 
   /* ===== BUTTONS ===== */
@@ -1868,13 +1869,17 @@
     border: 1px solid rgba(223,223,65,.28); border-radius: 5px; padding: 4px 8px;
   }
   /* колонки проявляются по очереди — слева направо, как сам разбор */
+  /* класс .visible приходит поверх .pre, а не вместо него — как у .fade-up выше,
+     поэтому показывающее правило тоже пишем через .pre.visible, иначе оно
+     проигрывает по специфичности и колонки остаются невидимыми */
+  .pl__grid > * { transition: opacity .5s var(--ease), transform .5s var(--ease); }
   .anim-ready .pl.pre .pl__grid > * { opacity: 0; transform: translate3d(0,14px,0); }
-  .pl.visible .pl__grid > * { opacity: 1; transform: none; transition: opacity .5s var(--ease), transform .5s var(--ease); }
-  .pl.visible .c1 { transition-delay: .05s; }
-  .pl.visible .c2 { transition-delay: .13s; }
-  .pl.visible .c3 { transition-delay: .21s; }
-  .pl.visible .c4 { transition-delay: .29s; }
-  .pl.visible .c5 { transition-delay: .37s; }
+  .anim-ready .pl.pre.visible .pl__grid > * { opacity: 1; transform: none; }
+  .anim-ready .pl.pre.visible .c1 { transition-delay: .05s; }
+  .anim-ready .pl.pre.visible .c2 { transition-delay: .13s; }
+  .anim-ready .pl.pre.visible .c3 { transition-delay: .21s; }
+  .anim-ready .pl.pre.visible .c4 { transition-delay: .29s; }
+  .anim-ready .pl.pre.visible .c5 { transition-delay: .37s; }
   .pl__src { font-family: var(--mono); font-size: 11px; line-height: 1.6; color: var(--text-faint); margin: 0 0 26px; max-width: 74ch; }
   .pl__bridge {
     font-size: 16.5px; line-height: 1.6; color: var(--text-body); margin: 0;
