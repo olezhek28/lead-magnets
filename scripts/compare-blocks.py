@@ -16,7 +16,7 @@ import sys
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else 'origin/main'
 PAGE = 'system_design/index.html'
-OUT = sys.argv[2] if len(sys.argv) > 2 else 'system_design/compare-blocks.html'
+OUT = sys.argv[2] if len(sys.argv) > 2 else 'docs/preview/compare-blocks.html'
 
 # что показываем: селектор → как подписать
 BLOCKS = [
@@ -200,5 +200,10 @@ SHELL = """<!DOCTYPE html>
 """
 
 out = SHELL % (head_links(now_doc), styles(now_doc), H.escape(BASE), nav, '\n'.join(body))
+
+# Страница лежит в docs/preview, а картинки и видео — в system_design.
+# Тег <base> тут не годится: он уводит и якоря навигации, поэтому просто
+# дописываем путь каждой относительной ссылке на файл.
+out = re.sub(r'(src|srcset|poster)="(?!https?:|/|data:|\.\./)', r'\1="../../system_design/', out)
 io.open(OUT, 'w', encoding='utf-8').write(out)
 print('готово: %s, блоков: %d, размер: %.0f КБ' % (OUT, len(rows), len(out.encode()) / 1024))
