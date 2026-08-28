@@ -1893,6 +1893,32 @@
     for (var name in FEATURES) {
       if (!FEATURES[name]) root.classList.add('f-off-' + name);
     }
+    /* Живая обложка видео. Файл не грузится, пока блок далеко: у видео нет
+       src, только постер, — иначе 167 КБ уходили бы в сеть на первом экране
+       и тянули вниз скорость загрузки. Источник подставляется, когда до
+       блока остаётся экран прокрутки.
+       Тем, кто в системе просил меньше движения, петля не подставляется
+       вовсе: остаётся неподвижный кадр постера. */
+    document.addEventListener('DOMContentLoaded', function () {
+      var v = document.querySelector('video[data-loop-src]');
+      if (!v) return;
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var start = function () {
+        if (v.src) return;
+        v.src = v.getAttribute('data-loop-src');
+        var go = v.play();
+        if (go && go.catch) go.catch(function () {});
+      };
+      if (!('IntersectionObserver' in window)) { start(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          start();
+          io.disconnect();
+        });
+      }, { rootMargin: '100% 0px' });
+      io.observe(v);
+    });
   })();
 </script>
 </head>
@@ -2225,10 +2251,17 @@
              содержимого, поэтому доступное имя задано через aria-label, а у
              картинки alt пустой: иначе скринридер прочитает одно и то же дважды. -->
         <button type="button" class="video v1-video" data-feature="video-sales"
-                data-vmodal-open aria-haspopup="dialog"
+                data-vmodal-open="6092cedd9d8ec261a621b354be79225e?p=nFGjgZV4zFAc3LFJwTR1MA"
+                data-vmodal-title="Почему валят System Design"
+                data-goal="sd_video_open" aria-haspopup="dialog"
                 aria-label="Смотреть видео: почему валятся на System Design, 8 минут">
           <span class="video__thumb">
-            <picture><source srcset="sd-video-poster.webp" type="image/webp"><img class="video__poster" src="sd-video-poster.jpg" alt="" width="1920" height="1080" loading="lazy"></picture>
+            <!-- Живая обложка: короткая петля из самого ролика вместо статичного кадра.
+                 poster держит первый кадр, пока петля не подгрузилась, и остаётся
+                 единственной картинкой, если видео не проиграется. Автозапуск
+                 снимается на prefers-reduced-motion — скрипт в конце файла. -->
+            <video class="video__poster" data-loop-src="sd-cover-loop.mp4" poster="sd-cover-loop-poster.jpg"
+                   width="960" height="540" muted loop playsinline preload="none" aria-hidden="true"></video>
             <span class="video__play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
           </span>
         </button>
@@ -2519,8 +2552,14 @@
               <p>Каждую неделю открывается несколько видеоуроков по&nbsp;теме, плюс живой Q&amp;A, где задаёшь любой вопрос по&nbsp;материалу и&nbsp;собесам. Дедлайнов по&nbsp;неделям нет: не&nbsp;успел на&nbsp;этой, спокойно догоняешь на&nbsp;следующей.</p>
             </div>
             <!-- показ внутрянки живёт здесь, а не отдельным экраном: рядом урок и его конспект.
-                 Открытый урок 7 «Сквозной кейс: запуск Ленты Avito» на RUTUBE: ссылка приватная, токен доступа в параметре p=. -->
-            <a class="demo-card" href="https://rutube.ru/video/private/5bb9940a5d201a6714c166ecee467d4b/?p=ih8Rn83176ATO_FvIEoMGw" target="_blank" rel="noopener" data-feature="demo-lesson">
+                 Открытый урок 7 «Сквозной кейс: запуск Ленты Avito» на RUTUBE: ссылка приватная, токен доступа в параметре p=.
+                 Урок открывается в той же модалке, что и видеопродажник, — человек остаётся
+                 на странице. href оставлен фолбэком: без JS или при открытии в новой вкладке
+                 ссылка ведёт на RUTUBE напрямую, при работающем JS клик перехватывается. -->
+            <a class="demo-card" href="https://rutube.ru/video/private/5bb9940a5d201a6714c166ecee467d4b/?p=ih8Rn83176ATO_FvIEoMGw" target="_blank" rel="noopener" data-feature="demo-lesson"
+               data-vmodal-open="5bb9940a5d201a6714c166ecee467d4b?p=ih8Rn83176ATO_FvIEoMGw"
+               data-vmodal-title="Урок 07. Сквозной кейс: запуск Ленты Avito"
+               data-goal="sd_lesson_open">
               <span class="demo-card__body">
                 <span class="demo-card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
                 <span class="demo-card__txt">
@@ -3878,10 +3917,14 @@
      Под тем же тоглом video-sales, что и кнопка-обложка: пока фича выключена,
      открывать модалку всё равно нечем, но пусть и она уходит из разметки —
      иначе Esc и фокус-ловушка живут ради невидимого блока. -->
-<div class="vmodal" id="video-modal" data-feature="video-sales" hidden>
+<!-- Модалка общая: её открывают и видеопродажник, и карточка открытого урока.
+     Поэтому тогла video-sales на ней больше нет — выключенный продажник
+     не должен уносить с собой урок. Заголовок панели подставляется под
+     тот ролик, который открыли. -->
+<div class="vmodal" id="video-modal" hidden>
   <div class="vmodal__backdrop" data-vmodal-close></div>
   <button type="button" class="vmodal__close" data-vmodal-close aria-label="Закрыть">&#10005;</button>
-  <div class="vmodal__panel" role="dialog" aria-modal="true" aria-label="Видео: почему валят System Design">
+  <div class="vmodal__panel" role="dialog" aria-modal="true" aria-label="Видео">
     <div class="vmodal__frame" id="video-modal-frame"></div>
   </div>
 </div>
@@ -3900,18 +3943,26 @@
   (function () {
     var modal = document.getElementById('video-modal');
     var frameHost = document.getElementById('video-modal-frame');
-    var btn = document.querySelector('[data-vmodal-open]');
-    if (!modal || !frameHost || !btn) return;
+    var openers = document.querySelectorAll('[data-vmodal-open]');
+    if (!modal || !frameHost || !openers.length) return;
 
     var closeBtn = modal.querySelector('.vmodal__close');
+    var panel = modal.querySelector('.vmodal__panel');
+    // кнопка, с которой пришли: на неё возвращаем фокус при закрытии
+    var opener = null;
 
     // Ролик приватный: без токена доступа в параметре p= фрейм отдаёт
     // «видео не найдено». Токен всё равно светится в исходнике страницы —
     // это ссылка «по секрету», а не защита, для лендинга-продажника норм.
     // autoStart=true просит плеер стартовать сам, без второго клика внутри
     // модалки.
-    var EMBED = 'https://rutube.ru/play/embed/6092cedd9d8ec261a621b354be79225e/' +
-                '?p=nFGjgZV4zFAc3LFJwTR1MA&autoStart=true';
+    // Каждая кнопка несёт свой ролик в data-vmodal-open: там id и токен
+    // в виде «<id>?p=<токен>». Собираем из этого адрес встраиваемого плеера.
+    function embedUrl(id) {
+      var parts = id.split('?');
+      return 'https://rutube.ru/play/embed/' + parts[0] + '/?' +
+             (parts[1] ? parts[1] + '&' : '') + 'autoStart=true';
+    }
     var frame = null;
 
     // ===== Автозапуск СО ЗВУКОМ =====
@@ -4002,21 +4053,26 @@
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
 
-    function open() {
+    function open(el) {
+      opener = el;
+      var id = el.getAttribute('data-vmodal-open');
+      var title = el.getAttribute('data-vmodal-title') || 'Видео';
       if (!frameHost.firstChild) {
         frame = document.createElement('iframe');
-        frame.src = EMBED;
-        frame.title = 'Почему валят System Design — видео';
+        frame.src = embedUrl(id);
+        frame.title = title;
         frame.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
         frame.setAttribute('allowfullscreen', '');
         frameHost.appendChild(frame);
         startSound();
       }
+      if (panel) panel.setAttribute('aria-label', title);
       modal.hidden = false;
       document.body.classList.add('gc-lock');
       backgroundInert(true);
       if (closeBtn) closeBtn.focus();
-      if (window.trackGoal) window.trackGoal('sd_video_open', 'mech');
+      var goal = el.getAttribute('data-goal');
+      if (goal && window.trackGoal) window.trackGoal(goal, 'vmodal');
     }
 
     function close() {
@@ -4030,10 +4086,18 @@
       stopSound();
       frameHost.textContent = '';
       frame = null;
-      btn.focus();
+      if (opener) opener.focus();
     }
 
-    btn.addEventListener('click', open);
+    Array.prototype.forEach.call(openers, function (el) {
+      el.addEventListener('click', function (e) {
+        // у карточки урока это ссылка на RUTUBE: перехватываем обычный клик,
+        // но не мешаем открыть в новой вкладке средней кнопкой или с Cmd
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+        e.preventDefault();
+        open(el);
+      });
+    });
     modal.querySelectorAll('[data-vmodal-close]').forEach(function (el) {
       el.addEventListener('click', close);
     });
