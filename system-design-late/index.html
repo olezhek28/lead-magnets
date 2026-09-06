@@ -6,40 +6,56 @@
 <!-- Cookie-баннер + Яндекс.Метрика (счётчик 96022201, общий для guide.olezhek28.courses) -->
 <script src="/consent.js" defer></script>
 
-<!-- РЕЖИМ СТРАНИЦЫ: ПРЕДЗАПИСЬ на поток весна-лето 2027.
-     Поток 7 сентября 2026 набран и стартовал, продажи на этой странице закрыты.
-     Кто пришёл по старой ссылке на этой неделе и всё-таки хочет купить идущий
-     поток, уходит на приватную копию /system-design-late/ — там продажи открыты.
+<!-- ПРИВАТНАЯ КОПИЯ /system_design/ С ОТКРЫТЫМИ ПРОДАЖАМИ.
+     Снимок основного лендинга на 7 сентября 2026, день старта потока. На самом
+     /system_design/ продажи с этого дня закрыты, там идёт предзапись на поток
+     весна-лето 2027. Эта копия продаёт тот же, уже стартовавший поток тем, кто
+     пришёл по личной ссылке на этой неделе и хочет догнать первую неделю.
+     Ссылку рассылаем в личку, публично её нигде нет.
 
-     Маршрут переключается двумя строками в FEATURES ниже: 'pay-cta' (кнопки
-     оплаты) и 'preorder-cta' (анкета предзаписи). Разметка обоих режимов лежит
-     в файле одновременно, удалять ничего не надо. Когда откроются продажи
-     потока 2027, тогл меняется обратно.
+     Страница закрыта от индексации (noindex + yandex none), её нет ни в
+     sitemap.xml, ни в каталоге на главной, ни в llms.txt / llms-full.txt.
+     В robots.txt путь намеренно НЕ добавлен: Disallow в публичном файле сам
+     по себе выдаёт существование страницы.
 
-     Тексты режима тоглом не переключаются: они разные для предзаписи и для
-     продажи. Что править руками при смене режима:
-       этот файл — description; JSON-LD (availability, startDate,
-         priceValidUntil); бейдж в герое; значение в CTA-капсуле; текст пяти
-         якорных кнопок ("Записаться на поток" / "Залететь на курс"); плашка
-         над тарифами; карточка "Старт потока" в полосе фактов; зачёркнутая
-         цена в обоих тарифах (висит на тогле pay-cta); бейдж и заголовок
-         финального блока
+     Формы оплаты те же, что были на основном лендинге (1639196 и 1639245), и
+     цены те же: это тот же товар по той же оферте /system_design_oferta/.
+     Следствие: в GetCourse заявки отсюда лежат вместе со старыми заявками
+     с основной страницы, развести их можно по utm или по дате.
+
+     Расхождения с оригиналом:
+       - noindex/nofollow, canonical и og:url на себя, все ссылки в JSON-LD
+         переписаны на этот путь, чтобы копия не подменяла собой основную
+         страницу в поиске и в разметке
+       - тексты про старт: поток уже идёт, а не «стартуем»
+       - убран блок «Другие материалы» в подвале: единственный выход со
+         страницы вёл в каталог, где тот же курс стоит с закрытыми продажами
+       - тоглов предзаписи здесь нет вовсе: копия существует ради оплаты
+
+     КОГДА ЗАКРЫВАТЬ. Копия живёт неделю. Дальше — тем же способом, что
+     закрывали /system_design_booking/ и /system_design_microservices/:
+     положить поверх index.html шаблон docs/redirect-sd-copy.html, медиафайлы
+     рядом не трогать. Старая ссылка из переписки не должна показывать условия,
+     которых уже нет.
+
+     ДАТА СТАРТА ПОТОКА (7 сентября 2026) зашита в 8 местах. При смене потока
+     обновить ВСЕ, иначе разметка и llms-файлы будут противоречить тому, что
+     написано на странице:
+       этот файл — description; JSON-LD startDate; бейдж в герое; капсула
+         "Старт потока"; плашка над тарифами; карточка "Старт потока" в полосе
+         фактов
        /llms.txt — вводный абзац и строка "Длительность"
        /llms-full.txt — "Статус" и "Старт потока"
-       /index.html — бейдж и описание карточки курса в каталоге
+       /index.html — описание карточки курса в каталоге
      Видимые на странице заметны сразу, а llms-файлы и каталог глазами не
      видны — про них и забывают.
-
-     ДАТА СТАРТА потока 2027 нарочно расплывчатая ("весна-лето 2027"): точного
-     дня ещё нет. Поэтому в JSON-LD startDate нет вовсе — придумывать дату
-     разметке нельзя, а расплывчатую строку она не принимает.
 
      ЦЕНЫ (59 990 и 91 990) зашиты в 5 местах: два Offer в JSON-LD (price и
      description), два тарифа и блок "Как можно оплатить" внизу. Рассрочка
      4 999 и 7 666 ₽/мес должна совпадать в тарифе и в "Как можно оплатить". -->
 
 <title>System Design: курс подготовки к секции на собеседовании</title>
-<meta name="description" content="Курс для backend-мидлов, которые упираются в секцию System Design на собеседовании в бигтех. 5 недель, живые разборы, практика под давлением. Идёт предзапись на поток весна-лето 2027.">
+<meta name="description" content="Курс для backend-мидлов, которые упираются в секцию System Design на собеседовании в бигтех. 5 недель, живые разборы, практика под давлением. Поток стартовал 7 сентября 2026, места ещё есть.">
 <meta name="author" content="Олег Козырев">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="System Design: от паники к алгоритму">
@@ -47,7 +63,7 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="Олег Козырев · Курсы">
-<meta property="og:image" content="https://guide.olezhek28.courses/system_design/og-image.png">
+<meta property="og:image" content="https://guide.olezhek28.courses/system-design-late/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
@@ -55,13 +71,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="System Design: от паники к алгоритму">
 <meta name="twitter:description" content="Научись уверенно проходить секцию System Design и повысь свои шансы на трудоустройство в бигтех или повышение грейда до сеньора.">
-<meta name="twitter:image" content="https://guide.olezhek28.courses/system_design/og-image.png">
+<meta name="twitter:image" content="https://guide.olezhek28.courses/system-design-late/og-image.png">
 <meta name="theme-color" content="#10171A">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="yandex" content="all">
+<meta name="robots" content="noindex, nofollow">
+<meta name="yandex" content="none">
 <meta name="format-detection" content="telephone=no">
-<link rel="canonical" href="https://guide.olezhek28.courses/system_design/">
-<meta property="og:url" content="https://guide.olezhek28.courses/system_design/">
+<!-- canonical ведёт на саму страницу, а не на /system_design/: указатель на
+     чужой адрес — это заявка на склейку, а копия должна остаться в стороне -->
+<link rel="canonical" href="https://guide.olezhek28.courses/system-design-late/">
+<meta property="og:url" content="https://guide.olezhek28.courses/system-design-late/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- прогреваем соединение под формы оплаты GetCourse: DNS+TCP+TLS делаются
@@ -76,14 +94,14 @@
   "@graph": [
     {
       "@type": "Course",
-      "@id": "https://guide.olezhek28.courses/system_design/#course",
+      "@id": "https://guide.olezhek28.courses/system-design-late/#course",
       "name": "System Design: от паники к алгоритму",
       "alternateName": ["Курс System Design", "Подготовка к секции System Design на собеседовании"],
       "description": "Курс подготовки к секции System Design на техническом собеседовании для backend-разработчиков уровня middle. За 5 недель: алгоритм разбора задачи на интервью и 5-шаговый фреймворк, capacity planning, ядро баз данных (индексы, транзакции, репликация, шардирование, Raft, CAP и PACELC), кэш и очереди, идемпотентность и saga, отказоустойчивость, боевые кейсы (мессенджер, лента, видеоплатформа, билеты, поиск, ride-sharing) и поведение на собесе.",
-      "url": "https://guide.olezhek28.courses/system_design/",
-      "image": "https://guide.olezhek28.courses/system_design/og-image.png",
+      "url": "https://guide.olezhek28.courses/system-design-late/",
+      "image": "https://guide.olezhek28.courses/system-design-late/og-image.png",
       "inLanguage": "ru",
-      "provider": {"@id": "https://guide.olezhek28.courses/system_design/#oleg"},
+      "provider": {"@id": "https://guide.olezhek28.courses/system-design-late/#oleg"},
       "audience": {
         "@type": "EducationalAudience",
         "audienceType": "Backend-разработчики, готовящиеся к секции System Design на собеседовании в бигтех",
@@ -106,33 +124,36 @@
           "@type": "CourseInstance",
           "courseMode": "online",
           "courseWorkload": "P5W",
+          "startDate": "2026-09-07",
           "inLanguage": "ru",
-          "instructor": {"@id": "https://guide.olezhek28.courses/system_design/#oleg"},
+          "instructor": {"@id": "https://guide.olezhek28.courses/system-design-late/#oleg"},
           "offers": {
             "@type": "AggregateOffer",
             "priceCurrency": "RUB",
             "lowPrice": "59990",
             "highPrice": "91990",
             "offerCount": "2",
-            "availability": "https://schema.org/PreOrder",
+            "availability": "https://schema.org/InStock",
             "offers": [
               {
                 "@type": "Offer",
                 "name": "Стандарт",
                 "price": "59990",
                 "priceCurrency": "RUB",
-                "availability": "https://schema.org/PreOrder",
-                "description": "Идёт предзапись на поток весна-лето 2027, цена текущего потока. В рассрочку 4 999 ₽/мес на 12 месяцев. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
-                "url": "https://guide.olezhek28.courses/system_design/#tarify"
+                "priceValidUntil": "2026-09-07",
+                "availability": "https://schema.org/InStock",
+                "description": "В рассрочку 4 999 ₽/мес на 12 месяцев. 41 урок в восьми модулях, каждый урок это видео плюс подробный текстовый конспект (алгоритм интервью, сеть и доставка, хранение данных, кэш и очереди, устойчивость под нагрузкой, поведение на секции), 8 систем разобраны целиком (Telegram, лента Avito, фото-соцсеть со Stories, YouTube, Яндекс.Музыка, билеты Яндекс Афиши, поиск с автодополнением, Яндекс Такси), домашка каждую неделю, живой еженедельный Q&A с автором, доступ к чату потока.",
+                "url": "https://guide.olezhek28.courses/system-design-late/#tarify"
               },
               {
                 "@type": "Offer",
                 "name": "С проверкой и практикой",
                 "price": "91990",
                 "priceCurrency": "RUB",
-                "availability": "https://schema.org/PreOrder",
-                "description": "Идёт предзапись на поток весна-лето 2027, цена текущего потока. В рассрочку 7 666 ₽/мес на 12 месяцев. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
-                "url": "https://guide.olezhek28.courses/system_design/#tarify"
+                "priceValidUntil": "2026-09-07",
+                "availability": "https://schema.org/InStock",
+                "description": "В рассрочку 7 666 ₽/мес на 12 месяцев. Всё из тарифа \"Стандарт\", плюс подробный письменный разбор каждой домашки живым ментором (разбор идёт 8 недель, на три недели дольше курса) и еженедельная групповая практика с защитой решения вслух под вопросами.",
+                "url": "https://guide.olezhek28.courses/system-design-late/#tarify"
               }
             ]
           }
@@ -141,12 +162,12 @@
     },
     {
       "@type": "Person",
-      "@id": "https://guide.olezhek28.courses/system_design/#oleg",
+      "@id": "https://guide.olezhek28.courses/system-design-late/#oleg",
       "name": "Олег Козырев",
       "alternateName": "olezhek28",
       "jobTitle": "Staff Engineer, Go",
       "description": "Staff-инженер с 8+ годами коммерческого опыта на Go, ментор и автор образовательных курсов. Работал в Т-Банке, Авито и Ozon Tech, преподавал в школе Route 256.",
-      "image": "https://guide.olezhek28.courses/system_design/oleg-round.png",
+      "image": "https://guide.olezhek28.courses/system-design-late/oleg-round.png",
       "url": "https://guide.olezhek28.courses/",
       "knowsAbout": ["Go", "System Design", "Распределённые системы", "Микросервисы", "PostgreSQL", "Kafka", "gRPC"],
       "sameAs": [
@@ -157,10 +178,10 @@
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://guide.olezhek28.courses/system_design/#breadcrumbs",
+      "@id": "https://guide.olezhek28.courses/system-design-late/#breadcrumbs",
       "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Гайды и курсы", "item": "https://guide.olezhek28.courses/"},
-        {"@type": "ListItem", "position": 2, "name": "System Design: от паники к алгоритму", "item": "https://guide.olezhek28.courses/system_design/"}
+        {"@type": "ListItem", "position": 2, "name": "System Design: от паники к алгоритму", "item": "https://guide.olezhek28.courses/system-design-late/"}
       ]
     }
   ]
@@ -178,13 +199,10 @@
   .f-off-video-sales  [data-feature="video-sales"],
   .f-off-chat-screens [data-feature="chat-screens"],
   .f-off-pay-cta      [data-feature="pay-cta"],
-  .f-off-preorder-cta [data-feature="preorder-cta"],
   .f-off-demo-lesson  [data-feature="demo-lesson"] { display: none !important; }
   /* .final__title держит 40px снизу под кнопку. Кнопки нет — отступ
-     превращается в дыру в нижней половине жёлтой карточки. Кнопок в финальном
-     блоке две, по одной на режим, поэтому отступ снимается только когда
-     выключены обе. */
-  .f-off-pay-cta.f-off-preorder-cta .final__title { margin-bottom: 0; }
+     превращается в дыру в нижней половине жёлтой карточки. */
+  .f-off-pay-cta .final__title { margin-bottom: 0; }
 
   :root {
     --bg-primary:   #10171A;
@@ -1879,15 +1897,8 @@
                             24.08.2026: лагал и не проигрывался у части людей);
                          2) обложка sd-video-poster.jpg положена и совпадает
                             с превью ролика на RUTUBE.
-       pay-cta       — кнопки оплаты в тарифах и кнопка в финальном блоке,
-                       плюс зачёркнутая цена без скидки в обеих карточках.
+       pay-cta       — кнопки оплаты в тарифах и кнопка в финальном блоке.
                        Выключить, когда продажи закрыты.
-       preorder-cta  — кнопки анкеты предзаписи в тарифах и кнопка с хинтом
-                       в финальном блоке. Ровно те же места, что у pay-cta,
-                       только маршрут другой: не оплата, а анкета.
-                       ВКЛЮЧЁН ВМЕСТО pay-cta, а не вместе с ним: одновременно
-                       два маршрута к одному тарифу — это выбор без разницы,
-                       человек жмёт наугад. Ровно один из двух тоглов true.
        chat-screens  — блок «А ещё у нас полный комфортик в чатике».
                        Включить, когда в макет телефона добавлены реальные скриншоты
                        чата (сейчас внутри плашка «СКРИНЫ ЧАТА · добавим позже»).
@@ -1905,12 +1916,7 @@
        без кнопок оплаты вела бы в пустой блок — гасим её вместе с ними.
        Выключаем, когда продажи закрыты: страница остаётся живой и
        читаемой, просто без маршрута к оплате. */
-    'pay-cta':      false,
-
-    /* preorder-cta — маршрут предзаписи: те же места, что у pay-cta, но
-       кнопка открывает анкету GetCourse (форма preorder ниже), а не оплату.
-       Включён, пока поток 2027 не поставили в продажу. */
-    'preorder-cta': true,
+    'pay-cta':      true,
 
     /* demo-lesson — карточка «Посмотреть один урок целиком» в шаге 01.
        Включить, когда выбран открытый урок и вставлена ссылка. */
@@ -1995,7 +2001,7 @@
       <a class="header__nav-link" href="#tarify">Тарифы</a>
       <a class="header__nav-link" href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn--primary header__cta" href="#tarify" data-goal="header">Записаться на&nbsp;поток</a>
+    <a class="btn btn--primary header__cta" href="#tarify" data-goal="header">Залететь на&nbsp;курс</a>
     <button class="menu-toggle" id="menu-toggle" aria-label="Меню" aria-expanded="false" aria-controls="nav-mobile">
       <span></span><span></span><span></span>
     </button>
@@ -2006,7 +2012,7 @@
       <a class="header__nav-link" href="#avtor">Об авторе</a>
       <a class="header__nav-link" href="#tarify">Тарифы</a>
       <a class="header__nav-link" href="#faq">FAQ</a>
-      <a class="btn btn--primary" href="#tarify" data-goal="nav_mobile">Записаться на&nbsp;поток</a>
+      <a class="btn btn--primary" href="#tarify" data-goal="nav_mobile">Залететь на&nbsp;курс</a>
     </div>
   </div>
 </header>
@@ -2017,7 +2023,7 @@
   <section class="hero">
     <div class="container">
       <div class="hero__inner">
-        <div class="hero__eyebrow fade-up"><span class="hero__eyebrow-dot" aria-hidden="true"></span>Идёт предзапись&nbsp;· старт весна-лето 2027</div>
+        <div class="hero__eyebrow fade-up"><span class="hero__eyebrow-dot" aria-hidden="true"></span>Поток стартовал 7&nbsp;сентября&nbsp;· зайти ещё можно</div>
         <!-- Плашка автора стоит внутри h1: визуально она встроена в строку заголовка,
              и вынести её наружу без переверстки героя нельзя. Чтобы она не попадала
              в доступное имя заголовка ("System Design: Олег Козырев автор курса Staff
@@ -2040,10 +2046,10 @@
           <div class="cta-capsule">
             <div class="cta-capsule__meta">
               <span class="cta-capsule__label">Старт потока</span>
-              <span class="cta-capsule__value cta-capsule__value--accent">весна-лето 2027</span>
+              <span class="cta-capsule__value cta-capsule__value--accent">7 сентября</span>
             </div>
             <a class="btn btn--primary" href="#tarify" data-goal="hero">
-              Записаться на&nbsp;поток
+              Залететь на&nbsp;курс
               <svg class="btn__arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10"></path><path d="M8 3l4 4-4 4"></path></svg>
             </a>
             <div class="cta-capsule__meta">
@@ -2544,7 +2550,7 @@
       </div>
 
       <div class="section__cta fade-up">
-        <a class="btn btn--primary btn--lg" href="#tarify" data-goal="programma">Записаться на&nbsp;поток</a>
+        <a class="btn btn--primary btn--lg" href="#tarify" data-goal="programma">Залететь на&nbsp;курс</a>
       </div>
     </div>
   </section>
@@ -2973,14 +2979,14 @@
       <div class="pricing__scarcity fade-up">
         <span class="scarcity">
           <span class="scarcity__dot" aria-hidden="true"></span>
-          <span><b>Идёт предзапись на&nbsp;поток весна-лето 2027.</b> Оставь контакты&nbsp;— позовём первыми, когда откроем продажу. На&nbsp;поток 60&nbsp;мест</span>
+          <span><b>Поток стартовал 7&nbsp;сентября.</b> Записи и&nbsp;материалы на&nbsp;месте, следующий поток только через полгода</span>
         </span>
       </div>
 
       <div class="pricing__facts fade-up">
         <div class="fact">
           <span class="fact__label">Старт потока</span>
-          <span class="fact__value fact__value--accent">весна-лето 2027</span>
+          <span class="fact__value fact__value--accent">7&nbsp;сентября 2026</span>
         </div>
         <div class="fact">
           <span class="fact__label">Длительность</span>
@@ -3000,7 +3006,7 @@
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
           <div class="tier__tagline">Весь материал и&nbsp;алгоритм. Готовишься сам, вопросы задаёшь на&nbsp;живых Q&amp;A</div>
-          <div class="tier__price"><b>59 990 ₽</b><span class="tier__price-old" data-feature="pay-cta"><span class="vh">цена без скидки </span><s>69 990&nbsp;₽</s></span></div>
+          <div class="tier__price"><b>59 990 ₽</b><span class="tier__price-old"><span class="vh">цена без скидки </span><s>69 990&nbsp;₽</s></span></div>
           <div class="tier__pay">в&nbsp;рассрочку: 4&nbsp;999&nbsp;₽/мес на&nbsp;12&nbsp;месяцев</div>
           <ul class="tier__list">
             <li><span class="tier__check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.2L4 7.2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>41 урок: видео плюс подробный текстовый конспект.</b> Алгоритм интервью, сеть и&nbsp;доставка, хранение данных, кэш и&nbsp;очереди, устойчивость под нагрузкой, поведение на&nbsp;секции</li>
@@ -3019,18 +3025,12 @@
             <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1639196" data-gc-open="standart" data-goal="tarif_standart">Оплатить</a>
             <p class="tier__hint">Картой или в&nbsp;рассрочку до&nbsp;12 месяцев</p>
           </div>
-          <!-- тогл висит на обёртке, а не на самой кнопке: иначе подпись
-               «Это анкета, а не оплата» осталась бы висеть под пустым местом -->
-          <div class="tier__cta" data-feature="preorder-cta">
-            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open="preorder" data-goal="tarif_standart">Записаться в&nbsp;предзапись</a>
-            <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
-          </div>
         </div>
 
         <div class="tier tier--light fade-up">
           <div class="tier__label">С&nbsp;проверкой и&nbsp;практикой</div>
           <div class="tier__tagline">Всё то&nbsp;же самое, плюс обратная связь по&nbsp;твоим решениям и&nbsp;репетиция собеса</div>
-          <div class="tier__price"><b>91 990 ₽</b><span class="tier__price-old" data-feature="pay-cta"><span class="vh">цена без скидки </span><s>101 990&nbsp;₽</s></span></div>
+          <div class="tier__price"><b>91 990 ₽</b><span class="tier__price-old"><span class="vh">цена без скидки </span><s>101 990&nbsp;₽</s></span></div>
           <div class="tier__pay">в&nbsp;рассрочку: 7&nbsp;666&nbsp;₽/мес на&nbsp;12&nbsp;месяцев</div>
           <div class="tier__badge">
             <span class="tier__badge-title">Лучший выбор</span>
@@ -3055,10 +3055,6 @@
           <div class="tier__cta" data-feature="pay-cta">
             <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1639245" data-gc-open="mentor" data-goal="tarif_mentor">Оплатить</a>
             <p class="tier__hint">Картой или в&nbsp;рассрочку до&nbsp;12 месяцев</p>
-          </div>
-          <div class="tier__cta" data-feature="preorder-cta">
-            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open="preorder" data-goal="tarif_mentor">Записаться в&nbsp;предзапись</a>
-            <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
           </div>
         </div>
       </div>
@@ -3195,14 +3191,12 @@
       <div class="final__card fade-up">
         <div class="final__badges">
           <span class="final__badge">5 недель</span>
-          <span class="final__badge">Старт весна-лето 2027</span>
+          <span class="final__badge">Старт 7 сентября 2026</span>
           <span class="final__badge">60 мест</span>
         </div>
-        <h2 class="final__title">Займи место в&nbsp;очереди на&nbsp;поток</h2>
+        <h2 class="final__title">Забирай оставшееся место на&nbsp;потоке</h2>
         <a class="final__btn" href="#tarify" data-goal="final" data-feature="pay-cta">Залететь на&nbsp;курс</a>
         <p class="final__hint" data-feature="pay-cta">* Выбираешь тариф&nbsp;— и&nbsp;сразу к&nbsp;оплате</p>
-        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open="preorder" data-goal="final" data-feature="preorder-cta">Записаться на&nbsp;поток</a>
-        <p class="final__hint" data-feature="preorder-cta">* После нажатия откроется анкета предзаписи</p>
       </div>
     </div>
   </section>
@@ -3210,7 +3204,7 @@
 </main>
 
 <div class="sticky-cta" id="sticky-cta">
-  <a class="btn btn--primary btn--block" href="#tarify" data-goal="sticky">Записаться на&nbsp;поток</a>
+  <a class="btn btn--primary btn--block" href="#tarify" data-goal="sticky">Залететь на&nbsp;курс</a>
 </div>
 
 <button class="back-to-top" id="back-to-top" aria-label="Наверх">
@@ -3232,17 +3226,11 @@
       </a>
     </div>
 
-    <!-- ссылки на соседние лендинги: единственный выход со страницы для того,
-         кому курс не подошёл, и единственный путь вглубь сайта для краулера -->
-    <nav class="footer__more" aria-label="Другие материалы">
-      <div class="footer__more-label">Другие материалы</div>
-      <div class="footer__more-row">
-        <a href="/roadmap-2026/">Roadmap Go-разработчика 2026</a>
-        <a href="/architecture/">Архитектура Go-проекта</a>
-        <a href="/mentorstvo/">Менторство по&nbsp;Go до&nbsp;оффера</a>
-        <a href="/">Все гайды и&nbsp;курсы</a>
-      </div>
-    </nav>
+    <!-- Блок «Другие материалы» с основного лендинга здесь снят. На нём он
+         работает выходом для того, кому курс не подошёл, и путём вглубь сайта
+         для краулера. Здесь краулера нет вовсе (noindex), а выход вёл в каталог,
+         где тот же курс стоит с закрытыми продажами и предзаписью на 2027 —
+         человек с личной ссылкой попадал бы ровно туда, откуда его увели. -->
 
     <!-- нижний ряд: реквизиты + ряд юр-ссылок -->
     <div class="footer__bottom">
@@ -3616,13 +3604,10 @@
   });
 </script>
 
-<!-- ===== Модалка GetCourse: по кнопкам тарифов открывается оплата или анкета
-     предзаписи, смотря какой режим страницы включён тоглами ===== -->
+<!-- ===== Модалка оплаты: форма GetCourse открывается по кнопкам тарифов ===== -->
 <div class="gc-modal" id="gc-modal" hidden>
   <div class="gc-modal__backdrop" data-gc-close></div>
-  <!-- aria-label подставляется под открытую форму в showForm(), здесь
-         значение на случай, если JS не доехал -->
-    <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Форма участия">
+  <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Оплата участия">
     <button type="button" class="gc-modal__close" data-gc-close aria-label="Закрыть">&#10005;</button>
     <!-- Форма GetCourse СПЕЦИАЛЬНО не стоит здесь в разметке: её iframe
          (school.olezhek28.courses) отправляет собственный хит в тот же счётчик
@@ -3635,7 +3620,7 @@
          та же поломка аналитики. -->
     <div class="gc-modal__body is-loading" id="gc-modal-body">
       <div class="gc-modal__loading" id="gc-loading" role="status">
-        <span class="gc-spinner" aria-hidden="true"></span>Загружаю форму…
+        <span class="gc-spinner" aria-hidden="true"></span>Загружаю оплату…
       </div>
     </div>
   </div>
@@ -3689,22 +3674,8 @@
         id: '1639245',
         uniq: '647b02a9302c5c8cc450b899d13d78f9f95fb851',
         title: 'Оплата курса, тариф «С проверкой и практикой»'
-      },
-      // Анкета предзаписи на поток весна-лето 2027, в GetCourse это форма
-      // «Предзапись SysDes». Одна на оба тарифа: тариф на предзаписи ещё не
-      // выбирают, человек оставляет контакты. Открывается кнопками под тоглом
-      // preorder-cta, то есть только пока продажи закрыты.
-      preorder: {
-        id: '1633267',
-        uniq: '899a0f68032eb1a5b3f89a1a2ce8291d864ab292',
-        title: 'Анкета предзаписи на курс',
-        // подставляется в заглушку загрузки и в текст ошибки: «Загружаю
-        // анкету…» вместо «Загружаю оплату…»
-        what: 'анкету'
       }
     };
-    // что грузим, если у формы не задано своё: все остальные формы — оплата
-    var DEFAULT_WHAT = 'оплату';
     var DEFAULT_KEY = 'standart';
     var panel = modal.querySelector('.gc-modal__panel');
     var body = document.getElementById('gc-modal-body');
@@ -3738,11 +3709,8 @@
         ph.setAttribute('role', 'status');
         body.appendChild(ph);
       }
-      ph.innerHTML = html || '<span class="gc-spinner" aria-hidden="true"></span>Загружаю ' + what(activeKey) + '…';
+      ph.innerHTML = html || '<span class="gc-spinner" aria-hidden="true"></span>Загружаю оплату…';
       body.classList.add('is-loading');
-    }
-    function what(key) {
-      return (FORMS[key] && FORMS[key].what) || DEFAULT_WHAT;
     }
     function widgetReady(key) {
       st(key).loaded = true;
@@ -3750,7 +3718,7 @@
     }
     function widgetFailed(key) {
       if (key !== activeKey) return;
-      showLoading(true, 'Не удалось загрузить ' + what(key) + '. <a href="' + formUrl(key) +
+      showLoading(true, 'Не удалось загрузить оплату. <a href="' + formUrl(key) +
         '">Открыть её отдельной страницей</a>');
     }
     // те же параметры, что подставляет штатный скрипт: search нужен, чтобы
@@ -3780,11 +3748,7 @@
       if (d.iframeName && d.iframeName.split('&')[0] !== frameName(key)) return;
       st(key).gotHeight = true; // единственное надёжное доказательство, что внутри наша форма
       var f = document.getElementById(frameId(key));
-      // min-height в CSS держит фрейм до прихода высоты, чтобы форма не
-      // прыгала. Дальше он мешает: анкета предзаписи короче этой заглушки, и
-      // под ней осталась бы пустая полоса на пол-экрана. Пришла настоящая
-      // высота — снимаем нижнюю границу вместе с установкой высоты.
-      if (f) { f.style.height = d.height + 'px'; f.style.minHeight = d.height + 'px'; }
+      if (f) f.style.height = d.height + 'px';
     });
 
     // запасной путь: штатный скрипт GetCourse, если прямой iframe не поднялся
