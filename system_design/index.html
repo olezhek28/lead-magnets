@@ -3022,7 +3022,7 @@
           <!-- тогл висит на обёртке, а не на самой кнопке: иначе подпись
                «Это анкета, а не оплата» осталась бы висеть под пустым местом -->
           <div class="tier__cta" data-feature="preorder-cta">
-            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open="preorder" data-goal="tarif_standart">Записаться в&nbsp;предзапись</a>
+            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1652925" data-gc-open="preorder" data-goal="tarif_standart">Записаться в&nbsp;предзапись</a>
             <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
           </div>
         </div>
@@ -3057,7 +3057,7 @@
             <p class="tier__hint">Картой или в&nbsp;рассрочку до&nbsp;12 месяцев</p>
           </div>
           <div class="tier__cta" data-feature="preorder-cta">
-            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open="preorder" data-goal="tarif_mentor">Записаться в&nbsp;предзапись</a>
+            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1652925" data-gc-open="preorder" data-goal="tarif_mentor">Записаться в&nbsp;предзапись</a>
             <p class="tier__hint">Это анкета, а&nbsp;не&nbsp;оплата</p>
           </div>
         </div>
@@ -3201,7 +3201,7 @@
         <h2 class="final__title">Займи место в&nbsp;очереди на&nbsp;поток</h2>
         <a class="final__btn" href="#tarify" data-goal="final" data-feature="pay-cta">Залететь на&nbsp;курс</a>
         <p class="final__hint" data-feature="pay-cta">* Выбираешь тариф&nbsp;— и&nbsp;сразу к&nbsp;оплате</p>
-        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1633267" data-gc-open="preorder" data-goal="final" data-feature="preorder-cta">Записаться на&nbsp;поток</a>
+        <a class="final__btn" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1652925" data-gc-open="preorder" data-goal="final" data-feature="preorder-cta">Записаться на&nbsp;поток</a>
         <p class="final__hint" data-feature="preorder-cta">* После нажатия откроется анкета предзаписи</p>
       </div>
     </div>
@@ -3691,12 +3691,18 @@
         title: 'Оплата курса, тариф «С проверкой и практикой»'
       },
       // Анкета предзаписи на поток весна-лето 2027, в GetCourse это форма
-      // «Предзапись SysDes». Одна на оба тарифа: тариф на предзаписи ещё не
-      // выбирают, человек оставляет контакты. Открывается кнопками под тоглом
-      // preorder-cta, то есть только пока продажи закрыты.
+      // «System Design | 2 поток | Предзапись». Одна на оба тарифа: тариф на
+      // предзаписи ещё не выбирают, человек оставляет контакты. Открывается
+      // кнопками под тоглом preorder-cta, то есть только пока продажи закрыты.
+      //
+      // Форма второго потока заведена отдельно от формы первого (1633267),
+      // чтобы заявки не легли в одну кучу: она создаёт заказ по своему офферу
+      // «System Design | 2 поток | Предзапись» (0 руб.) и кладёт его в свою
+      // колонку «SD | 2 поток | Предзапись» на доске продаж. В колонке первого
+      // потока так и остаются 49 заявок, собранных до 7 сентября 2026.
       preorder: {
-        id: '1633267',
-        uniq: '899a0f68032eb1a5b3f89a1a2ce8291d864ab292',
+        id: '1652925',
+        uniq: 'fc3b22b6c1f74d82e9b5cc46f527da67bab7d253',
         title: 'Анкета предзаписи на курс',
         // подставляется в заглушку загрузки и в текст ошибки: «Загружаю
         // анкету…» вместо «Загружаю оплату…»
