@@ -385,23 +385,76 @@
      а будущие секции (капсула CTA в hero, тарифы) могут поставить туда же
      свои элементы — фиксированный виджет поверх них создавал бы навигационную
      ловушку и перекрывал бы кнопки на самом частом устройстве просмотра. */
+  /* Виджет соцсетей. Прежняя версия висела всегда развёрнутой капсулой
+     с вертикальной надписью — на оригинале это сворачиваемый виджет, и он
+     честно лучше: в покое занимает один кружок, а подсказка с хвостиком
+     объясняет, что это, вместо повёрнутого на 90° текста. */
   .social-float {
     position: fixed; right: 28px; bottom: 28px; z-index: 900;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-    padding: 14px 10px; border-radius: 999px;
-    background: rgba(24,32,35,.82); border: 1px solid var(--border-acc);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    box-shadow: var(--sh-lift);
+    display: flex; flex-direction: column; align-items: center; gap: 0;
   }
-  .social-float__label {
-    writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
-    font-family: var(--font); font-size: 11px; letter-spacing: normal;
-    color: var(--text-faint); margin-bottom: 2px;
+  /* Ярлык слева от кнопки. bottom рассчитан от низа контейнера так, чтобы
+     ярлык встал по центру кнопки: половина кнопки (26px) минус половина
+     собственной высоты (~19px). */
+  .social-float__hint {
+    position: absolute; right: calc(100% + 11px); bottom: 7px;
+    padding: 9px 15px; border-radius: 8px; white-space: nowrap;
+    background: rgba(40,48,52,.94); color: var(--text-mute);
+    font-family: var(--font); font-size: 14px; line-height: 1.4;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transition: opacity .2s var(--ease), transform .2s var(--ease);
   }
-  .social-float a { display: block; width: 32px; height: 32px; border-radius: 50%; transition: transform .2s var(--ease); }
-  .social-float a:hover { transform: translateY(-2px); }
-  .social-float a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
-  .social-float img { width: 100%; height: 100%; border-radius: 50%; }
+  .social-float__hint::after {
+    content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%);
+    border: 8px solid transparent; border-left-color: rgba(40,48,52,.94);
+  }
+  .social-float.is-open .social-float__hint { opacity: 0; transform: translateX(8px); pointer-events: none; }
+
+  .social-float__list {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    max-height: 0; opacity: 0; overflow: hidden; pointer-events: none;
+    transition: max-height .32s var(--ease), opacity .22s var(--ease), margin-bottom .32s var(--ease);
+  }
+  .social-float.is-open .social-float__list {
+    max-height: 220px; opacity: 1; pointer-events: auto; margin-bottom: 12px;
+  }
+  /* Иконки выезжают по очереди — снизу вверх, от кнопки. */
+  .social-float__list li { transform: translateY(10px); opacity: 0; transition: transform .28s var(--ease), opacity .28s var(--ease); }
+  .social-float.is-open .social-float__list li { transform: none; opacity: 1; }
+  .social-float.is-open .social-float__list li:nth-child(3) { transition-delay: .04s; }
+  .social-float.is-open .social-float__list li:nth-child(2) { transition-delay: .08s; }
+  .social-float.is-open .social-float__list li:nth-child(1) { transition-delay: .12s; }
+
+  .social-float__list a { display: block; width: 44px; height: 44px; border-radius: 50%; transition: transform .2s var(--ease); }
+  .social-float__list a:hover { transform: translateY(-2px); }
+  .social-float__list a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
+  .social-float__list img { display: block; width: 100%; height: 100%; border-radius: 50%; }
+  /* У YouTube и LinkedIn цветная подложка нарисована в самом svg, а у Telegram
+     ассет без неё — самолётик на прозрачном. На оригинале все три иконки
+     одинаковые, круглые и цветные, поэтому подложку телеграму даём фоном.
+     Селектор по href, а не по порядку: порядок ссылок может поменяться. */
+  .social-float__list a[href*="t.me"] img {
+    background: #2aabee; box-sizing: border-box; padding: 9px;
+  }
+
+  .social-float__toggle {
+    width: 52px; height: 52px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+    background: #ffffff; color: #182023; display: grid; place-items: center;
+    box-shadow: var(--sh-lift); transition: transform .2s var(--ease);
+  }
+  .social-float__toggle:hover { transform: translateY(-2px); }
+  .social-float__toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  /* Оба значка лежат в одной ячейке грида и меняются местами поворотом. */
+  .social-float__ico { grid-area: 1 / 1; transition: opacity .2s var(--ease), transform .25s var(--ease); }
+  .social-float__ico--close { opacity: 0; transform: rotate(-90deg) scale(.75); }
+  .social-float.is-open .social-float__ico--chat { opacity: 0; transform: rotate(90deg) scale(.75); }
+  .social-float.is-open .social-float__ico--close { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .social-float__hint, .social-float__list, .social-float__list li,
+    .social-float__toggle, .social-float__ico { transition: none; }
+  }
 
   /* skip-link для клавиатуры */
   .skip-link {
@@ -438,7 +491,12 @@
      выравниванием по левому краю — там ссылки и так уходят от виджета
      влево, эта подстраховка не нужна. */
   .footer__links { display: flex; flex-direction: column; gap: 8px; font-size: 11px; padding-right: 74px; }
-  .footer__links-row { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+/* Правка: gap 8px между пятью длинными ссылками читался как сплошной поток
+   слов — глазу не за что зацепиться, где кончается одна ссылка и начинается
+   следующая. Разводим по горизонтали втрое. Точки-разделители пробовал —
+   отказался: строка из трёх длинных ссылок переносится, и точка повисает
+   в начале новой строки. */
+  .footer__links-row { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 8px 26px; }
   .footer__links a {
     display: inline-block; padding: 1px 0; color: var(--text-faint); text-align: right; white-space: nowrap;
     border-bottom: 1px solid transparent;
@@ -533,29 +591,48 @@
      даёт font-weight: 300, letter-spacing: -1px при 70px (≈ -0.0143em),
      а не 500 / -0.04em. Файл шрифта 300 уже подключён (Manrope
      300;400;500;600;700), просадки в начертании нет. */
+  /* .hero__head — общий ряд для заголовка и пилюли автора. display: contents
+     у h1 отдаёт его строки прямо в этот flex, поэтому пилюля встаёт рядом со
+     второй строкой, а не под заголовком. Наследуемые свойства (кегль,
+     начертание, трекинг) при contents доходят до строк как обычно, а вот
+     margin у h1 пропадает — он перенесён на обёртку. */
+  .hero__head {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    column-gap: 22px; row-gap: 6px; margin: 0 0 26px;
+  }
   .hero__title {
     font-family: var(--display); font-size: clamp(34px, 5.2vw, 60px); font-weight: 300;
-    line-height: 1.08; letter-spacing: -0.0143em; color: var(--text-h); margin: 0 0 26px;
+    line-height: 1.08; letter-spacing: -0.0143em; color: var(--text-h); margin: 0;
+    display: contents;
   }
+  .hero__title-l1 { flex: 0 0 100%; text-align: center; }
   /* «3.0» — прошлая версия заголовка правилась поверх этой, серый цвет достался
      хвосту как визуальная память об этом — переносим ровно так, как на экране */
   .hero__title-mut { color: var(--text-faint); font-weight: 400; }
   /* Плашка автора собрана из готового PNG (avatar + пилюля-подложка одним файлом
      из Tilda) — текст кладём поверх с отступом слева, равным высоте картинки,
      ровно на ширину круглого аватара внутри неё. */
-  .hero__author { position: relative; display: inline-block; margin: 0 0 26px; }
+  .hero__author { position: relative; display: inline-block; margin: 0; }
   .hero__author-img { display: block; height: 60px; width: auto; border-radius: 999px; }
   .hero__author-txt {
     position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
-    gap: 2px; padding: 0 22px 0 78px; text-align: left;
+    gap: 1px; padding: 0 18px 0 74px; text-align: left;
   }
   .hero__author-role { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--text-h); line-height: 1.2; }
-  .hero__author-pos { font-family: var(--font); font-size: 12px; font-weight: 400; color: var(--text-mute); line-height: 1.2; }
+  /* nowrap + чуть меньший кегль: подложка пилюли — картинка фиксированной
+     пропорции (901×241), расширить её нельзя, а на оригинале должность стоит
+     в одну строку. Замерено: при 11.5px строка укладывается в свободные
+     ~132px внутри пилюли. */
+  .hero__author-pos { font-family: var(--font); font-size: 11.5px; font-weight: 400; color: var(--text-mute); line-height: 1.2; white-space: nowrap; }
   .hero__subtitle { font-size: 18px; font-weight: 400; line-height: 1.62; color: var(--text-mute); max-width: 680px; margin: 0 auto 44px; text-wrap: pretty; }
   .hero__chip {
     display: inline-flex; align-items: center; padding: 1px 10px; margin: 0 1px;
-    border-radius: 6px; background: rgba(223,223,65,.09); border: 1px solid rgba(223,223,65,.24);
-    color: var(--text-h); font-weight: 500; white-space: nowrap;
+    /* Правка: подложка и рамка были акцентно-жёлтыми (rgba(223,223,65,…)),
+       из-за чего пять плашек подряд читались как активные элементы и рвали
+       строку. Нейтральный белый с той же прозрачностью и обычный вес текста
+       возвращают их в поток — как на оригинале. */
+    border-radius: 6px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14);
+    color: var(--text-h); font-weight: 400; white-space: nowrap;
   }
   .hero__cta { display: flex; justify-content: center; }
 
@@ -606,7 +683,12 @@
      чтобы широкая who__deco не создавала горизонтальный скролл), поэтому
      элемент с отрицательным top для «выглядывания» здесь был бы обрезан. */
   .who { position: relative; padding: 96px 0; overflow: hidden; }
+  /* Правка: скрыт. glass_figure.svg с filter: invert(1) торчал на 18px выше
+     секции и обрезался её overflow: hidden — под CTA-капсулой героя это
+     читалось как случайный серый обрубок-«разделитель», а не как декор.
+     На оригинале в этом месте чисто. Возврат — снять display: none. */
   .who__deco {
+    display: none;
     position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
     width: 620px; max-width: 140%; opacity: .5; filter: invert(1); pointer-events: none; z-index: 0;
   }
@@ -681,8 +763,11 @@
   .who__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
   .who__title { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.32; letter-spacing: normal; color: var(--text-h); }
   .who__desc { font-size: 15px; line-height: 1.62; color: var(--text-mute); }
+  /* Кот из этой карточки убран по просьбе заказчика: он уже стоит выше,
+     во вступлении секции, и второй раз в углу карточки не нужен. Правила
+     .who__mascot ниже оставлены — на случай, если его вернут. */
   .who__mascot {
-    position: absolute; right: -6px; bottom: -4px; width: 74px; height: auto;
+    position: absolute; right: -6px; bottom: 0; width: 74px; height: auto;
     opacity: .9; pointer-events: none;
   }
 
@@ -690,17 +775,42 @@
      иконки steps/step_N.svg на Tilda — мини-индикатор прогресса (N закрашенных
      квадратов из 6), переиспользуем как декоративный порядковый маркер карточки. */
   .get { padding: 96px 0; }
-  .get__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  /* Правка: секция собрана в общую панель, как на оригинале. Шесть карточек
+     с собственной заливкой читались как шесть отдельных объектов на пустом
+     фоне; теперь фон-подложку держит панель, а карточки внутри неё —
+     только рамка, без заливки. Панелью работает сам .container секции,
+     разметку для этого менять не нужно: боковые 60px у него уже были,
+     добавились только вертикальные и фон. */
+  .get > .container {
+    position: relative;
+    background: var(--bg-card); border-radius: 28px;
+    padding: 56px 60px 52px;
+  }
+  /* Пока экран шире 1240 (max-width контейнера), поля панели создаёт сам
+     auto-margin. Как только экран уже — панель упирается в края, скругления
+     обрезаются и подложка читается как сплошная полоса. Держим ей поля
+     руками. */
+  @media (max-width: 1300px) { .get > .container { margin-left: 24px; margin-right: 24px; } }
+  /* Язычок-выемка по центру верхнего края — тем же цветом, что фон страницы:
+     на оригинале панель именно так «надкусана» сверху. */
+  .get > .container::before {
+    content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 236px; height: 26px; background: var(--bg-primary);
+    border-radius: 0 0 22px 22px; pointer-events: none;
+  }
+  .get__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .get__card {
-    padding: 30px 28px 28px; border-radius: var(--r-lg);
-    background: var(--bg-card); border: 1px solid var(--border-card);
-    display: flex; flex-direction: column; gap: 12px;
+    padding: 26px 24px 24px; border-radius: var(--r-lg);
+    background: transparent; border: 1px solid var(--border-card);
+    display: flex; flex-direction: column; gap: 11px;
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .get__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
-  .get__step { height: 10px; width: auto; margin-bottom: 4px; }
-  .get__lead { font-family: var(--display); font-size: 17px; font-weight: 500; line-height: 1.4; letter-spacing: normal; color: var(--text-h); }
-  .get__desc { font-size: 15px; line-height: 1.56; color: var(--text-mute); }
+  /* 8px вместо 10: внутри панели прежний размер квадратиков стал тяжеловат,
+     на оригинале они мельче текста, а не спорят с ним. */
+  .get__step { height: 8px; width: auto; margin-bottom: 4px; }
+  .get__lead { font-family: var(--display); font-size: 16px; font-weight: 500; line-height: 1.42; letter-spacing: normal; color: var(--text-h); }
+  .get__desc { font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
 
   /* ===== VACANCIES «Изучаем, что требуют…» (rec2072585811) =====
      Правка 2 (визуальный заход №1): раньше секция стояла на светлом островке
@@ -718,7 +828,11 @@
     border-radius: var(--r-xl); padding: 48px 40px; display: flex; flex-direction: column;
     gap: 40px; box-shadow: var(--sh-lift);
   }
-  .jobs__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
+  /* Правка: align-items со flex-end на flex-start. По нижнему краю совпадали
+   боксы, но не строки: заголовок набран 38px, описание 16px, и последние
+   строки вставали на разной высоте. По верхнему краю первые строки
+   выравниваются предсказуемо. */
+  .jobs__head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 28px 48px; }
   .jobs__title { max-width: 420px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.0375em; color: var(--text-h); margin: 0; text-wrap: pretty; }
   .jobs__aside { max-width: 360px; text-align: right; }
   .jobs__lead { font-size: 16px; line-height: 1.6; color: var(--text-mute); }
@@ -731,11 +845,18 @@
   .jobs__col { display: flex; flex-direction: column; gap: 12px; }
   .jobs__card {
     display: block; width: 100%; padding: 0; border: 1px solid var(--border-card);
-    border-radius: var(--r-lg); overflow: hidden; background: var(--bg-secondary);
+    border-radius: var(--r-lg); overflow: hidden; background: #ffffff;
+    aspect-ratio: 336 / 238;
     transition: border-color .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
   }
   .jobs__card:hover { border-color: var(--border-acc); transform: translateY(-3px); box-shadow: 0 20px 40px -24px rgba(0,0,0,.6); }
-  .jobs__card-img { width: 100%; height: auto; }
+  /* Правка: три скриншота имеют разные пропорции (Ozon 441×238, остальные
+     336×238), поэтому при равной ширине колонки нижние края расходились и
+     подписи под ними вставали лесенкой. Фиксируем пропорцию по двум узким
+     и вписываем картинку целиком (contain, а не cover — резать текст
+     вакансии нельзя). Фон карточки белый под цвет самих скриншотов, так что
+     добор высоты у широкого Ozon не виден. */
+  .jobs__card-img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: top center; }
   .jobs__card-label { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-faint); }
   .jobs__card-label-icon { width: 16px; height: 16px; flex-shrink: 0; border-radius: 50%; }
   .jobs__note { align-self: flex-end; display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-faint); white-space: nowrap; }
@@ -806,6 +927,10 @@
     .cta-capsule__meta { flex-direction: row; justify-content: space-between; padding: 0; min-width: 0; width: 100%; }
     .cta-capsule .btn { width: 100%; }
     .who, .get { padding: 64px 0; }
+    /* Панель на мобильном: паддинг и скругление вдвое меньше, выемка уже —
+       иначе подложка съедает ширину, которой на 390px и так нет. */
+    .get > .container { padding: 36px 20px 32px; border-radius: 20px; margin-left: 14px; margin-right: 14px; }
+    .get > .container::before { width: 150px; height: 18px; border-radius: 0 0 16px 16px; }
     .get__grid { grid-template-columns: 1fr; }
     .who__title-card, .who__card { padding: 26px 22px; }
     .who__lead { min-height: 340px; }
@@ -1041,7 +1166,15 @@
 
   @media (max-width: 960px) {
     .steps__list { gap: 48px; }
-    .steps__row, .steps__row:nth-child(even) { flex-direction: column-reverse; gap: 20px; }
+    /* Правка: было :nth-child(even), стало :nth-of-type(even) — как в
+       десктопном правиле чередования выше. Между третьим и четвёртым рядом
+       лежит <p class="steps__footnote">, поэтому по счёту child четвёртый ряд
+       оказывается пятым, под :nth-child(even) не попадал, и десктопное
+       .steps__row:nth-of-type(even){flex-direction:row-reverse} (специфичность
+       0,2,0) перебивало мобильное .steps__row (0,1,0). Из-за этого «Читаешь
+       допматериалы» — единственный шаг, который на телефоне оставался
+       в две колонки. */
+    .steps__row, .steps__row:nth-of-type(even) { flex-direction: column-reverse; gap: 20px; }
     .steps__mascot-group { width: 230px; }
     .steps__mascot-bubble { width: 150px; }
     .steps__cat { width: 95px; right: 0; top: -20px; }
@@ -1064,7 +1197,12 @@
        кота целиком, следующий отступ (section__head margin-bottom: 48px)
        остаётся чистым воздухом уже после кота, а не до него. */
     .section__head--mascot { flex-direction: column; align-items: flex-start; }
-    .steps__mascot-group { width: 210px; height: 160px; }
+    /* align-self прижимает пару «облачко-кот» к правому краю: в столбце она
+       по умолчанию вставала под заголовком слева, и кот с репликой оказывался
+       посреди пустого экрана. У правого края он читается как отбивка секции,
+       а не как случайно уехавшая картинка — и это ближе к десктопу, где
+       группа тоже стоит справа от заголовка. */
+    .steps__mascot-group { width: 210px; height: 160px; align-self: flex-end; }
     .steps__mascot-bubble { width: 150px; }
     .steps__cat { width: 84px; right: 0; top: -10px; }
   }
@@ -1167,11 +1305,15 @@
        этого файла до всех правок этого захода — не регрессия от слайдера,
        но чинить пришлось: без этого п.В нечем подтвердить на 390px. */
     .community__phone-wrap { order: 2; justify-self: stretch; }
-    .community__chats { order: 3; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    .community__chats .community__chat { width: 130px; transform: none; }
+    /* Правка: раскладка «плиткой по 130px» превращала скриншоты сообщений
+       (исходники 255–306px шириной) в нечитаемые марки — текст в них
+       становился мельче 5px. Возвращаем колонку во всю ширину: сообщения
+       короткие, по 71–89px высотой, пять штук занимают немного. */
+    .community__chats { order: 3; flex-direction: column; align-items: stretch; gap: 10px; }
+    .community__chats .community__chat { width: 100%; transform: none; }
   }
   @media (max-width: 640px) {
-    .community__chats .community__chat { width: 96px; }
+    .community__chats .community__chat { width: 100%; }
   }
 
   /* ===== HOMEWORK — аккордеон из 8 ДЗ (правка 5, замечание владельца) =====
@@ -1334,6 +1476,9 @@
      краю», как предполагалось раньше. */
   .project__scene { position: relative; margin-bottom: 56px; }
   .project__diagram { position: relative; width: 75.4%; padding-top: 20px; }
+  .project__swipe { display: none; }
+  @keyframes swipe-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+  @media (prefers-reduced-motion: reduce) { .project__swipe b { animation: none; } }
   .project__schema-img { display: block; width: 100%; height: auto; }
   .project__nodes { position: absolute; top: 20px; left: 0; right: 0; bottom: 0; }
   /* Пасхалка (заход 22): ракета кликабельна и стартует с пламенем.
@@ -1553,9 +1698,45 @@
        display; была реальная ошибка на ревью — список не появлялся).
        Ракету тоже прячем — на живой странице на 390px её нет вовсе, схема
        и текстовый список занимают всю ширину. */
-    .project__schema-img, .project__nodes { display: none; }
+    /* Правка: схема и ракета больше не прячутся. Раньше их убирали целиком —
+       940px схема, ужатая до ширины телефона, давала нечитаемый текст. Вместо
+       этого даём схеме прокручиваться вбок в читаемом масштабе: min-width
+       660px при 350px экрана — это две «страницы» вправо, привычный жест.
+       Оверлей «+»-кнопок остаётся скрытым: он позиционирован в процентах от
+       .project__diagram и при боковой прокрутке разъехался бы со схемой.
+       Текстовый список остаётся под схемой — он и подпись, и доступная
+       альтернатива для тех, кому картинка не откроется. */
+    /* Скроллится только обёртка вокруг картинки, а не весь .project__diagram:
+       текстовый список лежит в том же контейнере и уезжал бы вбок вместе
+       со схемой. */
+    .project__schema-scroll { overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; border-radius: var(--r-md); }
+    .project__schema-img { min-width: 660px; }
+    .project__nodes { display: none; }
     .project__schema-list--fallback { display: flex; flex-direction: column; }
+    /* Ракету на телефоне не показываем — по месту она не влезает, а смысл
+       секции несёт схема. */
     .project__rocket { display: none; }
+    /* Подсказка про боковой скролл: без неё обрезанный правый край читается
+       как брак вёрстки, а не как «здесь есть продолжение». Уходит после
+       первого же сдвига схемы (класс is-swiped вешает скрипт внизу файла). */
+    .project__swipe {
+      display: flex; align-items: center; gap: 8px;
+      margin: 10px auto 0; width: max-content;
+      padding: 7px 14px; border-radius: 999px;
+      background: rgba(255,255,255,.06); border: 1px solid var(--border-card);
+      font-family: var(--mono); font-size: 12px; color: var(--text-faint);
+      transition: opacity .3s var(--ease), transform .3s var(--ease);
+    }
+    .project__swipe b {
+      width: 16px; height: 2px; border-radius: 2px; background: currentColor; position: relative;
+      animation: swipe-nudge 1.5s var(--ease) infinite;
+    }
+    .project__swipe b::after {
+      content: ''; position: absolute; right: -1px; top: 50%;
+      width: 7px; height: 7px; border-top: 2px solid currentColor; border-right: 2px solid currentColor;
+      transform: translateY(-50%) rotate(45deg); border-radius: 1px;
+    }
+    .project__diagram.is-swiped .project__swipe { opacity: 0; transform: translateY(-4px); pointer-events: none; }
     .project__video-row { flex-wrap: wrap; }
     .project__plate { padding: 28px; }
     .project__plate-row { flex-direction: column; align-items: flex-start; gap: 20px; }
@@ -2199,7 +2380,14 @@
      есть у .steps__cat/.ytch__cat выше — там reveal-transform достаётся
      .section__head--mascot.fade-up (предку), а scaleX(-1) — картинке. */
   .pricing { position: relative; }
-  .pricing__cat-wrap { position: absolute; top: 10px; right: 160px; width: 128px; pointer-events: none; }
+/* Правка: right был жёстко 160px от края ОКНА, а облачко отбивается от края
+   .container (max-width 1120). На 1440 это совпадает — (1440-1120)/2 = 160, —
+   но чем уже окно, тем сильнее кот заезжает внутрь контейнера и налезает на
+   реплику: замерено 48px нахлёста на 1280 и 68px на 1100. clamp повторяет ту
+   же величину «полполя контейнера» на любой ширине и упирается в 0, когда
+   поля кончились, — правый край кота снова совпадает с правым краем
+   контейнера, как и было задумано на 1440. */
+  .pricing__cat-wrap { position: absolute; top: 10px; right: clamp(0px, calc((100% - 1120px) / 2), 160px); width: 128px; pointer-events: none; }
   .pricing__cat { display: block; width: 100%; height: auto; pointer-events: none; transform: scaleX(-1); }
   /* Правка (заход 17): margin-right отодвигает облачко от правого края
      .container — на оригинале между правым краем облачка (x=1161 на
@@ -2399,7 +2587,18 @@
 
   @media (max-width: 640px) {
     .gc-modal { padding: 0 0 40px; overflow-x: hidden; }
-    .gc-modal__panel { width: 100%; max-width: 100vw; border-radius: 0; border: 0; min-height: 100vh; overflow-x: hidden; }
+    /* min-height в dvh, а не vh: на iOS 100vh — это высота экрана целиком,
+       вместе с полосой адреса сверху и тулбаром снизу, поэтому нижние ~80px
+       панели (а там ровно кнопка «Отправить заявку») оказываются физически
+       под тулбаром браузера. dvh считает видимую часть и пересчитывается,
+       когда панели прячутся при скролле. */
+    .gc-modal__panel { width: 100%; max-width: 100vw; border-radius: 0; border: 0; min-height: 100dvh; overflow-x: hidden; }
+    /* 16px, а не унаследованные 15px: Safari на iOS зумит страницу при фокусе
+       на любом поле со шрифтом меньше 16px и обратно масштаб сам не откатывает —
+       человек дозаполняет анкету на увеличенной странице с горизонтальным
+       скроллом. На десктопе размер оставлен прежним, поэтому правка тут,
+       а не в базовом .gcform__input. */
+    .gcform__input { font-size: 16px; }
     .gc-modal__body { padding: 64px 20px 40px; }
     .gc-modal__close { top: 12px; right: 12px; width: 46px; height: 46px; font-size: 19px; background: #1e272b; box-shadow: 0 8px 24px -6px rgba(0,0,0,.85); }
   }
@@ -2603,6 +2802,93 @@
     .final__panel { padding: 34px 26px; gap: 20px; }
   }
 
+  /* ===== МОБИЛЬНЫЕ ПРАВКИ ПО ИТОГАМ ПРОГОНА НА iPhone 13 (390×844) ===== */
+
+  /* Шильдик «Проверено GetCourse» рисует чужой скрипт qr-hidden-banner.js
+     (подключён в конце <body>): position: fixed, z-index: 999, габарит 221×71,
+     прижат вправо без оглядки на ширину экрана. На 390px он занимает полосу
+     317→538 — правые 148px обрезаются об overflow-x: clip на html/body, виден
+     рваный радужный хвост, а сам кружок висит поперёк текста на каждом экране
+     и закрывает заголовки, цену и кнопки. Хуже того, он кликабельный:
+     elementFromPoint(350, 210) отдаёт его SVG, то есть тап в эту полосу уходит
+     на getcourse.ru вместо кнопки под ним. Скрипт чужой и трогать его нельзя,
+     но у элемента есть класс — перебиваем позицию и масштаб своим CSS.
+     Только на мобильных: на десктопе шильдик стоит нормально и ничего не ест.
+
+     Селектор с html body и !important — не перестраховка, а необходимый
+     минимум, замеренный опытным путём. Скрипт кладёт свой <style> ВНУТРЬ
+     самого элемента, то есть в конец <body>, и пишет позицию через !important:
+       .gc-qualityreestr-school       { top: 177px !important; right: -148px !important }
+       .show.gc-qualityreestr-school  { right: -148px !important }
+       .gc-qualityreestr-school:hover { right: -148px !important }
+     Одного !important мало: при равной специфичности выигрывает правило,
+     которое идёт позже в документе, а его <style> идёт после нашего <head>.
+     Поэтому селекторы ниже подняты до (0,2,2) и (0,3,2) — выше его (0,2,0).
+     Пока это не было сделано, применялся только наш bottom, а top оставался
+     чужим: элемент получал разом top и bottom при position: fixed и
+     растягивался по вертикали до 475px вместо своей 71.
+
+     :hover прописан отдельно, потому что скрипт по ховеру выдвигает шильдик
+     на экран, а на тачскрине ховер залипает после первого же тапа. */
+  @media (max-width: 640px) {
+    html body .gc-qualityreestr-school,
+    html body .gc-qualityreestr-school.show,
+    html body .gc-qualityreestr-school.show:hover {
+      top: auto !important;
+      bottom: 12px !important;
+      right: 12px !important;
+      height: auto !important;
+      transform: scale(.5);
+      transform-origin: bottom right;
+    }
+  }
+
+  /* Зоны тапа 44×44 у мелких контролов. Видимый размер сознательно не трогаем:
+     точки слайдера должны остаться восьмипиксельными, ники и «Читать историю» —
+     текстом в общем ритме карточки. Растёт только невидимая область нажатия,
+     через absolute-псевдоэлемент, поэтому раскладка не сдвигается.
+     max(100%, 44px), а не голые 44px: у «Читать историю» и ников ширина больше
+     44px, и фиксированное значение зону бы наоборот сузило.
+     Замерено на 390px: .phone__dot 8×8, .stories__nick и .stories__btn — 22px
+     высотой, .carousel__arrow 40×40. Соседние стрелки не слипаются: у
+     .carousel__arrows gap 10px, между зонами остаётся 6px. */
+  @media (max-width: 640px) {
+    .stories__nick,
+    .stories__btn,
+    .carousel__arrow { position: relative; }
+
+    .stories__nick::after,
+    .stories__btn::after,
+    .carousel__arrow::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+    }
+
+    /* Точки слайдера — отдельно от остальных: они стоят с шагом 15px (8px точка
+       + 7px gap), и общая зона 44×44 у трёх соседей перекрыла бы друг друга —
+       последняя точка легла бы поверх первых двух, и тап по первой открывал бы
+       третий кадр. Это было бы хуже исходного бага. Поэтому разводим точки
+       по горизонтали до шага 24px и растим зону в высоту, где места сколько
+       угодно: 24×44 на кадр, соседние зоны стыкуются встык и не налезают.
+       Сами точки остаются восьмипиксельными. */
+    .phone__dots { gap: 16px; }
+    .phone__dot { position: relative; }
+    .phone__dot::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 44px;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -2672,11 +2958,27 @@
 <!-- ===== ПЛАВАЮЩИЙ ВИДЖЕТ СОЦСЕТЕЙ (rec689280064) =====
      Не привязан к секции на Tilda — держим его вне main, рядом с шапкой.
      На ширинах ≤640px скрыт правилом .social-float в общем блоке стилей (см. комментарий там). -->
-<div class="social-float" aria-label="Я в соцсетях">
-  <span class="social-float__label">Я в соцсетях</span>
-  <a href="https://www.linkedin.com/in/olezhek28" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="icons/linkedin.svg" alt="" width="32" height="32"></a>
-  <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener" aria-label="YouTube"><img src="icons/youtube.svg" alt="" width="32" height="32"></a>
-  <a href="https://t.me/olezhek28" target="_blank" rel="noopener" aria-label="Telegram"><img src="icons/telegram.svg" alt="" width="32" height="32"></a>
+<!-- Виджет соцсетей по образцу живой Tilda: в покое — одна круглая кнопка
+     с пузырём и подсказка-ярлык слева, по клику разворачивается столбик
+     иконок, кнопка превращается в крестик. Порядок иконок сверху вниз тоже
+     с оригинала: Telegram, YouTube, LinkedIn. -->
+<div class="social-float" id="social-float">
+  <span class="social-float__hint" id="social-hint">Я в соцсетях</span>
+  <ul class="social-float__list" id="social-list">
+    <li><a href="https://t.me/olezhek28" target="_blank" rel="noopener" aria-label="Telegram"><img src="icons/telegram.svg" alt="" width="44" height="44"></a></li>
+    <li><a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener" aria-label="YouTube"><img src="icons/youtube.svg" alt="" width="44" height="44"></a></li>
+    <li><a href="https://www.linkedin.com/in/olezhek28" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="icons/linkedin.svg" alt="" width="44" height="44"></a></li>
+  </ul>
+  <button class="social-float__toggle" id="social-toggle" type="button" aria-expanded="false" aria-controls="social-list">
+    <span class="sr-only">Я в соцсетях</span>
+    <svg class="social-float__ico social-float__ico--chat" viewBox="0 0 24 24" width="23" height="23" aria-hidden="true">
+      <path fill="currentColor" d="M12 2.2c5.4 0 9.5 3.9 9.5 8.9 0 5.6-4.6 9.4-9.5 9.4-1.5 0-3.2-.4-4.6-1.2-.4-.2-.7-.3-1.1-.2l-2.3.7c-.6.2-1.2-.4-1-1l.7-2.3c.1-.3 0-.6-.1-.9-.8-1.4-1.1-2.9-1.1-4.5 0-5 4.1-8.9 9.5-8.9Z"/>
+      <circle cx="8" cy="11.2" r="1.4" fill="#fff"/><circle cx="12" cy="11.2" r="1.4" fill="#fff"/><circle cx="16" cy="11.2" r="1.4" fill="#fff"/>
+    </svg>
+    <svg class="social-float__ico social-float__ico--close" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>
+    </svg>
+  </button>
 </div>
 
 <main id="top">
@@ -2689,13 +2991,19 @@
        страницы не является. -->
   <section class="hero">
     <div class="container hero__inner">
-      <h1 class="hero__title fade-up">Микросервисы на&nbsp;GO <span class="hero__title-mut">3.0</span></h1>
-      <div class="hero__author fade-up">
+      <!-- Заголовок и пилюля автора лежат в одном flex-ряду, как на оригинале:
+           первая строка занимает всю ширину, вторая строка заголовка и пилюля
+           встают рядом. Перенос после «Микросервисы» задан раскладкой, а не
+           <br>, поэтому на узком экране пилюля сама уходит на строку ниже. -->
+      <div class="hero__head fade-up">
+      <h1 class="hero__title"><span class="hero__title-l1">Микросервисы</span> <span class="hero__title-l2">на&nbsp;GO <span class="hero__title-mut">3.0</span></span></h1>
+      <div class="hero__author">
         <img class="hero__author-img" src="hero/instructor_photo.png" alt="Олег Козырев" width="901" height="241">
         <span class="hero__author-txt">
           <span class="hero__author-role">Автор курса</span>
           <span class="hero__author-pos">Senior Engineer из BigTech</span>
         </span>
+      </div>
       </div>
       <p class="hero__subtitle fade-up">Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в <span class="hero__chip">ВК</span> <span class="hero__chip">Yandex</span> <span class="hero__chip">OZON</span> <span class="hero__chip">СБЕР</span> <span class="hero__chip">Тинькофф</span>, и увеличь свои шансы на трудоустройство в BigTech или повышение грейда</p>
       <div class="hero__cta fade-up">
@@ -2752,7 +3060,6 @@
             <img class="who__step" src="steps/step_3.svg" alt="" width="88" height="13">
             <h3 class="who__title">Хочу уверенно проходить собесы и повысить свой грейд и зарплату</h3>
             <p class="who__desc">Напишешь реальный проект из 5 микросервисов, разберёшься как всё взаимодействует между собой и сможешь уверенно отвечать на вопросы по архитектуре и технологиям на собесах в топовые компании.</p>
-            <img class="who__mascot" src="mascot/kotkins_small.png" alt="" width="607" height="1201" aria-hidden="true">
           </div>
         </div>
       </div>
@@ -3620,7 +3927,8 @@
            именно поэтому). -->
       <div class="project__scene fade-up">
         <div class="project__diagram">
-        <img class="project__schema-img" src="project/architecture.svg" alt="Схема архитектуры проекта: Client → Nginx-шлюз → IAM/Order/Payment/Inventory-сервисы, Kafka с Assembly-сервисом, хранилища PostgreSQL/Redis, наблюдаемость через OpenTelemetry/Prometheus/Grafana/Jaeger/Kibana" width="940" height="488" loading="lazy">
+        <div class="project__schema-scroll" id="schema-scroll"><img class="project__schema-img" src="project/architecture.svg" alt="Схема архитектуры проекта: Client → Nginx-шлюз → IAM/Order/Payment/Inventory-сервисы, Kafka с Assembly-сервисом, хранилища PostgreSQL/Redis, наблюдаемость через OpenTelemetry/Prometheus/Grafana/Jaeger/Kibana" width="940" height="488" loading="lazy"></div>
+        <span class="project__swipe" id="schema-swipe" aria-hidden="true">Листай схему вбок<b></b></span>
         <div class="project__nodes">
           <button type="button" class="project__node project__node--iam" id="node-iam-btn" aria-expanded="false" aria-controls="node-iam"><span aria-hidden="true">+</span><span class="sr-only">IAM Service — подробнее</span></button>
           <div class="project__tooltip project__tooltip--iam" id="node-iam" role="region" aria-labelledby="node-iam-btn" hidden>
@@ -5627,6 +5935,50 @@
      <head>). При желании можно перевести на загрузку после согласия на
      cookies — решение об этом за владельцем курса, здесь сознательно
      сделано как на боевой Tilda. -->
+<script>
+/* Виджет соцсетей и подсказка бокового скролла у схемы проекта. */
+(function () {
+  'use strict';
+
+  /* ── соцсети: сворачиваемый виджет ── */
+  var root = document.getElementById('social-float');
+  var toggle = document.getElementById('social-toggle');
+  if (root && toggle) {
+    var setOpen = function (open) {
+      root.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setOpen(!root.classList.contains('is-open'));
+    });
+    /* клик мимо и Esc сворачивают — иначе на длинной странице виджет
+       остаётся раскрытым и перекрывает контент */
+    document.addEventListener('click', function (e) {
+      if (root.classList.contains('is-open') && !root.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && root.classList.contains('is-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+
+  /* ── схема проекта: подсказка про боковой скролл ── */
+  var scroller = document.getElementById('schema-scroll');
+  if (scroller) {
+    var diagram = scroller.closest('.project__diagram');
+    var seen = false;
+    scroller.addEventListener('scroll', function () {
+      if (seen || scroller.scrollLeft < 12) return;
+      seen = true;
+      if (diagram) diagram.classList.add('is-swiped');
+    }, { passive: true });
+  }
+})();
+</script>
+
 <script>window.qualitySchoolHash='afe434653a898da20044041262b3ac74'</script>
 <script src='https://getcourse.ru/public/js/qr-hidden-banner.js'></script>
 
