@@ -16,14 +16,14 @@
   </script>
   <noscript><div><img src="https://mc.yandex.ru/watch/96022201" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
-  <title>Освой gRPC за 1 вечер — бесплатный практикум</title>
-  <meta name="description" content="Подробный практикум, где ты наконец разберёшься, как устроен gRPC, поймёшь все тонкости, напишешь и запустишь свой сервер и клиент, даже если раньше ничего не получалось.">
-  <meta name="keywords" content="grpc, protobuf, protocol buffers, go, golang, микросервисы, практикум grpc, grpc сервер, grpc клиент">
+  <title>Подробный воркшоп по gRPC — бесплатно</title>
+  <meta name="description" content="Соберёшь на Go сервис, который работает и по gRPC, и по REST, со Swagger и стримом событий. 3 часа практики и репозиторий с кодом. Бесплатно.">
+  <meta name="keywords" content="grpc, protobuf, protocol buffers, go, golang, grpc-gateway, swagger, protovalidate, интерцепторы, стриминг, воркшоп grpc">
   <meta name="author" content="Олег Козырев">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://guide.olezhek28.courses/grpc-1-day/">
-  <meta property="og:title" content="Освой gRPC за 1 вечер">
-  <meta property="og:description" content="Пошаговый практикум для быстрого погружения в gRPC. Бесплатно.">
+  <meta property="og:title" content="Подробный воркшоп по gRPC">
+  <meta property="og:description" content="От protobuf до стримов на живом проекте. 3 часа практики, бесплатно.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://guide.olezhek28.courses/grpc-1-day/">
   <meta property="og:image" content="https://guide.olezhek28.courses/grpc-1-day/og-image.jpg">
@@ -32,20 +32,20 @@
   <meta property="og:locale" content="ru_RU">
   <meta property="og:site_name" content="Олег Козырев · Гайды">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Освой gRPC за 1 вечер">
-  <meta name="twitter:description" content="Пошаговый практикум для быстрого погружения в gRPC. Бесплатно.">
+  <meta name="twitter:title" content="Подробный воркшоп по gRPC">
+  <meta name="twitter:description" content="От protobuf до стримов на живом проекте. 3 часа практики, бесплатно.">
   <meta name="twitter:image" content="https://guide.olezhek28.courses/grpc-1-day/og-image.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="img/gopher.png" fetchpriority="high">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"></noscript>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Course",
-    "name": "Освой gRPC за 1 вечер",
-    "description": "Пошаговый практикум для быстрого погружения в gRPC: protobuf, .proto-файлы, свой gRPC-сервер и клиент, Postman и gRPCurl, вопросы с собеседований.",
+    "name": "Подробный воркшоп по gRPC",
+    "description": "Воркшоп на 3 часа: protobuf, gRPC и HTTP/2, генерация кода через protoc, buf и EasyP, свой gRPC-сервер и клиент, gRPCurl, protovalidate, интерцепторы, gRPC-Gateway, Swagger и стриминг.",
     "provider": {
       "@type": "Person",
       "name": "Олег Козырев",
@@ -64,226 +64,136 @@
     }
   }
   </script>
+  <script>document.documentElement.classList.add('js');</script>
   <style>
+  /* Токены: цвета бренда + бирюза гофера только для подсветки кода */
   :root {
-    --bg:          #182023;
-    --bg-card:     #22282d;
-    --bg-raised:   #31383f;
-    --accent:      #dfdf41;
-    --accent-dim:  #c1c139;
-    --accent-ink:  #002d25;
-    --light-bg:    #e9e8ed;
-    --light-ink:   #182023;
-    --text:        #ffffff;
-    --text-body:   #d1d2d3;
-    --text-mute:   #babcbd;
-    --shell:       1200px;
-    --radius:      24px;
-    --radius-sm:   12px;
+    --bg:        #182023;
+    --surface:   #20292d;
+    --surface-2: #273136;
+    --line:      #323c42;
+    --accent:    #dfdf41;
+    --accent-ink:#002d25;
+    --text:      #f3f3ef;
+    --light-bg:  #e9e8ed;
+    --bg-card:   #22282d;
+    --bg-raised: #31383f;
+    --accent-dim:#c1c139;
+    --text-mute: #babcbd;
+    --light-ink: #182023;
+    --text-body: #c9cdcf;
+    --mute:      #8d989c;
+    --go:        #5fc3cf;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --shell: 1200px;
+
+    /* Шкала типографики: модульная, ~1.33 между ступенями, fluid */
+    --fs-h1:   clamp(2.25rem, 1.55rem + 2.6vw, 3.75rem);
+    --fs-h2:   clamp(1.875rem, 1.45rem + 1.7vw, 2.875rem);
+    --fs-h3:   clamp(1.5rem, 1.3rem + .8vw, 1.875rem);
+    --fs-lead: clamp(1.0625rem, 1rem + .25vw, 1.1875rem);
+
+    /* Ритм секций: широкие разрывы между смыслами, плотные группы внутри */
+    --gap-section: clamp(64px, 3.5rem + 4vw, 128px);
+    --gap-tight:   clamp(32px, 1.5rem + 2.5vw, 64px);
+    --gap-title:   clamp(28px, 1.25rem + 1.5vw, 48px);
+
+    /* Движение: только экспоненциальное замедление */
+    --ease-out: cubic-bezier(.25, 1, .5, 1);
+    --ease-expo: cubic-bezier(.16, 1, .3, 1);
+
+    /* Слои */
+    --z-base: 1;
+    --z-sticky: 100;
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
-
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--sans);
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
   }
-
+  h1, h2, h3 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
   img { max-width: 100%; height: auto; display: block; }
-
   a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  ::selection { background: var(--accent); color: var(--light-ink); }
 
-  .shell {
-    width: 100%;
-    max-width: var(--shell);
-    margin: 0 auto;
-    padding: 0 20px;
+  .shell { width: 100%; max-width: var(--shell); margin: 0 auto; padding: 0 24px; }
+
+  .js .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease-expo), transform .8s var(--ease-expo); }
+  .js .fade-up.visible { opacity: 1; transform: none; }
+  /* Внутри раскрывшегося блока пункты списка приходят по очереди */
+  .js .stagger > * { opacity: 0; transform: translateY(10px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms + 120ms); }
+  .js .visible .stagger > *, .js .stagger.visible > * { opacity: 1; transform: none; }
+
+  .h2 {
+    margin: 0 0 var(--gap-title);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -.03em;
   }
+  .block { padding: var(--gap-section) 0; }
+  .block--tight { padding: var(--gap-tight) 0; }
+  .block--flush-top { padding-top: 0; }
 
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  /* Появление блоков при скролле */
-  .fade-up {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity .6s ease, transform .6s ease;
-  }
-  .fade-up.visible { opacity: 1; transform: none; }
-
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .fade-up { opacity: 1; transform: none; transition: none; }
-  }
-
-  /* ---------- Кнопки ---------- */
-
+  /* ---------- Кнопка ---------- */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 20px 32px;
-    border-radius: 999px;
+    padding: 20px 30px;
+    border-radius: 14px;
     background: var(--accent);
     color: var(--accent-ink);
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 800;
+    line-height: 1.2;
     text-decoration: none;
-    transition: background .2s ease, transform .2s ease;
+    min-height: 44px;
+    transition: transform .25s var(--ease-out), background-color .25s var(--ease-out), box-shadow .25s var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
   }
-  .btn:hover { background: var(--accent-dim); transform: translateY(-2px); }
-  .btn__icon { width: 22px; height: 22px; flex: none; }
-
-  .btn--ghost {
-    padding: 12px 20px;
-    background: transparent;
-    border: 1px solid var(--bg-raised);
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .btn--ghost:hover { background: var(--bg-card); transform: none; }
+  .btn:hover { background: #eaea5c; transform: translateY(-2px); box-shadow: 0 12px 24px -14px rgba(0, 0, 0, .8); }
+  .btn:active { transform: translateY(0) scale(.98); box-shadow: none; transition-duration: .08s; }
+  .btn:focus-visible { outline-offset: 4px; }
+  .btn svg { width: 20px; height: 20px; flex: none; }
+  .accent { color: var(--accent); }
+  .cta-mid { margin-top: clamp(24px, 1rem + 2vw, 48px); text-align: center; }
+  .cta-mid .why__bridge { margin: 0 auto 32px; max-width: 720px; }
 
   /* ---------- Шапка ---------- */
-
   .header {
     position: sticky;
     top: 0;
-    z-index: 50;
-    background: rgba(24, 32, 35, .88);
+    z-index: var(--z-sticky);
+    background: rgba(24, 32, 35, .9);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(49, 56, 63, .6);
+    border-bottom: 1px solid var(--line);
   }
-  .header__inner {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    height: 68px;
-  }
-  .header__logo {
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
-    color: var(--text-body);
-  
-  }
-  /* В оригинале якорные ссылки лежат в тёмной пилюле по центру шапки */
-  .header__nav {
-    display: flex;
-    gap: 4px;
-    margin: 0 auto;
-    padding: 3px;
-    background: var(--bg-card);
-    border-radius: 999px;
-  }
-  .header__link {
-    padding: 10px 16px;
-    border-radius: 999px;
-    color: var(--text-body);
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background .2s ease, color .2s ease;
-  }
-  .header__link:hover { background: var(--bg-card); color: var(--text); }
-  .header__cta { margin-left: auto; padding: 14px 26px; font-size: 13px; }
-  .header__burger {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: auto;
-    padding: 8px;
-    background: none;
-    border: 0;
-    color: var(--text);
-    font: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .header__burger img { width: 22px; height: 22px; }
-
-  /* Наверху страницы шапка минимальная — логотип и «Меню», как в оригинале.
-     Якоря и кнопка выезжают, когда страницу прокрутили. */
-  .header__nav, .header__cta { display: none; }
-  .header--razvernuta .header__nav { display: flex; }
-  .header--razvernuta .header__cta { display: inline-flex; }
-  .header--razvernuta .header__burger { display: none; }
-
-  /* ---------- Мобильное меню ---------- */
-
-  .drawer {
-    position: fixed;
-    inset: 68px 0 auto;
-    z-index: 45;
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    padding: 16px 20px 24px;
-    background: var(--bg);
-    border-bottom: 1px solid var(--bg-raised);
-  }
-  .drawer.open { display: flex; }
-  .drawer__link {
-    padding: 14px 4px;
-    color: var(--text-body);
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
-  }
-  .drawer__social {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
-  }
-  .drawer__social a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 46px;
-    height: 46px;
-    border: 1px solid var(--bg-raised);
-    border-radius: 50%;
-    color: var(--text-body);
-    transition: color .2s ease, border-color .2s ease;
-  }
-  .drawer__social a:hover { color: var(--accent); border-color: var(--accent); }
-
-  .drawer .btn { margin-top: 12px; }
-
-  /* ---------- Общие заголовки ---------- */
-
-  .section { padding: 80px 0; }
-
-  .section__title {
-    margin: 0 0 48px;
-    font-size: 40px;
-    font-weight: 500;
-    line-height: 1.15;
-    letter-spacing: -.02em;
-  }
-
-  .accent { color: var(--accent); }
+  .header__inner { display: flex; align-items: center; gap: 28px; height: 64px; }
+  .header__logo { color: var(--text-body); font-family: var(--mono); font-size: 13px; text-decoration: none; white-space: nowrap; }
+  .header__nav { display: flex; gap: 24px; margin-left: auto; }
+  .header__link { display: inline-flex; align-items: center; min-height: 44px; color: var(--mute); font-size: 14px; font-weight: 600; text-decoration: none; transition: color .2s var(--ease-out); }
+  .header__link:hover { color: var(--text); }
+  .header__cta { margin-left: auto; padding: 11px 18px; border-radius: 10px; font-size: 13px; min-height: 40px; }
 
   /* ---------- Первый экран ---------- */
 
-  .hero { padding: 72px 0 96px; }
+  .hero { padding: clamp(40px, 1rem + 4vw, 88px) 0 clamp(40px, 1rem + 3vw, 72px); }
   .hero__inner {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
     gap: 48px;
     align-items: center;
   }
@@ -293,28 +203,24 @@
     padding: 10px 20px;
     border: 1px solid var(--bg-raised);
     border-radius: 999px;
+    color: var(--text-body);
     font-size: 14px;
     font-weight: 600;
   }
   .hero__title {
-    margin: 0 0 20px;
-    max-width: 580px;
-    font-size: 40px;
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -.02em;
-  }
-  .hero__subtitle {
-    margin: 0 0 16px;
-    font-size: 20px;
-    font-weight: 700;
+    margin: 0 0 28px;
+    max-width: 640px;
+    font-size: var(--fs-h1);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -.035em;
   }
   .hero__text {
-    margin: 0 0 36px;
-    max-width: 460px;
-    color: var(--text);
-    font-size: 16px;
-    line-height: 1.63;
+    margin: 0 0 40px;
+    max-width: 34em;
+    color: var(--text-body);
+    font-size: var(--fs-lead);
+    line-height: 1.65;
   }
 
   /* Гофер с часами и облако логотипов вокруг него */
@@ -341,211 +247,428 @@
   .hero__tech--docker { bottom: 16%; left: 0;  animation-delay: 2.4s; }
   .hero__tech--go     { bottom: 6%; right: 8%; width: clamp(58px, 15%, 104px); animation-delay: 3.2s; }
 
+  /* Первая загрузка: текст приходит сверху вниз, гофер следом */
+  @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  @keyframes land { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: none; } }
+  .hero__copy > * { animation: rise .9s var(--ease-expo) both; }
+  .hero__copy > :nth-child(2) { animation-delay: .08s; }
+  .hero__copy > :nth-child(3) { animation-delay: .16s; }
+  .hero__copy > :nth-child(4) { animation-delay: .24s; }
+  .hero__copy > :nth-child(5) { animation-delay: .32s; }
+  .hero__gopher { animation: land 1.1s var(--ease-expo) .2s both; }
+
   @keyframes parit {
     0%, 100% { transform: translateY(0); }
     50%      { transform: translateY(-10px); }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .hero__tech { animation: none; }
-  }
 
-  /* ---------- Состав практикума ---------- */
 
-  .steps {
-    padding: 56px 40px 72px;
-    background: var(--bg-card);
+  /* Кнопка-пилюля с подарком — из текущего дизайна лендинга */
+  .btn--pill { border-radius: 999px; font-weight: 700; padding: 20px 32px; }
+  .btn__icon { width: 22px; height: 22px; flex: none; }
+
+  /* ---------- Окно с кодом ---------- */
+  .win {
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
     border-radius: 16px;
+    box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .7);
   }
-  .steps__title {
-    margin: 0 0 48px;
-    font-size: 40px;
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -.05em;
+  .win__bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--mute);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .win__bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+  .win__bar span { margin-left: 10px; }
+  .code {
+    margin: 0;
+    padding: 18px 0;
+    overflow-x: auto;
+    color: var(--text-body);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.75;
+    tab-size: 2;
+  }
+  .code .ln { display: block; padding: 0 20px; white-space: pre; }
+  .code .ln--hl { background: rgba(223, 223, 65, .1); }
+  .k { color: var(--accent); }
+  .t { color: var(--go); }
+  .s { color: #b9d99a; }
+  .c { color: var(--mute); }
+  .n { color: #f0b37e; }
+
+
+  /* ---------- Знакомо? (светлая карточка) ---------- */
+
+  .pain {
+    padding: clamp(32px, 1rem + 3.5vw, 72px) clamp(20px, .5rem + 4.5vw, 72px);
+    background: var(--light-bg);
+    border-radius: clamp(24px, 1rem + 1.5vw, 40px);
+    color: var(--light-ink);
+  }
+  .pain__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 48px;
+    align-items: start;
+  }
+  .pain__title {
+    margin: 0;
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+  }
+  .pain__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: #374246;
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+  }
+  .pain__list li {
+    position: relative;
+    padding: 18px 0 18px 32px;
+    border-top: 1px solid rgba(24, 32, 35, .12);
+  }
+  .pain__list li:first-child { border-top: 0; padding-top: 0; }
+  .pain__list li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: calc(18px + .78em - 4px);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--light-ink);
+  }
+  .pain__list li:first-child::before { top: calc(.78em - 4px); }
+
+
+  /* ---------- Почему не получалось: рельс «простой пример → прод» ---------- */
+  .why { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+  .why__text { margin: 0 0 32px; max-width: 36em; color: var(--text-body); font-size: var(--fs-lead); line-height: 1.7; }
+  .why__text + .why__text { margin-top: -16px; }
+  .why__bridge { margin: 0; font-size: clamp(1.25rem, 1.1rem + .6vw, 1.5rem); font-weight: 700; line-height: 1.35; letter-spacing: -.015em; }
+  .why__bridge span { color: var(--accent); }
+
+  .rail {
+    padding: 32px 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+  .rail__row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 11px 0 11px 34px;
+    color: var(--text);
+  }
+  .rail__row::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--text-body);
+  }
+  .rail__row:first-child::before { top: 50%; }
+  .rail__row:last-child::before { bottom: 50%; }
+  .rail__row::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: var(--text-body);
+  }
+  .rail__row--off { color: var(--mute); }
+  .rail__row--off::before { background: repeating-linear-gradient(to bottom, var(--line) 0 5px, transparent 5px 10px); }
+  .rail__row--off::after { background: var(--bg); border: 2px solid var(--line); }
+  .rail__stop {
+    margin: 8px 0;
+    padding: 10px 14px;
+    border: 1px dashed var(--accent);
+    border-radius: 10px;
+    color: var(--accent);
+    font-size: 12px;
     text-align: center;
   }
-  /* Две колонки со сдвигом правой вниз и тонкой линией по центру — как в оригинале */
-  .steps__list {
+
+  /* ---------- Программа: git log ---------- */
+  .log {
+    margin: 0 0 var(--gap-section);
+    padding: 26px 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    font-family: var(--mono);
+    font-size: 15px;
+  }
+  .log__cmd { margin: 0 0 16px; color: var(--mute); font-size: 13px; }
+  .log__cmd b { color: var(--text); font-weight: 500; }
+  .log__list { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 40px; }
+  .log__list li { break-inside: avoid; }
+  .log__list a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    min-height: 44px;
+    padding: 10px 0;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .log__list a:hover .log__msg { color: var(--accent); }
+  .log__list a:focus-visible { outline-offset: 2px; }
+  .log__n { color: var(--accent); }
+  .log__msg { transition: color .2s var(--ease-out); }
+
+  .commits { position: relative; margin: 0; padding: 0; list-style: none; }
+  /* Вертикальная ветка через все коммиты */
+  .commits::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: linear-gradient(var(--accent), var(--line) 18%, var(--line) 82%, var(--accent));
+  }
+  .commit {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 68px 48px;
-    margin: 0;
-    padding: 0 0 110px;
-    list-style: none;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 40px;
+    padding: 0 0 clamp(56px, 2.5rem + 3vw, 88px) 72px;
+    scroll-margin-top: 96px;
   }
-  .steps__list::before {
+  .commit:last-child { padding-bottom: 0; }
+  .commit__dot {
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .commit__num { display: block; margin-bottom: 8px; color: var(--mute); font-family: var(--mono); font-size: 13px; }
+  .commit__title { margin: 0 0 20px; font-size: var(--fs-h3); font-weight: 700; line-height: 1.15; letter-spacing: -.025em; }
+  .commit__list { margin: 0 0 24px; padding: 0; list-style: none; color: var(--text-body); font-size: 16px; line-height: 1.6; }
+  .commit__list li { position: relative; padding-left: 20px; }
+  .commit__list li + li { margin-top: 10px; }
+  .commit__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .8em;
+    width: 8px;
+    height: 2px;
+    background: var(--accent);
+  }
+  .result {
+    display: inline-block;
+    margin: 0;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: rgba(223, 223, 65, .08);
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .result span { display: block; margin-bottom: 4px; color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 500; }
+
+  .commit .win { align-self: start; }
+  .commit .code { font-size: 12.5px; padding: 14px 0; }
+  .commit .code .ln { padding: 0 16px; }
+
+  /* HTTP/1.1 против HTTP/2 */
+  .wire { padding: 20px 18px; font-family: var(--mono); font-size: 12px; color: var(--mute); }
+  .wire__row { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 14px; align-items: center; }
+  .wire__row + .wire__row { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .wire__name { color: var(--text); font-weight: 700; }
+  .wire__pipes { display: grid; gap: 5px; }
+  .wire__pipe { height: 6px; border-radius: 3px; background: var(--line); }
+  .wire__pipe--one {
+    height: 26px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 6px;
+  }
+  .wire__pipe--one i { height: 6px; flex: 1; border-radius: 3px; background: var(--accent); opacity: .9; }
+  .wire__pipe--one i:nth-child(2) { background: var(--go); }
+  .wire__pipe--one i:nth-child(3) { background: #f0b37e; }
+  .wire__pipe--one i:nth-child(4) { background: var(--text-body); }
+  .wire__cap { grid-column: 2; margin-top: 8px; }
+
+  /* Мини-Swagger */
+  .swag { padding: 14px; display: grid; gap: 8px; font-family: var(--mono); font-size: 12.5px; }
+  .swag__op {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text-body);
+  }
+  .swag__m { padding: 3px 0; border-radius: 5px; color: #0f1417; font-weight: 700; font-size: 11px; text-align: center; }
+  .swag__m--post { background: #7fd1a0; }
+  .swag__m--get { background: var(--go); }
+  .swag__m--patch { background: #f0b37e; }
+  .swag__m--del { background: #f08a7e; }
+
+  /* ---------- Репозиторий ---------- */
+  .repo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: center;
+    padding: clamp(28px, 1rem + 3vw, 56px);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background:
+      radial-gradient(600px 200px at 0% 0%, rgba(223, 223, 65, .08), transparent 70%),
+      var(--surface);
+  }
+  .repo__title { margin: 0 0 14px; font-size: clamp(1.375rem, 1.15rem + .9vw, 1.875rem); font-weight: 700; line-height: 1.25; letter-spacing: -.02em; }
+  .repo__text { margin: 0; color: var(--text-body); font-size: var(--fs-lead); }
+  .repo .win { box-shadow: none; background: var(--bg); }
+  /* Компактная плашка сразу после коммитов */
+  .repo--compact {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 260px);
+    gap: 28px;
+    margin-top: clamp(40px, 2rem + 2vw, 64px);
+    padding: 16px 16px 16px 24px;
+    border-radius: 16px;
+  }
+  .repo--compact .repo__title { margin-bottom: 6px; font-size: 18px; line-height: 1.35; letter-spacing: -.01em; }
+  .repo--compact .repo__text { font-size: 15px; }
+  .repo--compact .win__bar { padding: 6px 12px; font-size: 11px; }
+  .repo--compact .code { padding: 8px 0; font-size: 11px; line-height: 1.35; }
+  .repo--compact .code .ln { padding: 0 14px; }
+  @media (max-width: 640px) { .repo--compact { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 20px; } }
+
+  /* ---------- Что будет на выходе: схема ---------- */
+  .outcome { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 56px; align-items: center; }
+  .outcome__lead { margin: 0 0 24px; color: var(--text-body); font-size: var(--fs-lead); }
+  .outcome__list { margin: 0; padding: 0; list-style: none; }
+  .outcome__list li {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+    font-size: clamp(1.0625rem, 1rem + .3vw, 1.1875rem);
+    font-weight: 600;
+  }
+  .outcome__list li:last-child { border-bottom: 1px solid var(--line); }
+  .outcome__list li::before { content: "✓"; color: var(--accent); font-family: var(--mono); font-weight: 700; }
+
+  .scheme { display: grid; gap: 12px; font-family: var(--mono); font-size: 13px; }
+  .node {
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+  .node b { display: block; margin-bottom: 2px; color: var(--text); font-size: 14px; }
+  .node span { color: var(--mute); font-size: 12px; }
+  .node--core { border-color: var(--accent); background: rgba(223, 223, 65, .06); }
+  .scheme__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .edge { color: var(--mute); font-size: 12px; text-align: center; }
+  .edge em { color: var(--accent); font-style: normal; }
+  .scheme__col { display: grid; gap: 12px; }
+  /* Go-клиент ходит в сервис напрямую: сквозная пунктирная линия мимо Gateway */
+  .pass {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mute);
+    font-size: 12px;
+  }
+  .pass::before {
     content: "";
     position: absolute;
     top: 0;
     bottom: 0;
     left: 50%;
-    width: 1px;
-    background: var(--bg-raised);
+    border-left: 2px dashed var(--line);
   }
-  /* Правая колонка идёт со сдвигом вниз — «ёлочкой», как в оригинале */
-  .steps__item:nth-child(even) { transform: translateY(118px); }
-
-  .step {
-    display: grid;
-    grid-template-columns: 110px minmax(0, 1fr);
-    gap: 32px;
-    align-items: center;
-    min-height: 170px;
-    padding: 28px 32px;
-    background: var(--bg);
-    border-radius: 12px;
-  }
-  .step__pic {
-    width: 110px;
-    height: 110px;
-    object-fit: contain;
-  }
-  .step__num {
-    display: inline-block;
-    margin-bottom: 14px;
-    padding: 1px 10px;
-    border-radius: 4px;
-    background: var(--accent);
-    color: #000000;
-    font-size: 17px;
-    font-weight: 900;
-    line-height: 1.5;
-  }
-  .step__title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 1.28;
-  }
-
-  .steps__outro {
-    margin: 88px auto 0;
-    max-width: 860px;
-    font-size: 27px;
-    font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -.02em;
-    text-align: center;
-  }
-  .steps__cta { margin-top: 40px; text-align: center; }
-
-  /* ---------- Для кого ---------- */
-
-  .whom {
-    position: relative;
-    overflow: hidden;
-    padding: 56px 64px;
-    background: var(--light-bg);
-    border-radius: 40px;
-    color: var(--light-ink);
-  }
-  .whom__inner {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 48px;
-    align-items: start;
-  }
-  .whom__title {
-    margin: 0;
-    font-size: 40px;
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -.05em;
-  }
-  .whom__list {
-    margin: 0;
-    padding-left: 22px;
-    color: #374246;
-    font-size: 18px;
-  }
-  .whom__list li + li { margin-top: 14px; }
+  .pass span { position: relative; padding: 6px 8px; background: var(--bg); }
+  .pass em { color: var(--accent); font-style: normal; }
 
   /* ---------- Преподаватель ---------- */
-
-  .teacher__head {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 40px;
-    align-items: end;
-    margin-bottom: 48px;
+  .teacher { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 56px; align-items: start; }
+  .teacher__name { margin: 0 0 var(--gap-title); font-size: var(--fs-h2); font-weight: 700; line-height: 1.08; letter-spacing: -.03em; }
+  /* Круглое фото с жёлтой обводкой — как на /sd-anatomy/ */
+  .teacher__photo {
+    position: relative;
+    width: 280px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--line);
+    border: 2px solid rgba(223, 223, 65, .9);
   }
-  .teacher__portrait { width: 260px; border-radius: var(--radius); }
-
-  /* В оригинале места работы идут одной колонкой во всю ширину:
-     компания с должностью в первой трети, описание во второй, третья
-     остаётся под портрет. */
-  .teacher__grid {
-    display: flex;
-    flex-direction: column;
-  }
+  .teacher__photo img { position: absolute; left: -55%; top: -8%; width: 200%; max-width: none; height: auto; }
+  .jobs { margin: 0; padding: 0; list-style: none; }
   .job {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    align-items: center;
-    padding: 22px 0;
-    border-top: 1px solid var(--bg-raised);
+    grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+    gap: 24px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
   }
-  .job:last-child { border-bottom: 1px solid var(--bg-raised); }
-  .job__kto {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .job__where { margin: 0; font-size: 18px; font-weight: 600; }
-  .job__role {
-    display: inline-block;
-    padding: 6px 14px;
-    border: 1px solid var(--bg-raised);
-    border-radius: 10px;
-    font-size: 14px;
-    color: var(--text-mute);
-    font-weight: 400;
-  
-  }
-  .job__desc { margin: 0; color: var(--text-mute); font-size: 16px; }
-
-  /* ---------- Цифры ---------- */
-
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    line-height: 1.55;
-  
-  }
-  .stat {
-    padding: 32px;
-    min-height: 241px;
-    background: var(--bg-card);
-    border-radius: 16px;
-  }
-  .stat__value {
-    margin: 0 0 14px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, .25);
-    color: var(--accent);
-    font-size: 30px;
-    font-weight: 500;
-    letter-spacing: -.01em;
-  }
-  .stat__label { margin: 0; color: var(--text-body); font-size: 15px; }
+  .job:last-child { border-bottom: 1px solid var(--line); }
+  .job__where { margin: 0; font-weight: 700; }
+  .job__role { display: block; margin-top: 2px; color: var(--mute); font-family: var(--mono); font-size: 12px; font-weight: 400; }
+  .job__desc { margin: 0; color: var(--text-body); max-width: 40em; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 40px; margin-top: clamp(48px, 2rem + 3vw, 80px); }
+  .stat { padding-top: 24px; border-top: 2px solid var(--accent); }
+  .stat__value { margin: 0 0 8px; color: var(--text); font-size: clamp(2rem, 1.6rem + 1.4vw, 2.75rem); font-weight: 700; line-height: 1.05; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .stat__label { margin: 0; max-width: 22em; color: var(--text-body); font-size: 15px; line-height: 1.5; }
 
   /* ---------- Финальный блок ---------- */
 
-  /* Жёлтая карточка с вырезом сверху — как в оригинале */
   .final {
     position: relative;
-    padding: 88px 56px 72px;
+    padding: clamp(48px, 2rem + 5vw, 120px) clamp(20px, 1rem + 3vw, 56px) clamp(48px, 2rem + 4vw, 104px);
     background: var(--accent);
     border-radius: 34px;
     color: var(--light-ink);
-    /* В оригинале справа пустой слот под видео, который так и не заполнили.
-       Содержимое центрируется, чтобы карточка не держала мёртвое место. */
     text-align: center;
   }
   .final__notch {
@@ -559,18 +682,10 @@
   .final__title {
     margin: 0 auto 40px;
     max-width: 700px;
-    font-size: 40px;
-    font-weight: 500;
-    line-height: 1.2;
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    line-height: 1.1;
     letter-spacing: -.035em;
-  }
-  .final__note { margin: 0 0 12px; font-size: 18px; }
-  .final__timer {
-    margin: 0 0 36px;
-    font-size: 60px;
-    font-weight: 500;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: .077em;
   }
   .final .btn {
     padding: 24px 40px;
@@ -578,100 +693,90 @@
     color: var(--text);
     font-size: 16px;
   }
-  .final .btn:hover { background: #22292c; }
+  .final .btn:hover { background: #0f1517; box-shadow: 0 14px 28px -16px rgba(24, 32, 35, .7); }
+  .final .btn:focus-visible { outline-color: var(--light-ink); }
+
+
+
+  /* Гофер выглядывает из финального блока, срезан его нижним краем */
+  .final--gopher {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: center;
+    overflow: hidden;
+    padding-bottom: 0;
+    text-align: left;
+  }
+  .final--gopher .final__title { margin: 0 0 32px; }
+  .final__text { padding-bottom: clamp(48px, 2rem + 4vw, 104px); }
+  .final__gopher { align-self: end; width: 100%; max-width: 380px; margin: 0 0 -70px auto; transform: rotate(-6deg); }
+  @media (max-width: 860px) {
+    .final--gopher { grid-template-columns: minmax(0, 1fr); text-align: center; }
+    .final__text { padding-bottom: 0; }
+    .final__gopher { max-width: 240px; margin: 20px auto -50px; }
+  }
 
   /* ---------- Подвал ---------- */
-
-  .footer {
-    position: relative;
-    margin-top: 96px;
-    padding: 48px 0;
-    background: url("img/footer-bg.jpg") center / cover no-repeat;
-  }
-  .footer::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(24, 32, 35, .84);
-  }
-  .footer__inner {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px 32px;
-    align-items: center;
-    font-size: 14px;
-    color: var(--text-mute);
-  }
-  .footer__links { display: flex; flex-wrap: wrap; gap: 16px 32px; margin-left: auto; }
-  .footer__links a { color: var(--text-mute); text-decoration: none; }
-  .footer__links a:hover { color: var(--text); }
+  .footer { margin-top: var(--gap-tight); padding: 32px 0 40px; border-top: 1px solid var(--line); }
+  .footer__inner { display: flex; flex-wrap: wrap; gap: 12px 32px; color: var(--mute); font-size: 14px; }
+  .footer__inner a { margin-left: auto; color: var(--mute); text-decoration: none; transition: color .2s var(--ease-out); }
+  .footer__inner a:hover { color: var(--text); }
 
   /* ---------- Планшет ---------- */
-
   @media (max-width: 960px) {
-    .section { padding: 64px 0; }
-    .section__title, .whom__title, .final__title { font-size: 32px; }
-
-    .header--razvernuta .header__nav,
-    .header--razvernuta .header__cta { display: none; }
-    .header--razvernuta .header__burger { display: flex; }
-
-    .hero { padding: 48px 0 64px; }
+    .header__nav { display: none; }
+    .header__cta { margin-left: auto; }
     .hero__inner { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-    .hero__title { font-size: 36px; }
     .hero__art { margin: 0 auto; max-width: 380px; }
-
-    .steps { padding: 48px 24px 56px; border-radius: 32px; }
-    .steps__title { font-size: 28px; }
-    .steps__list { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-bottom: 0; }
-    .steps__list::before { display: none; }
-    .steps__item:nth-child(even) { transform: none; }
-    .steps__outro { margin-top: 56px; font-size: 22px; }
-
-    .whom { padding: 44px 32px; border-radius: 32px; }
-    .whom__inner { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-
-    .teacher__head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .teacher__portrait { width: 200px; }
-    .job { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-    .stats { grid-template-columns: minmax(0, 1fr); }
-
-    .final { padding: 76px 32px 56px; }
+    .pain__inner { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .why, .outcome, .repo { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+    .commit { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-left: 60px; }
+    .teacher { grid-template-columns: minmax(0, 1fr) auto; gap: 32px; }
+    .teacher__photo { width: 180px; }
     .final__notch { width: 220px; }
-    .final__timer { font-size: 42px; }
   }
 
   /* ---------- Мобильный ---------- */
-
   @media (max-width: 640px) {
-    .section { padding: 48px 0; }
-    .section__title, .whom__title, .final__title { font-size: 26px; }
-
-    .hero__title { font-size: 28px; }
-    .hero__subtitle { font-size: 17px; }
-    .hero__text { font-size: 15px; }
-    .btn { width: 100%; padding: 18px 24px; font-size: 14px; }
-
-    .steps { padding: 36px 16px 44px; border-radius: 24px; }
-    .steps__title { font-size: 22px; }
-    .step { grid-template-columns: 80px minmax(0, 1fr); gap: 18px; min-height: 0; padding: 20px; }
-    .step__pic { width: 80px; height: 80px; }
-    .steps__outro { font-size: 19px; }
-
-    .whom { padding: 32px 20px; border-radius: 24px; }
-    .whom__title { font-size: 26px; }
-    .whom__list { font-size: 16px; }
-
-    .job { grid-template-columns: minmax(0, 1fr); gap: 10px; align-items: start; }
-
-    .final { padding: 44px 20px; border-radius: 24px; }
+    .shell { padding: 0 16px; }
+    .header__logo { font-size: 12px; }
+    .hero__badge { margin-bottom: 22px; }
+    .hero__art { max-width: 320px; }
+    .btn { width: 100%; padding: 18px 20px; font-size: 15px; }
+    .header .header__cta { width: auto; min-height: 44px; padding: 10px 16px; font-size: 13px; }
+    .code, .commit .code { font-size: 12px; }
+    .rail { padding: 22px 18px; font-size: 13px; }
+    .log { padding: 20px 18px; font-size: 14px; }
+    .log__list { columns: 1; }
+    .commits::before { left: 13px; }
+    .commit { padding: 0 0 56px 44px; }
+    .commit__dot { left: 0; width: 28px; height: 28px; }
+    .commit__list { font-size: 15px; }
+    .wire__row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .wire__cap { grid-column: 1; }
+    .scheme { font-size: 12px; }
+    .node { padding: 12px 12px; }
+    .teacher { grid-template-columns: minmax(0, 1fr); }
+    .teacher__photo { width: 150px; order: -1; }
+    .job { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .stats { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .final { border-radius: 24px; }
     .final__notch { display: none; }
-    .final__timer { font-size: 32px; }
+    .final .btn { padding: 18px 20px; font-size: 15px; }
+    .footer__inner { flex-direction: column; }
+    .footer__inner a { margin-left: 0; }
+  }
 
-    .footer__inner { flex-direction: column; align-items: flex-start; }
-    .footer__links { margin-left: 0; }
+  /* Мелкие телефоны: гофер и логотипы не должны давить на CTA */
+  @media (max-width: 400px) {
+    .hero__art { max-width: 280px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .js .fade-up, .js .stagger > * { opacity: 1; transform: none; transition: none; }
+    .hero__tech, .hero__copy > *, .hero__gopher { animation: none; }
+    .btn, .btn:hover, .btn:active { transition: none; transform: none; }
   }
   </style>
 </head>
@@ -680,50 +785,21 @@
 <header class="header">
   <div class="shell header__inner">
     <a class="header__logo" href="/">{ Олег Козырев }</a>
-    <nav class="header__nav">
-      <a class="header__link" href="#about-lesson">Что внутри</a>
-      <a class="header__link" href="#for-whom">Для кого</a>
-      <a class="header__link" href="#speaker">Преподаватель</a>
-    </nav>
-    <a class="btn header__cta" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">Забрать практикум</a>
-    <button class="header__burger" type="button" aria-expanded="false" aria-controls="drawer">
-      Меню<img src="img/menu.svg" alt="">
-    </button>
+    <a class="btn header__cta" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">Забрать воркшоп</a>
   </div>
 </header>
 
-<div class="drawer" id="drawer">
-  <a class="drawer__link" href="#about-lesson">Что внутри</a>
-  <a class="drawer__link" href="#for-whom">Для кого</a>
-  <a class="drawer__link" href="#speaker">Преподаватель</a>
-  <div class="drawer__social">
-    <a href="https://t.me/olezhek28" target="_blank" rel="noopener" aria-label="Telegram Олега">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-4.9 9-8.1c.4-.3-.1-.5-.6-.2L6.2 12.7 1.4 11.2c-1-.3-1-1 .2-1.5l19-7.3c.9-.3 1.6.2 1.3 1.9z"/></svg>
-    </a>
-    <a href="https://www.youtube.com/@olezhek28go" target="_blank" rel="noopener" aria-label="YouTube-канал">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M23 12s0-3.8-.5-5.6a2.9 2.9 0 0 0-2-2C18.7 4 12 4 12 4s-6.7 0-8.5.4a2.9 2.9 0 0 0-2 2C1 8.2 1 12 1 12s0 3.8.5 5.6c.3 1 1 1.7 2 2C5.3 20 12 20 12 20s6.7 0 8.5-.4c1-.3 1.7-1 2-2C23 15.8 23 12 23 12zM9.8 15.4V8.6l5.8 3.4-5.8 3.4z"/></svg>
-    </a>
-    <a href="https://www.linkedin.com/in/olezhek28" target="_blank" rel="noopener" aria-label="LinkedIn">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.5 4.7 5.9V21h-4v-5.6c0-1.3 0-3-1.9-3s-2.2 1.5-2.2 3V21h-4V9z"/></svg>
-    </a>
-  </div>
-  <a class="btn" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">
-    <img class="btn__icon" src="img/gift.svg" alt="">Забрать практикум в Telegram
-  </a>
-</div>
-
 <main>
 
+  <!-- ПЕРВЫЙ ЭКРАН -->
   <section class="hero">
     <div class="shell hero__inner">
-      <div>
-        <span class="hero__badge">Бесплатно</span>
-        <h1 class="hero__title">Освой gRPC <span class="accent">за 1 вечер</span></h1>
-        <p class="hero__subtitle">Пошаговый практикум для быстрого погружения в gRPC</p>
-        <p class="hero__text">Подробный практикум, где ты наконец разберёшься, как устроен gRPC, поймёшь все тонкости, напишешь и запустишь свой сервер и клиент, даже если раньше ничего не получалось.</p>
-        <!-- Как в оригинале: кнопка первого экрана уводит сразу в Telegram -->
-        <a class="btn" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">
-          <img class="btn__icon" src="img/gift.svg" alt="">Забрать практикум в Telegram
+      <div class="hero__copy">
+        <span class="hero__badge">Бесплатно · 3 часа практики</span>
+        <h1 class="hero__title">Подробный воркшоп <span class="accent">по&nbsp;gRPC</span></h1>
+        <p class="hero__text">Соберёшь на&nbsp;Go сервис, который работает и&nbsp;по&nbsp;gRPC, и&nbsp;по&nbsp;REST, со&nbsp;Swagger и&nbsp;стримом событий. Разберёшься, как всё устроено внутри, даже если раньше ничего не&nbsp;получалось.</p>
+        <a class="btn btn--pill" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">
+          <img class="btn__icon" src="img/gift.svg" alt="">Забрать воркшоп в Telegram
         </a>
       </div>
       <div class="hero__art">
@@ -737,177 +813,330 @@
     </div>
   </section>
 
-  <section class="section" id="about-lesson">
+  <!-- ЗНАКОМО? -->
+  <section class="block block--tight">
     <div class="shell">
-      <div class="steps fade-up">
-        <h2 class="steps__title">Состав практикума:</h2>
-        <ol class="steps__list">
-          <li class="steps__item">
-            <div class="step">
-              <img class="step__pic" src="img/step-01.png" alt="Гофер в окружении вопросительных знаков" loading="lazy" width="260" height="260">
-              <div>
-                <span class="step__num">01</span>
-                <p class="step__title">Что такое Protocol Buffer</p>
-              </div>
-            </div>
-          </li>
-          <li class="steps__item">
-            <div class="step">
-              <img class="step__pic" src="img/step-02.png" alt="Гофер с табличками JSON и Protobuf" loading="lazy" width="260" height="205">
-              <div>
-                <span class="step__num">02</span>
-                <p class="step__title">Чем protobuf лучше json</p>
-              </div>
-            </div>
-          </li>
-          <li class="steps__item">
-            <div class="step">
-              <img class="step__pic" src="img/step-03.png" alt="Гофер пишет .proto-файл" loading="lazy" width="260" height="260">
-              <div>
-                <span class="step__num">03</span>
-                <p class="step__title">Пишем первый .proto файл</p>
-              </div>
-            </div>
-          </li>
-          <li class="steps__item">
-            <div class="step">
-              <img class="step__pic" src="img/step-04.png" alt="Гофер выбирает между gRPC и HTTP" loading="lazy" width="260" height="260">
-              <div>
-                <span class="step__num">04</span>
-                <p class="step__title">Что такое gRPC и чем он лучше HTTP</p>
-              </div>
-            </div>
-          </li>
-          <li class="steps__item">
-            <div class="step">
-              <img class="step__pic" src="img/step-05.png" alt="Гофер держит коробку с надписью gRPC" loading="lazy" width="260" height="260">
-              <div>
-                <span class="step__num">05</span>
-                <p class="step__title">Генерируем и поднимаем gRPC-сервер</p>
-              </div>
-            </div>
-          </li>
-          <li class="steps__item">
-            <div class="step">
-              <img class="step__pic" src="img/step-06.png" alt="Гофер с ноутбуком и надписью gRPC client" loading="lazy" width="260" height="260">
-              <div>
-                <span class="step__num">06</span>
-                <p class="step__title">Пишем свой gRPC-клиент</p>
-              </div>
-            </div>
-          </li>
-          <li class="steps__item">
-            <div class="step">
-              <img class="step__pic" src="img/step-07.png" alt="Гофер читает книги про Postman gRPC и gRPCurl" loading="lazy" width="260" height="260">
-              <div>
-                <span class="step__num">07</span>
-                <p class="step__title">Учимся работать с gRPC через Postman и gRPCurl</p>
-              </div>
-            </div>
-          </li>
-          <li class="steps__item">
-            <div class="step">
-              <img class="step__pic" src="img/step-08.png" alt="Гофер в очках разбирает гору вопросов" loading="lazy" width="260" height="260">
-              <div>
-                <span class="step__num">08</span>
-                <p class="step__title">Разбираем типичные вопросы с собесов по gRPC</p>
-              </div>
-            </div>
-          </li>
-        </ol>
-        <p class="steps__outro">И это всё бесплатно, поэтому чего ты ждёшь, забирай урок скорее</p>
-        <div class="steps__cta">
-          <a class="btn" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">
-            <img class="btn__icon" src="img/gift.svg" alt="">Забрать практикум в Telegram
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="for-whom">
-    <div class="shell">
-      <div class="whom fade-up">
-        <div class="whom__inner">
-          <h2 class="whom__title">Этот практикум для тебя, если ты:</h2>
-          <ul class="whom__list">
-            <li>Уже пробовал разобраться с gRPC, но ничего не получилось</li>
-            <li>Хочешь уверенно отвечать на вопросы про gRPC на собеседованиях</li>
-            <li>В панике, потому что на работе завезли gRPC и ты ничего не понимаешь</li>
-            <li>Сидишь на старых технологиях и хочется пощупать что‑то современное</li>
-            <li>Переходишь на Go с другого языка и непонятен стек вокруг него</li>
+      <div class="pain fade-up">
+        <div class="pain__inner">
+          <h2 class="pain__title">Знакомо?</h2>
+          <ul class="pain__list stagger">
+            <li>Про gRPC только слышал, а&nbsp;на&nbsp;работе его завезли, и&nbsp;надо разбираться прямо сейчас</li>
+            <li>Пробовал сам: вроде всё понятно, а&nbsp;начинаешь делать, и&nbsp;не&nbsp;выходит</li>
+            <li>Код сгенерировался, а&nbsp;как из&nbsp;него собрать рабочий сервер, непонятно</li>
+            <li>На&nbsp;проекте gRPC нет, и&nbsp;кажется, что отстаёшь от&nbsp;рынка</li>
+            <li>Валидации и&nbsp;преобразования пишешь руками, хотя это можно генерировать</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="speaker">
-    <div class="shell">
-      <div class="teacher__head fade-up">
-        <h2 class="section__title" style="margin:0">Преподаватель — Олег Козырев</h2>
-        <img class="teacher__portrait" src="img/oleg-portrait.png" alt="Олег Козырев" width="504" height="560">
+  <!-- ПОЧЕМУ НЕ ПОЛУЧАЛОСЬ -->
+  <section class="block">
+    <div class="shell why">
+      <div class="fade-up">
+        <h2 class="h2">Почему не&nbsp;получалось</h2>
+        <p class="why__text">Большинство туториалов заканчивается на&nbsp;самом простом: один .proto, один сервер, один вызов. А&nbsp;в&nbsp;реальном проекте сразу вылезают валидация, интерцепторы, REST для фронта, Swagger и&nbsp;стримы.</p>
+        <p class="why__text">Инфа про всё это разбросана по&nbsp;разным статьям: собираешь её&nbsp;по&nbsp;кусочкам, путаешься, а&nbsp;цельной картины так и&nbsp;не&nbsp;появляется.</p>
+        <p class="why__bridge">Поэтому я&nbsp;собрал всё в&nbsp;один воркшоп, где мы&nbsp;пишем сервис с&nbsp;нуля и&nbsp;<span>шаг за&nbsp;шагом доводим его до&nbsp;уровня прода.</span></p>
       </div>
-      <div class="teacher__grid fade-up">
-        <article class="job">
-          <div class="job__kto">
-            <p class="job__where">BigTech (под NDA)</p>
-            <span class="job__role">Staff Engineer</span>
-          </div>
-          <p class="job__desc">Разрабатываю LLM-платформу для создания ИИ продуктов внутри компании</p>
-        </article>
-        <article class="job">
-          <div class="job__kto">
-            <p class="job__where">BigTech (под NDA)</p>
-            <span class="job__role">Senior Engineer</span>
-          </div>
-          <p class="job__desc">Разрабатывал внутреннюю платформу для сотен сервисов корпорации</p>
-        </article>
-        <article class="job">
-          <div class="job__kto">
-            <p class="job__where">Ozon Tech</p>
-            <span class="job__role">Senior Engineer</span>
-          </div>
-          <p class="job__desc">Разрабатывал сервисы логистики, модерации контента и мониторинга доставки</p>
-        </article>
-        <article class="job">
-          <div class="job__kto">
-            <p class="job__where">Route 256</p>
-            <span class="job__role">Ex-преподаватель и тьютор</span>
-          </div>
-          <p class="job__desc">Менторил и преподавал курсы по построению микросервисов в школе Ozon Tech</p>
-        </article>
+      <div class="rail fade-up stagger" role="group" aria-label="Что обычно есть в туториалах и что остаётся за кадром">
+        <div class="rail__row">один .proto</div>
+        <div class="rail__row">один сервер</div>
+        <div class="rail__row">один вызов</div>
+        <div class="rail__stop">тут заканчивается большинство туториалов</div>
+        <div class="rail__row rail__row--off">валидация</div>
+        <div class="rail__row rail__row--off">интерцепторы</div>
+        <div class="rail__row rail__row--off">REST для фронта</div>
+        <div class="rail__row rail__row--off">Swagger</div>
+        <div class="rail__row rail__row--off">стримы</div>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="shell stats fade-up">
-      <div class="stat">
-        <p class="stat__value">&gt;7 000 часов</p>
-        <p class="stat__label">Практики на реальных проектах в Big Tech компаниях</p>
-      </div>
-      <div class="stat">
-        <p class="stat__value">7+ лет</p>
-        <p class="stat__label">Занимаюсь программированием</p>
-      </div>
-      <div class="stat">
-        <p class="stat__value">8 500+</p>
-        <p class="stat__label">Подписчиков на YouTube-канале</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="final">
+  <!-- ПРОГРАММА -->
+  <section class="block block--flush-top" id="programma">
     <div class="shell">
-      <div class="final fade-up">
-        <img class="final__notch" src="img/notch.svg" alt="" aria-hidden="true" width="278" height="44">
-        <h2 class="final__title">Забирай бесплатный практикум для полного погружения в gRPC</h2>
-        <p class="final__note">Ссылка на практикум будет активна ещё:</p>
-        <p class="final__timer" data-timer>00:00:00:00</p>
+      <h2 class="h2 fade-up">Программа воркшопа</h2>
+
+      <nav class="log fade-up" aria-label="Оглавление">
+        <p class="log__cmd">$ <b>git log --oneline --reverse</b></p>
+        <ol class="log__list stagger">
+          <li><a href="#m1"><span class="log__n">01</span><span class="log__msg">Разбираем, как устроен Protobuf</span></a></li>
+          <li><a href="#m2"><span class="log__n">02</span><span class="log__msg">Выясняем, чем gRPC быстрее HTTP</span></a></li>
+          <li><a href="#m3"><span class="log__n">03</span><span class="log__msg">Генерируем код: protoc, buf, EasyP</span></a></li>
+          <li><a href="#m4"><span class="log__n">04</span><span class="log__msg">Поднимаем свой gRPC-сервер</span></a></li>
+          <li><a href="#m5"><span class="log__n">05</span><span class="log__msg">Пишем клиента и&nbsp;тестируем ручки</span></a></li>
+          <li><a href="#m6"><span class="log__n">06</span><span class="log__msg">Подключаем валидацию и&nbsp;интерцепторы</span></a></li>
+          <li><a href="#m7"><span class="log__n">07</span><span class="log__msg">Добавляем REST и&nbsp;Swagger через gRPC-Gateway</span></a></li>
+          <li><a href="#m8"><span class="log__n">08</span><span class="log__msg">Настраиваем стриминг событий</span></a></li>
+        </ol>
+      </nav>
+      <h2 class="h2 fade-up">Подробно разберём</h2>
+
+      <ol class="commits">
+
+        <li class="commit fade-up" id="m1">
+          <span class="commit__dot" aria-hidden="true">01</span>
+          <div>
+            <h3 class="commit__title">Разбираем, как устроен Protobuf</h3>
+            <ul class="commit__list">
+              <li>Чем protobuf лучше JSON и&nbsp;почему он&nbsp;меньше весит в&nbsp;сети</li>
+              <li>Типы, enum, repeated, вложенные сообщения</li>
+              <li>Как не&nbsp;сломать контракт: номера полей, reserved, версии API</li>
+              <li>Как отличить пустую строку от&nbsp;«ничего не&nbsp;передали»</li>
+            </ul>
+            <p class="result"><span>Результат</span>Описали контракт сервиса в&nbsp;proto-файле и&nbsp;разобрались, как менять его, не&nbsp;ломая клиентов</p>
+          </div>
+          <div class="win" aria-hidden="true">
+            <div class="win__bar"><i></i><i></i><i></i><span>spaceship.proto</span></div>
+<pre class="code"><span class="ln"><span class="k">message</span> <span class="t">Spaceship</span> {</span><span class="ln">  <span class="t">string</span> uuid = <span class="n">1</span>;</span><span class="ln">  <span class="t">SpaceshipInfo</span> info = <span class="n">2</span>;</span><span class="ln ln--hl">  <span class="k">reserved</span> <span class="n">3</span>;  <span class="c">// место под будущее поле</span></span><span class="ln">  google.protobuf.<span class="t">Timestamp</span> created_at = <span class="n">4</span>;</span><span class="ln">  google.protobuf.<span class="t">Timestamp</span> updated_at = <span class="n">5</span>;</span><span class="ln">}</span></pre>
+          </div>
+        </li>
+
+        <li class="commit fade-up" id="m2">
+          <span class="commit__dot" aria-hidden="true">02</span>
+          <div>
+            <h3 class="commit__title">Выясняем, чем gRPC быстрее HTTP</h3>
+            <ul class="commit__list">
+              <li>Что не&nbsp;так с&nbsp;HTTP/1.1: дорогие TCP-соединения, head-of-line blocking, тяжёлые заголовки</li>
+              <li>Что поменял HTTP/2 и&nbsp;почему gRPC работает на&nbsp;нём</li>
+              <li>Как описывать ручки в&nbsp;proto-файле</li>
+            </ul>
+            <p class="result"><span>Результат</span>Понимаешь, что gRPC берёт от&nbsp;HTTP/2 и&nbsp;почему он&nbsp;быстрее</p>
+          </div>
+          <div class="win" aria-hidden="true">
+            <div class="win__bar"><i></i><i></i><i></i><span>соединения</span></div>
+            <div class="wire">
+              <div class="wire__row">
+                <span class="wire__name">HTTP/1.1</span>
+                <div class="wire__pipes"><i class="wire__pipe"></i><i class="wire__pipe"></i><i class="wire__pipe"></i><i class="wire__pipe"></i><i class="wire__pipe"></i><i class="wire__pipe"></i></div>
+                <span class="wire__cap">до 6 TCP-соединений, запросы ждут друг друга</span>
+              </div>
+              <div class="wire__row">
+                <span class="wire__name">HTTP/2</span>
+                <div class="wire__pipe wire__pipe--one"><i></i><i></i><i></i><i></i></div>
+                <span class="wire__cap">одно соединение, внутри много стримов</span>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="commit fade-up" id="m3">
+          <span class="commit__dot" aria-hidden="true">03</span>
+          <div>
+            <h3 class="commit__title">Генерируем код: protoc, buf, EasyP</h3>
+            <ul class="commit__list">
+              <li>Генерируем тремя способами: protoc, buf и&nbsp;российский EasyP</li>
+              <li>Линтер для proto-файлов и&nbsp;проверка ломающих изменений</li>
+              <li>Где buf упирается в&nbsp;VPN и&nbsp;как это обойти</li>
+            </ul>
+            <p class="result"><span>Результат</span>Настроили одну команду, которая проверяет proto-файл линтером и&nbsp;генерирует из&nbsp;него готовый Go-код для сервера и&nbsp;клиента</p>
+          </div>
+          <div class="win" aria-hidden="true">
+            <div class="win__bar"><i></i><i></i><i></i><span>terminal</span></div>
+<pre class="code"><span class="ln"><span class="c">$</span> buf lint &amp;&amp; buf generate</span><span class="ln"> </span><span class="ln"><span class="c">pkg/proto/spaceship/v1/</span></span><span class="ln">  spaceship.pb.go</span><span class="ln">  spaceship_grpc.pb.go</span><span class="ln">  spaceship.pb.validate.go</span><span class="ln">  spaceship.pb.gw.go</span></pre>
+          </div>
+        </li>
+
+        <li class="commit fade-up" id="m4">
+          <span class="commit__dot" aria-hidden="true">04</span>
+          <div>
+            <h3 class="commit__title">Поднимаем свой gRPC-сервер</h3>
+            <ul class="commit__list">
+              <li>Пишем CRUD-сервис на&nbsp;Go</li>
+              <li>Коды ошибок gRPC: not found, invalid argument и&nbsp;другие</li>
+              <li>Reflection и&nbsp;graceful shutdown</li>
+              <li>Продовые вопросы: отдавать ли ошибку при удалении несуществующей записи и&nbsp;что такое soft delete</li>
+            </ul>
+            <p class="result"><span>Результат</span>Подняли собственный сервис и&nbsp;разобрались в&nbsp;кодах ошибок gRPC, reflection и&nbsp;аккуратной остановке сервера без потери запросов</p>
+          </div>
+          <div class="win" aria-hidden="true">
+            <div class="win__bar"><i></i><i></i><i></i><span>cmd/grpc_server/main.go</span></div>
+<pre class="code"><span class="ln">ship, ok := s.spaceships[req.GetUuid()]</span><span class="ln"><span class="k">if</span> !ok {</span><span class="ln ln--hl">  <span class="k">return</span> <span class="k">nil</span>, status.Errorf(codes.<span class="t">NotFound</span>,</span><span class="ln ln--hl">    <span class="s">"spaceship %s not found"</span>, req.GetUuid())</span><span class="ln">}</span><span class="ln"> </span><span class="ln">server.GracefulStop()</span></pre>
+          </div>
+        </li>
+
+        <li class="commit fade-up" id="m5">
+          <span class="commit__dot" aria-hidden="true">05</span>
+          <div>
+            <h3 class="commit__title">Пишем клиента и&nbsp;тестируем ручки</h3>
+            <ul class="commit__list">
+              <li>Пишем свой gRPC-клиент на&nbsp;Go</li>
+              <li>Дёргаем ручки через gRPCurl или Postman</li>
+              <li>Разбираем ошибку сервера на&nbsp;стороне клиента</li>
+            </ul>
+            <p class="result"><span>Результат</span>Написали Go-клиент, который вызывает все ручки сервиса, и&nbsp;научились проверять любую ручку из&nbsp;терминала</p>
+          </div>
+          <div class="win" aria-hidden="true">
+            <div class="win__bar"><i></i><i></i><i></i><span>terminal</span></div>
+<pre class="code"><span class="ln"><span class="c">$</span> grpcurl -plaintext \</span><span class="ln">    -d <span class="s">'{"uuid": "404"}'</span> localhost:50051 \</span><span class="ln">    spaceship.v1.SpaceshipService/Get</span><span class="ln"> </span><span class="ln ln--hl">ERROR:</span><span class="ln ln--hl">  Code: <span class="t">NotFound</span></span><span class="ln ln--hl">  Message: spaceship 404 not found</span></pre>
+          </div>
+        </li>
+
+        <li class="commit fade-up" id="m6">
+          <span class="commit__dot" aria-hidden="true">06</span>
+          <div>
+            <h3 class="commit__title">Подключаем валидацию и&nbsp;интерцепторы</h3>
+            <ul class="commit__list">
+              <li>Правила валидации прямо в&nbsp;proto: длина строки, email, IP, regexp</li>
+              <li>Интерцепторы: middleware из&nbsp;мира gRPC</li>
+              <li>Выносим валидацию в&nbsp;интерцептор, замеряем время ответа, собираем цепочку</li>
+            </ul>
+            <p class="result"><span>Результат</span>Проверки входных данных срабатывают сами на&nbsp;каждую ручку, а&nbsp;время ответа каждой ручки пишется в&nbsp;лог</p>
+          </div>
+          <div class="win" aria-hidden="true">
+            <div class="win__bar"><i></i><i></i><i></i><span>cmd/grpc_server/main.go</span></div>
+<pre class="code"><span class="ln">server := grpc.NewServer(</span><span class="ln ln--hl">  grpc.ChainUnaryInterceptor(</span><span class="ln ln--hl">    interceptor.Validation(),</span><span class="ln ln--hl">    interceptor.ResponseTime(),</span><span class="ln">  ),</span><span class="ln">)</span><span class="ln"> </span><span class="ln"><span class="c">// Create 10µs · Get 1µs</span></span></pre>
+          </div>
+        </li>
+
+        <li class="commit fade-up" id="m7">
+          <span class="commit__dot" aria-hidden="true">07</span>
+          <div>
+            <h3 class="commit__title">Добавляем REST и&nbsp;Swagger через gRPC-Gateway</h3>
+            <ul class="commit__list">
+              <li>Фронту нужен REST, а&nbsp;у&nbsp;тебя gRPC: поднимаем оба из&nbsp;одного proto-файла</li>
+              <li>Генерируем OpenAPI-спеку</li>
+              <li>Поднимаем Swagger UI и&nbsp;вызываем ручки прямо из&nbsp;браузера</li>
+            </ul>
+            <p class="result"><span>Результат</span>Тот&nbsp;же сервис отвечает фронту по&nbsp;REST, а&nbsp;в&nbsp;браузере открывается Swagger, где можно вызвать любую ручку</p>
+          </div>
+          <div class="win" aria-hidden="true">
+            <div class="win__bar"><i></i><i></i><i></i><span>localhost · Swagger UI</span></div>
+            <div class="swag">
+              <div class="swag__op"><span class="swag__m swag__m--post">POST</span>/api/v1/spaceship</div>
+              <div class="swag__op"><span class="swag__m swag__m--get">GET</span>/api/v1/spaceship/{uuid}</div>
+              <div class="swag__op"><span class="swag__m swag__m--patch">PATCH</span>/api/v1/spaceship/{uuid}</div>
+              <div class="swag__op"><span class="swag__m swag__m--del">DELETE</span>/api/v1/spaceship/{uuid}</div>
+            </div>
+          </div>
+        </li>
+
+        <li class="commit fade-up" id="m8">
+          <span class="commit__dot" aria-hidden="true">08</span>
+          <div>
+            <h3 class="commit__title">Настраиваем стриминг событий</h3>
+            <ul class="commit__list">
+              <li>Три вида стримов и&nbsp;когда какой нужен</li>
+              <li>Серверный стрим: подписка на&nbsp;события в&nbsp;реальном времени</li>
+              <li>Клиент, который слушает стрим</li>
+            </ul>
+            <p class="result"><span>Результат</span>Клиент подписывается на&nbsp;изменения и&nbsp;в&nbsp;реальном времени получает события: корабль создан, обновлён, удалён</p>
+          </div>
+          <div class="win" aria-hidden="true">
+            <div class="win__bar"><i></i><i></i><i></i><span>grpc_stream_client</span></div>
+<pre class="code"><span class="ln"><span class="c">подписка активна, ждём события…</span></span><span class="ln">← <span class="s">CREATED</span>  Millennium Falcon</span><span class="ln">← <span class="n">UPDATED</span>  Millennium Falcon · price</span><span class="ln">← <span class="t">DELETED</span>  Millennium Falcon</span><span class="ln"><span class="c">стрим закрыт клиентом</span></span></pre>
+          </div>
+        </li>
+
+      </ol>
+
+      <div class="repo repo--compact fade-up">
+        <div>
+          <h2 class="repo__title">Весь код, который мы&nbsp;пишем на&nbsp;воркшопе, будет у&nbsp;тебя в&nbsp;репозитории.</h2>
+          <p class="repo__text">Можешь идти по&nbsp;нему шаг за&nbsp;шагом и&nbsp;повторять всё самому.</p>
+        </div>
+        <div class="win" aria-hidden="true">
+          <div class="win__bar"><i></i><i></i><i></i><span>terminal</span></div>
+<pre class="code"><span class="ln"><span class="c">$</span> git log --oneline</span><span class="ln"><span class="k">●</span> add streaming</span><span class="ln"><span class="k">●</span> add swagger ui</span><span class="ln"><span class="k">●</span> add grpc gateway</span><span class="ln"><span class="k">●</span> add interceptors</span><span class="ln"><span class="c">  …</span></span><span class="ln"><span class="k">●</span> add proto file</span><span class="ln"><span class="k">●</span> init module</span></pre>
+        </div>
+      </div>
+
+      <div class="cta-mid fade-up">
+        <p class="why__bridge">И&nbsp;да, это всё бесплатно) Поэтому чего ты&nbsp;ждёшь, забирай воркшоп скорее</p>
         <a class="btn" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">
-          <img class="btn__icon" src="img/gift.svg" alt="">Забрать практикум в Telegram
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-4.9 9-8.1c.4-.3-.1-.5-.6-.2L6.2 12.7 1.4 11.2c-1-.3-1-1 .2-1.5l19-7.3c.9-.3 1.6.2 1.3 1.9z"/></svg>
+          Забрать воркшоп в Telegram
         </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ЧТО БУДЕТ НА ВЫХОДЕ -->
+  <section class="block">
+    <div class="shell outcome">
+      <div class="fade-up">
+        <h2 class="h2">Что будет на&nbsp;выходе</h2>
+        <p class="outcome__lead">После воркшопа у&nbsp;тебя будет рабочий сервис на&nbsp;Go:</p>
+        <ul class="outcome__list stagger">
+          <li>gRPC-сервер с&nbsp;валидацией и&nbsp;интерцепторами</li>
+          <li>REST для фронта через gRPC-Gateway</li>
+          <li>Swagger, где можно потыкать ручки</li>
+          <li>Стрим событий в&nbsp;реальном времени</li>
+        </ul>
+      </div>
+      <div class="scheme fade-up" role="group" aria-label="Схема сервиса после воркшопа">
+        <div class="scheme__row">
+          <div class="node"><b>Фронт</b><span>браузер, Swagger UI</span></div>
+          <div class="node"><b>Go-клиент</b><span>обычный и стриминговый</span></div>
+        </div>
+        <div class="scheme__row">
+          <div class="scheme__col">
+            <div class="edge">↓ <em>HTTP</em> + JSON</div>
+            <div class="node"><b>gRPC-Gateway</b><span>REST из того же proto-файла</span></div>
+            <div class="edge">↓ <em>gRPC</em></div>
+          </div>
+          <div class="pass"><span>↓ <em>gRPC</em> напрямую</span></div>
+        </div>
+        <div class="node node--core"><b>SpaceshipService</b><span>CRUD · валидация · интерцепторы · стрим событий</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПРЕПОДАВАТЕЛЬ -->
+  <section class="block" id="speaker">
+    <div class="shell">
+      <div class="teacher">
+        <div class="fade-up">
+          <h2 class="teacher__name">Преподаватель&nbsp;— Олег Козырев</h2>
+          <ul class="jobs">
+            <li class="job">
+              <p class="job__where">BigTech (под NDA)<span class="job__role">Staff Engineer</span></p>
+              <p class="job__desc">Разрабатываю LLM-платформу для создания ИИ продуктов внутри компании</p>
+            </li>
+            <li class="job">
+              <p class="job__where">BigTech (под NDA)<span class="job__role">Senior Engineer</span></p>
+              <p class="job__desc">Разрабатывал внутреннюю платформу для сотен сервисов корпорации</p>
+            </li>
+            <li class="job">
+              <p class="job__where">Ozon Tech<span class="job__role">Senior Engineer</span></p>
+              <p class="job__desc">Разрабатывал сервисы логистики, модерации контента и мониторинга доставки</p>
+            </li>
+            <li class="job">
+              <p class="job__where">Route 256<span class="job__role">Ex-преподаватель и тьютор</span></p>
+              <p class="job__desc">Менторил и преподавал курсы по построению микросервисов в школе Ozon Tech</p>
+            </li>
+          </ul>
+        </div>
+        <div class="teacher__photo fade-up">
+          <picture>
+            <source srcset="img/oleg-portrait.webp" type="image/webp">
+            <img src="img/oleg-portrait.jpg" alt="Олег Козырев" width="720" height="960" loading="lazy">
+          </picture>
+        </div>
+      </div>
+      <div class="stats fade-up">
+        <div class="stat"><p class="stat__value">&gt;7 000 часов</p><p class="stat__label">Практики на реальных проектах в Big Tech компаниях</p></div>
+        <div class="stat"><p class="stat__value">7+ лет</p><p class="stat__label">Занимаюсь программированием</p></div>
+        <div class="stat"><p class="stat__value">8 500+</p><p class="stat__label">Подписчиков на YouTube-канале</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФИНАЛ -->
+  <section class="block block--tight">
+    <div class="shell">
+      <div class="final final--gopher fade-up">
+        <img class="final__notch" src="img/notch.svg" alt="" aria-hidden="true" width="278" height="44">
+        <div class="final__text">
+          <h2 class="final__title">Забирай бесплатный воркшоп по&nbsp;gRPC</h2>
+          <a class="btn btn--pill" href="https://t.me/olezhek28go/1791" target="_blank" rel="noopener">
+            <img class="btn__icon" src="img/gift.svg" alt="">Забрать воркшоп в Telegram
+          </a>
+        </div>
+        <img class="final__gopher" src="img/gopher.png" alt="" aria-hidden="true" width="960" height="960" loading="lazy">
       </div>
     </div>
   </section>
@@ -916,102 +1145,31 @@
 
 <footer class="footer">
   <div class="shell footer__inner">
-    <span>{ Олег Козырев }, © 2025</span>
-    <div class="footer__links">
-      <a href="/policy.html">Политика конфиденциальности</a>
-      <a href="https://t.me/maksimkoya" target="_blank" rel="noopener">Разработка сайта</a>
-    </div>
+    <span>{ Олег Козырев }, © 2026</span>
+    <a href="/policy.html">Политика конфиденциальности</a>
   </div>
 </footer>
 
 <script>
   // Появление блоков при скролле
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.fade-up').forEach(function (el) {
-    observer.observe(el);
+  // Порядковый индекс для поочерёдного появления пунктов
+  document.querySelectorAll('.stagger').forEach(function (list) {
+    Array.prototype.forEach.call(list.children, function (el, i) { el.style.setProperty('--i', i); });
   });
-
-  // Шапка разворачивается, когда страницу прокрутили ниже первого экрана
-  var header = document.querySelector('.header');
-
-  function obnovitShapku() {
-    header.classList.toggle('header--razvernuta', window.scrollY > 120);
+  var blocks = document.querySelectorAll('.fade-up');
+  if (!('IntersectionObserver' in window)) {
+    blocks.forEach(function (el) { el.classList.add('visible'); });
+  } else {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    blocks.forEach(function (el) { observer.observe(el); });
   }
-
-  obnovitShapku();
-  window.addEventListener('scroll', obnovitShapku, { passive: true });
-
-  // Мобильное меню
-  var burger = document.querySelector('.header__burger');
-  var drawer = document.getElementById('drawer');
-
-  burger.addEventListener('click', function () {
-    var otkryto = drawer.classList.toggle('open');
-    burger.setAttribute('aria-expanded', String(otkryto));
-  });
-
-  drawer.querySelectorAll('a').forEach(function (link) {
-    link.addEventListener('click', function () {
-      drawer.classList.remove('open');
-      burger.setAttribute('aria-expanded', 'false');
-    });
-  });
-
-  // Таймер обратного отсчёта: 15 минут, переживает перезагрузку,
-  // по нулям запускается заново — как на исходной странице.
-  (function () {
-    var tablo = document.querySelector('[data-timer]');
-    if (!tablo) return;
-
-    var DLINA = 15 * 60 * 1000;
-    var KLYUCH = 'grpc-1-day:timer-do';
-
-    function prochitat() {
-      try {
-        return parseInt(localStorage.getItem(KLYUCH), 10) || 0;
-      } catch (e) {
-        return 0;  // приватный режим — просто считаем от загрузки страницы
-      }
-    }
-
-    function zapisat(do_) {
-      try { localStorage.setItem(KLYUCH, String(do_)); } catch (e) {}
-    }
-
-    var konec = prochitat();
-    if (!konec || konec <= Date.now()) {
-      konec = Date.now() + DLINA;
-      zapisat(konec);
-    }
-
-    function dvuznak(n) { return n < 10 ? '0' + n : String(n); }
-
-    function shag() {
-      var ostalos = konec - Date.now();
-      if (ostalos <= 0) {
-        konec = Date.now() + DLINA;
-        zapisat(konec);
-        ostalos = DLINA;
-      }
-      var sekund = Math.floor(ostalos / 1000);
-      tablo.textContent = [
-        dvuznak(Math.floor(sekund / 86400)),
-        dvuznak(Math.floor(sekund % 86400 / 3600)),
-        dvuznak(Math.floor(sekund % 3600 / 60)),
-        dvuznak(sekund % 60)
-      ].join(':');
-    }
-
-    shag();
-    setInterval(shag, 1000);
-  })();
 </script>
 
 </body>
