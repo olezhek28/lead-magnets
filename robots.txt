@@ -15,6 +15,7 @@ Disallow: /idea-board/
 Disallow: /tasks/
 Disallow: /CLAUDE.md
 Disallow: /README.md
+Disallow: /microservices-corp/
 
 # Яндекс — отдельная группа ради Clean-param: он нормализует UTM-метки,
 # чтобы один и тот же лендинг с разными метками не считался разными страницами
@@ -29,6 +30,7 @@ Disallow: /idea-board/
 Disallow: /tasks/
 Disallow: /CLAUDE.md
 Disallow: /README.md
+Disallow: /microservices-corp/
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
 
 # Google и AI-краулеры — перечислены явно, чтобы намерение было видно:
@@ -51,5 +53,6 @@ Disallow: /idea-board/
 Disallow: /tasks/
 Disallow: /CLAUDE.md
 Disallow: /README.md
+Disallow: /microservices-corp/
 
 Sitemap: https://guide.olezhek28.courses/sitemap.xml

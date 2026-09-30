@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Коммерческое предложение для компании. Собирается из query-строки,
+     которую формирует конструктор на microservices-corp/index.html:
+     ?n=<человек>&plan=<standard|review>&company=<название>.
+     Бэкенда нет — весь расчёт в браузере, поэтому ссылку можно переслать
+     и она воспроизведёт то же предложение.
+
+     Почему светлая тема, а не тёмная, как на лендинге: документ печатают
+     и пересылают. Браузеры по умолчанию не печатают фоновые заливки, и
+     тёмная страница ушла бы в PDF белым листом со светло-серым текстом.
+     Фирменные цвета сохранены как акценты — жёлтая линия, плашки, полосы. -->
+
+<title>Коммерческое предложение — Микросервисы на Go</title>
+<meta name="description" content="Коммерческое предложение на корпоративное обучение микросервисам на Go: программа, стоимость по количеству сотрудников, сроки и условия.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&subset=latin,cyrillic&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink:        #10171A;   /* основной текст */
+    --ink-soft:   #454F53;   /* пояснения, 8.4:1 на белом */
+    --ink-mute:   #6B7674;   /* подписи, 4.9:1 на белом */
+    --rule:       #E2E5E4;
+    --rule-soft:  #EFF1F0;
+    --paper:      #FFFFFF;
+    --paper-tint: #F6F7F6;
+    --accent:     #DFDF41;
+    --accent-ink: #5A5A0C;   /* тёмно-оливковый: жёлтый как текст на белом нечитаем */
+    --font: 'Manrope', system-ui, -apple-system, sans-serif;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    font-family: var(--font);
+    background: var(--paper-tint);
+    color: var(--ink);
+    font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  ul { list-style: none; }
+  b, strong { font-weight: 700; }
+  :focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }
+
+  /* ===== ПАНЕЛЬ ДЕЙСТВИЙ (на печать не идёт) ===== */
+  .bar {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--ink); color: #fff;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .bar__txt { font-size: 14px; color: #C4CBCA; }
+  .bar__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .bar__btn {
+    font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    padding: 11px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,.25);
+    background: none; color: #fff; text-decoration: none; display: inline-block;
+  }
+  .bar__btn--primary { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+
+  /* ===== ЛИСТ ===== */
+  .sheet {
+    max-width: 210mm; margin: 24px auto; padding: 18mm 16mm;
+    background: var(--paper);
+    box-shadow: 0 18px 50px -30px rgba(16,23,26,.5);
+  }
+
+  /* ===== ШАПКА ДОКУМЕНТА ===== */
+  .head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+  .head__brand { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+  .head__brand b { color: var(--accent-ink); }
+  .head__meta { text-align: right; font-size: 13px; color: var(--ink-mute); }
+  .doc-title {
+    margin-top: 26px;
+    font-size: 30px; line-height: 1.12; font-weight: 800; letter-spacing: -.03em;
+  }
+  .doc-sub { margin-top: 10px; font-size: 16px; color: var(--ink-soft); }
+  .doc-for {
+    margin-top: 22px; padding: 14px 18px;
+    background: var(--paper-tint); border-left: 3px solid var(--accent);
+    font-size: 15px;
+  }
+  .doc-for b { font-weight: 700; }
+
+  /* ===== БЛОКИ ===== */
+  .block { margin-top: 34px; page-break-inside: avoid; }
+  .block__title {
+    font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-mute); padding-bottom: 8px; border-bottom: 1px solid var(--rule);
+    margin-bottom: 18px;
+  }
+  .lead { font-size: 15.5px; color: var(--ink-soft); max-width: 62em; }
+  .lead + .lead { margin-top: 10px; }
+
+  /* Ключевые цифры: четыре значения в ряд, без рамок — на печати любая
+     лишняя линия съедает воздух. */
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .facts__n { font-size: 27px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+  .facts__d { margin-top: 5px; font-size: 13px; color: var(--ink-mute); }
+
+  /* Список умений в две колонки */
+  .skills { columns: 2; column-gap: 32px; }
+  .skills li { break-inside: avoid; padding-left: 18px; position: relative; margin-bottom: 9px; font-size: 14.5px; }
+  .skills li::before { content: ''; position: absolute; left: 0; top: .58em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* ===== ПРОГРАММА: ТАЙМЛАЙН 8 НЕДЕЛЬ ===== */
+  .weeks { display: grid; gap: 0; }
+  .week {
+    display: grid; grid-template-columns: 30px 1fr; gap: 14px; align-items: baseline;
+    padding: 9px 0; border-bottom: 1px solid var(--rule-soft); break-inside: avoid;
+  }
+  .week:last-child { border-bottom: 0; }
+  .week__n {
+    font-size: 12px; font-weight: 800; color: var(--accent-ink);
+    letter-spacing: .04em;
+  }
+  .week__t { font-size: 14.5px; font-weight: 600; }
+  .week__d { font-size: 13.5px; color: var(--ink-mute); font-weight: 400; }
+
+  /* ===== ТАРИФЫ =====
+     Две колонки рядом: название, цена, состав. Без расчёта на группу —
+     КП несёт сотрудник, и оплачивается одно место. */
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .plan { border: 1px solid var(--rule); border-radius: 10px; padding: 20px 22px; break-inside: avoid; }
+  .plan--pick { border-color: var(--accent); border-width: 2px; }
+  .plan__name { font-size: 16px; font-weight: 800; }
+  .plan__price { margin-top: 10px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .plan__new { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+  .plan__old { font-size: 14px; color: var(--ink-mute); text-decoration: line-through; }
+  .plan__note { margin-top: 3px; font-size: 12.5px; color: var(--ink-mute); }
+  .plan__list { margin-top: 14px; display: grid; gap: 7px; }
+  .plan__list li { position: relative; padding-left: 16px; font-size: 13.5px; }
+  .plan__list li::before { content: ''; position: absolute; left: 0; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* ===== СРОКИ: ГОРИЗОНТАЛЬНЫЙ ТАЙМЛАЙН ===== */
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 4px; }
+  .flow__step { position: relative; padding: 22px 12px 0 0; }
+  .flow__step::before {
+    content: ''; position: absolute; left: 0; top: 6px; width: 11px; height: 11px;
+    border-radius: 50%; background: var(--accent);
+  }
+  .flow__step::after {
+    content: ''; position: absolute; left: 11px; top: 11px; right: 0; height: 1px; background: var(--rule);
+  }
+  .flow__step:last-child::after { display: none; }
+  .flow__t { font-size: 14px; font-weight: 700; }
+  .flow__d { margin-top: 3px; font-size: 12.5px; color: var(--ink-mute); }
+
+  /* ===== ВОПРОСЫ ===== */
+  .qa { display: grid; gap: 14px; }
+  .qa__item { break-inside: avoid; }
+  .qa__q { font-size: 14.5px; font-weight: 700; }
+  .qa__a { margin-top: 3px; font-size: 14px; color: var(--ink-soft); }
+
+  /* ===== ПОДВАЛ ===== */
+  .foot { margin-top: 38px; padding-top: 20px; border-top: 2px solid var(--ink); page-break-inside: avoid; }
+  .foot__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .foot__k { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 6px; }
+  .foot__v { font-size: 14.5px; }
+  .foot__v a { font-weight: 700; }
+  .foot__legal { margin-top: 18px; font-size: 12px; line-height: 1.5; color: var(--ink-mute); }
+
+  /* ===== ПЕЧАТЬ ===== */
+  @page { size: A4; margin: 14mm; }
+  @media print {
+    body { background: #fff; font-size: 11.5pt; }
+    .bar { display: none; }
+    .sheet { margin: 0; padding: 0; max-width: none; box-shadow: none; }
+    .doc-title { font-size: 24pt; }
+    .facts__n { font-size: 19pt; }
+    /* Заливки выключены по умолчанию — просим браузер их сохранить, иначе
+       жёлтые акценты и серые плашки уйдут в белый. */
+    .doc-for, .plan--pick, .plan__list li::before, .week__n, .flow__step::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .block { margin-top: 24px; }
+    a { text-decoration: none; }
+  }
+
+  @media (max-width: 720px) {
+    .sheet { padding: 24px 20px; margin: 12px; }
+    .facts { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .skills { columns: 1; }
+    .flow { grid-template-columns: 1fr; gap: 14px; }
+    .flow__step { padding: 0 0 0 24px; }
+    .flow__step::before { top: 4px; }
+    .flow__step::after { display: none; }
+    .foot__grid { grid-template-columns: 1fr; }
+    .plans { grid-template-columns: 1fr; }
+    .doc-title { font-size: 25px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="bar__txt">Коммерческое предложение готово. Сохраните в PDF или отправьте ссылку коллегам.</span>
+  <span class="bar__actions">
+    <a class="bar__btn" href="index.html">Вернуться на страницу курса</a>
+    <button class="bar__btn bar__btn--primary" type="button" id="print-btn">Скачать PDF</button>
+  </span>
+</div>
+
+<main class="sheet">
+
+  <div class="head">
+    <div class="head__brand"><b>{</b> Олег Козырев <b>}</b><br>Курсы для backend-разработчиков</div>
+    <div class="head__meta">
+      Коммерческое предложение<br>
+      от <span id="doc-date"></span>
+    </div>
+  </div>
+
+  <h1 class="doc-title">Микросервисы на Go:<br>обучение команды</h1>
+  <p class="doc-sub">Восемь недель практики с код-ревью. На выходе — система из пяти связанных сервисов на production-ready стеке.</p>
+
+  <p class="doc-for" id="doc-for"></p>
+
+  <!-- ===== КЛЮЧЕВЫЕ ЦИФРЫ ===== -->
+  <section class="block">
+    <h2 class="block__title">Коротко</h2>
+    <div class="facts">
+      <div><div class="facts__n">8 недель</div><div class="facts__d">Длительность курса</div></div>
+      <div><div class="facts__n">5</div><div class="facts__d">Микросервисов в итоговой системе</div></div>
+      <div><div class="facts__n">60</div><div class="facts__d">Практических уроков</div></div>
+      <div><div class="facts__n">26 октября</div><div class="facts__d">Старт ближайшего потока</div></div>
+    </div>
+    <p class="lead" style="margin-top:18px">Курс ведёт Олег Козырев — Staff Engineer в Т-Банке, до этого Авито и Ozon: внутренняя платформа для сотен сервисов, сервисы логистики и мониторинга доставки. Преподавал микросервисы в Route&nbsp;256, школе Ozon Tech.</p>
+    <p class="lead">Обучение идёт без отрыва от работы: материалы открываются по неделям, встречи с разбором заданий проходят в вечернее время. Курс уже оплачивали своим разработчикам Яндекс, Ozon, Сбер, Авито, Wildberries, Т-Банк, ВКонтакте и Совкомбанк.</p>
+  </section>
+
+  <!-- ===== РЕЗУЛЬТАТ ===== -->
+  <section class="block">
+    <h2 class="block__title">Что сотрудник будет уметь после курса</h2>
+    <ul class="skills">
+      <li>Проектировать сервис по слоям: API, сервис, репозиторий, клиент; разделять модели данных и выстраивать единую стратегию обработки ошибок</li>
+      <li>Писать тесты: табличные тесты, testify, моки через mockery, изолированное тестирование бизнес-логики</li>
+      <li>Работать с PostgreSQL всерьёз: pgx, миграции, транзакции через Transaction Manager, <code>SELECT FOR UPDATE</code>, jsonb</li>
+      <li>Строить асинхронное взаимодействие на Kafka: продюсеры, консюмеры, consumer groups, устойчивость к повторной доставке</li>
+      <li>Применять DDD: сущности с поведением, Value Objects, агрегаты, доменные сервисы</li>
+      <li>Настраивать observability: slog, OpenTelemetry, Prometheus, Grafana, Jaeger, Kibana</li>
+      <li>Делать систему отказоустойчивой: rate limiter, retry с backoff, circuit breaker, Nginx, нагрузочное тестирование</li>
+      <li>Упаковывать сервисы в Docker и поднимать всю инфраструктуру одной командой</li>
+    </ul>
+  </section>
+
+  <!-- ===== ПРОГРАММА ===== -->
+  <section class="block">
+    <h2 class="block__title">Программа по неделям</h2>
+    <div class="weeks">
+      <div class="week"><span class="week__n">01</span><span class="week__t">HTTP и gRPC <span class="week__d">— контракты, кодогенерация, связывание сервисов между собой</span></span></div>
+      <div class="week"><span class="week__n">02</span><span class="week__t">Clean Architecture и тесты <span class="week__d">— слои, инверсия зависимостей, unit-тесты с моками</span></span></div>
+      <div class="week"><span class="week__n">03</span><span class="week__t">Docker и PostgreSQL <span class="week__d">— контейнеры, миграции, транзакции, pgx</span></span></div>
+      <div class="week"><span class="week__n">04</span><span class="week__t">Конфигурация, DI и DDD <span class="week__d">— платформенная библиотека, доменная модель, jsonb</span></span></div>
+      <div class="week"><span class="week__n">05</span><span class="week__t">Kafka <span class="week__d">— событийная архитектура, consumer groups, блокировки в PostgreSQL</span></span></div>
+      <div class="week"><span class="week__n">06</span><span class="week__t">Аутентификация и Redis <span class="week__d">— IAM-сервис, сессии, защита API</span></span></div>
+      <div class="week"><span class="week__n">07</span><span class="week__t">Observability <span class="week__d">— логи, метрики и распределённые трейсы</span></span></div>
+      <div class="week"><span class="week__n">08</span><span class="week__t">Отказоустойчивость <span class="week__d">— Nginx, балансировка, распределённый rate limiting, нагрузочные тесты</span></span></div>
+    </div>
+    <p class="lead" style="margin-top:16px">Каждая неделя заканчивается практическим заданием. Задания продолжают один сквозной проект: сервисы, написанные на первой неделе, дорабатываются до конца курса.</p>
+  </section>
+
+  <!-- ===== ТАРИФЫ ===== -->
+  <section class="block">
+    <h2 class="block__title">Тарифы и стоимость</h2>
+    <div class="plans">
+      <div class="plan">
+        <div class="plan__name">Стандарт</div>
+        <div class="plan__price"><span class="plan__new">79 990 ₽</span><span class="plan__old">89 990 ₽</span></div>
+        <div class="plan__note">За одного участника</div>
+        <ul class="plan__list">
+          <li>60 практических уроков и доступ к материалам на 2 года</li>
+          <li>Практические задания после каждой недели</li>
+          <li>Итоговый проект из пяти микросервисов</li>
+          <li>Еженедельные встречи с ответами на вопросы</li>
+        </ul>
+      </div>
+      <div class="plan plan--pick">
+        <div class="plan__name">С проверкой</div>
+        <div class="plan__price"><span class="plan__new">119 990 ₽</span><span class="plan__old">129 990 ₽</span></div>
+        <div class="plan__note">За одного участника</div>
+        <ul class="plan__list">
+          <li>Всё, что входит в тариф «Стандарт»</li>
+          <li>Код-ревью заданий в пул-реквестах и обратная связь</li>
+          <li>Эталонные решения автора с видеоразбором</li>
+          <li>Месяц на досдачу заданий и возможность академического отпуска</li>
+        </ul>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:16px">Оплата по счёту от компании, по завершении обучения оформляется акт.</p>
+  </section>
+
+  <!-- ===== СРОКИ ===== -->
+  <section class="block">
+    <h2 class="block__title">Сроки и порядок оформления</h2>
+    <div class="flow">
+      <div class="flow__step">
+        <div class="flow__t">Заявка</div>
+        <div class="flow__d">Присылаете реквизиты: название, ИНН, юридический адрес</div>
+      </div>
+      <div class="flow__step">
+        <div class="flow__t">Счёт</div>
+        <div class="flow__d">Выставляем счёт на оплату по указанным реквизитам</div>
+      </div>
+      <div class="flow__step">
+        <div class="flow__t">Оплата</div>
+        <div class="flow__d">Согласование внутри компании обычно занимает 2–3 недели</div>
+      </div>
+      <div class="flow__step">
+        <div class="flow__t">Старт 26 октября</div>
+        <div class="flow__d">Сотрудники получают доступ, по завершении оформляем акт</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:20px">Предложение действует до <b>25 октября</b> — это закрытие набора на поток. С учётом типичного срока согласования счёта запускать процесс имеет смысл заранее.</p>
+  </section>
+
+  <!-- ===== ВОПРОСЫ ===== -->
+  <section class="block">
+    <h2 class="block__title">Частые вопросы</h2>
+    <div class="qa">
+      <div class="qa__item">
+        <div class="qa__q">Сколько времени это займёт у сотрудников?</div>
+        <div class="qa__a">В среднем около 10 часов в неделю на протяжении восьми недель. Курс плотный — имеет смысл заранее заложить сотрудникам это время в спринте.</div>
+      </div>
+      <div class="qa__item">
+        <div class="qa__q">Есть ли лицензия на образовательную деятельность?</div>
+        <div class="qa__a">Нет. Услуги оказываются как информационно-консультационные. Если компания проводит такие расходы только по статье «обучение» с лицензией провайдера — сообщите сразу.</div>
+      </div>
+      <div class="qa__item">
+        <div class="qa__q">Можно ли следить за прогрессом сотрудников?</div>
+        <div class="qa__a">Отдельного кабинета компании с отчётностью нет. Прогресс виден по самой работе: задания сдаются пул-реквестами на GitHub.</div>
+      </div>
+      <div class="qa__item">
+        <div class="qa__q">Выдаётся ли сертификат?</div>
+        <div class="qa__a">Нет. Участники выходят не с сертификатом, а с рабочим кодом: собранной системой из пяти сервисов и практиками, применимыми в проекте сразу.</div>
+      </div>
+      <div class="qa__item">
+        <div class="qa__q">Что если сотрудник не успевает?</div>
+        <div class="qa__a">На тарифе «С проверкой» есть месяц на досдачу заданий после окончания курса и возможность взять академический отпуск. Доступ к материалам остаётся на два года.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== КОНТАКТЫ ===== -->
+  <footer class="foot">
+    <div class="foot__grid">
+      <div>
+        <div class="foot__k">Контакт</div>
+        <div class="foot__v">
+          Олег Козырев<br>
+          Telegram: <a href="https://telegram.me/olezhek28_support">@olezhek28_support</a><br>
+          <a href="https://guide.olezhek28.courses/microservices-corp/">guide.olezhek28.courses/microservices-corp</a>
+        </div>
+      </div>
+      <div>
+        <div class="foot__k">Исполнитель</div>
+        <div class="foot__v">
+          ИП Козырев Олег Вячеславович<br>
+          ИНН 440315249608<br>
+          ОГРНИП 324440000010534
+        </div>
+      </div>
+    </div>
+    <p class="foot__legal">Услуги носят информационно-консультационный характер и не являются образовательной деятельностью, подлежащей лицензированию. Стоимость указана за одного участника. Предложение не является публичной офертой — точные условия фиксируются в счёте и договоре.</p>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Название компании приходит из конструктора на index.html (?company=...).
+     Цены в документе статичные — те же, что в карточках тарифов на лендинге. */
+  var q = new URLSearchParams(location.search);
+  var company = (q.get('company') || '').trim().slice(0, 120);
+
+  /* Дата документа — день, когда его открыли. */
+  var date = document.getElementById('doc-date');
+  if (date) date.textContent = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  var forEl = document.getElementById('doc-for');
+  if (forEl) {
+    if (company) {
+      forEl.textContent = 'Для: ';
+      var b = document.createElement('b');
+      b.textContent = company;
+      forEl.appendChild(b);
+    } else {
+      forEl.hidden = true;
+    }
+  }
+
+  document.title = company
+    ? 'КП для ' + company + ' — Микросервисы на Go'
+    : 'Коммерческое предложение — Микросервисы на Go';
+
+  var btn = document.getElementById('print-btn');
+  if (btn) btn.addEventListener('click', function () { window.print(); });
+})();
+</script>
+</body>
+</html>
