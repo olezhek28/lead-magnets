@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Видеоотзывы: три варианта тайм-кодов</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#0E1416; --bg-card:#161D20; --bg-second:#1B2327; --bg-third:#222B30;
+    --border-card:#2A3439; --border-acc:#3C494F;
+    --text-h:#F2F6F7; --text-body:#C8D2D6; --text-mute:#93A1A7; --text-faint:#6E7C83;
+    --accent:#DFDF41; --accent-ink:#002D25;
+    --r-sm:8px; --r-md:12px; --r-lg:16px;
+    --sans:"Inter",system-ui,-apple-system,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text-body);font-family:var(--sans);font-size:15px;line-height:1.55}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+  header{padding-block:40px 24px;border-bottom:1px solid var(--border-card)}
+  .kick{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint);margin-bottom:12px}
+  h1{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:600;color:var(--text-h);margin:0 0 12px;letter-spacing:-.02em}
+  .lead{color:var(--text-mute);max-width:72ch;margin:0}
+  section{padding-block:44px;border-bottom:1px solid var(--border-card)}
+  h2{font-size:1.35rem;font-weight:600;color:var(--text-h);margin:0 0 6px;letter-spacing:-.01em}
+  .note{color:var(--text-mute);font-size:14px;margin:0 0 24px;max-width:80ch}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:3px 9px;margin-bottom:10px}
+  video{display:block;width:100%;background:#000}
+  .shell{background:var(--bg-card);border:1px solid var(--border-card);border-radius:var(--r-lg);overflow:hidden}
+
+  /* ===== Вариант A: главы справа, как в плейлисте YouTube ===== */
+  .a-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px}
+  .a-side{border-left:1px solid var(--border-card);display:flex;flex-direction:column;min-height:0}
+  .a-side__head{padding:14px 16px;border-bottom:1px solid var(--border-card);display:flex;align-items:baseline;gap:8px}
+  .a-side__title{font-weight:600;color:var(--text-h);font-size:14px}
+  .a-side__count{font-family:var(--mono);font-size:11.5px;color:var(--text-faint)}
+  .a-list{margin:0;padding:6px;list-style:none;overflow-y:auto;flex:1}
+  .chap{display:flex;gap:10px;width:100%;text-align:left;background:none;border:0;cursor:pointer;
+    padding:9px 10px;border-radius:var(--r-sm);color:var(--text-mute);font:inherit;font-size:13.5px;line-height:1.35}
+  .chap:hover{background:var(--bg-second);color:var(--text-h)}
+  .chap.is-active{background:var(--bg-third);color:var(--text-h)}
+  .chap__t{font-family:var(--mono);font-size:12px;color:var(--accent);flex-shrink:0;min-width:42px}
+  @media(max-width:900px){.a-grid{grid-template-columns:1fr}.a-side{border-left:0;border-top:1px solid var(--border-card)}.a-list{max-height:260px}}
+
+  /* ===== Вариант B: главы поверх видео по кнопке ===== */
+  .b-stage{position:relative}
+  .b-btn{position:absolute;top:14px;right:14px;z-index:3;display:inline-flex;align-items:center;gap:7px;
+    background:rgba(8,12,14,.78);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;
+    padding:8px 14px;font:inherit;font-size:13px;cursor:pointer;backdrop-filter:blur(6px)}
+  .b-btn:hover{background:rgba(8,12,14,.92);border-color:var(--accent);color:var(--accent)}
+  .b-panel{position:absolute;top:0;right:0;bottom:0;width:min(360px,80%);z-index:2;
+    background:rgba(10,14,16,.93);backdrop-filter:blur(10px);border-left:1px solid rgba(255,255,255,.12);
+    transform:translateX(100%);transition:transform .28s ease;display:flex;flex-direction:column}
+  .b-panel.is-open{transform:none}
+  /* когда панель открыта, кнопка уезжает левее её края, иначе налезает на заголовок */
+  .b-stage:has(.b-panel.is-open) .b-btn{right:calc(min(360px,80%) + 14px)}
+  .b-panel__head{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center}
+  .b-close{background:none;border:0;color:var(--text-mute);font-size:20px;cursor:pointer;line-height:1}
+  .b-list{margin:0;padding:6px;list-style:none;overflow-y:auto;flex:1}
+
+  /* ===== Вариант C: лента чипов под плеером ===== */
+  .c-strip{display:flex;gap:8px;overflow-x:auto;padding:14px;scrollbar-width:thin}
+  .c-strip::-webkit-scrollbar{height:6px}
+  .c-strip::-webkit-scrollbar-thumb{background:var(--border-acc);border-radius:999px}
+  .chip{flex-shrink:0;display:inline-flex;align-items:center;gap:8px;background:var(--bg-second);
+    border:1px solid var(--border-card);border-radius:999px;padding:8px 14px;color:var(--text-mute);
+    font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+  .chip:hover{border-color:var(--border-acc);color:var(--text-h)}
+  .chip.is-active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500}
+  .chip__t{font-family:var(--mono);font-size:12px}
+  .chip.is-active .chip__t{color:var(--accent-ink)}
+  .c-meta{padding:0 14px 16px;color:var(--text-faint);font-size:12.5px}
+
+  .foot{padding-block:28px 60px;color:var(--text-faint);font-size:12.5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="kick">Лендинг микросервисов · блок видеоотзывов</div>
+    <h1>Тайм-коды: три варианта раскладки</h1>
+    <p class="lead">Одно и то же видео и одни и те же девять тайм-кодов, три способа подачи.
+      Везде клик по метке перематывает, активная подсвечивается по ходу просмотра. Выбери
+      вариант — соберу его в блок на странице.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <span class="tag">Вариант A</span>
+    <h2>Главы справа, как в плейлисте YouTube</h2>
+    <p class="note">Список всегда на виду, видео не перекрывает. Человек сразу видит, что
+      внутри разговора, и прыгает в нужное место. На телефоне список уезжает под видео.</p>
+    <div class="shell a-grid" data-player>
+      <video controls preload="metadata" playsinline
+             poster="../../microservices/video_testimonials/vt-yuriy.jpg"
+             src="../../microservices/video_testimonials/local/otzyv1.mp4"></video>
+      <div class="a-side">
+        <div class="a-side__head">
+          <span class="a-side__title">Тайм-коды</span>
+          <span class="a-side__count">9 меток · 21:34</span>
+        </div>
+        <ul class="a-list" data-chapters></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="tag">Вариант B</span>
+    <h2>Главы поверх видео, по кнопке</h2>
+    <p class="note">Видео занимает всю ширину, список выезжает справа поверх картинки и
+      прячется обратно. Максимум места под видео, но тайм-коды не видны, пока не нажмёшь.</p>
+    <div class="shell b-stage" data-player>
+      <button class="b-btn" type="button" data-b-toggle>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M2 4h12M2 8h12M2 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        Тайм-коды
+      </button>
+      <video controls preload="metadata" playsinline
+             poster="../../microservices/video_testimonials/vt-yuriy.jpg"
+             src="../../microservices/video_testimonials/local/otzyv1.mp4"></video>
+      <div class="b-panel" data-b-panel>
+        <div class="b-panel__head">
+          <span class="a-side__title">Тайм-коды</span>
+          <button class="b-close" type="button" data-b-close aria-label="Скрыть">&times;</button>
+        </div>
+        <ul class="b-list" data-chapters></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="tag">Вариант C</span>
+    <h2>Лента меток под плеером</h2>
+    <p class="note">Самый компактный: одна строка чипов с горизонтальной прокруткой.
+      Занимает мало места, но длинные подписи приходится резать — видно только начало темы.</p>
+    <div class="shell" data-player>
+      <video controls preload="metadata" playsinline
+             poster="../../microservices/video_testimonials/vt-yuriy.jpg"
+             src="../../microservices/video_testimonials/local/otzyv1.mp4"></video>
+      <div class="c-strip" data-chapters data-style="chips"></div>
+      <div class="c-meta">Юрий · На Go не писал, пришёл после базового курса на Степике · 21:34</div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">Превью для выбора. Видео подключено локально из
+    <code>microservices/video_testimonials/local/</code> (симлинки на сжатые файлы, в git не попадают).</div>
+</footer>
+
+<script>
+(function () {
+  var CH = [
+    ['00:16','Какой бэкграунд был до микросервисов'],
+    ['02:40','Что хотел получить от курса'],
+    ['04:02','Что смущало перед покупкой'],
+    ['04:53','Как проходило обучение и что нового узнал'],
+    ['07:04','Почему комьюнити и обратная связь ценнее видосов'],
+    ['10:45','Что забрал себе и как курс ускоряет работу'],
+    ['13:02','Можно ли писать код нейронкой без знаний'],
+    ['15:55','Одна самая крутая штука на курсе'],
+    ['17:21','Кому подойдёт курс и почему вложения отобьются']
+  ];
+  function secs(t){ var p = t.split(':'); return (+p[0]) * 60 + (+p[1]); }
+
+  document.querySelectorAll('[data-player]').forEach(function (root) {
+    var video = root.querySelector('video');
+    var host = root.querySelector('[data-chapters]');
+    var chips = host.dataset.style === 'chips';
+    var items = CH.map(function (c) {
+      var el = document.createElement(chips ? 'button' : 'li');
+      if (chips) {
+        el.className = 'chip';
+        el.innerHTML = '<span class="chip__t">' + c[0] + '</span>' + c[1];
+      } else {
+        el.innerHTML = '<button type="button" class="chap"><span class="chap__t">' + c[0] +
+                       '</span><span>' + c[1] + '</span></button>';
+      }
+      var btn = chips ? el : el.querySelector('button');
+      btn.addEventListener('click', function () {
+        video.currentTime = secs(c[0]);
+        video.play();
+      });
+      host.appendChild(el);
+      return chips ? el : el.querySelector('button');
+    });
+    // подсветка активной главы по ходу воспроизведения
+    video.addEventListener('timeupdate', function () {
+      var t = video.currentTime, idx = 0;
+      CH.forEach(function (c, i) { if (t >= secs(c[0]) - 0.3) idx = i; });
+      items.forEach(function (el, i) { el.classList.toggle('is-active', i === idx); });
+    });
+  });
+
+  // вариант B: выезжающая панель
+  document.querySelectorAll('[data-b-toggle]').forEach(function (btn) {
+    var stage = btn.closest('[data-player]');
+    var panel = stage.querySelector('[data-b-panel]');
+    btn.addEventListener('click', function () { panel.classList.toggle('is-open'); });
+    stage.querySelector('[data-b-close]').addEventListener('click', function () {
+      panel.classList.remove('is-open');
+    });
+  });
+})();
+</script>
+</body>
+</html>
