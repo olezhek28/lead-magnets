@@ -3023,7 +3023,7 @@
      оставалось на экране. */
   .modal--vt .vt__player { position: sticky; top: 0; z-index: 1; }
   .vt__player { background: #000; }
-  .vt__video { display: block; width: 100%; aspect-ratio: 1920/810; background: #000; }
+  .vt__video { display: block; width: 100%; aspect-ratio: 16/9; border: 0; background: #000; }
   .vt__body { padding: 22px 26px 26px; }
   .vt__head { margin-bottom: 18px; }
   .vt__name--modal { font-size: 19px; }
@@ -4403,17 +4403,17 @@
        отдельный tabindex не нужен. -->
   <!-- ===== ВИДЕООТЗЫВЫ (vt) — правка 02.10.2026 =====
        Было: карусель из семи превью, каждое уводило на RuTube отдельной вкладкой.
-       Стало: четыре разговора с выпускниками потока 1, плеер открывается прямо на
-       странице (общий механизм data-modal-open), рядом тайм-коды — клик перематывает.
-       Ролики по 7-21 минуте целиком не смотрят; тайм-коды превращают разговор в набор
-       коротких ответов на возражения. Тексты и тайм-коды — из постов канала,
+       Стало: четыре разговора с выпускниками потока 1, плеер платформы открывается
+       внутри модалки (общий механизм data-modal-open), видео доставляет Kinescope.
+       Ролики по 7-21 минуте; скорость и перемотка доступны в плеере платформы.
+       Тексты карточек — из постов канала,
        см. marketing/продукты/микросервисы/контент/видеоотзывы-поток-1.md -->
   <section class="section video-reviews" id="video-reviews">
     <div class="container">
       <div class="section__head fade-up">
         <h2 class="section__title">А ещё честно рассказывают о курсе на камеру</h2>
-        <p class="vt__lead">Разговоры с ребятами из прошлого потока. Длинные, поэтому внутри
-          каждого — тайм-коды: можно сразу прыгнуть к нужному вопросу.</p>
+        <p class="vt__lead">Разговоры с ребятами из прошлого потока. В каждом видео есть субтитры
+          и главы, чтобы сразу перейти к нужному вопросу.</p>
       </div>
       <div class="vt__grid">
         <button type="button" class="vt__card fade-up" data-modal-open="vt-modal-1">
@@ -5732,7 +5732,7 @@
     // Фокус-ловушка: по кругу внутри модалки.
     function focusables() {
       return Array.prototype.filter.call(
-        modal.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+        modal.querySelectorAll('button, a[href], input, select, textarea, iframe, [tabindex]:not([tabindex="-1"])'),
         function (el) { return el.offsetParent !== null; }
       );
     }
@@ -6102,7 +6102,7 @@
     // 16 модалок общего механизма.
     function focusables(m) {
       return Array.prototype.filter.call(
-        m.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+        m.querySelectorAll('button, a[href], input, select, textarea, iframe, [tabindex]:not([tabindex="-1"])'),
         function (el) { return el.offsetParent !== null; }
       );
     }
@@ -6181,14 +6181,9 @@
   <div class="modal modal--vt" id="vt-modal-1" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Видеоотзыв: Юрий" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
       <div class="vt__player">
-        <!-- ЗАГЛУШКА до заливки на CDN: подставить боевой URL в data-src.
-             Сейчас локальный путь video_testimonials/local/ (в .gitignore,
-             симлинки на сжатые файлы из ~/Downloads/Курсы-2/сжатые/). -->
-        <video class="vt__video" controls preload="none" playsinline
-               poster="video_testimonials/vt-yuriy.jpg"
-               data-src="video_testimonials/local/otzyv1.mp4"></video>
+        <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+        <div data-review-embed="https://platform.olezhek28.courses/embed/reviews/ms3-yuriy" data-review-title="Видеоотзыв: Юрий"></div>
       </div>
       <div class="vt__body">
         <div class="vt__head">
@@ -6201,14 +6196,9 @@
   <div class="modal modal--vt" id="vt-modal-2" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Видеоотзыв: Денис" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
       <div class="vt__player">
-        <!-- ЗАГЛУШКА до заливки на CDN: подставить боевой URL в data-src.
-             Сейчас локальный путь video_testimonials/local/ (в .gitignore,
-             симлинки на сжатые файлы из ~/Downloads/Курсы-2/сжатые/). -->
-        <video class="vt__video" controls preload="none" playsinline
-               poster="video_testimonials/vt-denis.jpg"
-               data-src="video_testimonials/local/otzyv2.mp4"></video>
+        <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+        <div data-review-embed="https://platform.olezhek28.courses/embed/reviews/ms3-denis" data-review-title="Видеоотзыв: Денис"></div>
       </div>
       <div class="vt__body">
         <div class="vt__head">
@@ -6221,14 +6211,9 @@
   <div class="modal modal--vt" id="vt-modal-3" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Видеоотзыв: Алексей" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
       <div class="vt__player">
-        <!-- ЗАГЛУШКА до заливки на CDN: подставить боевой URL в data-src.
-             Сейчас локальный путь video_testimonials/local/ (в .gitignore,
-             симлинки на сжатые файлы из ~/Downloads/Курсы-2/сжатые/). -->
-        <video class="vt__video" controls preload="none" playsinline
-               poster="video_testimonials/vt-alexey-devops.jpg"
-               data-src="video_testimonials/local/otzyv3.mp4"></video>
+        <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+        <div data-review-embed="https://platform.olezhek28.courses/embed/reviews/ms3-alexey-devops" data-review-title="Видеоотзыв: Алексей, DevOps"></div>
       </div>
       <div class="vt__body">
         <div class="vt__head">
@@ -6241,14 +6226,9 @@
   <div class="modal modal--vt" id="vt-modal-4" data-modal hidden>
     <div class="modal__overlay" data-modal-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Видеоотзыв: Алексей" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
       <div class="vt__player">
-        <!-- ЗАГЛУШКА до заливки на CDN: подставить боевой URL в data-src.
-             Сейчас локальный путь video_testimonials/local/ (в .gitignore,
-             симлинки на сжатые файлы из ~/Downloads/Курсы-2/сжатые/). -->
-        <video class="vt__video" controls preload="none" playsinline
-               poster="video_testimonials/vt-alexey-java.jpg"
-               data-src="video_testimonials/local/otzyv4.mp4"></video>
+        <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+        <div data-review-embed="https://platform.olezhek28.courses/embed/reviews/ms3-alexey-java" data-review-title="Видеоотзыв: Алексей, Java"></div>
       </div>
       <div class="vt__body">
         <div class="vt__head">
@@ -6259,28 +6239,6 @@
     </div>
   </div>
 
-  <script>
-  // Видеоотзывы: src подставляется при первом открытии (чтобы 4 ролика не грузились
-  // вместе со страницей), при закрытии модалки видео ставится на паузу, тайм-коды
-  // перематывают. Открытие/закрытие — общий механизм data-modal-open.
-  (function () {
-    document.querySelectorAll('.modal--vt').forEach(function (modal) {
-      var video = modal.querySelector('.vt__video');
-      if (!video) return;
-      function ensureSrc() {
-        if (!video.getAttribute('src')) {
-          video.setAttribute('src', video.dataset.src || '');
-          // preload="none" — без load() метаданные не подтянутся, и перемотка
-          // по тайм-коду не сработает: currentTime нельзя выставить, пока
-          // неизвестна длительность.
-          video.load();
-        }
-      }
-      new MutationObserver(function () {
-        if (modal.hidden) video.pause(); else ensureSrc();
-      }).observe(modal, { attributes: true, attributeFilter: ['hidden'] });
-    });
-  })();
-  </script>
+  <script src="/review-player.js" defer></script>
 </body>
 </html>

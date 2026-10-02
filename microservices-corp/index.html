@@ -3045,6 +3045,42 @@
   .pricing__hint .prog-head__pill { margin-bottom: 0; }
   .pricing__hint a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 
+  /* ===== ВИДЕООТЗЫВЫ (vt) — правка 02.10.2026, см. секцию #video-reviews ===== */
+  .vt__lead { margin: 14px 0 0; color: var(--text-mute); font-size: 15px; max-width: 60ch; }
+  .vt__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .vt__grid { grid-template-columns: 1fr; } }
+  .vt__card { display: block; width: 100%; text-align: left; padding: 0; cursor: pointer;
+    background: var(--bg-card); border: 1px solid var(--border-card);
+    border-radius: var(--r-lg); overflow: hidden; transition: transform .25s ease, border-color .25s ease; }
+  .vt__card:hover { transform: translateY(-3px); border-color: var(--border-acc); }
+  .vt__card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .vt__thumb { position: relative; display: block; aspect-ratio: 1920/810; overflow: hidden; background: #0f1417; }
+  .vt__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vt__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(16,23,26,.22); transition: background .25s ease; }
+  .vt__card:hover .vt__play { background: rgba(16,23,26,.38); }
+  .vt__play-btn { width: 56px; height: 56px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; transition: transform .25s ease; }
+  .vt__card:hover .vt__play-btn { transform: scale(1.12); }
+  .vt__play-btn svg { width: 22px; height: 22px; color: var(--accent-ink); margin-left: 3px; }
+  .vt__dur { position: absolute; right: 12px; bottom: 12px; background: rgba(8,12,14,.82);
+    color: #fff; font-family: var(--mono); font-size: 12px; padding: 4px 9px; border-radius: 6px; }
+  .vt__meta { display: block; padding: 18px 20px 20px; }
+  .vt__name { display: block; font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); }
+  .vt__sub { display: block; margin-top: 6px; font-size: 14px; color: var(--text-mute); line-height: 1.45; }
+  /* overflow: auto (не hidden!) — иначе при высоком плеере тайм-коды уходят за
+     границу диалога и до них не доскроллить. max-height чуть меньше экрана,
+     overscroll-behavior не даёт прокрутке «протекать» на страницу под модалкой. */
+  .modal--vt .modal__dialog { width: min(1180px, 96vw); max-width: min(1180px, 96vw);
+    max-height: 92vh; padding: 0; overflow-y: auto; overscroll-behavior: contain; }
+  /* Плеер прилипает к верху диалога, чтобы при листании тайм-кодов видео
+     оставалось на экране. */
+  .modal--vt .vt__player { position: sticky; top: 0; z-index: 1; }
+  .vt__player { background: #000; }
+  .vt__video { display: block; width: 100%; aspect-ratio: 16/9; border: 0; background: #000; }
+  .vt__body { padding: 22px 26px 26px; }
+  .vt__head { margin-bottom: 18px; }
+  .vt__name--modal { font-size: 19px; }
 </style>
 </head>
 <body>
@@ -4227,89 +4263,65 @@
 
 
 
-  <!-- ===== ВИДЕООТЗЫВЫ (video-reviews) =====
-       Компонента нет в SD, верстаем с нуля, переиспользуя визуальный паттерн
-       .yt__thumb/.yt__play/.yt__play-btn из system_design/index.html:2788-2832
-       (превью + кнопка play поверх, без встраивания плеера).
-
-       НАХОДКА (важно): контент-файл для этой секции указывает «Ссылки: —» —
-       ссылок на видео не было задокументировано. Проверил вживую на
-       olezhek28.courses/microservices через прямую JS-инспекцию DOM (rec2072728321):
-       все 7 видео на самом деле хостятся на RuTube, а не на YouTube, как
-       предполагал бриф Task 8 («карточка ведёт на YouTube»). ID видео (32-символьные
-       rutubeid) декодированы из DOM, порядок карточек слева направо подтверждён
-       через getBoundingClientRect (x строго возрастает) и совпадает с порядком
-       постеров в контент-файле (Источник Tilda: tild3136.../tild6238.../tild6566.../
-       tild6533.../tild3365.../tild3637.../tild6432... — те же хеши в том же порядке,
-       что и здесь). Каждая ссылка https://rutube.ru/video/{id}/ проверена переходом
-       в браузере — все 7 открывают реальные опубликованные видео 5 ноября 2025 года
-       с названиями вида «Отзыв Ивана о курсе...». Т.к. видео на RuTube, а не YouTube,
-       кнопка play окрашена акцентным жёлтым сайта, а не брендовым красным YouTube
-       (как в SD) — не тот сервис, красный был бы недостоверной атрибуцией бренда.
-       Это реальный пропуск в контент-файле (ссылок не было), не молча дописан —
-       задокументирован здесь и в отчёте по задаче.
-       Правка 1 (заход 3): сетка (4 в ряд) заменена на настоящую карусель, показывает
-       по три — общий механизм .carousel__*/data-carousel-* см. у секции reviews выше
-       и в <script> в конце файла. .yt__card — уже <a href>, сам по себе фокусируемый,
-       отдельный tabindex не нужен. -->
-  <section class="section video-reviews" data-carousel>
+  <!-- ===== ВИДЕООТЗЫВЫ (vt) — правка 02.10.2026 =====
+       Было: карусель из семи превью, каждое уводило на RuTube отдельной вкладкой.
+       Стало: четыре разговора с выпускниками потока 1, плеер платформы открывается
+       внутри модалки (общий механизм data-modal-open), видео доставляет Kinescope.
+       Ролики по 7-21 минуте; скорость и перемотка доступны в плеере платформы.
+       Тексты карточек — из постов канала,
+       см. marketing/продукты/микросервисы/контент/видеоотзывы-поток-1.md -->
+  <section class="section video-reviews" id="video-reviews">
     <div class="container">
-      <div class="carousel__head fade-up">
-        <div class="section__head">
-          <h2 class="section__title">А ещё честно рассказывают о курсе на камеру</h2>
-        </div>
-        <div class="carousel__arrows">
-          <button type="button" class="carousel__arrow" data-carousel-prev aria-label="Предыдущие видеоотзывы">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <button type="button" class="carousel__arrow" data-carousel-next aria-label="Следующие видеоотзывы">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
+      <div class="section__head fade-up">
+        <h2 class="section__title">А ещё честно рассказывают о курсе на камеру</h2>
+        <p class="vt__lead">Разговоры с ребятами из прошлого потока. В каждом видео есть субтитры
+          и главы, чтобы сразу перейти к нужному вопросу.</p>
       </div>
-      <div class="yt__grid yt__grid--7 carousel__track" data-carousel-track>
-        <a class="yt__card fade-up" href="https://rutube.ru/video/8a75578e64e8a24699afd448cdd35ed5/" target="_blank" rel="noopener">
-          <div class="yt__thumb">
-            <img src="video_testimonials/thumb_1.jpeg" alt="Видеоотзыв участника курса №1 — смотреть на RuTube" width="640" height="640" loading="lazy">
-            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
-          </div>
-        </a>
-        <a class="yt__card fade-up" href="https://rutube.ru/video/6400a2949070d0eb36f164b9bf2a5b15/" target="_blank" rel="noopener">
-          <div class="yt__thumb">
-            <img src="video_testimonials/thumb_2.jpeg" alt="Видеоотзыв участника курса №2 — смотреть на RuTube" width="640" height="640" loading="lazy">
-            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
-          </div>
-        </a>
-        <a class="yt__card fade-up" href="https://rutube.ru/video/0413f86667ba345a32990a9362fb7734/" target="_blank" rel="noopener">
-          <div class="yt__thumb">
-            <img src="video_testimonials/thumb_3.jpeg" alt="Видеоотзыв участника курса №3 — смотреть на RuTube" width="640" height="640" loading="lazy">
-            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
-          </div>
-        </a>
-        <a class="yt__card fade-up" href="https://rutube.ru/video/9be1dbb11db4c8b4e67191c11223b825/" target="_blank" rel="noopener">
-          <div class="yt__thumb">
-            <img src="video_testimonials/thumb_4.jpeg" alt="Видеоотзыв участника курса №4 — смотреть на RuTube" width="640" height="640" loading="lazy">
-            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
-          </div>
-        </a>
-        <a class="yt__card fade-up" href="https://rutube.ru/video/b5633a7eec59567ce92e1f3f848deecd/" target="_blank" rel="noopener">
-          <div class="yt__thumb">
-            <img src="video_testimonials/thumb_5.jpg" alt="Видеоотзыв участника курса №5 — смотреть на RuTube" width="640" height="640" loading="lazy">
-            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
-          </div>
-        </a>
-        <a class="yt__card fade-up" href="https://rutube.ru/video/7d5f3281aac34e104d68cb1cd332efd0/" target="_blank" rel="noopener">
-          <div class="yt__thumb">
-            <img src="video_testimonials/thumb_6.jpg" alt="Видеоотзыв участника курса №6 — смотреть на RuTube" width="640" height="640" loading="lazy">
-            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
-          </div>
-        </a>
-        <a class="yt__card fade-up" href="https://rutube.ru/video/e21a84c2ee5f8c4bc59d1cf981a19dc7/" target="_blank" rel="noopener">
-          <div class="yt__thumb">
-            <img src="video_testimonials/thumb_7.jpg" alt="Видеоотзыв участника курса №7 — смотреть на RuTube" width="640" height="640" loading="lazy">
-            <div class="yt__play"><span class="yt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></div>
-          </div>
-        </a>
+      <div class="vt__grid">
+        <button type="button" class="vt__card fade-up" data-modal-open="vt-modal-1">
+          <span class="vt__thumb">
+            <img src="video_testimonials/vt-yuriy.jpg" alt="" width="960" height="405" loading="lazy">
+            <span class="vt__play"><span class="vt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></span>
+            <span class="vt__dur">21:34</span>
+          </span>
+          <span class="vt__meta">
+            <span class="vt__name">Юрий</span>
+            <span class="vt__sub">На Go не писал, пришёл после базового курса на Степике</span>
+          </span>
+        </button>
+        <button type="button" class="vt__card fade-up" data-modal-open="vt-modal-2">
+          <span class="vt__thumb">
+            <img src="video_testimonials/vt-denis.jpg" alt="" width="960" height="405" loading="lazy">
+            <span class="vt__play"><span class="vt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></span>
+            <span class="vt__dur">7:07</span>
+          </span>
+          <span class="vt__meta">
+            <span class="vt__name">Денис</span>
+            <span class="vt__sub">3 года писал на Go, после курса переделал проект на работе</span>
+          </span>
+        </button>
+        <button type="button" class="vt__card fade-up" data-modal-open="vt-modal-3">
+          <span class="vt__thumb">
+            <img src="video_testimonials/vt-alexey-devops.jpg" alt="" width="960" height="405" loading="lazy">
+            <span class="vt__play"><span class="vt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></span>
+            <span class="vt__dur">11:28</span>
+          </span>
+          <span class="vt__meta">
+            <span class="vt__name">Алексей</span>
+            <span class="vt__sub">Был DevOps-инженером, устал от инфры и перешёл в Go</span>
+          </span>
+        </button>
+        <button type="button" class="vt__card fade-up" data-modal-open="vt-modal-4">
+          <span class="vt__thumb">
+            <img src="video_testimonials/vt-alexey-java.jpg" alt="" width="960" height="405" loading="lazy">
+            <span class="vt__play"><span class="vt__play-btn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span></span>
+            <span class="vt__dur">15:44</span>
+          </span>
+          <span class="vt__meta">
+            <span class="vt__name">Алексей</span>
+            <span class="vt__sub">Java-мидл, применил Go на текущей работе</span>
+          </span>
+        </button>
       </div>
     </div>
   </section>
@@ -5174,7 +5186,7 @@
     // Фокус-ловушка: по кругу внутри модалки.
     function focusables() {
       return Array.prototype.filter.call(
-        modal.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+        modal.querySelectorAll('button, a[href], input, select, textarea, iframe, [tabindex]:not([tabindex="-1"])'),
         function (el) { return el.offsetParent !== null; }
       );
     }
@@ -5544,7 +5556,7 @@
     // 16 модалок общего механизма.
     function focusables(m) {
       return Array.prototype.filter.call(
-        m.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+        m.querySelectorAll('button, a[href], input, select, textarea, iframe, [tabindex]:not([tabindex="-1"])'),
         function (el) { return el.offsetParent !== null; }
       );
     }
@@ -5636,5 +5648,67 @@
 })();
 </script>
 
+  <div class="modal modal--vt" id="vt-modal-1" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Видеоотзыв: Юрий" tabindex="-1">
+      <div class="vt__player">
+        <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+        <div data-review-embed="https://platform.olezhek28.courses/embed/reviews/ms3-yuriy" data-review-title="Видеоотзыв: Юрий"></div>
+      </div>
+      <div class="vt__body">
+        <div class="vt__head">
+          <div class="vt__name vt__name--modal">Юрий</div>
+          <div class="vt__sub">На Go не писал, пришёл после базового курса на Степике</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--vt" id="vt-modal-2" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Видеоотзыв: Денис" tabindex="-1">
+      <div class="vt__player">
+        <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+        <div data-review-embed="https://platform.olezhek28.courses/embed/reviews/ms3-denis" data-review-title="Видеоотзыв: Денис"></div>
+      </div>
+      <div class="vt__body">
+        <div class="vt__head">
+          <div class="vt__name vt__name--modal">Денис</div>
+          <div class="vt__sub">3 года писал на Go, после курса переделал проект на работе</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--vt" id="vt-modal-3" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Видеоотзыв: Алексей" tabindex="-1">
+      <div class="vt__player">
+        <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+        <div data-review-embed="https://platform.olezhek28.courses/embed/reviews/ms3-alexey-devops" data-review-title="Видеоотзыв: Алексей, DevOps"></div>
+      </div>
+      <div class="vt__body">
+        <div class="vt__head">
+          <div class="vt__name vt__name--modal">Алексей</div>
+          <div class="vt__sub">Был DevOps-инженером, устал от инфры и перешёл в Go</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal--vt" id="vt-modal-4" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Видеоотзыв: Алексей" tabindex="-1">
+      <div class="vt__player">
+        <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+        <div data-review-embed="https://platform.olezhek28.courses/embed/reviews/ms3-alexey-java" data-review-title="Видеоотзыв: Алексей, Java"></div>
+      </div>
+      <div class="vt__body">
+        <div class="vt__head">
+          <div class="vt__name vt__name--modal">Алексей</div>
+          <div class="vt__sub">Java-мидл, применил Go на текущей работе</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/review-player.js" defer></script>
 </body>
 </html>
