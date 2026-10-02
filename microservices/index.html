@@ -3027,17 +3027,6 @@
   .vt__body { padding: 22px 26px 26px; }
   .vt__head { margin-bottom: 18px; }
   .vt__name--modal { font-size: 19px; }
-  .vt__chapters-title { font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px; }
-  .vt__chapters { list-style: none; margin: 0; padding: 0; display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 18px; }
-  @media (max-width: 860px) { .vt__chapters { grid-template-columns: 1fr; } .vt__body { padding: 18px; } }
-  .vt__chapter { display: flex; gap: 12px; align-items: baseline; width: 100%; text-align: left;
-    background: none; border: 0; padding: 8px 10px; border-radius: var(--r-sm); cursor: pointer;
-    color: var(--text-mute); font-size: 14.5px; line-height: 1.4; transition: background .2s ease, color .2s ease; }
-  .vt__chapter:hover { background: rgba(223,223,65,.08); color: var(--text-h); }
-  .vt__chapter:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .vt__chapter-time { font-family: var(--mono); font-size: 13px; color: var(--accent); flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -6206,18 +6195,6 @@
           <div class="vt__name vt__name--modal">Юрий</div>
           <div class="vt__sub">На Go не писал, пришёл после базового курса на Степике</div>
         </div>
-        <div class="vt__chapters-title">Тайм-коды</div>
-        <ul class="vt__chapters">
-          <li><button type="button" class="vt__chapter" data-seek="16"><span class="vt__chapter-time">00:16</span><span class="vt__chapter-text">Какой бэкграунд был до микросервисов</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="160"><span class="vt__chapter-time">02:40</span><span class="vt__chapter-text">Что хотел получить от курса</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="242"><span class="vt__chapter-time">04:02</span><span class="vt__chapter-text">Что смущало перед покупкой</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="293"><span class="vt__chapter-time">04:53</span><span class="vt__chapter-text">Как проходило обучение и что нового узнал</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="424"><span class="vt__chapter-time">07:04</span><span class="vt__chapter-text">Почему комьюнити и обратная связь ценнее видосов</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="645"><span class="vt__chapter-time">10:45</span><span class="vt__chapter-text">Что забрал себе и как курс ускоряет работу</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="782"><span class="vt__chapter-time">13:02</span><span class="vt__chapter-text">Можно ли писать код нейронкой без знаний</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="955"><span class="vt__chapter-time">15:55</span><span class="vt__chapter-text">Одна самая крутая штука на курсе</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="1041"><span class="vt__chapter-time">17:21</span><span class="vt__chapter-text">Кому подойдёт курс и почему вложения отобьются</span></button></li>
-        </ul>
       </div>
     </div>
   </div>
@@ -6238,16 +6215,6 @@
           <div class="vt__name vt__name--modal">Денис</div>
           <div class="vt__sub">3 года писал на Go, после курса переделал проект на работе</div>
         </div>
-        <div class="vt__chapters-title">Тайм-коды</div>
-        <ul class="vt__chapters">
-          <li><button type="button" class="vt__chapter" data-seek="14"><span class="vt__chapter-time">00:14</span><span class="vt__chapter-text">Бэкграунд: 3 года на Go, до этого Python</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="62"><span class="vt__chapter-time">01:02</span><span class="vt__chapter-text">Были ли сомнения перед покупкой</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="125"><span class="vt__chapter-time">02:05</span><span class="vt__chapter-text">Что нового узнал и что затянул к себе на работу</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="184"><span class="vt__chapter-time">03:04</span><span class="vt__chapter-text">Clean Architecture: как курс закрыл нюансы</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="224"><span class="vt__chapter-time">03:44</span><span class="vt__chapter-text">Что изменилось после курса, как продал идею CTO</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="308"><span class="vt__chapter-time">05:08</span><span class="vt__chapter-text">Самое ценное, что унёс с курса</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="358"><span class="vt__chapter-time">05:58</span><span class="vt__chapter-text">Кому бы посоветовал идти на курс</span></button></li>
-        </ul>
       </div>
     </div>
   </div>
@@ -6268,16 +6235,6 @@
           <div class="vt__name vt__name--modal">Алексей</div>
           <div class="vt__sub">Был DevOps-инженером, устал от инфры и перешёл в Go</div>
         </div>
-        <div class="vt__chapters-title">Тайм-коды</div>
-        <ul class="vt__chapters">
-          <li><button type="button" class="vt__chapter" data-seek="10"><span class="vt__chapter-time">00:10</span><span class="vt__chapter-text">Бэкграунд: DevOps, C++, Python и почему ушёл в Go</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="112"><span class="vt__chapter-time">01:52</span><span class="vt__chapter-text">Были ли сомнения перед покупкой</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="136"><span class="vt__chapter-time">02:16</span><span class="vt__chapter-text">Как проходило обучение и сдача домашек</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="303"><span class="vt__chapter-time">05:03</span><span class="vt__chapter-text">Еженедельные созвоны</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="351"><span class="vt__chapter-time">05:51</span><span class="vt__chapter-text">Kafka Inbox/Outbox и узкие прикладные вопросы</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="399"><span class="vt__chapter-time">06:39</span><span class="vt__chapter-text">Что изменилось после курса</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="576"><span class="vt__chapter-time">09:36</span><span class="vt__chapter-text">Кому бы посоветовал идти</span></button></li>
-        </ul>
       </div>
     </div>
   </div>
@@ -6298,16 +6255,6 @@
           <div class="vt__name vt__name--modal">Алексей</div>
           <div class="vt__sub">Java-мидл, применил Go на текущей работе</div>
         </div>
-        <div class="vt__chapters-title">Тайм-коды</div>
-        <ul class="vt__chapters">
-          <li><button type="button" class="vt__chapter" data-seek="0"><span class="vt__chapter-time">00:00</span><span class="vt__chapter-text">Бэкграунд: 4–5 лет на Java, почему посмотрел в Go</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="136"><span class="vt__chapter-time">02:16</span><span class="vt__chapter-text">С каким запросом пришёл на курс</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="314"><span class="vt__chapter-time">05:14</span><span class="vt__chapter-text">Как проходило обучение и сдача домашек</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="445"><span class="vt__chapter-time">07:25</span><span class="vt__chapter-text">Еженедельные созвоны</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="526"><span class="vt__chapter-time">08:46</span><span class="vt__chapter-text">Самое ценное: Clean Architecture и разбиение на слои</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="632"><span class="vt__chapter-time">10:32</span><span class="vt__chapter-text">Как Go пригодился на текущей работе</span></button></li>
-          <li><button type="button" class="vt__chapter" data-seek="781"><span class="vt__chapter-time">13:01</span><span class="vt__chapter-text">Кому бы посоветовал идти на микросервисы</span></button></li>
-        </ul>
       </div>
     </div>
   </div>
@@ -6332,14 +6279,6 @@
       new MutationObserver(function () {
         if (modal.hidden) video.pause(); else ensureSrc();
       }).observe(modal, { attributes: true, attributeFilter: ['hidden'] });
-      modal.querySelectorAll('[data-seek]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          ensureSrc();
-          var t = parseInt(btn.getAttribute('data-seek'), 10) || 0;
-          var go = function () { video.currentTime = t; video.play(); };
-          if (video.readyState >= 1) go(); else video.addEventListener('loadedmetadata', go, { once: true });
-        });
-      });
     });
   })();
   </script>
