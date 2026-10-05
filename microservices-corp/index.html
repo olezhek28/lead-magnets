@@ -1159,14 +1159,22 @@
      светлые карточки светятся лампочками, а эти ложатся на фон как родные.
      Ники и аватарки участников закрашены пикселизацией, ники менторов
      оставлены — отвечают за свои слова и узнаются.
-     Миниатюры разложены двумя ЯВНЫМИ колонками, а не grid и не CSS columns:
-     высота у скриншотов разная, кадрировать их нельзя (обрезка съедает начало
-     комментария), а multicol с ограниченной высотой уводит остаток вбок.
-     Пары подобраны так, чтобы низы колонок примерно сходились. */
-  .crw__mini { display: flex; gap: 12px; align-items: flex-start; }
-  .crw__mini-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
-  .crw__shot { display: block; width: 100%; height: auto; border-radius: 12px;
+     Миниатюры — ровная сетка 2×2 из одинаковых плиток. Высота у скриншотов
+     разная, поэтому раскладка «колонка из двух картинок в натуральную высоту»
+     давала разные низы у колонок (поймано на ревью 05.10.2026). Плитка задаёт
+     соотношение сторон и прячет лишнее, картинка внутри прижата к верху: у
+     комментария ревью смысл в первых строках — файл, диф и начало issue, —
+     а хвост всё равно нечитаем в миниатюре. */
+  .crw__mini { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .crw__tile { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px;
     border: 1px solid var(--border-card); background: var(--bg-card); }
+  /* cover, а не width:100% + height:auto: скриншоты разной высоты, и те,
+     что ниже плитки, оставляли под собой пустоту — низы плиток визуально
+     разъезжались. Привязка к левому верхнему углу: слева текст
+     комментария, его и жалко терять при обрезке. */
+  .crw__tile img { display: block; width: 100%; height: 100%;
+    object-fit: cover; object-position: left top; }
+
   /* Кнопка намеренно .btn--dark: жёлтый на странице зарезервирован за
      кнопками покупки. */
   /* .steps__col--text — флекс-колонка, поэтому кнопка без align-self
@@ -1180,7 +1188,8 @@
   .modal--crw .modal__dialog { max-width: 1240px; width: calc(100vw - 40px);
     max-height: 92vh; overflow-y: auto; overscroll-behavior: contain; }
   .crw__all { columns: 3; column-gap: 16px; margin-top: 8px; }
-  .crw__all .crw__shot { margin: 0 0 16px; break-inside: avoid; border-radius: 14px; }
+  .crw__all .crw__shot { display: block; width: 100%; height: auto; margin: 0 0 16px;
+    break-inside: avoid; border-radius: 14px; border: 1px solid var(--border-card); background: var(--bg-card); }
   @media (max-width: 1024px) { .crw__all { columns: 2; } }
   @media (max-width: 640px) { .crw__all { columns: 1; } }
 
@@ -3733,14 +3742,10 @@
           </div>
           <div class="steps__col steps__col--img">
             <div class="crw__mini">
-              <div class="crw__mini-col">
-                <img class="crw__shot" src="code_reviews/cr02.jpg" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="1100" height="859" loading="lazy">
-                <img class="crw__shot" src="code_reviews/cr03.jpg" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="1100" height="627" loading="lazy">
-              </div>
-              <div class="crw__mini-col">
-                <img class="crw__shot" src="code_reviews/cr01.jpg" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="1100" height="616" loading="lazy">
-                <img class="crw__shot" src="code_reviews/cr07.jpg" alt="Комментарий ревьюера про закрытие каналов и ответ участника" width="1100" height="935" loading="lazy">
-              </div>
+              <figure class="crw__tile"><img src="code_reviews/cr02.jpg" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="1100" height="859" loading="lazy"></figure>
+              <figure class="crw__tile"><img src="code_reviews/cr01.jpg" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="1100" height="616" loading="lazy"></figure>
+              <figure class="crw__tile"><img src="code_reviews/cr03.jpg" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="1100" height="627" loading="lazy"></figure>
+              <figure class="crw__tile"><img src="code_reviews/cr07.jpg" alt="Комментарий ревьюера про закрытие каналов и ответ участника" width="1100" height="935" loading="lazy"></figure>
             </div>
           </div>
         </div>
