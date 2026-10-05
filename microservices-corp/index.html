@@ -1263,8 +1263,10 @@
   /* Правка 12 (п.А3): сноска раньше стояла после всего .steps__list — визуально
      примыкала к последнему шагу («Читаешь допматериалы»), хотя звёздочка в
      заголовке принадлежит третьему шагу («…от Олега*»). На живом оригинале
-     сноска лежит прямо под блоком фидбека. Разметка передвинута между строкой
-     3 и строкой 4 (см. .steps__list); margin-top отрицательный — гасит часть
+     сноска лежит прямо под блоком фидбека. Правка 05.10.2026: шаги переставлены
+     в порядок «урок → конспект → задание → фидбек» (раньше конспект стоял
+     последним, после фидбека, хотя читают его до задания), поэтому шаг с
+     фидбеком теперь последний и сноска идёт за ним; margin-top отрицательный — гасит часть
      родного 64px gap контейнера, чтобы сноска читалась вплотную к своему
      шагу, а не ровно посередине между шагом 3 и шагом 4. */
   .steps__footnote { margin-top: -32px; font-family: var(--mono); font-size: 13px; color: var(--text-faint); }
@@ -3765,6 +3767,15 @@
         </div>
         <div class="steps__row">
           <div class="steps__col steps__col--text">
+            <h3 class="steps__title">Читает конспект урока</h3>
+            <p class="steps__desc">Текстовый конспект к каждому уроку: код, схемы и разбор. Можно вернуться к теме, не пересматривая видео.</p>
+          </div>
+          <div class="steps__col steps__col--img">
+            <img class="steps__img" src="learning_process/materials_notes.webp" alt="" width="1400" height="671" loading="lazy">
+          </div>
+        </div>
+        <div class="steps__row">
+          <div class="steps__col steps__col--text">
             <h3 class="steps__title">Делает практическое задание с упором на реальную практику</h3>
             <p class="steps__desc">Задания моделируют бизнес-задачи BigTech-компаний и продолжают один сквозной проект: сервисы первой недели дорабатываются до конца курса.</p>
             <button type="button" class="steps__mascot" data-modal-open="homework-modal" aria-haspopup="dialog">Какие будут задания?</button>
@@ -3790,15 +3801,6 @@
           </div>
         </div>
         <p class="steps__footnote fade-up" id="steps-footnote">* На тарифе с обратной связью по практическим заданиям</p>
-        <div class="steps__row">
-          <div class="steps__col steps__col--text">
-            <h3 class="steps__title">Читает конспект урока</h3>
-            <p class="steps__desc">Текстовый конспект к каждому уроку: код, схемы и разбор. Можно вернуться к теме, не пересматривая видео.</p>
-          </div>
-          <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/materials_notes.webp" alt="" width="1400" height="671" loading="lazy">
-          </div>
-        </div>
       </div>
     </div>
   </section>
