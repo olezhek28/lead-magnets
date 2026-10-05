@@ -1193,22 +1193,37 @@
      не верхняя. Поэтому свой оверлей и свой обработчик Esc на фазе
      перехвата со stopImmediatePropagation. */
   /* z-index выше .modal (2000): лайтбокс открывается поверх модалки со списком. */
-  .crw__lb { position: fixed; inset: 0; z-index: 2100; padding: 24px;
-    background: rgba(8,12,14,.94); display: grid; place-items: center; overflow: auto; }
+  .crw__lb { position: fixed; inset: 0; z-index: 2100; padding: 24px 96px;
+    background: rgba(8,12,14,.94); display: grid; place-items: center; }
   .crw__lb[hidden] { display: none; }
-  /* Исходник 900px; в лайтбоксе растягиваем до 1100 — апскейл 1.2x почти не
-     заметен, зато текст комментария читается без прищура. */
-  .crw__lb img { display: block; width: min(1100px, 96vw); height: auto; border-radius: 12px;
+  /* Исходник 900px — НЕ растягиваем: апскейл мылит текст, а на весь экран
+     скриншот и не нужен. Ограничение по высоте тоже обязательно, иначе
+     вертикальные комментарии вылезают за экран. Боковые поля — место под
+     стрелки. */
+  .crw__lb img { display: block; max-width: min(900px, 100%); max-height: 86vh;
+    width: auto; height: auto; border-radius: 12px;
     box-shadow: 0 40px 90px -30px rgba(0,0,0,.9); }
-  /* На телефоне вписать скриншот кода в ширину экрана — значит сделать его
-     нечитаемым. Показываем в натуральную величину с горизонтальной прокруткой. */
-  @media (max-width: 700px) { .crw__lb { place-items: start; } .crw__lb img { max-width: none; width: 900px; } }
-  .crw__lb-close { position: fixed; top: 16px; right: 18px; z-index: 1;
-    width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
-    border: 1px solid var(--border-acc); background: var(--bg-secondary); color: var(--text-h);
-    font-size: 20px; line-height: 1; }
-  .crw__lb-close:hover { background: var(--bg-tertiary); }
-  .crw__all .crw__shot { cursor: zoom-in; }
+  @media (max-width: 760px) { .crw__lb { padding: 56px 12px 72px; } }
+
+  .crw__lb-btn { position: fixed; z-index: 1; cursor: pointer; display: grid; place-items: center;
+    border-radius: 50%; border: 1px solid var(--border-acc);
+    background: var(--bg-secondary); color: var(--text-h); line-height: 1; }
+  .crw__lb-btn:hover { background: var(--bg-tertiary); }
+  .crw__lb-close { top: 16px; right: 18px; width: 44px; height: 44px; font-size: 20px; }
+  .crw__lb-prev, .crw__lb-next { top: 50%; transform: translateY(-50%); width: 52px; height: 52px; font-size: 22px; }
+  .crw__lb-prev { left: 20px; }
+  .crw__lb-next { right: 20px; }
+  .crw__lb-count { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 13px; color: var(--text-mute); letter-spacing: .06em; }
+  /* На телефоне стрелки уезжают вниз: по бокам места нет. */
+  @media (max-width: 760px) {
+    .crw__lb-prev, .crw__lb-next { top: auto; bottom: 16px; transform: none; width: 46px; height: 46px; }
+    .crw__lb-prev { left: 16px; } .crw__lb-next { right: 16px; }
+    .crw__lb-count { bottom: 32px; }
+  }
+  .crw__all .crw__shot, .crw__tile { cursor: zoom-in; }
+  /* Подсказка под миниатюрами: без неё непонятно, что плитки кликабельны. */
+  .crw__hint { margin: 10px 0 0; font-size: 13px; color: var(--text-faint); text-align: center; }
   /* mascot/speech_bubble_2.svg — не пустая рамка: текст «Ну или по лапкам…
      Как удобнее» впечатан в сам файл контуром (шрифт переведён в path,
      обычный grep по <text> его не находит). Правка 4 (визуальный заход №1):
@@ -3835,6 +3850,7 @@
               <figure class="crw__tile"><img src="code_reviews/cr03.webp" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="900" height="513" loading="lazy"></figure>
               <figure class="crw__tile"><img src="code_reviews/cr07.webp" alt="Комментарий ревьюера про закрытие каналов и ответ участника" width="900" height="765" loading="lazy"></figure>
             </div>
+            <p class="crw__hint">Нажми на скриншот — откроется целиком</p>
           </div>
         </div>
         <p class="steps__footnote fade-up" id="steps-footnote">* На тарифе с обратной связью по практическим заданиям</p>
@@ -4098,10 +4114,14 @@
   </div>
 
 
-  <!-- Лайтбокс: скриншот ревью на весь экран, открывается кликом по мозаике. -->
+  <!-- Лайтбокс: скриншот ревью крупно, со стрелками по всем 36. Открывается
+       и кликом по мозаике в модалке, и кликом по миниатюре в шаге 3. -->
   <div class="crw__lb" id="review-lightbox" hidden>
-    <button class="crw__lb-close" type="button" aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+    <button class="crw__lb-btn crw__lb-close" type="button" aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+    <button class="crw__lb-btn crw__lb-prev" type="button" aria-label="Предыдущее ревью"><span aria-hidden="true">&#8592;</span></button>
+    <button class="crw__lb-btn crw__lb-next" type="button" aria-label="Следующее ревью"><span aria-hidden="true">&#8594;</span></button>
     <img alt="">
+    <div class="crw__lb-count" aria-live="polite"></div>
   </div>
 
   <script>
@@ -4109,8 +4129,25 @@
       var lb = document.getElementById('review-lightbox');
       if (!lb) return;
       var img = lb.querySelector('img');
-      function open(src, alt) {
-        img.src = src; img.alt = alt || '';
+      var counter = lb.querySelector('.crw__lb-count');
+      // Канонический список — мозаика в модалке: там лежат все 36 по порядку.
+      // Миниатюры шага находят в нём себя по имени файла, поэтому стрелки
+      // листают весь набор независимо от того, откуда лайтбокс открыли.
+      var shots = Array.prototype.slice.call(document.querySelectorAll('.crw__all .crw__shot'));
+      var at = 0;
+      function fileOf(el) {
+        var s = el.getAttribute('src') || '';
+        return s.slice(s.lastIndexOf('/') + 1);
+      }
+      function show(i) {
+        at = (i + shots.length) % shots.length;
+        var el = shots[at];
+        img.src = el.getAttribute('src');
+        img.alt = el.alt || '';
+        counter.textContent = (at + 1) + ' / ' + shots.length;
+      }
+      function openAt(i) {
+        show(i);
         lb.hidden = false;
         document.body.style.overflow = 'hidden';
         lb.querySelector('.crw__lb-close').focus();
@@ -4122,13 +4159,27 @@
         // возвращаем только если закрыто вообще всё.
         if (!document.querySelector('.modal:not([hidden])')) document.body.style.overflow = '';
       }
+      function indexOfFile(name) {
+        for (var i = 0; i < shots.length; i++) { if (fileOf(shots[i]) === name) return i; }
+        return 0;
+      }
       document.addEventListener('click', function (e) {
-        var shot = e.target.closest && e.target.closest('.crw__all .crw__shot');
-        if (shot) { open(shot.currentSrc || shot.src, shot.alt); return; }
-        if (!lb.hidden && (e.target === lb || (e.target.closest && e.target.closest('.crw__lb-close')))) close();
+        var t = e.target;
+        var shot = t.closest && t.closest('.crw__all .crw__shot');
+        if (shot) { openAt(shots.indexOf(shot)); return; }
+        var tile = t.closest && t.closest('.crw__tile');
+        if (tile) { openAt(indexOfFile(fileOf(tile.querySelector('img')))); return; }
+        if (lb.hidden) return;
+        if (t.closest && t.closest('.crw__lb-next')) { show(at + 1); return; }
+        if (t.closest && t.closest('.crw__lb-prev')) { show(at - 1); return; }
+        if (t === lb || (t.closest && t.closest('.crw__lb-close'))) close();
       });
       document.addEventListener('keydown', function (e) {
-        if (e.code === 'Escape' || e.keyCode === 27) { if (!lb.hidden) { e.stopImmediatePropagation(); close(); } }
+        if (lb.hidden) return;
+        var c = e.code;
+        if (c === 'Escape' || e.keyCode === 27) { e.stopImmediatePropagation(); close(); return; }
+        if (c === 'ArrowRight' || e.keyCode === 39) { e.preventDefault(); show(at + 1); return; }
+        if (c === 'ArrowLeft' || e.keyCode === 37) { e.preventDefault(); show(at - 1); }
       }, true);
     })();
   </script>
