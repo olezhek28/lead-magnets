@@ -1145,6 +1145,54 @@
   .steps__desc { font-size: 15px; line-height: 1.62; color: var(--text-mute); }
   .steps__star { color: var(--accent); text-decoration: none; margin-left: 2px; }
   .steps__star:hover { text-decoration: underline; }
+  /* ---- СТЕНА КОД-РЕВЬЮ (crw) — шаг 3 «Получаешь подробный фидбек» ----------
+     Правка 05.10.2026: раньше у шага в колонке стоял ОДИН скриншот
+     (learning_process/code_review.png) — и шаг читался как «ну, прислали
+     какой-то комментарий». Проверка — главный аргумент за тариф «С проверкой»,
+     поэтому объём показывается буквально: строка шага становится
+     полноширинной (.steps__row--wide), текст сверху, под ним мозаика из
+     настоящих комментариев в пул-реквестах участников первого потока.
+     Скриншоты отобраны в ТЁМНОЙ теме GitHub сознательно: на тёмной секции
+     светлые карточки светятся лампочками, а эти ложатся на фон как родные.
+     Мозаика — три ЯВНЫЕ колонки в разметке, а не CSS columns: multicol с
+     ограниченной высотой раскладывает остаток не вниз, а вбок, создавая
+     колонки за пределами видимой области — стена разваливалась на пять
+     картинок и пустоту (проверено 05.10.2026). Карточки разложены по
+     колонкам вручную с прикидкой по соотношению сторон, чтобы низы сходились.
+     Высота ограничена и затушёвана градиентом до цвета секции, под обрывом —
+     кнопка, открывающая все скриншоты в модалке на общем механизме
+     data-modal-open (см. #homework-modal). Кнопка намеренно .btn--dark:
+     жёлтый на странице зарезервирован за кнопками покупки. */
+  .steps__row--wide { display: block; }
+  .crw { position: relative; margin-top: 30px; }
+  .crw__cols { display: flex; gap: 16px; align-items: flex-start; max-height: 660px; overflow: hidden; }
+  .crw__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .crw__shot { display: block; width: 100%; height: auto;
+    border-radius: 14px; border: 1px solid var(--border-card); background: var(--bg-card); }
+  /* Градиент идёт в --bg-primary, а не в прозрачность: секция steps лежит на
+     фоне страницы, подложки своего цвета у неё нет. */
+  .crw__fade { position: absolute; left: 0; right: 0; bottom: 0; height: 250px; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(16,23,26,0), var(--bg-primary) 84%); }
+  /* Отрицательный отступ поднимает кнопку в зону затухания — она стоит НА
+     обрыве, а не под ним, и сама служит нижней границей блока. */
+  .crw__cta { position: relative; z-index: 2; margin-top: -42px; text-align: center; }
+  .crw__count { font-family: var(--mono, ui-monospace, monospace); opacity: .6; margin-left: 8px; }
+  /* На узких ширинах колонки не схлопываются в одну (картинки стали бы
+     нечитаемо мелкими и ушли бы в простыню), а выключаются целиком —
+     остаётся две, потом одна. Всё, что выпало, доступно по кнопке. */
+  @media (max-width: 1024px) { .crw__col:nth-child(3) { display: none; } .crw__cols { max-height: 600px; } }
+  @media (max-width: 640px)  { .crw__col:nth-child(2) { display: none; } .crw__cols { max-height: 520px; } }
+
+  /* Модалка со всеми ревью: та же мозаика, но без обрыва. Диалог шире
+     обычного и со своей прокруткой — внутри высокие скриншоты кода. */
+  .modal--crw .modal__dialog { max-width: 1240px; width: calc(100vw - 40px);
+    max-height: 92vh; overflow-y: auto; overscroll-behavior: contain; }
+  /* Здесь multicol уместен: высота не ограничена, балансировка работает штатно. */
+  .crw__all { columns: 3; column-gap: 16px; margin-top: 8px; }
+  .crw__all .crw__shot { margin: 0 0 16px; break-inside: avoid; }
+  @media (max-width: 1024px) { .crw__all { columns: 2; } }
+  @media (max-width: 640px) { .crw__all { columns: 1; } }
+
   /* mascot/speech_bubble_2.svg — не пустая рамка: текст «Ну или по лапкам…
      Как удобнее» впечатан в сам файл контуром (шрифт переведён в path,
      обычный grep по <text> его не находит). Правка 4 (визуальный заход №1):
@@ -3686,13 +3734,38 @@
             <img class="steps__img" src="learning_process/homework_task.jpg" alt="" width="1400" height="843" loading="lazy">
           </div>
         </div>
-        <div class="steps__row">
+        <div class="steps__row steps__row--wide">
           <div class="steps__col steps__col--text">
             <h3 class="steps__title">Получает подробный фидбек по заданию и эталонное решение от Олега<a class="steps__star" href="#steps-footnote" aria-describedby="steps-footnote">*</a></h3>
             <p class="steps__desc">Менторы разбирают задание в пул-реквесте и показывают ошибки. Плюс видео с эталонным решением: как этот код написал бы Олег — с разбором нюансов и типичных ошибок.</p>
           </div>
-          <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/code_review.png" alt="" width="1121" height="693" loading="lazy">
+          <div class="crw">
+            <div class="crw__cols">
+              <!-- Колонка 1 — единственная, что остаётся на телефоне: сюда
+                   поставлены самые сильные комментарии. -->
+              <div class="crw__col">
+                <img class="crw__shot" src="code_reviews/cr01.jpg" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="1100" height="616" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr02.jpg" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="1100" height="859" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr04.jpg" alt="Комментарий ревьюера: работу с паролями вынести в отдельный пакет, с примером кода" width="897" height="1100" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr11.jpg" alt="Комментарий ревьюера: удалить неиспользуемые конвертеры" width="1100" height="586" loading="lazy">
+              </div>
+              <div class="crw__col">
+                <img class="crw__shot" src="code_reviews/cr03.jpg" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="1100" height="627" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr05.jpg" alt="Комментарий ревьюера с разбором архитектуры проекта и замечанием к тестам" width="1017" height="1100" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr07.jpg" alt="Комментарий ревьюера про закрытие каналов и graceful shutdown" width="1100" height="935" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr12.jpg" alt="Комментарий ревьюера: миграции вынести в отдельный контейнер-мигратор" width="1100" height="328" loading="lazy">
+              </div>
+              <div class="crw__col">
+                <img class="crw__shot" src="code_reviews/cr06.jpg" alt="Комментарий ревьюера про блокировки и ответ участника" width="1100" height="649" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr09.jpg" alt="Комментарий ревьюера про updated_at на стороне базы и ответ участника" width="936" height="1100" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr08.jpg" alt="Комментарий ревьюера: деньги хранить в целых числах, а не во float64" width="1100" height="938" loading="lazy">
+                <img class="crw__shot" src="code_reviews/cr10.jpg" alt="Комментарий ревьюера: модель не должна знать про ошибки и валидацию" width="1100" height="736" loading="lazy">
+              </div>
+            </div>
+            <div class="crw__fade"></div>
+            <div class="crw__cta">
+              <button class="btn btn--dark" type="button" data-modal-open="reviews-modal" aria-haspopup="dialog">Смотреть все ревью<span class="crw__count">13</span></button>
+            </div>
           </div>
         </div>
         <p class="steps__footnote fade-up" id="steps-footnote">* На тарифе с обратной связью по практическим заданиям</p>
@@ -3820,6 +3893,31 @@
             <p>Контейнеризировать все сервисы. Собрать единый Docker Compose со всей инфраструктурой. Настроить Nginx для балансировки OrderService на 3 реплики. Реализовать распределённый Rate Limiter через Redis — единый лимит на все экземпляры. Провести нагрузочное тестирование</p>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка «Смотреть все ревью» — те же скриншоты, что в стене шага 3,
+       плюс те, что в обрыв не поместились. Общий механизм модалок страницы. -->
+  <div class="modal modal--crw" id="reviews-modal" data-modal hidden>
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="reviews-modal-title" tabindex="-1">
+      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+      <h2 class="modal__title" id="reviews-modal-title">Так проверяют задания</h2>
+      <div class="crw__all">
+        <img class="crw__shot" src="code_reviews/cr01.jpg" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="1100" height="616" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr02.jpg" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="1100" height="859" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr03.jpg" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="1100" height="627" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr04.jpg" alt="Комментарий ревьюера: работу с паролями вынести в отдельный пакет, с примером кода" width="897" height="1100" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr05.jpg" alt="Комментарий ревьюера с разбором архитектуры проекта и замечанием к тестам" width="1017" height="1100" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr06.jpg" alt="Комментарий ревьюера про блокировки и ответ участника" width="1100" height="649" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr07.jpg" alt="Комментарий ревьюера про закрытие каналов и graceful shutdown" width="1100" height="935" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr08.jpg" alt="Комментарий ревьюера: деньги хранить в целых числах, а не во float64" width="1100" height="938" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr09.jpg" alt="Комментарий ревьюера про updated_at на стороне базы и ответ участника" width="936" height="1100" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr10.jpg" alt="Комментарий ревьюера: модель не должна знать про ошибки и валидацию" width="1100" height="736" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr11.jpg" alt="Комментарий ревьюера: удалить неиспользуемые конвертеры" width="1100" height="586" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr12.jpg" alt="Комментарий ревьюера: миграции вынести в отдельный контейнер-мигратор" width="1100" height="328" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr13.jpg" alt="Комментарий ревьюера: все изменения через миграции — круто" width="1100" height="429" loading="lazy">
       </div>
     </div>
   </div>
