@@ -3802,7 +3802,7 @@
           <div class="steps__col steps__col--text">
             <h3 class="steps__title">Получаешь подробный фидбек по практическому заданию и эталонное решение от Олега<a class="steps__star" href="#steps-footnote" aria-describedby="steps-footnote">*</a></h3>
             <p class="steps__desc">Кожаные скрупулезно проверят практическое задание и покажут ошибки. А ещё отправят видео с идеальным решением, как бы они сами писали код в этом кейсе — с разбором всех нюансов и типичных ошибок</p>
-            <button class="btn btn--dark crw__btn" type="button" data-modal-open="reviews-modal" aria-haspopup="dialog">Смотреть все ревью<span class="crw__count">13</span></button>
+            <button class="btn btn--dark crw__btn" type="button" data-modal-open="reviews-modal" aria-haspopup="dialog">Смотреть все ревью<span class="crw__count">36</span></button>
           </div>
           <div class="steps__col steps__col--img">
             <div class="crw__mini">
@@ -4034,17 +4034,40 @@
       <h2 class="modal__title" id="reviews-modal-title">Так проверяют задания</h2>
       <div class="crw__all">
         <img class="crw__shot" src="code_reviews/cr01.jpg" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="1100" height="616" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr14.jpg" alt="Комментарий ревьюера: валидацию и парсинг uuid делать в api или сервисном слое" width="1100" height="1076" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr15.jpg" alt="Комментарий ревьюера: Reserve и Release должны идти одной транзакцией" width="1100" height="895" loading="lazy">
         <img class="crw__shot" src="code_reviews/cr02.jpg" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="1100" height="859" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr16.jpg" alt="Комментарий ревьюера: возвращается указатель на структуру из map — гонка данных" width="1100" height="935" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr17.jpg" alt="Комментарий ревьюера: duplicate shield и weapon не ловятся как type mismatch" width="1100" height="610" loading="lazy">
         <img class="crw__shot" src="code_reviews/cr03.jpg" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="1100" height="627" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr18.jpg" alt="Комментарий ревьюера: свой тип ошибок — да, но не завязываться на коды grpc-либы" width="1100" height="808" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr19.jpg" alt="Комментарий ревьюера: сортировка — зона ответственности репозитория, четыре причины" width="1100" height="594" loading="lazy">
         <img class="crw__shot" src="code_reviews/cr04.jpg" alt="Комментарий ревьюера: работу с паролями вынести в отдельный пакет, с примером кода" width="897" height="1100" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr05.jpg" alt="Комментарий ревьюера с разбором архитектуры проекта и замечанием к тестам" width="1017" height="1100" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr06.jpg" alt="Комментарий ревьюера про блокировки и ответ участника" width="1100" height="649" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr07.jpg" alt="Комментарий ревьюера про закрытие каналов и graceful shutdown" width="1100" height="935" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr20.jpg" alt="Комментарий ревьюера: time.Duration без множителя это наносекунды, а не секунды" width="1100" height="605" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr21.jpg" alt="Комментарий ревьюера: SELECT FOR UPDATE вне транзакции не держит блокировку" width="1100" height="467" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr05.jpg" alt="Комментарий ревьюера: разбор архитектуры проекта и замечание к тестам" width="1017" height="1100" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr22.jpg" alt="Комментарий ревьюера: параллельная регистрация не мапит unique violation" width="1100" height="494" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr23.jpg" alt="Комментарий ревьюера: рейтлимитер должен стоять первым, до остальных интерцепторов" width="1100" height="395" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr06.jpg" alt="Комментарий ревьюера: две одновременные оплаты затрут друг друга, нужен лок" width="1100" height="649" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr24.jpg" alt="Комментарий ревьюера: можно упростить и код, и лог: switch вместо трёх сравнений" width="1100" height="667" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr25.jpg" alt="Комментарий ревьюера: фильтр по типу — не отдельный case, а дефолтная ветка" width="1100" height="767" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr07.jpg" alt="Комментарий ревьюера: канал не закрывается и нет отмены регистрации сигналов" width="1100" height="935" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr26.jpg" alt="Комментарий ревьюера: конфиг читается только из env, yaml-файл игнорируется" width="1100" height="600" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr27.jpg" alt="Комментарий ревьюера: флакающий тест: репозиторий не забирает транзакцию из контекста" width="1100" height="547" loading="lazy">
         <img class="crw__shot" src="code_reviews/cr08.jpg" alt="Комментарий ревьюера: деньги хранить в целых числах, а не во float64" width="1100" height="938" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr09.jpg" alt="Комментарий ревьюера про updated_at на стороне базы и ответ участника" width="936" height="1100" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr28.jpg" alt="Комментарий ревьюера: record должен быть максимально примитивным" width="1100" height="426" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr29.jpg" alt="Комментарий ревьюера: фильтрация по UUID — задача репозитория, один ListParts вместо N" width="1100" height="437" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr09.jpg" alt="Комментарий ревьюера: updated_at логичнее делегировать базе через триггер" width="936" height="1100" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr30.jpg" alt="Комментарий ревьюера: Update обёрнут в транзакцию ради одного UPDATE" width="1100" height="398" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr31.jpg" alt="Комментарий ревьюера: в хендлерах дублируется маппинг ошибок, который уже делает интерцептор" width="1100" height="483" loading="lazy">
         <img class="crw__shot" src="code_reviews/cr10.jpg" alt="Комментарий ревьюера: модель не должна знать про ошибки и валидацию" width="1100" height="736" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr11.jpg" alt="Комментарий ревьюера: удалить неиспользуемые конвертеры" width="1100" height="586" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr32.jpg" alt="Комментарий ревьюера: ErrPayOrder не обрабатывается в маппинге и превратится в 500" width="1100" height="482" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr33.jpg" alt="Комментарий ревьюера: маппинг и конвертацию вынести в отдельный файл" width="1100" height="395" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr11.jpg" alt="Комментарий ревьюера: конвертеры нигде не используются, удалить лишний код" width="1100" height="586" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr34.jpg" alt="Комментарий ревьюера: собрать запрос билдером: основа одна, меняются условие и сортировка" width="1100" height="587" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr35.jpg" alt="Комментарий ревьюера: сборка не прерывается по context, shutdown её не остановит" width="1100" height="533" loading="lazy">
         <img class="crw__shot" src="code_reviews/cr12.jpg" alt="Комментарий ревьюера: миграции вынести в отдельный контейнер-мигратор" width="1100" height="328" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr36.jpg" alt="Комментарий ревьюера: ShipAssembled повторно списывает уже собранный заказ" width="1100" height="380" loading="lazy">
         <img class="crw__shot" src="code_reviews/cr13.jpg" alt="Комментарий ревьюера: все изменения через миграции — круто" width="1100" height="429" loading="lazy">
       </div>
     </div>
