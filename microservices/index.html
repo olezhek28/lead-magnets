@@ -1168,11 +1168,10 @@
   .crw__tile img { display: block; width: 100%; height: 100%;
     object-fit: cover; object-position: left top; }
 
-  /* Кнопка намеренно .btn--dark: жёлтый на странице зарезервирован за
-     кнопками покупки. */
-  /* .steps__col--text — флекс-колонка, поэтому кнопка без align-self
-     растягивается на всю ширину колонки. */
-  .crw__btn { margin-top: 8px; align-self: flex-start; }
+  /* Кнопка — тот же компонент, что «Коткинс, какие будут задания?» в шаге 2
+     (.steps__mascot): два шага подряд с кнопкой должны выглядеть одинаково.
+     Серая .btn--dark рядом с жёлтой читалась как выключенная. */
+  .crw__btn { margin-top: 8px; }
   .crw__count { font-family: var(--mono, ui-monospace, monospace); opacity: .6; margin-left: 8px; }
 
   /* Модалка со всеми ревью. Диалог шире обычного и со своей прокруткой —
@@ -1185,6 +1184,31 @@
     break-inside: avoid; border-radius: 14px; border: 1px solid var(--border-card); background: var(--bg-card); }
   @media (max-width: 1024px) { .crw__all { columns: 2; } }
   @media (max-width: 640px) { .crw__all { columns: 1; } }
+
+  /* ---- ЛАЙТБОКС РЕВЬЮ (crw__lb) ------------------------------------------
+     Клик по скриншоту в модалке открывает его на весь экран: в мозаике
+     комментарий нечитаем, а читать его как раз и хочется. Это НЕ .modal
+     общего механизма: лайтбокс открывается ПОВЕРХ уже открытой модалки, а тот
+     механизм на Esc закрывает первую попавшуюся в DOM модалку — закрылась бы
+     не верхняя. Поэтому свой оверлей и свой обработчик Esc на фазе
+     перехвата со stopImmediatePropagation. */
+  /* z-index выше .modal (2000): лайтбокс открывается поверх модалки со списком. */
+  .crw__lb { position: fixed; inset: 0; z-index: 2100; padding: 24px;
+    background: rgba(8,12,14,.94); display: grid; place-items: center; overflow: auto; }
+  .crw__lb[hidden] { display: none; }
+  /* Исходник 900px; в лайтбоксе растягиваем до 1100 — апскейл 1.2x почти не
+     заметен, зато текст комментария читается без прищура. */
+  .crw__lb img { display: block; width: min(1100px, 96vw); height: auto; border-radius: 12px;
+    box-shadow: 0 40px 90px -30px rgba(0,0,0,.9); }
+  /* На телефоне вписать скриншот кода в ширину экрана — значит сделать его
+     нечитаемым. Показываем в натуральную величину с горизонтальной прокруткой. */
+  @media (max-width: 700px) { .crw__lb { place-items: start; } .crw__lb img { max-width: none; width: 900px; } }
+  .crw__lb-close { position: fixed; top: 16px; right: 18px; z-index: 1;
+    width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+    border: 1px solid var(--border-acc); background: var(--bg-secondary); color: var(--text-h);
+    font-size: 20px; line-height: 1; }
+  .crw__lb-close:hover { background: var(--bg-tertiary); }
+  .crw__all .crw__shot { cursor: zoom-in; }
   /* mascot/speech_bubble_2.svg — не пустая рамка: текст «Ну или по лапкам…
      Как удобнее» впечатан в сам файл контуром (шрифт переведён в path,
      обычный grep по <text> его не находит). Правка 4 (визуальный заход №1):
@@ -3783,7 +3807,7 @@
             <p class="steps__desc">Каждую неделю будет открываться несколько уроков. Будешь изучать микросервисы лапку за лапкой, без полыхающих дедлайнов, ну и еще кое-чего:)</p>
           </div>
           <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/lesson_platform.jpg" alt="" width="1400" height="805" loading="lazy">
+            <img class="steps__img" src="learning_process/lesson_platform.webp" alt="" width="1400" height="805" loading="lazy">
           </div>
         </div>
         <div class="steps__row">
@@ -3793,7 +3817,7 @@
             <button type="button" class="steps__mascot" data-modal-open="homework-modal" aria-haspopup="dialog">Коткинс, какие будут задания?</button>
           </div>
           <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/homework_task.jpg" alt="" width="1400" height="843" loading="lazy">
+            <img class="steps__img" src="learning_process/homework_task.webp" alt="" width="1400" height="788" loading="lazy">
           </div>
         </div>
         <!-- Шаг 3 — единственная полноширинная строка в секции: вместо одного
@@ -3802,14 +3826,14 @@
           <div class="steps__col steps__col--text">
             <h3 class="steps__title">Получаешь подробный фидбек по практическому заданию и эталонное решение от Олега<a class="steps__star" href="#steps-footnote" aria-describedby="steps-footnote">*</a></h3>
             <p class="steps__desc">Кожаные скрупулезно проверят практическое задание и покажут ошибки. А ещё отправят видео с идеальным решением, как бы они сами писали код в этом кейсе — с разбором всех нюансов и типичных ошибок</p>
-            <button class="btn btn--dark crw__btn" type="button" data-modal-open="reviews-modal" aria-haspopup="dialog">Смотреть все ревью<span class="crw__count">36</span></button>
+            <button class="steps__mascot crw__btn" type="button" data-modal-open="reviews-modal" aria-haspopup="dialog">Смотреть все ревью<span class="crw__count">36</span></button>
           </div>
           <div class="steps__col steps__col--img">
             <div class="crw__mini">
-              <figure class="crw__tile"><img src="code_reviews/cr02.jpg" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="1100" height="859" loading="lazy"></figure>
-              <figure class="crw__tile"><img src="code_reviews/cr01.jpg" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="1100" height="616" loading="lazy"></figure>
-              <figure class="crw__tile"><img src="code_reviews/cr03.jpg" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="1100" height="627" loading="lazy"></figure>
-              <figure class="crw__tile"><img src="code_reviews/cr07.jpg" alt="Комментарий ревьюера про закрытие каналов и ответ участника" width="1100" height="935" loading="lazy"></figure>
+              <figure class="crw__tile"><img src="code_reviews/cr02.webp" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="900" height="703" loading="lazy"></figure>
+              <figure class="crw__tile"><img src="code_reviews/cr01.webp" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="900" height="504" loading="lazy"></figure>
+              <figure class="crw__tile"><img src="code_reviews/cr03.webp" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="900" height="513" loading="lazy"></figure>
+              <figure class="crw__tile"><img src="code_reviews/cr07.webp" alt="Комментарий ревьюера про закрытие каналов и ответ участника" width="900" height="765" loading="lazy"></figure>
             </div>
           </div>
         </div>
@@ -3820,7 +3844,7 @@
             <p class="steps__desc">К каждому уроку — свой текстовый конспект с кодом, схемами и разбором. Удобно, когда надо быстро вернуться к теме и не пересматривать видос</p>
           </div>
           <div class="steps__col steps__col--img">
-            <img class="steps__img" src="learning_process/materials_notes.jpg" alt="" width="1400" height="732" loading="lazy">
+            <img class="steps__img" src="learning_process/materials_notes.webp" alt="" width="1400" height="671" loading="lazy">
           </div>
         </div>
       </div>
@@ -4033,45 +4057,81 @@
       <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
       <h2 class="modal__title" id="reviews-modal-title">Так проверяют задания</h2>
       <div class="crw__all">
-        <img class="crw__shot" src="code_reviews/cr01.jpg" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="1100" height="616" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr14.jpg" alt="Комментарий ревьюера: валидацию и парсинг uuid делать в api или сервисном слое" width="1100" height="1076" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr15.jpg" alt="Комментарий ревьюера: Reserve и Release должны идти одной транзакцией" width="1100" height="895" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr02.jpg" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="1100" height="859" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr16.jpg" alt="Комментарий ревьюера: возвращается указатель на структуру из map — гонка данных" width="1100" height="935" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr17.jpg" alt="Комментарий ревьюера: duplicate shield и weapon не ловятся как type mismatch" width="1100" height="610" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr03.jpg" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="1100" height="627" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr18.jpg" alt="Комментарий ревьюера: свой тип ошибок — да, но не завязываться на коды grpc-либы" width="1100" height="808" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr19.jpg" alt="Комментарий ревьюера: сортировка — зона ответственности репозитория, четыре причины" width="1100" height="594" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr04.jpg" alt="Комментарий ревьюера: работу с паролями вынести в отдельный пакет, с примером кода" width="897" height="1100" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr20.jpg" alt="Комментарий ревьюера: time.Duration без множителя это наносекунды, а не секунды" width="1100" height="605" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr21.jpg" alt="Комментарий ревьюера: SELECT FOR UPDATE вне транзакции не держит блокировку" width="1100" height="467" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr05.jpg" alt="Комментарий ревьюера: разбор архитектуры проекта и замечание к тестам" width="1017" height="1100" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr22.jpg" alt="Комментарий ревьюера: параллельная регистрация не мапит unique violation" width="1100" height="494" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr23.jpg" alt="Комментарий ревьюера: рейтлимитер должен стоять первым, до остальных интерцепторов" width="1100" height="395" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr06.jpg" alt="Комментарий ревьюера: две одновременные оплаты затрут друг друга, нужен лок" width="1100" height="649" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr24.jpg" alt="Комментарий ревьюера: можно упростить и код, и лог: switch вместо трёх сравнений" width="1100" height="667" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr25.jpg" alt="Комментарий ревьюера: фильтр по типу — не отдельный case, а дефолтная ветка" width="1100" height="767" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr07.jpg" alt="Комментарий ревьюера: канал не закрывается и нет отмены регистрации сигналов" width="1100" height="935" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr26.jpg" alt="Комментарий ревьюера: конфиг читается только из env, yaml-файл игнорируется" width="1100" height="600" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr27.jpg" alt="Комментарий ревьюера: флакающий тест: репозиторий не забирает транзакцию из контекста" width="1100" height="547" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr08.jpg" alt="Комментарий ревьюера: деньги хранить в целых числах, а не во float64" width="1100" height="938" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr28.jpg" alt="Комментарий ревьюера: record должен быть максимально примитивным" width="1100" height="426" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr29.jpg" alt="Комментарий ревьюера: фильтрация по UUID — задача репозитория, один ListParts вместо N" width="1100" height="437" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr09.jpg" alt="Комментарий ревьюера: updated_at логичнее делегировать базе через триггер" width="936" height="1100" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr30.jpg" alt="Комментарий ревьюера: Update обёрнут в транзакцию ради одного UPDATE" width="1100" height="398" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr31.jpg" alt="Комментарий ревьюера: в хендлерах дублируется маппинг ошибок, который уже делает интерцептор" width="1100" height="483" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr10.jpg" alt="Комментарий ревьюера: модель не должна знать про ошибки и валидацию" width="1100" height="736" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr32.jpg" alt="Комментарий ревьюера: ErrPayOrder не обрабатывается в маппинге и превратится в 500" width="1100" height="482" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr33.jpg" alt="Комментарий ревьюера: маппинг и конвертацию вынести в отдельный файл" width="1100" height="395" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr11.jpg" alt="Комментарий ревьюера: конвертеры нигде не используются, удалить лишний код" width="1100" height="586" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr34.jpg" alt="Комментарий ревьюера: собрать запрос билдером: основа одна, меняются условие и сортировка" width="1100" height="587" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr35.jpg" alt="Комментарий ревьюера: сборка не прерывается по context, shutdown её не остановит" width="1100" height="533" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr12.jpg" alt="Комментарий ревьюера: миграции вынести в отдельный контейнер-мигратор" width="1100" height="328" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr36.jpg" alt="Комментарий ревьюера: ShipAssembled повторно списывает уже собранный заказ" width="1100" height="380" loading="lazy">
-        <img class="crw__shot" src="code_reviews/cr13.jpg" alt="Комментарий ревьюера: все изменения через миграции — круто" width="1100" height="429" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr01.webp" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="900" height="504" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr14.webp" alt="Комментарий ревьюера: валидацию и парсинг uuid делать в api или сервисном слое" width="900" height="880" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr15.webp" alt="Комментарий ревьюера: Reserve и Release должны идти одной транзакцией" width="900" height="732" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr02.webp" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="900" height="703" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr16.webp" alt="Комментарий ревьюера: возвращается указатель на структуру из map — гонка данных" width="900" height="765" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr17.webp" alt="Комментарий ревьюера: duplicate shield и weapon не ловятся как type mismatch" width="900" height="499" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr03.webp" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="900" height="513" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr18.webp" alt="Комментарий ревьюера: свой тип ошибок — да, но не завязываться на коды grpc-либы" width="900" height="661" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr19.webp" alt="Комментарий ревьюера: сортировка — зона ответственности репозитория, четыре причины" width="900" height="486" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr04.webp" alt="Комментарий ревьюера: работу с паролями вынести в отдельный пакет, с примером кода" width="897" height="1100" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr20.webp" alt="Комментарий ревьюера: time.Duration без множителя это наносекунды, а не секунды" width="900" height="495" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr21.webp" alt="Комментарий ревьюера: SELECT FOR UPDATE вне транзакции не держит блокировку" width="900" height="382" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr05.webp" alt="Комментарий ревьюера: разбор архитектуры проекта и замечание к тестам" width="900" height="973" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr22.webp" alt="Комментарий ревьюера: параллельная регистрация не мапит unique violation" width="900" height="404" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr23.webp" alt="Комментарий ревьюера: рейтлимитер должен стоять первым, до остальных интерцепторов" width="900" height="323" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr06.webp" alt="Комментарий ревьюера: две одновременные оплаты затрут друг друга, нужен лок" width="900" height="531" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr24.webp" alt="Комментарий ревьюера: можно упростить и код, и лог: switch вместо трёх сравнений" width="900" height="546" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr25.webp" alt="Комментарий ревьюера: фильтр по типу — не отдельный case, а дефолтная ветка" width="900" height="628" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr07.webp" alt="Комментарий ревьюера: канал не закрывается и нет отмены регистрации сигналов" width="900" height="765" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr26.webp" alt="Комментарий ревьюера: конфиг читается только из env, yaml-файл игнорируется" width="900" height="491" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr27.webp" alt="Комментарий ревьюера: флакающий тест: репозиторий не забирает транзакцию из контекста" width="900" height="448" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr08.webp" alt="Комментарий ревьюера: деньги хранить в целых числах, а не во float64" width="900" height="767" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr28.webp" alt="Комментарий ревьюера: record должен быть максимально примитивным" width="900" height="349" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr29.webp" alt="Комментарий ревьюера: фильтрация по UUID — задача репозитория, один ListParts вместо N" width="900" height="358" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr09.webp" alt="Комментарий ревьюера: updated_at логичнее делегировать базе через триггер" width="900" height="1058" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr30.webp" alt="Комментарий ревьюера: Update обёрнут в транзакцию ради одного UPDATE" width="900" height="326" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr31.webp" alt="Комментарий ревьюера: в хендлерах дублируется маппинг ошибок, который уже делает интерцептор" width="900" height="395" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr10.webp" alt="Комментарий ревьюера: модель не должна знать про ошибки и валидацию" width="900" height="602" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr32.webp" alt="Комментарий ревьюера: ErrPayOrder не обрабатывается в маппинге и превратится в 500" width="900" height="394" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr33.webp" alt="Комментарий ревьюера: маппинг и конвертацию вынести в отдельный файл" width="900" height="323" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr11.webp" alt="Комментарий ревьюера: конвертеры нигде не используются, удалить лишний код" width="900" height="479" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr34.webp" alt="Комментарий ревьюера: собрать запрос билдером: основа одна, меняются условие и сортировка" width="900" height="480" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr35.webp" alt="Комментарий ревьюера: сборка не прерывается по context, shutdown её не остановит" width="900" height="436" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr12.webp" alt="Комментарий ревьюера: миграции вынести в отдельный контейнер-мигратор" width="900" height="268" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr36.webp" alt="Комментарий ревьюера: ShipAssembled повторно списывает уже собранный заказ" width="900" height="311" loading="lazy">
+        <img class="crw__shot" src="code_reviews/cr13.webp" alt="Комментарий ревьюера: все изменения через миграции — круто" width="900" height="351" loading="lazy">
       </div>
     </div>
   </div>
+
+
+  <!-- Лайтбокс: скриншот ревью на весь экран, открывается кликом по мозаике. -->
+  <div class="crw__lb" id="review-lightbox" hidden>
+    <button class="crw__lb-close" type="button" aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
+    <img alt="">
+  </div>
+
+  <script>
+    (function () {
+      var lb = document.getElementById('review-lightbox');
+      if (!lb) return;
+      var img = lb.querySelector('img');
+      function open(src, alt) {
+        img.src = src; img.alt = alt || '';
+        lb.hidden = false;
+        document.body.style.overflow = 'hidden';
+        lb.querySelector('.crw__lb-close').focus();
+      }
+      function close() {
+        lb.hidden = true;
+        img.removeAttribute('src');
+        // Под лайтбоксом остаётся открытая модалка — скролл страницы
+        // возвращаем только если закрыто вообще всё.
+        if (!document.querySelector('.modal:not([hidden])')) document.body.style.overflow = '';
+      }
+      document.addEventListener('click', function (e) {
+        var shot = e.target.closest && e.target.closest('.crw__all .crw__shot');
+        if (shot) { open(shot.currentSrc || shot.src, shot.alt); return; }
+        if (!lb.hidden && (e.target === lb || (e.target.closest && e.target.closest('.crw__lb-close')))) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.code === 'Escape' || e.keyCode === 27) { if (!lb.hidden) { e.stopImmediatePropagation(); close(); } }
+      }, true);
+    })();
+  </script>
 
   <!-- ===== РЕЗУЛЬТАТ КУРСА — СХЕМА ИЗ 5 МИКРОСЕРВИСОВ (project-result) =====
        Правка 1 (визуальное ревью): полная пересборка по раскладке живой Tilda
@@ -5560,11 +5620,13 @@
            обработку…», ряд 2 — «Согласие на информационно-рекламную…»/
            «Политика обработки…», оба прижаты к правому краю, зазор между
            ссылками в ряду 8px, между рядами тоже ~8px).
+           Правка 05.10.2026: ссылка «Подготовка к собесам по Go»
+           (olezhek28.courses/gothrough) убрана по просьбе владельца —
+           исходящий вес на неё не льём.
            Ссылка «Разработка сайта» (andrew-design.ru), которая на живой
            Tilda замыкала второй ряд, здесь убрана по просьбе владельца. -->
       <nav class="footer__links" aria-label="Юридические документы и другие материалы">
         <div class="footer__links-row">
-          <a href="https://olezhek28.courses/gothrough" target="_blank" rel="noopener">Подготовка к&nbsp;собесам по&nbsp;Go</a>
           <a href="oferta.html" target="_blank" rel="noopener">Публичная оферта</a>
           <a href="/agree.html" target="_blank" rel="noopener">Согласие на&nbsp;обработку персональных данных</a>
         </div>
