@@ -2790,11 +2790,24 @@
      тот же, что и раньше), группа расширена, чтобы вместить увеличенного
      кота (96px → 110px, +15%) целиком внутри своих границ: .ytch__cat
      теперь right: 0, а не отрицательный оффсет за пределы группы. */
-  .ytch__mascot-group { position: relative; flex-shrink: 0; width: 310px; }
-  .ytch__mascot-bubble { display: block; width: 220px; height: auto; }
+  /* Правка 06.10.2026: кот с облачком из этой секции убран — заголовок слева,
+     текст справа, как на лендинге System Design. Кот оставался тут от Tilda и
+     занимал место, на котором должен стоять подзаголовок; при этом он есть ещё
+     в двух секциях страницы (steps, pricing), так что персонаж не теряется. */
+  .ytch .section__head--mascot { align-items: start; gap: 48px; }
+  .ytch .section__head--mascot .section__title { flex: 1 1 520px; }
+  .ytch__sub { flex: 1 1 380px; max-width: 480px; margin: 6px 0 0;
+    font-size: 16px; line-height: 1.6; color: var(--text-mute); }
+  /* На узких .section__head--mascot становится колонкой, а в колонке
+     flex-basis задаёт ВЫСОТУ — 520px превращались в пустую дыру между
+     заголовком и текстом. Поэтому на мобильных базис сбрасывается. */
+  @media (max-width: 860px) {
+    .ytch .section__head--mascot { gap: 14px; }
+    .ytch .section__head--mascot .section__title, .ytch__sub { flex: 0 1 auto; }
+    .ytch__sub { max-width: none; margin-top: 0; }
+  }
   /* Правка (заход 17): зеркалирование, как у .steps__cat выше (тот же
      исходник noroot.png, там же и разбор). */
-  .ytch__cat { position: absolute; top: -12px; right: 0; width: 110px; height: auto; pointer-events: none; transform: scaleX(-1); }
   .ytch__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
   .ytch__card { display: block; border-radius: var(--r-lg); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-card); transition: border-color .25s var(--ease), transform .25s var(--ease); }
   .ytch__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
@@ -2817,10 +2830,7 @@
   .ytch__actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
   @media (max-width: 960px) {
     .ytch__grid { grid-template-columns: 1fr 1fr; gap: 18px; }
-    .ytch__mascot-group { width: 250px; }
-    .ytch__mascot-bubble { width: 170px; }
-    .ytch__cat { width: 88px; right: 0; top: 4px; }
-  }
+        }
   @media (max-width: 640px) {
     .ytch__grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 32px; }
     .ytch__actions { flex-direction: column; align-items: stretch; }
@@ -2830,10 +2840,7 @@
        резервирует место под кота в потоке, чтобы он не наезжал на
        .ytch__grid ниже. */
     .section__head--mascot { flex-direction: column; align-items: flex-start; }
-    .ytch__mascot-group { width: 230px; height: 170px; }
-    .ytch__mascot-bubble { width: 160px; }
-    .ytch__cat { width: 90px; right: 0; top: -8px; }
-  }
+        }
 
   /* ---- faq (та же механика раскрытия, что у .program__*, см. Task 6) =====
      Перевёрстка 4 (заход 2): две колонки, вопросы распределены слева-направо
@@ -5192,11 +5199,8 @@
   <section class="section ytch" id="youtube-tg" aria-labelledby="ytch-title">
     <div class="container">
       <div class="section__head section__head--mascot fade-up">
-        <h2 class="section__title" id="ytch-title">Кстати, Олег ведет YouTube и ламповый TG-канальчик</h2>
-        <div class="ytch__mascot-group">
-          <img class="ytch__mascot-bubble" src="../microservices/mascot/speech_bubble_4.svg" alt="Ты это… Заходи, если что" width="271" height="57" loading="lazy">
-          <img class="ytch__cat" src="../microservices/mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
-        </div>
+        <h2 class="section__title" id="ytch-title">Кстати, я веду YouTube и ламповый TG-канальчик</h2>
+        <p class="ytch__sub">Разбираю Go, архитектуру и&nbsp;собесы. Можно заранее посмотреть, как я&nbsp;объясняю материал, и&nbsp;познакомиться со&nbsp;мной поближе.</p>
       </div>
 
       <div class="ytch__grid">
