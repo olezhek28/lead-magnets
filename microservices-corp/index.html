@@ -672,12 +672,17 @@
   .hero__author-pos { font-family: var(--font); font-size: 11.5px; font-weight: 400; color: var(--text-mute); line-height: 1.2; white-space: nowrap; }
   .hero__subtitle { font-size: 18px; font-weight: 400; line-height: 1.62; color: var(--text-mute); max-width: 680px; margin: 0 auto 44px; text-wrap: pretty; }
   .hero__chip {
-    display: inline-flex; align-items: center; padding: 1px 10px; margin: 0 1px;
+    display: inline-flex; align-items: center; padding: 2px 13px; margin: 0 2px;
     /* Правка: подложка и рамка были акцентно-жёлтыми (rgba(223,223,65,…)),
        из-за чего пять плашек подряд читались как активные элементы и рвали
        строку. Нейтральный белый с той же прозрачностью и обычный вес текста
-       возвращают их в поток — как на оригинале. */
-    border-radius: 6px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14);
+       возвращают их в поток — как на оригинале.
+       Правка 06.10.2026: прямоугольники с радиусом 6px выбивались из страницы,
+       где скруглено всё остальное (кнопки 999px, карточки 24px), и читались
+       как кнопки. Радиус пилюлей, рамка и заливка слабее вдвое, поля по
+       горизонтали больше — плашка осталась плашкой, но перестала спорить
+       с текстом. */
+    border-radius: 999px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
     color: var(--text-h); font-weight: 400; white-space: nowrap;
   }
   .hero__cta { display: flex; justify-content: center; }
@@ -1187,21 +1192,15 @@
      светлые карточки светятся лампочками, а эти ложатся на фон как родные.
      Ники и аватарки участников закрашены пикселизацией, ники менторов
      оставлены — отвечают за свои слова и узнаются.
-     Миниатюры — ровная сетка 2×2 из одинаковых плиток. Высота у скриншотов
-     разная, поэтому раскладка «колонка из двух картинок в натуральную высоту»
-     давала разные низы у колонок (поймано на ревью 05.10.2026). Плитка задаёт
-     соотношение сторон и прячет лишнее, картинка внутри прижата к верху: у
-     комментария ревью смысл в первых строках — файл, диф и начало issue, —
-     а хвост всё равно нечитаем в миниатюре. */
-  .crw__mini { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .crw__tile { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px;
-    border: 1px solid var(--border-card); background: var(--bg-card); }
-  /* cover, а не width:100% + height:auto: скриншоты разной высоты, и те,
-     что ниже плитки, оставляли под собой пустоту — низы плиток визуально
-     разъезжались. Привязка к левому верхнему углу: слева текст
-     комментария, его и жалко терять при обрезке. */
-  .crw__tile img { display: block; width: 100%; height: 100%;
-    object-fit: cover; object-position: left top; }
+     В колонке один скриншот во всю её ширину. Была сетка 2×2 из обрезанных
+     миниатюр — четыре куска кода размером с ноготь читались как нагромождение,
+     и ни один из них нельзя было прочесть (ревью 06.10.2026). Один кадр на ту
+     же площадь даёт текст вдвое крупнее: видно, что это разбор, а не «прислали
+     какой-то комментарий». Остальные 35 — по кнопке, как и раньше.
+     Высота естественная, без обрезки: кадрировать комментарий нельзя, у него
+     смысл до последней строки. */
+  .crw__shot--one { display: block; width: 100%; height: auto; border-radius: 12px;
+    border: 1px solid var(--border-card); background: var(--bg-card); cursor: zoom-in; }
 
   /* Кнопка — тот же компонент, что «Коткинс, какие будут задания?» в шаге 2
      (.steps__mascot): два шага подряд с кнопкой должны выглядеть одинаково.
@@ -1265,9 +1264,7 @@
     .crw__lb-prev { left: 16px; } .crw__lb-next { right: 16px; }
     .crw__lb-count { bottom: 32px; }
   }
-  .crw__all .crw__shot, .crw__tile { cursor: zoom-in; }
-  /* Подсказка под миниатюрами: без неё непонятно, что плитки кликабельны. */
-  .crw__hint { margin: 10px 0 0; font-size: 13px; color: var(--text-faint); text-align: center; }
+  .crw__all .crw__shot { cursor: zoom-in; }
 
   /* mascot/speech_bubble_2.svg — не пустая рамка: текст «Ну или по лапкам…
      Как удобнее» впечатан в сам файл контуром (шрифт переведён в path,
@@ -2144,14 +2141,19 @@
      То есть рамка 12px сверху/слева/справа, снизу 0 (картинка уходит встык
      к подписи), внутренние верхние углы скруглены на 16px. Переносим
      один в один: у нас картинка — <img>, clip-path работает на нём так же. */
-  .reviews__img { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; object-position: top; display: block; clip-path: inset(12px 12px 0 round 16px 16px 0 0); }
+  /* Правка 06.10.2026: пропорция была 9/16 — карточка вырастала до 765px, и в
+     экран их помещалось меньше трёх. Структура блока не менялась (те же три
+     карточки в ряд и та же карусель), укоротился только скриншот: 4/5 вместо
+     9/16 режет высоту примерно на четверть. Обрезка идёт снизу
+     (object-position: top) — в переписке смысл в первых сообщениях. */
+  .reviews__img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: top; display: block; clip-path: inset(12px 12px 0 round 16px 16px 0 0); }
   /* Правка 12 (п.Б): подпись увеличена под оригинал (getComputedStyle на
      .t-card__title внутри .t1196__content-inner, rec2078055861, живая
      страница): padding 30px кругом (было 16/18), font-size 24px/font-weight
      500 (было 14px), line-height 32.4px = 1.35 (было 1.4 — почти совпадало,
      тронуто только вслед за кеглем). border-top снят — на оригинале подпись
      не отделена линией, панель того же белого цвета продолжает карточку. */
-  .reviews__caption { padding: 30px; font-size: 24px; font-weight: 500; color: var(--light-ink); line-height: 1.35; }
+  .reviews__caption { padding: 24px; font-size: 20px; font-weight: 500; color: var(--light-ink); line-height: 1.35; }
 
   /* ---- ВИДЕООТЗЫВЫ (video-reviews) — переиспользует паттерн .yt__* из
      system_design/index.html:2788-2832 (превью + play-кнопка поверх), но кнопка
@@ -3828,13 +3830,7 @@
             <button class="steps__mascot crw__btn" type="button" data-modal-open="reviews-modal" aria-haspopup="dialog">Смотреть все ревью<span class="crw__count">36</span></button>
           </div>
           <div class="steps__col steps__col--img">
-            <div class="crw__mini">
-              <figure class="crw__tile"><img src="code_reviews/cr02.webp" alt="Комментарий ревьюера: сломана идемпотентность, повторное событие уйдёт по кругу" width="900" height="703" loading="lazy"></figure>
-              <figure class="crw__tile"><img src="code_reviews/cr01.webp" alt="Комментарий ревьюера: нельзя выбирать из таблицы через SELECT *, только строго заданные поля" width="900" height="504" loading="lazy"></figure>
-              <figure class="crw__tile"><img src="code_reviews/cr03.webp" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="900" height="513" loading="lazy"></figure>
-              <figure class="crw__tile"><img src="code_reviews/cr07.webp" alt="Комментарий ревьюера про закрытие каналов и ответ участника" width="900" height="765" loading="lazy"></figure>
-            </div>
-            <p class="crw__hint">Нажми на скриншот — откроется целиком</p>
+            <img class="crw__shot--one" src="code_reviews/cr03.webp" alt="Комментарий ревьюера: параллельная регистрация вернёт 500 вместо 409 Conflict" width="900" height="513" loading="lazy">
           </div>
         </div>
         <p class="steps__footnote fade-up" id="steps-footnote">* На тарифе с обратной связью по практическим заданиям</p>
@@ -4059,8 +4055,8 @@
         var t = e.target;
         var shot = t.closest && t.closest('.crw__all .crw__shot');
         if (shot) { openAt(shots.indexOf(shot)); return; }
-        var tile = t.closest && t.closest('.crw__tile');
-        if (tile) { openAt(indexOfFile(fileOf(tile.querySelector('img')))); return; }
+        var one = t.closest && t.closest('.crw__shot--one');
+        if (one) { openAt(indexOfFile(fileOf(one))); return; }
         if (lb.hidden) return;
         if (t.closest && t.closest('.crw__lb-next')) { show(at + 1); return; }
         if (t.closest && t.closest('.crw__lb-prev')) { show(at - 1); return; }

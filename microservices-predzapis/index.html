@@ -699,12 +699,17 @@
   .hero__author-pos { font-family: var(--font); font-size: 11.5px; font-weight: 400; color: var(--text-mute); line-height: 1.2; white-space: nowrap; }
   .hero__subtitle { font-size: 18px; font-weight: 400; line-height: 1.62; color: var(--text-mute); max-width: 680px; margin: 0 auto 44px; text-wrap: pretty; }
   .hero__chip {
-    display: inline-flex; align-items: center; padding: 1px 10px; margin: 0 1px;
+    display: inline-flex; align-items: center; padding: 2px 13px; margin: 0 2px;
     /* Правка: подложка и рамка были акцентно-жёлтыми (rgba(223,223,65,…)),
        из-за чего пять плашек подряд читались как активные элементы и рвали
        строку. Нейтральный белый с той же прозрачностью и обычный вес текста
-       возвращают их в поток — как на оригинале. */
-    border-radius: 6px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14);
+       возвращают их в поток — как на оригинале.
+       Правка 06.10.2026: прямоугольники с радиусом 6px выбивались из страницы,
+       где скруглено всё остальное (кнопки 999px, карточки 24px), и читались
+       как кнопки. Радиус пилюлей, рамка и заливка слабее вдвое, поля по
+       горизонтали больше — плашка осталась плашкой, но перестала спорить
+       с текстом. */
+    border-radius: 999px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
     color: var(--text-h); font-weight: 400; white-space: nowrap;
   }
   .hero__cta { display: flex; justify-content: center; }
@@ -2073,14 +2078,19 @@
      То есть рамка 12px сверху/слева/справа, снизу 0 (картинка уходит встык
      к подписи), внутренние верхние углы скруглены на 16px. Переносим
      один в один: у нас картинка — <img>, clip-path работает на нём так же. */
-  .reviews__img { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; object-position: top; display: block; clip-path: inset(12px 12px 0 round 16px 16px 0 0); }
+  /* Правка 06.10.2026: пропорция была 9/16 — карточка вырастала до 765px, и в
+     экран их помещалось меньше трёх. Структура блока не менялась (те же три
+     карточки в ряд и та же карусель), укоротился только скриншот: 4/5 вместо
+     9/16 режет высоту примерно на четверть. Обрезка идёт снизу
+     (object-position: top) — в переписке смысл в первых сообщениях. */
+  .reviews__img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: top; display: block; clip-path: inset(12px 12px 0 round 16px 16px 0 0); }
   /* Правка 12 (п.Б): подпись увеличена под оригинал (getComputedStyle на
      .t-card__title внутри .t1196__content-inner, rec2078055861, живая
      страница): padding 30px кругом (было 16/18), font-size 24px/font-weight
      500 (было 14px), line-height 32.4px = 1.35 (было 1.4 — почти совпадало,
      тронуто только вслед за кеглем). border-top снят — на оригинале подпись
      не отделена линией, панель того же белого цвета продолжает карточку. */
-  .reviews__caption { padding: 30px; font-size: 24px; font-weight: 500; color: var(--light-ink); line-height: 1.35; }
+  .reviews__caption { padding: 24px; font-size: 20px; font-weight: 500; color: var(--light-ink); line-height: 1.35; }
 
   /* ---- ВИДЕООТЗЫВЫ (video-reviews) — переиспользует паттерн .yt__* из
      system_design/index.html:2788-2832 (превью + play-кнопка поверх), но кнопка
