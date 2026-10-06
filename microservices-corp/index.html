@@ -899,13 +899,16 @@
      Ozon Tech» и т.д., с иконкой-кружком слева) — на живой Tilda это два разных
      элемента, а не общий caption внутри карточки. Раньше подписи не было вовсе. */
   .jobs__col { display: flex; flex-direction: column; gap: 12px; }
+  /* Правка 06.10.2026: карточка была кнопкой — по клику открывался полный
+     скриншот вакансии во весь экран. Убрано: кадры самодостаточны, в них видно
+     и стек, и требования, а простыня на 3570px по высоте ничего не добавляет
+     (решение заказчика). Вместе с кнопкой ушли :hover-подъём и курсор —
+     некликабельный элемент не должен вести себя как кликабельный. */
   .jobs__card {
     display: block; width: 100%; padding: 0; border: 1px solid var(--border-card);
     border-radius: var(--r-lg); overflow: hidden; background: #ffffff;
     aspect-ratio: 336 / 238;
-    transition: border-color .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
   }
-  .jobs__card:hover { border-color: var(--border-acc); transform: translateY(-3px); box-shadow: 0 20px 40px -24px rgba(0,0,0,.6); }
   /* Правка: три скриншота имеют разные пропорции (Ozon 441×238, остальные
      336×238), поэтому при равной ширине колонки нижние края расходились и
      подписи под ними вставали лесенкой. Фиксируем пропорцию по двум узким
@@ -1958,7 +1961,11 @@
   .author__desc { padding-top: 2px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
   .author__side { display: flex; }
   .author__photo { display: block; width: 100%; }
-  .author__photo img { display: block; width: 100%; height: 100%; aspect-ratio: 1089 / 1209; object-fit: cover; object-position: top center; }
+  /* Правка 06.10.2026: вместо тёмного портрета крупным планом
+     (instructor_large.png) — чёрно-белый кадр в рост с лендинга System Design.
+     Пропорция сменилась с 1089/1209 на 720/960, поэтому задана новая; кадр
+     прижат к верху, чтобы при обрезке уходили ноги, а не лицо. */
+  .author__photo img { display: block; width: 100%; height: 100%; aspect-ratio: 720 / 960; object-fit: cover; object-position: top center; }
 
   /* .stat-card переиспользован из system_design/index.html:2571-2674 (структура
      и класс — дословно), CSS-значения адаптированы под токены этого файла.
@@ -4456,7 +4463,7 @@
               <div class="stat-card__label">Коммерческой разработки</div>
             </div>
             <div class="stat-card">
-              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
+              <div class="stat-card__number" data-count="13000" data-suffix="+">0</div>
               <div class="stat-card__line"></div>
               <div class="stat-card__label">Подписчиков на YouTube-канале</div>
             </div>
@@ -4465,7 +4472,10 @@
 
         <div class="author__side fade-up">
           <div class="author__photo">
-            <img src="instructor/instructor_large.png" alt="Олег Козырев, автор курса по микросервисам" width="1089" height="1209" loading="lazy">
+            <picture>
+              <source srcset="instructor/oleg-portrait.webp" type="image/webp">
+              <img src="instructor/oleg-portrait.jpg" alt="Олег Козырев, автор курса по микросервисам" width="720" height="960" loading="lazy" decoding="async">
+            </picture>
           </div>
         </div>
       </div>

@@ -611,7 +611,11 @@
      секциях страницы (steps, pricing), так что персонаж не теряется.
      .section__head--mascot — флекс-строка «слева | справа», поэтому обёртка
      .ytch__headtext больше не нужна: заголовок и абзац сами стали её парой. */
-  .ytch .section__head--mascot { align-items: start; gap: 48px; }
+  /* align-items: end, а не start: заголовок в две строки, текст в три — при
+     выравнивании по верху их низы разъезжались и блок выглядел неряшливо.
+     Прижаты к низу: последняя строка текста идёт по одной линии с «ламповый
+     TG-канальчик» (правка 06.10.2026). */
+  .ytch .section__head--mascot { align-items: end; gap: 48px; }
   .ytch .section__head--mascot .section__title { flex: 1 1 520px; }
   .ytch__sub { flex: 1 1 380px; max-width: 480px; margin: 6px 0 0;
     font-size: 16px; line-height: 1.6; color: var(--text-mute); }
@@ -912,13 +916,16 @@
      Ozon Tech» и т.д., с иконкой-кружком слева) — на живой Tilda это два разных
      элемента, а не общий caption внутри карточки. Раньше подписи не было вовсе. */
   .jobs__col { display: flex; flex-direction: column; gap: 12px; }
+  /* Правка 06.10.2026: карточка была кнопкой — по клику открывался полный
+     скриншот вакансии во весь экран. Убрано: кадры самодостаточны, в них видно
+     и стек, и требования, а простыня на 3570px по высоте ничего не добавляет
+     (решение заказчика). Вместе с кнопкой ушли :hover-подъём и курсор —
+     некликабельный элемент не должен вести себя как кликабельный. */
   .jobs__card {
     display: block; width: 100%; padding: 0; border: 1px solid var(--border-card);
     border-radius: var(--r-lg); overflow: hidden; background: #ffffff;
     aspect-ratio: 336 / 238;
-    transition: border-color .3s var(--ease), transform .3s var(--ease), box-shadow .3s var(--ease);
   }
-  .jobs__card:hover { border-color: var(--border-acc); transform: translateY(-3px); box-shadow: 0 20px 40px -24px rgba(0,0,0,.6); }
   /* Правка: три скриншота имеют разные пропорции (Ozon 441×238, остальные
      336×238), поэтому при равной ширине колонки нижние края расходились и
      подписи под ними вставали лесенкой. Фиксируем пропорцию по двум узким
@@ -1975,7 +1982,11 @@
   .author__desc { padding-top: 2px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
   .author__side { display: flex; }
   .author__photo { display: block; width: 100%; }
-  .author__photo img { display: block; width: 100%; height: 100%; aspect-ratio: 1089 / 1209; object-fit: cover; object-position: top center; }
+  /* Правка 06.10.2026: вместо тёмного портрета крупным планом
+     (instructor_large.png) — чёрно-белый кадр в рост с лендинга System Design.
+     Пропорция сменилась с 1089/1209 на 720/960, поэтому задана новая; кадр
+     прижат к верху, чтобы при обрезке уходили ноги, а не лицо. */
+  .author__photo img { display: block; width: 100%; height: 100%; aspect-ratio: 720 / 960; object-fit: cover; object-position: top center; }
 
   /* .stat-card переиспользован из system_design/index.html:2571-2674 (структура
      и класс — дословно), CSS-значения адаптированы под токены этого файла.
@@ -3845,21 +3856,21 @@
         </div>
         <div class="jobs__cards">
           <div class="jobs__col">
-            <button class="jobs__card" type="button" data-modal-open="modal-vacancy-ozon" aria-haspopup="dialog">
+            <div class="jobs__card">
               <img class="jobs__card-img" src="vacancies/ozon.jpg" alt="Скриншот вакансии Ozon Tech на hh.ru" width="441" height="238" loading="lazy">
-            </button>
+            </div>
             <p class="jobs__card-label"><img class="jobs__card-label-icon" src="icons/attention.svg" alt="" width="16" height="16" aria-hidden="true">Вакансия Ozon Tech</p>
           </div>
           <div class="jobs__col">
-            <button class="jobs__card" type="button" data-modal-open="modal-vacancy-wildberries" aria-haspopup="dialog">
+            <div class="jobs__card">
               <img class="jobs__card-img" src="vacancies/wildberries.jpg" alt="Скриншот вакансии Wildberries на hh.ru" width="336" height="238" loading="lazy">
-            </button>
+            </div>
             <p class="jobs__card-label"><img class="jobs__card-label-icon" src="icons/attention.svg" alt="" width="16" height="16" aria-hidden="true">Вакансия Wildberries</p>
           </div>
           <div class="jobs__col">
-            <button class="jobs__card" type="button" data-modal-open="modal-vacancy-aviasales" aria-haspopup="dialog">
+            <div class="jobs__card">
               <img class="jobs__card-img" src="vacancies/aviasales.jpg" alt="Скриншот вакансии Aviasales на hh.ru" width="336" height="238" loading="lazy">
-            </button>
+            </div>
             <p class="jobs__card-label"><img class="jobs__card-label-icon" src="icons/attention.svg" alt="" width="16" height="16" aria-hidden="true">Вакансия Aviasales</p>
           </div>
         </div>
@@ -4565,7 +4576,7 @@
 
           <div class="stats-row">
             <div class="stat-card">
-              <div class="stat-card__number" data-count="8500" data-suffix="+">0</div>
+              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
               <div class="stat-card__line"></div>
               <div class="stat-card__label">Подписчиков в Telegram-канале</div>
             </div>
@@ -4575,7 +4586,7 @@
               <div class="stat-card__label">Коммерческой разработки</div>
             </div>
             <div class="stat-card">
-              <div class="stat-card__number" data-count="11000" data-suffix="+">0</div>
+              <div class="stat-card__number" data-count="13000" data-suffix="+">0</div>
               <div class="stat-card__line"></div>
               <div class="stat-card__label">Подписчиков на YouTube-канале</div>
             </div>
@@ -4584,7 +4595,10 @@
 
         <div class="author__side fade-up">
           <div class="author__photo">
-            <img src="instructor/instructor_large.png" alt="Олег Козырев, автор курса по микросервисам" width="1089" height="1209" loading="lazy">
+            <picture>
+              <source srcset="instructor/oleg-portrait.webp" type="image/webp">
+              <img src="instructor/oleg-portrait.jpg" alt="Олег Козырев, автор курса по микросервисам" width="720" height="960" loading="lazy" decoding="async">
+            </picture>
           </div>
         </div>
       </div>
@@ -5690,27 +5704,6 @@
        Task 7 в конце файла, тот же обслуживает истории участников и модалку
        видео project-result. Текста в попапах нет, только картинка — по
        контент-файлу. -->
-  <div class="modal modal--img" id="modal-vacancy-ozon" data-modal hidden>
-    <div class="modal__overlay" data-modal-close></div>
-    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Ozon Tech" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
-      <img class="modal__img" src="vacancies/ozon_full.jpg" alt="Полный скриншот вакансии Ozon Tech на hh.ru" width="1680" height="3570" loading="lazy">
-    </div>
-  </div>
-  <div class="modal modal--img" id="modal-vacancy-wildberries" data-modal hidden>
-    <div class="modal__overlay" data-modal-close></div>
-    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Wildberries" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
-      <img class="modal__img" src="vacancies/wildberries_full.jpg" alt="Полный скриншот вакансии Wildberries на hh.ru" width="1680" height="3570" loading="lazy">
-    </div>
-  </div>
-  <div class="modal modal--img" id="modal-vacancy-aviasales" data-modal hidden>
-    <div class="modal__overlay" data-modal-close></div>
-    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Скриншот вакансии Aviasales" tabindex="-1">
-      <button class="modal__close" type="button" data-modal-close aria-label="Закрыть"><span aria-hidden="true">&times;</span></button>
-      <img class="modal__img" src="vacancies/aviasales_full.jpg" alt="Полный скриншот вакансии Aviasales на hh.ru" width="1680" height="3570" loading="lazy">
-    </div>
-  </div>
 
 </main>
 
