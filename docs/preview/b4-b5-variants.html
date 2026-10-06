@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>B4 и B5 — варианты</title>
+<title>B4 и B5 — варианты, заход 2</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   :root{
@@ -16,68 +16,55 @@
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg-primary);color:var(--text-b);font-family:var(--sans);font-size:15px;line-height:1.55}
-  .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+  .wrap{max-width:1500px;margin:0 auto;padding:0 24px}
   header{padding-block:40px 24px;border-bottom:1px solid var(--border-card)}
   h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:600;color:var(--text-h);margin:0 0 10px;letter-spacing:-.02em}
-  .lead{color:var(--text-mute);max-width:80ch;margin:0}
+  .lead{color:var(--text-mute);max-width:84ch;margin:0}
   section{padding-block:48px;border-bottom:1px solid var(--border-card)}
   .tag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
     color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:3px 10px;margin-bottom:12px}
   h2{font-size:1.4rem;font-weight:600;color:var(--text-h);margin:0 0 8px}
-  .note{color:var(--text-mute);font-size:14.5px;margin:0 0 28px;max-width:84ch}
-  .vhead{display:flex;align-items:center;gap:12px;margin:34px 0 14px}
+  .note{color:var(--text-mute);font-size:14.5px;margin:0 0 20px;max-width:88ch}
+  .vhead{display:flex;align-items:center;gap:12px;margin:34px 0 14px;flex-wrap:wrap}
   .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
     padding:4px 11px;border-radius:999px;border:1px solid var(--border-acc);color:var(--text-mute);white-space:nowrap}
   .chip--now{border-color:#C9915A;color:#C9915A}
+  .chip--pick{border-color:var(--accent);color:var(--accent)}
   .vname{font-size:16px;font-weight:600;color:var(--text-h)}
-  .stage{padding:26px;border:1px dashed var(--border-acc);border-radius:var(--r-lg);background:var(--bg-primary)}
-  .why{margin:10px 0 0;font-size:13.5px;color:var(--text-mute)}
+  .stage{padding:26px;border:1px dashed var(--border-acc);border-radius:var(--r-lg)}
+  .why{margin:10px 0 0;font-size:13.5px;color:var(--text-mute);max-width:92ch}
   .why b{color:var(--text-h);font-weight:600}
-  .metric{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:4px}
+  .metric{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:10px}
 
-  /* ---- отзывы: копия боевых стилей ---- */
-  .rv-title{font-family:var(--sans);font-size:clamp(22px,2.4vw,34px);font-weight:600;color:var(--text-h);
-    letter-spacing:-.02em;line-height:1.15;margin:0 0 26px;max-width:640px}
-  .rv-title span{color:var(--accent)}
+  /* ---- отзывы: боевые стили ---- */
   .rv-grid{display:flex;gap:20px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
   .rv-grid::-webkit-scrollbar{display:none}
-  .rv-card{flex:0 0 360px;background:#fff;border-radius:30px;overflow:hidden;display:flex;flex-direction:column}
+  .rv-card{flex:0 0 360px;background:#fff;border-radius:30px;overflow:hidden;display:flex;flex-direction:column;margin:0}
   .rv-img{width:100%;height:auto;aspect-ratio:9/16;object-fit:cover;object-position:top;display:block;
     clip-path:inset(12px 12px 0 round 16px 16px 0 0)}
   .rv-cap{padding:30px;font-size:24px;font-weight:500;color:var(--light-ink);line-height:1.35}
-  /* вариант A — мягко */
-  .a .rv-img{aspect-ratio:3/4}
-  /* вариант B — средне, подпись компактнее */
-  .b .rv-img{aspect-ratio:4/5}
-  .b .rv-cap{padding:24px;font-size:20px}
-  /* вариант C — сильно, квадрат */
-  .c .rv-img{aspect-ratio:1/1}
-  .c .rv-cap{padding:22px;font-size:19px}
+  /* 1 — 3/4, видно верх переписки */
+  .v1 .rv-img{aspect-ratio:3/4;object-position:top}
+  /* 2 — 3/4, видно низ переписки */
+  .v2 .rv-img{aspect-ratio:3/4;object-position:bottom}
+  /* 3 — ничего не режем, всё уменьшено на 15% */
+  .v3 .rv-card{flex-basis:306px}
+  .v3 .rv-grid{gap:28px}
+  .v3 .rv-cap{padding:26px;font-size:20px}
 
-  /* ---- плашки компаний ---- */
-  .hero-sub{font-size:clamp(15px,1.3vw,18px);line-height:1.65;color:var(--text-b);text-align:center;
-    max-width:760px;margin:0 auto}
-  .ch{display:inline-flex;align-items:center;white-space:nowrap;color:var(--text-h);font-weight:400}
-  /* сейчас */
-  .now .ch{padding:1px 10px;margin:0 1px;border-radius:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14)}
-  /* A — пилюля, тише */
-  .p1 .ch{padding:2px 13px;margin:0 2px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
-  /* B — прямоугольник мягче: радиус 10, только рамка, без заливки */
-  .p2 .ch{padding:2px 11px;margin:0 2px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,.16)}
-  /* C — без рамки, одна заливка */
-  .p3 .ch{padding:2px 12px;margin:0 2px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid transparent}
+  /* ---- первый экран ---- */
+  .shot{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--border-card)}
   .foot{padding-block:28px 64px;color:var(--faint);font-size:12.5px}
-  @media(max-width:700px){.rv-card{flex-basis:300px}}
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap">
-    <h1>B4 и B5 — варианты</h1>
-    <p class="lead">На сайте сейчас стоит исходное состояние, ничего из этого не применено.
-      Структура в обоих блоках не меняется: в отзывах те же три карточки и та же карусель,
-      на первом экране те же пять плашек. Меняется только размер и оформление.</p>
+    <h1>B4 и B5 — заход 2</h1>
+    <p class="lead">На сайте стоит исходное состояние, ничего отсюда не применено.
+      В отзывах выбрана пропорция 3/4 с нетронутой подписью — ниже три способа её отработать.
+      Плашки компаний показаны на целом первом экране, а не вырезкой.</p>
   </div>
 </header>
 
@@ -85,58 +72,62 @@
 <section>
   <div class="wrap">
     <div class="tag">B4</div>
-    <h2>Карточки отзывов — три степени уменьшения</h2>
-    <p class="note">Высота карточки — это высота скриншота плюс плашка подписи. Скриншот сейчас
-      в пропорции 9/16, то есть при ширине 360 его высота 640, и вся карточка 765. Режем только
-      его: обрезка идёт снизу, верх переписки остаётся на месте.</p>
+    <h2>Карточки отзывов — три способа</h2>
+    <p class="note">Во всех трёх ширина карточки и карусель те же, что сейчас. В первых двух
+      скриншот режется до 3/4 и вопрос только в том, какой край переписки сохранить. В третьем
+      скриншот не режется вообще — вместо этого вся карточка уменьшается на 15%.</p>
 
     <div class="vhead"><span class="chip chip--now">сейчас</span><span class="vname">9/16 · карточка 765px</span></div>
     <div class="stage">
-      <h2 class="rv-title">Участники оценивают качество материала<br><span>на 4.94/5</span></h2>
       <div class="rv-grid">
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_1.webp" alt=""><figcaption class="rv-cap">Курс, который реально мотивирует</figcaption></figure>
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_2.webp" alt=""><figcaption class="rv-cap">Практика, которая помогла попасть в ретейлер-тех</figcaption></figure>
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_3.webp" alt=""><figcaption class="rv-cap">Глубокое погружение и детальные разборы</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_1.webp" alt=""><figcaption class="rv-cap">Курс, который реально мотивирует</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_2.webp" alt=""><figcaption class="rv-cap">Практика, которая помогла попасть в ретейлер-тех</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_3.webp" alt=""><figcaption class="rv-cap">Глубокое погружение и детальные разборы</figcaption></figure>
       </div>
-      <p class="metric">скриншот 640px · подпись 24px в поле 30</p>
     </div>
 
-    <div class="vhead"><span class="chip">вариант A</span><span class="vname">Чуть-чуть: 3/4 · карточка ≈605px</span></div>
-    <div class="stage a">
+    <div class="vhead"><span class="chip chip--pick">вариант 1</span><span class="vname">3/4, режем снизу — видно начало переписки</span></div>
+    <div class="stage v1">
       <div class="rv-grid">
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_1.webp" alt=""><figcaption class="rv-cap">Курс, который реально мотивирует</figcaption></figure>
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_2.webp" alt=""><figcaption class="rv-cap">Практика, которая помогла попасть в ретейлер-тех</figcaption></figure>
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_3.webp" alt=""><figcaption class="rv-cap">Глубокое погружение и детальные разборы</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_1.webp" alt=""><figcaption class="rv-cap">Курс, который реально мотивирует</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_2.webp" alt=""><figcaption class="rv-cap">Практика, которая помогла попасть в ретейлер-тех</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_3.webp" alt=""><figcaption class="rv-cap">Глубокое погружение и детальные разборы</figcaption></figure>
       </div>
-      <p class="metric">скриншот 480px · подпись без изменений</p>
+      <p class="metric">карточка ≈637px · скриншот прижат к верху</p>
     </div>
-    <p class="why"><b>Минус 21%.</b> Самая осторожная правка: подпись не тронута, пропорция
-      скриншота ещё вертикальная, карточка выглядит ровно как раньше, только ниже.</p>
+    <p class="why"><b>Что видно:</b> шапка чата и первые сообщения. Сверху остаётся строка статуса
+      телефона и название переписки — кадр читается как настоящий скриншот с телефона.
+      <b>Чего нет:</b> у второго и третьего отзыва самая содержательная часть лежит ниже и
+      в кадр не попадает.</p>
 
-    <div class="vhead"><span class="chip">вариант B</span><span class="vname">Средне: 4/5 и подпись компактнее · карточка ≈552px</span></div>
-    <div class="stage b">
+    <div class="vhead"><span class="chip chip--pick">вариант 2</span><span class="vname">3/4, режем сверху — видно конец переписки</span></div>
+    <div class="stage v2">
       <div class="rv-grid">
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_1.webp" alt=""><figcaption class="rv-cap">Курс, который реально мотивирует</figcaption></figure>
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_2.webp" alt=""><figcaption class="rv-cap">Практика, которая помогла попасть в ретейлер-тех</figcaption></figure>
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_3.webp" alt=""><figcaption class="rv-cap">Глубокое погружение и детальные разборы</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_1.webp" alt=""><figcaption class="rv-cap">Курс, который реально мотивирует</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_2.webp" alt=""><figcaption class="rv-cap">Практика, которая помогла попасть в ретейлер-тех</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_3.webp" alt=""><figcaption class="rv-cap">Глубокое погружение и детальные разборы</figcaption></figure>
       </div>
-      <p class="metric">скриншот 450px · подпись 20px в поле 24</p>
+      <p class="metric">карточка ≈637px · скриншот прижат к низу</p>
     </div>
-    <p class="why"><b>Минус 28%.</b> Режется и подпись, поэтому карточка садится заметнее.
-      Три карточки целиком помещаются в экран ноутбука вместе с заголовком блока.</p>
+    <p class="why"><b>Что видно:</b> сами сообщения, то есть то, ради чего отзыв и повешен.
+      <b>Чего нет:</b> пропадает строка статуса и шапка чата — кадр меньше похож на скриншот
+      и больше на просто картинку с текстом. Плюс у первого отзыва внизу поле ввода сообщения,
+      оно занимает место и ничего не говорит.</p>
 
-    <div class="vhead"><span class="chip">вариант C</span><span class="vname">Сильно: квадрат 1/1 · карточка ≈470px</span></div>
-    <div class="stage c">
+    <div class="vhead"><span class="chip chip--pick">вариант 3</span><span class="vname">Ничего не режем — всё меньше на 15%</span></div>
+    <div class="stage v3">
       <div class="rv-grid">
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_1.webp" alt=""><figcaption class="rv-cap">Курс, который реально мотивирует</figcaption></figure>
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_2.webp" alt=""><figcaption class="rv-cap">Практика, которая помогла попасть в ретейлер-тех</figcaption></figure>
-        <figure class="rv-card" style="margin:0"><img class="rv-img" src="../../microservices/reviews/review_3.webp" alt=""><figcaption class="rv-cap">Глубокое погружение и детальные разборы</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_1.webp" alt=""><figcaption class="rv-cap">Курс, который реально мотивирует</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_2.webp" alt=""><figcaption class="rv-cap">Практика, которая помогла попасть в ретейлер-тех</figcaption></figure>
+        <figure class="rv-card"><img class="rv-img" src="../../microservices/reviews/review_3.webp" alt=""><figcaption class="rv-cap">Глубокое погружение и детальные разборы</figcaption></figure>
       </div>
-      <p class="metric">скриншот 360px · подпись 19px в поле 22</p>
+      <p class="metric">карточка 306×≈650px · зазор 28 вместо 20 · подпись 20 в поле 26</p>
     </div>
-    <p class="why"><b>Минус 39%.</b> Скриншот перестаёт быть телефонным кадром и становится
-      квадратной картинкой — от переписки видно две-три реплики. Самый компактный, но и
-      доказательство слабее: читать там уже почти нечего.</p>
+    <p class="why"><b>Что видно:</b> переписка целиком, как сейчас, просто мельче.
+      Карточка садится примерно так же, как в вариантах 1 и 2, но за счёт ширины, а не обрезки.
+      <b>Чего нет:</b> текст в скриншотах становится мельче на 15% и на пределе читаемости —
+      это и был твой вопрос, и ответ: читать можно, но щуриться придётся. Зато в ряд
+      помещается больше карточек и дышит воздухом.</p>
   </div>
 </section>
 
@@ -144,53 +135,32 @@
 <section>
   <div class="wrap">
     <div class="tag">B5</div>
-    <h2>Плашки компаний — три варианта оформления</h2>
-    <p class="note">Плашки остаются плашками, текст тот же. Меняются скругление, рамка и заливка.
-      Исходная проблема: радиус 6px — единственный острый угол на странице, где кнопки скруглены
-      до пилюли, а карточки на 24–30px.</p>
+    <h2>Плашки компаний — на целом первом экране</h2>
+    <p class="note">Снято с живой страницы на 1440×900: всё настоящее, подменено только
+      оформление плашек.</p>
 
     <div class="vhead"><span class="chip chip--now">сейчас</span><span class="vname">Радиус 6px, рамка .14, заливка .05</span></div>
-    <div class="stage">
-      <p class="hero-sub now">Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в
-        <span class="ch">ВК</span> <span class="ch">Yandex</span> <span class="ch">OZON</span> <span class="ch">СБЕР</span> <span class="ch">Т-Банк</span>,
-        и увеличь свои шансы на трудоустройство в BigTech или повышение грейда</p>
-    </div>
+    <img class="shot" src="hero-shots/hero-now.webp" alt="Первый экран, плашки как сейчас" loading="lazy">
 
-    <div class="vhead"><span class="chip">вариант A</span><span class="vname">Пилюля, тише фон и рамка</span></div>
-    <div class="stage">
-      <p class="hero-sub p1">Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в
-        <span class="ch">ВК</span> <span class="ch">Yandex</span> <span class="ch">OZON</span> <span class="ch">СБЕР</span> <span class="ch">Т-Банк</span>,
-        и увеличь свои шансы на трудоустройство в BigTech или повышение грейда</p>
-    </div>
-    <p class="why"><b>Лучше:</b> радиус 999px — тот же язык, что у кнопок страницы; рамка и заливка
-      слабее вдвое, плашки перестают спорить с текстом. <b>Хуже:</b> пилюли похожи на теги-фильтры,
-      кто-то может решить, что по ним кликают.</p>
+    <div class="vhead"><span class="chip chip--pick">вариант B</span><span class="vname">Радиус 10px, только рамка, без заливки</span></div>
+    <img class="shot" src="hero-shots/hero-b.webp" alt="Первый экран, вариант B" loading="lazy">
+    <p class="why"><b>Лучше:</b> форма остаётся прямоугольной, просто перестаёт быть острой;
+      без заливки строка не рябит пятью серыми прямоугольниками и подзаголовок снова читается
+      как предложение. <b>Хуже:</b> контур стал единственным, что держит плашку, — на светлом
+      мониторе он почти пропадает.</p>
 
-    <div class="vhead"><span class="chip">вариант B</span><span class="vname">Прямоугольник мягче: радиус 10px, только рамка</span></div>
-    <div class="stage">
-      <p class="hero-sub p2">Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в
-        <span class="ch">ВК</span> <span class="ch">Yandex</span> <span class="ch">OZON</span> <span class="ch">СБЕР</span> <span class="ch">Т-Банк</span>,
-        и увеличь свои шансы на трудоустройство в BigTech или повышение грейда</p>
-    </div>
-    <p class="why"><b>Лучше:</b> форма остаётся прямоугольной, просто перестаёт быть острой; заливки
-      нет, поэтому строка не рябит пятью серыми прямоугольниками. <b>Хуже:</b> без заливки плашки
-      легче, но и слабее — на светлых мониторах рамка почти пропадает.</p>
-
-    <div class="vhead"><span class="chip">вариант C</span><span class="vname">Без рамки, одна заливка, радиус 8px</span></div>
-    <div class="stage">
-      <p class="hero-sub p3">Научись разрабатывать высокопроизводительные, масштабируемые микросервисы, как в
-        <span class="ch">ВК</span> <span class="ch">Yandex</span> <span class="ch">OZON</span> <span class="ch">СБЕР</span> <span class="ch">Т-Банк</span>,
-        и увеличь свои шансы на трудоустройство в BigTech или повышение грейда</p>
-    </div>
-    <p class="why"><b>Лучше:</b> самый спокойный — нет контура, который рисует «кнопку»,
-      названия просто лежат на подложке. <b>Хуже:</b> без рамки граница плашки размыта,
-      при переносе строки они хуже держат форму.</p>
+    <div class="vhead"><span class="chip chip--pick">вариант C</span><span class="vname">Без рамки, одна заливка, радиус 8px</span></div>
+    <img class="shot" src="hero-shots/hero-c.webp" alt="Первый экран, вариант C" loading="lazy">
+    <p class="why"><b>Лучше:</b> самый спокойный — контура, который рисует «кнопку», нет вовсе,
+      названия просто лежат на подложке и не спорят с жёлтой кнопкой ниже.
+      <b>Хуже:</b> без рамки граница плашки размыта, на тёмном фоне заливка почти сливается —
+      плашки видно слабее, чем сейчас.</p>
   </div>
 </section>
 
 <footer class="foot">
-  <div class="wrap">Превью для выбора. Стили скопированы с боевой страницы один в один,
-    картинки отзывов — настоящие.</div>
+  <div class="wrap">Превью для выбора. Отзывы — живая вёрстка на боевых стилях,
+    первый экран — скриншоты реальной страницы.</div>
 </footer>
 </body>
 </html>
