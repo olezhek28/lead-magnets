@@ -358,9 +358,15 @@
     box-shadow: 0 1px 0 rgba(255,255,255,.03) inset;
     transition: background .3s var(--ease), border-color .3s var(--ease);
   }
+  /* margin: 0 auto, а не 0: .header__inner — это ещё и .container, у которого
+     центровка держится на боковых auto. Короткая запись `margin: 0` их
+     обнуляла, и шапка прилипала к левому краю — на 1440 этого не видно
+     (контейнер почти во всю ширину), но на широком экране и при зуме логотип
+     уезжал влево, а меню вставало посреди экрана. В прокрученном состоянии
+     эту же ошибку уже починили, здесь она оставалась (ревью 06.10.2026). */
   .header__inner {
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
-    height: 78px; position: relative; border-radius: 0; margin: 0;
+    height: 78px; position: relative; border-radius: 0; margin: 0 auto;
     background: transparent; border: 1px solid transparent;
     transition: height .3s var(--ease), background .3s var(--ease), border-color .3s var(--ease), margin .3s var(--ease), padding .3s var(--ease);
   }
@@ -2454,14 +2460,27 @@
      есть у .steps__cat/.ytch__cat выше — там reveal-transform достаётся
      .section__head--mascot.fade-up (предку), а scaleX(-1) — картинке. */
   .pricing { position: relative; }
-/* Правка: right был жёстко 160px от края ОКНА, а облачко отбивается от края
-   .container (max-width 1120). На 1440 это совпадает — (1440-1120)/2 = 160, —
-   но чем уже окно, тем сильнее кот заезжает внутрь контейнера и налезает на
-   реплику: замерено 48px нахлёста на 1280 и 68px на 1100. clamp повторяет ту
-   же величину «полполя контейнера» на любой ширине и упирается в 0, когда
-   поля кончились, — правый край кота снова совпадает с правым краем
-   контейнера, как и было задумано на 1440. */
-  .pricing__cat-wrap { position: absolute; top: 10px; right: clamp(0px, calc((100% - 1120px) / 2), 160px); width: 128px; pointer-events: none; }
+/* Правка 06.10.2026: кот прыгал при смене масштаба. Он позиционировался
+   относительно секции .pricing, то есть от края ОКНА, а место ему нужно у
+   правого края последней карточки тарифа. Их разделяла формула
+   clamp(0, полполя контейнера, 160px), и совпадали они только там, где она
+   угадывала: на 1440 да, на 2000 кот уезжал к краю экрана (clamp упирался в
+   160px, а поле контейнера было уже 440), на узком — наоборот заезжал внутрь.
+   Теперь точка отсчёта — сама сетка карточек: right: -8px означает «на 8px
+   внутрь правого края последней карточки» при любой ширине, любом масштабе и
+   любом числе тарифов (на корпоративной странице их два, и сетка там уже).
+   Вертикаль тоже привязана к размеру кота, а не к пикселям: высота картинки
+   607×1201 — это ширина × 1.98, и bottom: calc(100% - ширина × 0.83) оставляет
+   над сеткой примерно 58% кота, то есть голову и плечи, как и было задумано.
+   На брейкпоинтах меняется только --cat-w.
+   Карточки .tier имеют position: relative и идут в DOM после кота, поэтому
+   накрывают его — отдельный z-index не нужен. */
+  .pricing__tiers { position: relative; }
+  .pricing__cat-wrap {
+    --cat-w: 128px;
+    position: absolute; right: 8px; bottom: calc(100% - var(--cat-w) * 0.83);
+    width: var(--cat-w); pointer-events: none;
+  }
   .pricing__cat { display: block; width: 100%; height: auto; pointer-events: none; transform: scaleX(-1); }
   /* Правка (заход 17): margin-right отодвигает облачко от правого края
      .container — на оригинале между правым краем облачка (x=1161 на
@@ -2651,7 +2670,7 @@
   @media (max-width: 960px) {
     .pricing__tiers { grid-template-columns: 1fr; }
     .pricing__tiers > .tier--vip { grid-column: auto; }
-    .pricing__cat-wrap { width: 96px; right: 40px; top: -14px; }
+    .pricing__cat-wrap { --cat-w: 96px; }
   }
   @media (max-width: 640px) {
     .tier { padding: 34px 24px 30px; }
@@ -2674,11 +2693,11 @@
        десктопные top/right выше), с небольшим отрицательным right вместо
        положительного — минимальный, безопасный выход за край. */
     .pricing__mascot-bubble { width: 140px; }
-    .pricing__cat-wrap { width: 70px; right: -3px; top: -22px; }
+    .pricing__cat-wrap { --cat-w: 70px; }
   }
   @media (max-width: 400px) {
     .pricing__mascot-bubble { width: 120px; }
-    .pricing__cat-wrap { width: 60px; right: -26px; top: -14px; }
+    .pricing__cat-wrap { --cat-w: 60px; }
   }
 
   /* ===== МОДАЛКА ОПЛАТЫ (формы GetCourse, своя на каждый тариф) =====
@@ -5028,15 +5047,15 @@
        faq — не наш rec-список, придумывать здесь нечего. -->
   <section class="section pricing" id="tariffs" aria-labelledby="tariffs-title">
     <div class="container">
-      <div class="pricing__cat-wrap fade-up">
-        <img class="pricing__cat" src="../microservices/mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
-      </div>
       <div class="section__head section__head--mascot fade-up">
         <h2 class="section__title" id="tariffs-title">Стартуем 26 октября</h2>
         <img class="pricing__mascot-bubble" src="../microservices/mascot/speech_bubble_3.svg" alt="В предзапись не записался — без микросервисов остался" width="265" height="79" loading="lazy">
       </div>
 
       <div class="pricing__tiers">
+        <div class="pricing__cat-wrap fade-up">
+          <img class="pricing__cat" src="../microservices/mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
+        </div>
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
           <ul class="tier__list">
