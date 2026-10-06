@@ -1972,7 +1972,13 @@
      до срабатывания брейкпоинта 960px, где сетка и так схлопывается в 1
      колонку. */
   .author { background: var(--bg-card); }
-  .author__grid { display: grid; grid-template-columns: 65fr 35fr; gap: 32px; align-items: stretch; }
+  /* Правка 06.10.2026: было align-items: stretch — колонка с фото тянулась по
+     высоте списка компаний, и портрет обрезался сверху и снизу. Та раскладка
+     была заточена под прежний кадр (человек на подложке #182023, которая
+     сливалась с фоном секции): его можно было тянуть и резать безнаказанно.
+     Новый кадр — обычная фотография в рост на светлом фоне, её надо показывать
+     целиком. Поэтому start, как в том же блоке на лендинге System Design. */
+  .author__grid { display: grid; grid-template-columns: 65fr 35fr; gap: 32px; align-items: start; }
   .author__list { list-style: none; margin: 32px 0 36px; }
   .author__item { display: grid; grid-template-columns: 200px 1fr; gap: 8px 24px; padding: 20px 0; border-top: 1px solid var(--border-card); align-items: start; }
   .author__item:last-child { border-bottom: 1px solid var(--border-card); }
@@ -1981,12 +1987,12 @@
   .author__badge { display: inline-block; padding: 4px 10px; border: 1px solid var(--border-acc); border-radius: var(--r-sm); font-family: var(--mono); font-size: 11px; color: var(--text-mute); white-space: nowrap; }
   .author__desc { padding-top: 2px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
   .author__side { display: flex; }
-  .author__photo { display: block; width: 100%; }
-  /* Правка 06.10.2026: вместо тёмного портрета крупным планом
-     (instructor_large.png) — чёрно-белый кадр в рост с лендинга System Design.
-     Пропорция сменилась с 1089/1209 на 720/960, поэтому задана новая; кадр
-     прижат к верху, чтобы при обрезке уходили ноги, а не лицо. */
-  .author__photo img { display: block; width: 100%; height: 100%; aspect-ratio: 720 / 960; object-fit: cover; object-position: top center; }
+  /* Фото в рамке со скруглением — ровно как .teacher__photo на System Design:
+     кадр светлый, без оформления он читался бы белым прямоугольником, врезанным
+     в тёмную секцию. */
+  .author__photo { display: block; width: 100%; border-radius: var(--r-lg); overflow: hidden;
+    border: 1px solid var(--border-card); background: var(--bg-card); box-shadow: var(--sh-lift); }
+  .author__photo img { display: block; width: 100%; height: auto; }
 
   /* .stat-card переиспользован из system_design/index.html:2571-2674 (структура
      и класс — дословно), CSS-значения адаптированы под токены этого файла.
