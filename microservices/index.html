@@ -568,6 +568,13 @@
      .steps__mascot-group/.ytch__mascot-group), одна механика на обе секции. */
   .section__head--mascot { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: none; }
   .section__head--mascot .section__title { margin: 0; }
+  /* Правка 06.10.2026: у блока про YouTube и TG появился подзаголовок — тот же,
+     что на лендинге System Design, чтобы страницы не разъезжались. Заголовок и
+     подзаголовок обёрнуты в .ytch__headtext: .section__head--mascot — флекс-строка
+     «заголовок | маскот», и без обёртки подзаголовок стал бы третьим элементом
+     строки и уехал к коту. */
+  .ytch__headtext { max-width: 680px; }
+  .ytch__sub { margin: 14px 0 0; font-size: 16px; line-height: 1.6; color: var(--text-mute); }
   /* Правка (заход 8, п.4): трекинг замерен на живых H2 оригинала —
      «Как всё устроено по шагам», «Кстати, Олег ведет YouTube…» и
      «Заблуждения и частые вопросы» дают одно и то же -1.5px при 40px
@@ -3945,8 +3952,7 @@
         </div>
         <div class="community__info fade-up">
           <h2 class="section__title">А еще у нас полный комфортик в чатике и на лекциях:)</h2>
-          <p class="community__lead">Обсуждаем задания и болтаем за жизнь без духоты и формальностей</p>
-          <p class="community__caption">У нас учатся парни и крутые гошницы, и мы <span class="community__hl">просто кайфуем</span> в течение всего потока:)</p>
+          <p class="community__lead">У нас учатся парни и крутые гошницы, обсуждаем задания и болтаем за жизнь без духоты и формальностей</p>
         </div>
       </div>
     </div>
@@ -5391,7 +5397,10 @@
   <section class="section ytch" id="youtube-tg" aria-labelledby="ytch-title">
     <div class="container">
       <div class="section__head section__head--mascot fade-up">
-        <h2 class="section__title" id="ytch-title">Кстати, Олег ведет YouTube и ламповый TG-канальчик</h2>
+        <div class="ytch__headtext">
+          <h2 class="section__title" id="ytch-title">Кстати, я веду YouTube и ламповый TG-канальчик</h2>
+          <p class="ytch__sub">Разбираю Go, архитектуру и&nbsp;собесы. Материал там другой, чем на&nbsp;курсе, зато видно, как я&nbsp;объясняю, и&nbsp;можно просто со&nbsp;мной познакомиться.</p>
+        </div>
         <div class="ytch__mascot-group">
           <img class="ytch__mascot-bubble" src="mascot/speech_bubble_4.svg" alt="Ты это… Заходи, если что" width="271" height="57" loading="lazy">
           <img class="ytch__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
