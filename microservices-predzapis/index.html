@@ -1902,7 +1902,11 @@
   .author__company-name { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--text-h); white-space: nowrap; letter-spacing: normal; line-height: 1.2; }
   .author__badge { display: inline-block; padding: 4px 10px; border: 1px solid var(--border-acc); border-radius: var(--r-sm); font-family: var(--mono); font-size: 11px; color: var(--text-mute); white-space: nowrap; }
   .author__desc { padding-top: 2px; font-size: 15px; line-height: 1.55; color: var(--text-mute); }
-  .author__side { display: flex; }
+  /* sticky, как .teacher__side на System Design: пока читаешь список компаний
+     и счётчики, фотография едет рядом и останавливается у конца блока.
+     Работает только при align-items: start у сетки — иначе колонка
+     растянута на всю высоту строки и прилипать нечему. */
+  .author__side { display: flex; position: sticky; top: 108px; }
   /* Фото в рамке со скруглением — ровно как .teacher__photo на System Design:
      кадр светлый, без оформления он читался бы белым прямоугольником, врезанным
      в тёмную секцию. */
@@ -2347,7 +2351,7 @@
 
   @media (max-width: 960px) {
     .author__grid { grid-template-columns: 1fr; gap: 38px; }
-    .author__side { order: -1; width: 100%; max-width: 400px; margin: 0 auto; }
+    .author__side { order: -1; width: 100%; max-width: 400px; margin: 0 auto; position: static; }
     .author__photo img { height: auto; }
     .stats-row { grid-template-columns: 1fr 1fr; }
     .stats-row > :first-child { grid-column: span 2; }
