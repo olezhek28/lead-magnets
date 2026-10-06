@@ -677,12 +677,16 @@
   .hero__author-pos { font-family: var(--font); font-size: 11.5px; font-weight: 400; color: var(--text-mute); line-height: 1.2; white-space: nowrap; }
   .hero__subtitle { font-size: 18px; font-weight: 400; line-height: 1.62; color: var(--text-mute); max-width: 680px; margin: 0 auto 44px; text-wrap: pretty; }
   .hero__chip {
-    display: inline-flex; align-items: center; padding: 1px 10px; margin: 0 1px;
+    display: inline-flex; align-items: center; padding: 2px 11px; margin: 0 2px;
     /* Правка: подложка и рамка были акцентно-жёлтыми (rgba(223,223,65,…)),
        из-за чего пять плашек подряд читались как активные элементы и рвали
        строку. Нейтральный белый с той же прозрачностью и обычный вес текста
-       возвращают их в поток — как на оригинале. */
-    border-radius: 6px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14);
+       возвращают их в поток — как на оригинале.
+       Правка 06.10.2026: радиус 6px был единственным острым углом на странице,
+       где кнопки скруглены до пилюли, а карточки на 24–30px, и пять залитых
+       прямоугольников подряд рябили в строке. Радиус 10px, заливка снята —
+       плашка осталась прямоугольной, но перестала быть ни острой, ни тяжёлой. */
+    border-radius: 10px; background: transparent; border: 1px solid rgba(255,255,255,.16);
     color: var(--text-h); font-weight: 400; white-space: nowrap;
   }
   .hero__cta { display: flex; justify-content: center; }
@@ -2061,7 +2065,13 @@
      (640px и ~42/44px), чтобы не выдумывать несовпадение без замера. */
   .reviews__head { max-width: 640px; }
   .reviews__rating { color: var(--accent); }
-  .reviews__grid { gap: 20px; }
+  /* Правка 06.10.2026 (B4): карточки отзывов были слишком рослыми — 765px,
+     в экран помещалось меньше трёх. Резать скриншот не стали: в переписке
+     смысл размазан по всей высоте, любой край жалко. Вместо этого вся карточка
+     уменьшена примерно на 15% по ширине (360 → 306), а высота села сама —
+     пропорция скриншота не тронута. Зазор при этом увеличен, иначе ряд из
+     узких карточек читается плотнее прежнего. */
+  .reviews__grid { gap: 28px; }
   /* Правка (заход 20): карточка отзыва была текучей (доля ширины трека),
      на оригинале — фиксированная (замерено getBoundingClientRect на живых
      #rec2078055861 .t1196__item по всем ширинам окна, а не по пересказу):
@@ -2079,7 +2089,7 @@
      правок у .reviews__card ниже — три предыдущих захода мерили это на
      1440, где всё совпадало случайно). flex-shrink:0 у .carousel__track > *
      уже не даёт карточке сжаться меньше flex-basis. */
-  .reviews__grid > .reviews__card { flex-basis: 360px; }
+  .reviews__grid > .reviews__card { flex-basis: 306px; }
   /* Правка 6 (визуальный заход №1): на живой Tilda подпись под скриншотом
      отзыва — на белой карточке, тёмным текстом (сам скриншот тёмный —
      это чат/переписка, его не трогаем, светлеет только плашка подписи).
@@ -2152,7 +2162,7 @@
      500 (было 14px), line-height 32.4px = 1.35 (было 1.4 — почти совпадало,
      тронуто только вслед за кеглем). border-top снят — на оригинале подпись
      не отделена линией, панель того же белого цвета продолжает карточку. */
-  .reviews__caption { padding: 30px; font-size: 24px; font-weight: 500; color: var(--light-ink); line-height: 1.35; }
+  .reviews__caption { padding: 26px; font-size: 20px; font-weight: 500; color: var(--light-ink); line-height: 1.35; }
 
   /* ---- ВИДЕООТЗЫВЫ (video-reviews) — переиспользует паттерн .yt__* из
      system_design/index.html:2788-2832 (превью + play-кнопка поверх), но кнопка
