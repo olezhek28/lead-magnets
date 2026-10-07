@@ -984,6 +984,10 @@
        .who__lead через stretch, подложке нужен свой min-height, иначе
        align-items:stretch выше не от чего считать и фон схлопнется в 0. */
     .who__lead { min-height: 460px; }
+    /* Колонка здесь широкая и низкая, а у картинки верхние ~37% — пустой фон:
+       при top center в окне оставалась одна пустота. 62% по вертикали
+       держит в кадре код и начало стекла и на 960, и на 390. */
+    .who__code { object-position: center 62%; }
     .who__cat { width: 64px; }
     .who__mascot-bubble { width: 180px; }
     .jobs { padding: 36px 28px; }
@@ -1007,6 +1011,7 @@
     .get__grid { grid-template-columns: 1fr; }
     .who__title-card, .who__card { padding: 26px 22px; }
     .who__lead { min-height: 340px; }
+    .who__code { object-position: top center; } /* здесь колонка узкая, прежнее положение держит и код, и стекло */
     .who__intro { gap: 10px; margin-bottom: 20px; }
     .who__cat { width: 52px; }
     .who__mascot-bubble { width: 150px; }
