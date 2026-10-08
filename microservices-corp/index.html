@@ -876,6 +876,11 @@
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .get__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  /* Карточки в ряду делят строки сетки (subgrid): серый текст начинается
+     на одной высоте, даже если белый заголовок в соседней карточке длиннее. */
+  @supports (grid-template-rows: subgrid) {
+    .get__card { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 11px; align-content: start; }
+  }
   /* 8px вместо 10: внутри панели прежний размер квадратиков стал тяжеловат,
      на оригинале они мельче текста, а не спорят с ним. */
   .get__step { height: 8px; width: auto; margin-bottom: 4px; align-self: flex-start; }

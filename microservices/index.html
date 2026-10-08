@@ -893,6 +893,11 @@
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .get__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
+  /* Карточки в ряду делят строки сетки (subgrid): серый текст начинается
+     на одной высоте, даже если белый заголовок в соседней карточке длиннее. */
+  @supports (grid-template-rows: subgrid) {
+    .get__card { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 11px; align-content: start; }
+  }
   /* 8px вместо 10: внутри панели прежний размер квадратиков стал тяжеловат,
      на оригинале они мельче текста, а не спорят с ним. */
   .get__step { height: 8px; width: auto; margin-bottom: 4px; align-self: flex-start; }
@@ -3430,33 +3435,33 @@
       <div class="get__grid fade-up">
         <div class="get__card">
           <img class="get__step" src="steps/step_1.svg" alt="" width="88" height="13">
-          <p class="get__lead">Разработаешь 5 микросервисов, связанных между собой через Kafka и gRPC,</p>
-          <p class="get__desc">с изоляцией от внешнего мира с помощью Nginx</p>
+          <p class="get__lead">Разработаешь 5 микросервисов, связанных через Kafka и gRPC</p>
+          <p class="get__desc">с балансировкой и защитой от перегрузки через Nginx</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_2.svg" alt="" width="88" height="13">
-          <p class="get__lead">Обеспечишь мониторинг сервиса по стандарту OpenTelemetry с юнит-тестами,</p>
-          <p class="get__desc">чтобы исключить ошибки в работе</p>
+          <p class="get__lead">Разложишь код по Clean Architecture и покроешь его тестами</p>
+          <p class="get__desc">чтобы быстро вносить правки, не ломая соседний код, и точечно ставить задачи нейронке</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_3.svg" alt="" width="88" height="13">
-          <p class="get__lead">Освоишь кеширование данных с помощью Redis</p>
-          <p class="get__desc">и асинхронное взаимодействие между микросервисами с помощью Kafka</p>
+          <p class="get__lead">Освоишь PostgreSQL и кеширование в Redis</p>
+          <p class="get__desc">с транзакциями, блокировками и защитой от лавины запросов</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_4.svg" alt="" width="88" height="13">
-          <p class="get__lead">Освоишь работу с PostgreSQL,</p>
-          <p class="get__desc">напишешь свою платформенную библиотеку, упрощающую разработку</p>
+          <p class="get__lead">Настроишь логи, метрики и трейсы по стандарту OpenTelemetry</p>
+          <p class="get__desc">чтобы видеть путь каждого запроса через все сервисы</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_5.svg" alt="" width="88" height="13">
-          <p class="get__lead">Реализуешь межсервисное взаимодействие,</p>
-          <p class="get__desc">систему аутентификации и авторизации</p>
+          <p class="get__lead">Напишешь свой сервис аутентификации</p>
+          <p class="get__desc">и платформенную библиотеку, которая упрощает разработку всех сервисов</p>
         </div>
         <div class="get__card">
           <img class="get__step" src="steps/step_6.svg" alt="" width="88" height="13">
-          <p class="get__lead">На практике научишься применять</p>
-          <p class="get__desc">архитектурные подходы построения микросервисов</p>
+          <p class="get__lead">Защитишь сервисы от сбоев через Retry, Circuit Breaker и Rate Limiter</p>
+          <p class="get__desc">и проверишь под нагрузкой, как система их держит</p>
         </div>
       </div>
       <div class="section__cta fade-up">
