@@ -312,6 +312,20 @@
   .btn__badge { height: 26px; width: auto; flex-shrink: 0; border-radius: 999px; }
   .btn--lg.btn--rated { padding-right: 12px; }
   .btn--lg .btn__badge { height: 30px; }
+  /* На 320–375 боковые 40px не оставляли места тексту: «Записаться на курс»
+     и «Заполнить анкету предзаписи» переносились в две строки. Поля ужаты;
+     там, где текст всё равно не влезает (≤340), перенос — с нормальным
+     интерлиньяжем, а не слипшимися строками при line-height: 1 (ревью 08.10.2026). */
+  @media (max-width: 380px) {
+    .btn { padding: 16px 20px; line-height: 1.25; } /* 16px сверху/снизу: высота однострочной кнопки та же, что при line-height 1 */
+    .btn--rated { gap: 10px; padding-right: 8px; width: 100%; } /* плашке рейтинга нужно ~75px — кнопка во всю ширину */
+    .tier__cta .btn { padding-left: 12px; padding-right: 12px; font-size: 14px; letter-spacing: -0.01em; } /* «Заполнить анкету предзаписи» в одну строку на 320 */
+    /* карточка автора под схемой: кнопка с рейтингом рвалась, абзац в 11 строк */
+    /* .project перед классом — правила блока объявлены ниже по файлу и иначе перебивают */
+    .project .project__plate { padding: 24px 20px; }
+    .project .project__plate-text { font-size: 16px; }
+    .project .project__plate .btn--rated { padding-left: 14px; gap: 8px; }
+  }
 
   /* ===== ШАПКА (NAV) =====
      Два состояния, переключаются JS по window.scrollY (см. <script> в конце
@@ -393,6 +407,14 @@
   .header.is-scrolled .header__nav { display: flex; }
   .header.is-scrolled .header__cta { display: inline-flex; }
   .header.is-scrolled .menu-toggle { display: none; }
+  /* На 961–1100 (это и ноутбук 1440 при зуме 150%) логотип, шесть пунктов
+     и кнопка в капсулу не помещались: «Записаться на курс» вылезала за
+     капсулу и за край экрана. Пункты и зазоры ужимаются (ревью 08.10.2026). */
+  @media (max-width: 1100px) {
+    .header.is-scrolled .header__inner { gap: 16px; }
+    .header__nav { gap: 2px; }
+    .header__nav-link { padding-left: 8px; padding-right: 8px; }
+  }
 
   .menu-toggle {
     display: inline-flex; align-items: center; gap: 8px;
@@ -415,8 +437,9 @@
   .nav-mobile .btn { margin-top: 12px; }
   /* соцсети в выезжающем меню — как на Tilda: те же три иконки, что и в footer/
      плавающем виджете, но со своим маленьким размером и центровкой под кнопкой */
-  .nav-mobile__social { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
-  .nav-mobile__social a { display: block; width: 32px; height: 32px; border-radius: 50%; transition: transform .2s var(--ease); }
+  .nav-mobile__social { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+  /* 44×44 — минимальная цель для пальца; иконка внутри остаётся 32px за счёт padding */
+  .nav-mobile__social a { display: block; width: 44px; height: 44px; padding: 6px; border-radius: 50%; transition: transform .2s var(--ease); }
   .nav-mobile__social a:hover { transform: translateY(-2px); }
   .nav-mobile__social a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
   .nav-mobile__social img { width: 100%; height: 100%; border-radius: 50%; }
@@ -452,6 +475,17 @@
     border: 8px solid transparent; border-left-color: rgba(40,48,52,.94);
   }
   .social-float.is-open .social-float__hint { opacity: 0; transform: translateX(8px); pointer-events: none; }
+  /* Подсказка в покое скрыта и появляется по наведению/фокусу: постоянно
+     висящая плашка на ширинах до ~1560px ложилась на правый край текста
+     (на 1440 — x 1235–1349 при колонке контента до 1280). Постоянно она
+     видна только там, где справа от контейнера есть свободное место.
+     Ревью 08.10.2026. */
+  @media (max-width: 1559px) {
+    .social-float__hint { opacity: 0; transform: translateX(8px); pointer-events: none; }
+    .social-float:hover .social-float__hint,
+    .social-float:has(.social-float__toggle:focus-visible) .social-float__hint { opacity: 1; transform: none; }
+    .social-float.is-open .social-float__hint { opacity: 0; transform: translateX(8px); }
+  }
 
   .social-float__list {
     list-style: none; margin: 0; padding: 0;
@@ -487,6 +521,13 @@
     box-shadow: var(--sh-lift); transition: transform .2s var(--ease);
   }
   .social-float__toggle:hover { transform: translateY(-2px); }
+  /* на 641–1300 кнопка 52px в 28px от угла залезала на 20–36px текста —
+     здесь она меньше и ближе к углу */
+  @media (max-width: 1300px) {
+    .social-float { right: 14px; bottom: 14px; }
+    .social-float__toggle { width: 44px; height: 44px; }
+    .social-float__hint { bottom: 3px; } /* центр кнопки 22px − половина ярлыка */
+  }
   .social-float__toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   /* Оба значка лежат в одной ячейке грида и меняются местами поворотом. */
   .social-float__ico { grid-area: 1 / 1; transition: opacity .2s var(--ease), transform .25s var(--ease); }
@@ -518,7 +559,7 @@
   .footer__brand:hover { color: var(--accent); }
   .footer__brand b { color: var(--accent); }
   .footer__req { font-family: var(--mono); font-size: 12px; line-height: 1.85; color: var(--text-faint); max-width: 52ch; }
-  .footer__disclaimer { margin-top: 16px; font-size: 11px; color: var(--text-faint); line-height: 1.5; letter-spacing: .005em; max-width: 60ch; text-wrap: pretty; }
+  .footer__disclaimer { margin-top: 16px; font-size: 12px; color: var(--text-faint); line-height: 1.5; letter-spacing: .005em; max-width: 60ch; text-wrap: pretty; }
   /* Правка (заход 9): на живом оригинале шесть юр-ссылок — два
      горизонтальных ряда по три (не столбик), оба прижаты к правому краю,
      см. разметку выше. .footer__links теперь сам flex-column из двух
@@ -533,7 +574,7 @@
      а .footer__links-row ниже возвращается к вертикальному списку с
      выравниванием по левому краю — там ссылки и так уходят от виджета
      влево, эта подстраховка не нужна. */
-  .footer__links { display: flex; flex-direction: column; gap: 8px; font-size: 11px; padding-right: 74px; }
+  .footer__links { display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; padding-right: 74px; }
 /* Правка: gap 8px между пятью длинными ссылками читался как сплошной поток
    слов — глазу не за что зацепиться, где кончается одна ссылка и начинается
    следующая. Разводим по горизонтали втрое. Точки-разделители пробовал —
@@ -556,7 +597,16 @@
     .header__nav, .header.is-scrolled .header__nav { display: none; }
     .header__cta, .header.is-scrolled .header__cta { display: none; }
     .menu-toggle, .header.is-scrolled .menu-toggle { display: inline-flex; }
-    .header.is-scrolled .header__inner { width: auto; margin: 0; padding: 0; border-radius: 0; background: transparent; box-shadow: none; }
+    /* боковой padding меню = поле контейнера минус 12px паддинга ссылки,
+       кнопка — с теми же 12px: всё меню стоит по линии логотипа */
+    .nav-mobile.open { padding-left: 12px; padding-right: 12px; }
+    .nav-mobile .btn { margin-left: 12px; margin-right: 12px; }
+    /* у бургера внутренний отступ 10px — иконка стояла левее края контента */
+    .menu-toggle { margin-right: -10px; }
+    /* padding — поле контейнера, а не 0: с нулём логотип и бургер в прокрученной
+       шапке вставали в 1px от краёв экрана (ревью 08.10.2026). Значения
+       повторяют .container на каждом брейкпоинте ниже. */
+    .header.is-scrolled .header__inner { width: auto; margin: 0; padding: 0 24px; border-radius: 0; background: transparent; box-shadow: none; }
     /* Капсулы здесь нет, шапка — обычная полоса, поэтому подложку, которую
        десктопное .is-scrolled снимает, на планшете и телефоне возвращаем:
        без неё логотип и бургер легли бы прямо на контент. */
@@ -579,11 +629,18 @@
   }
   @media (max-width: 768px) {
     .container { padding: 0 22px; }
+    .header.is-scrolled .header__inner { padding: 0 22px; }
+    .nav-mobile.open { padding-left: 10px; padding-right: 10px; }
   }
   @media (max-width: 640px) {
     .container { padding: 0 20px; }
     .header__inner { height: 64px; }
-    .nav-mobile.open { top: 64px; padding: 18px 20px 22px; }
+    .header.is-scrolled .header__inner { padding: 0 20px; }
+    /* top не задаём: меню наследует top: 100% и встаёт встык с шапкой. С top: 64px
+       под сжатой до 54px прокрученной шапкой оставалась щель 10px.
+       Боковой padding = поле контейнера минус 12px паддинга ссылки: текст пунктов
+       стоит ровно под логотипом. */
+    .nav-mobile.open { padding: 18px 8px 22px; }
     .header__logo { font-size: 13px; }
     .header__cta { display: none; }
     /* плавающий виджет прячем на мобильном — см. комментарий у .social-float:
@@ -591,15 +648,23 @@
     .social-float { display: none; }
     .footer { padding: 52px 0 64px; }
     .footer__req, .footer__disclaimer { max-width: none; }
-    .footer__links { gap: 4px; }
-    .footer__links-row { gap: 8px; }
-    .footer__links a { padding: 12px 0; min-height: 44px; display: inline-flex; align-items: center; }
+    /* шаг ссылок = их тач-высота 44px: с padding 12px и gap список
+       рассыпался по 51px при высоте текста 17px (ревью 08.10.2026) */
+    .footer__links { gap: 0; }
+    .footer__links-row { gap: 0; }
+    .footer__links a { padding: 0; min-height: 44px; display: inline-flex; align-items: center; }
+    /* логотипы в шапке и футере — 20px по высоте; зону нажатия расширяем до 44px
+       паддингом, отрицательный margin его компенсирует — визуально ничего не меняется */
+    .header__logo, .footer__brand { padding: 12px 0; margin-top: -12px; }
+    .header__logo { margin-bottom: -12px; }
+    .footer__brand { margin-bottom: 6px; } /* 18px до текста − 12px паддинга */
     .footer__req, .footer__disclaimer { overflow-wrap: anywhere; word-break: break-word; }
   }
   @media (max-width: 400px) {
     .container { padding: 0 16px; }
     .footer__req { font-size: 11.5px; line-height: 1.75; }
-    .footer__links-row { gap: 7px; }
+    .header.is-scrolled .header__inner { padding: 0 16px; }
+    .nav-mobile.open { padding-left: 4px; padding-right: 4px; }
   }
   /* ===== SECTION SHARED (используют hero-соседи: segments, get, jobs) ===== */
   .section { padding: 96px 0; }
@@ -653,7 +718,7 @@
     column-gap: 22px; row-gap: 6px; margin: 0 0 26px;
   }
   .hero__title {
-    font-family: var(--display); font-size: clamp(34px, 5.2vw, 60px); font-weight: 300;
+    font-family: var(--display); font-size: clamp(40px, 5.2vw, 60px); font-weight: 300;
     line-height: 1.08; letter-spacing: -0.0143em; color: var(--text-h); margin: 0;
     display: contents;
   }
@@ -751,7 +816,7 @@
   .who .section__head, .who__intro, .who__grid { position: relative; z-index: 1; }
   .who__intro { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 28px; }
   .who__cat { width: 84px; height: auto; flex-shrink: 0; pointer-events: none; }
-  .who__mascot-bubble { width: 220px; height: auto; }
+  .who__mascot-bubble { width: 280px; height: auto; } /* при 220px текст реплики был ~9–11px (ревью 08.10.2026) */
   /* Правка 12 (п.А5): align-items со start на stretch — левая колонка
      (.who__lead) растягивается на высоту правой (.who__list, три карточки +
      зазоры), освобождая место под фоновую подложку ниже заголовка. На
@@ -831,7 +896,7 @@
     transition: border-color .3s var(--ease), transform .3s var(--ease);
   }
   .who__card:hover { border-color: var(--border-acc); transform: translateY(-3px); }
-  .who__title { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.32; letter-spacing: normal; color: var(--text-h); }
+  .who__title { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.32; letter-spacing: normal; color: var(--text-h); text-wrap: balance; }
   .who__desc { font-size: 15px; line-height: 1.62; color: var(--text-mute); }
   /* Кот из этой карточки убран по просьбе заказчика: он уже стоит выше,
      во вступлении секции, и второй раз в углу карточки не нужен. Правила
@@ -884,7 +949,7 @@
   /* 8px вместо 10: внутри панели прежний размер квадратиков стал тяжеловат,
      на оригинале они мельче текста, а не спорят с ним. */
   .get__step { height: 8px; width: auto; margin-bottom: 4px; align-self: flex-start; }
-  .get__lead { font-family: var(--display); font-size: 16px; font-weight: 500; line-height: 1.42; letter-spacing: normal; color: var(--text-h); }
+  .get__lead { font-family: var(--display); font-size: 16px; font-weight: 500; line-height: 1.42; letter-spacing: normal; color: var(--text-h); text-wrap: pretty; }
   .get__desc { font-size: 14.5px; line-height: 1.55; color: var(--text-mute); }
 
   /* ===== VACANCIES «Изучаем, что требуют…» (rec2072585811) =====
@@ -908,8 +973,8 @@
    строки вставали на разной высоте. По верхнему краю первые строки
    выравниваются предсказуемо. */
   .jobs__head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 28px 48px; }
-  .jobs__title { max-width: 420px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.0375em; color: var(--text-h); margin: 0; text-wrap: pretty; }
-  .jobs__aside { max-width: 360px; text-align: right; }
+  .jobs__title { max-width: 560px; font-family: var(--display); font-size: clamp(24px, 3.2vw, 38px); font-weight: 500; line-height: 1.16; letter-spacing: -0.0375em; color: var(--text-h); margin: 0; text-wrap: pretty; }
+  .jobs__aside { max-width: 340px; text-align: left; }
   .jobs__lead { font-size: 16px; line-height: 1.6; color: var(--text-mute); }
   /* три карточки со скриншотами вакансий, слева направо: Ozon Tech, Wildberries,
      Aviasales — каждая открывает попап с полным скриншотом (data-modal-open). */
@@ -994,11 +1059,22 @@
        держит в кадре код и начало стекла и на 960, и на 390. */
     .who__code { object-position: center 62%; }
     .who__cat { width: 64px; }
-    .who__mascot-bubble { width: 180px; }
+    .who__mascot-bubble { width: 240px; }
     .jobs { padding: 36px 28px; }
   }
   @media (max-width: 768px) {
     .cta-capsule { flex-wrap: wrap; justify-content: center; gap: 10px; }
+  }
+  /* карточки «Для кого» здесь во всю ширину — строка описаний доходила до
+     90–113 знаков; ограничиваем (ревью 08.10.2026) */
+  @media (min-width: 641px) and (max-width: 960px) {
+    /* одна ширина для заголовка и описания: при 62ch у разных кеглей правые
+       края расходились (785 и 555px на 960) */
+    .who__title, .who__desc { max-width: 560px; }
+  }
+  /* на 481–640 top center показывал ~200px пустого верха картинки */
+  @media (min-width: 481px) and (max-width: 640px) {
+    .who__code { object-position: center 62%; }
   }
   @media (max-width: 640px) {
     .section { padding: 64px 0; }
@@ -1006,20 +1082,24 @@
     .hero__author { margin-bottom: 22px; }
     .hero__subtitle { font-size: 16px; margin-bottom: 34px; }
     .cta-capsule { flex-direction: column; padding: 16px; border-radius: var(--r-lg); width: 100%; }
-    .cta-capsule__meta { flex-direction: row; justify-content: space-between; padding: 0; min-width: 0; width: 100%; }
+    .cta-capsule__meta { flex-direction: row; justify-content: space-between; align-items: baseline; padding: 0; min-width: 0; width: 100%; } /* baseline: подпись 11px и значение 16px на одной линии (ревью 08.10.2026) */
     .cta-capsule .btn { width: 100%; }
     .who, .get { padding: 64px 0; }
     /* Панель на мобильном: паддинг и скругление вдвое меньше, выемка уже —
        иначе подложка съедает ширину, которой на 390px и так нет. */
     .get > .container { padding: 36px 20px 32px; border-radius: 20px; margin-left: 14px; margin-right: 14px; }
     .get > .container::before { width: 150px; height: 18px; border-radius: 0 0 16px 16px; }
-    .get__grid { grid-template-columns: 1fr; }
+    /* Карточки внутри панели на телефоне — карточка в карточке: до текста
+       было 58px с каждой стороны. Здесь это список с разделителями (ревью 08.10.2026) */
+    .get__grid { grid-template-columns: 1fr; gap: 0; }
+    .get__card { border: 0; border-top: 1px solid var(--border-card); border-radius: 0; padding: 22px 0 24px; }
+    .get__card:hover { transform: none; }
     .who__title-card, .who__card { padding: 26px 22px; }
     .who__lead { min-height: 340px; }
     .who__code { object-position: top center; } /* здесь колонка узкая, прежнее положение держит и код, и стекло */
     .who__intro { gap: 10px; margin-bottom: 20px; }
     .who__cat { width: 52px; }
-    .who__mascot-bubble { width: 150px; }
+    .who__mascot-bubble { width: 220px; }
     .who__mascot { width: 58px; }
     .jobs { padding: 28px 20px; gap: 32px; border-radius: var(--r-lg); }
     .jobs__head { flex-direction: column; align-items: flex-start; }
@@ -1048,10 +1128,10 @@
      0.03em, а не 0.02em) — единственное исключение из общей чистки минуса.
      .prog-head__title сверен отдельно: -1.5px при 40px = -0.0375em, вес 500
      (был 600, а не -0.03em). */
-  .prog-head__title { font-family: var(--display); font-size: clamp(30px, 4.4vw, 52px); font-weight: 500; line-height: 1.1; letter-spacing: -0.0375em; color: var(--text-h); }
+  .prog-head__title { font-family: var(--display); font-size: clamp(28px, 3.6vw, 44px); font-weight: 500; line-height: 1.1; letter-spacing: -0.0375em; color: var(--text-h); text-wrap: balance; }
   @media (prefers-reduced-motion: reduce) { .prog-head__dot { animation: none; } }
 
-  .program { max-width: 1080px; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .program { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
   .program__item {
     background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--r-xl);
     transition: background .3s var(--ease), border-color .3s var(--ease);
@@ -1099,7 +1179,7 @@
     padding: 9px 16px; border-radius: var(--r-md); margin-bottom: 20px;
   }
   .program__label--result { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-  .program__block-title { font-family: var(--display); font-size: 19px; font-weight: 500; color: var(--text-h); line-height: 1.32; letter-spacing: normal; margin: 0 0 14px; }
+  .program__block-title { font-family: var(--display); font-size: 19px; font-weight: 500; color: var(--text-h); line-height: 1.32; letter-spacing: normal; margin: 0 0 14px; text-wrap: balance; }
   .program__list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; }
   .program__list li { position: relative; padding-left: 22px; font-size: 15.5px; line-height: 1.62; color: var(--text-mute); }
   .program__list li::before { content: ''; position: absolute; left: 0; top: .68em; width: 9px; height: 1px; background: var(--accent); }
@@ -1206,7 +1286,7 @@
   /* Правка (заход 8, п.4): на оригинале заголовок шага набран 600-м, а не
      500-м начертанием, трекинг обычный (getComputedStyle на "Смотришь
      видеоуроки и ходишь…" — font-weight:600, letter-spacing:normal). */
-  .steps__title { font-family: var(--display); font-size: 22px; font-weight: 600; line-height: 1.3; letter-spacing: normal; color: var(--text-h); }
+  .steps__title { font-family: var(--display); font-size: 22px; font-weight: 600; line-height: 1.3; letter-spacing: normal; color: var(--text-h); text-wrap: balance; }
   .steps__desc { font-size: 15px; line-height: 1.62; color: var(--text-mute); }
   .steps__star { color: var(--accent); text-decoration: none; margin-left: 2px; }
   .steps__star:hover { text-decoration: underline; }
@@ -1238,7 +1318,7 @@
      (.steps__mascot): два шага подряд с кнопкой должны выглядеть одинаково.
      Серая .btn--dark рядом с жёлтой читалась как выключенная. */
   .crw__btn { margin-top: 8px; }
-  .crw__count { font-family: var(--mono, ui-monospace, monospace); opacity: .6; margin-left: 8px; }
+  .crw__count { font-family: var(--mono, ui-monospace, monospace); opacity: .75; margin-left: 8px; }
 
   /* Модалка со всеми ревью. Диалог шире обычного и со своей прокруткой —
      внутри высокие скриншоты кода. Здесь multicol уместен: высота не
@@ -1336,6 +1416,9 @@
      родного 64px gap контейнера, чтобы сноска читалась вплотную к своему
      шагу, а не ровно посередине между шагом 3 и шагом 4. */
   .steps__footnote { margin-top: -32px; font-family: var(--mono); font-size: 13px; color: var(--text-faint); }
+  /* на десктопе звёздочка — в правой колонке («…от Олега*»), сноска стояла
+     слева под картинкой, в 600px от неё (ревью 08.10.2026) */
+  @media (min-width: 961px) { .steps__footnote { margin-left: calc(50% + 24px); } }
 
   @media (max-width: 960px) {
     .steps__list { gap: 48px; }
@@ -1354,6 +1437,12 @@
   }
   @media (max-width: 640px) {
     .steps__list { gap: 36px; }
+    /* -32px рассчитан на gap 64px; при 36px сноска вставала в 4px под кнопкой */
+    .steps__footnote { margin-top: -16px; }
+    /* Соседние блоки на телефоне — карточки со своим паддингом, текст в них
+       в ~40px от края экрана; здесь он стоял в 16–20px и кнопки прилипали
+       к боку. Секции даём поле шире (ревью 08.10.2026) */
+    .steps > .container { padding-left: 28px; padding-right: 28px; }
     .steps__title { font-size: 19px; }
     /* Правка (заход 9): на живом оригинале (проверено на 390px) кот не
        прячется на узких экранах — пара «облачко-кот» схлопывается под
@@ -1605,7 +1694,7 @@
      подключение перед </body>). */
   .project__top { display: grid; grid-template-columns: 1fr 1fr auto; gap: 32px 40px; align-items: center; margin-bottom: 48px; }
   .project__top > .section__title { max-width: 480px; }
-  .project__subtitle { margin: 0; max-width: 460px; font-size: 15px; line-height: 1.6; color: var(--text-mute); }
+  .project__subtitle { margin: 0; max-width: 460px; font-size: 15px; line-height: 1.6; color: var(--text-mute); text-wrap: pretty; }
   .project__video-row { display: flex; align-items: center; gap: 14px; }
   .project__play {
     all: unset; box-sizing: border-box; position: relative; cursor: pointer; flex-shrink: 0; width: 72px; height: 72px; border-radius: 50%;
@@ -1847,6 +1936,8 @@
     background: var(--light-card); border: 1px solid rgba(16,23,26,.1); border-radius: var(--r-xl); padding: 44px;
   }
   .project__plate-row { display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+  /* на 641–800 рядом с кнопкой тексту оставалось ~330px — 7 строк; кнопка под текстом, как на телефоне (ревью 08.10.2026) */
+  @media (min-width: 641px) and (max-width: 800px) { .project__plate-row { flex-direction: column; align-items: flex-start; gap: 20px; } }
   .project__plate-text { font-size: 18px; line-height: 1.6; color: var(--light-mute); max-width: 60ch; flex: 1 1 auto; }
   .project__author { display: flex; align-items: center; gap: 14px; }
   .project__author-photo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
@@ -1858,10 +1949,11 @@
     .project__top { grid-template-columns: 1fr; }
     /* Ряд «схема + абсолютная ракета» узкому экрану не по силам (у ракеты
        не остаётся места по ширине) — на планшете возвращаем обычный поток:
-       ракета встаёт над схемой, по центру, скромного размера. */
+       ракету прячем, как на телефоне: отдельным блоком над схемой она занимала
+       ~400px высоты ради одной картинки (ревью 08.10.2026). */
     .project__scene { display: flex; flex-direction: column; align-items: center; gap: 20px; }
     .project__diagram { width: 100%; }
-    .project__rocket { order: -1; position: static; height: auto; width: 100%; max-width: 200px; }
+    .project__rocket { display: none; }
   }
   @media (max-width: 640px) {
     /* Прячем саму картинку и оверлей «+»-кнопок (нечитаемо на узком экране),
@@ -2050,6 +2142,14 @@
      (приглушённая копия исправленной палитры, не «слияние с фоном»). */
   .carousel__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; }
   .carousel__head .section__head { margin-bottom: 0; }
+  /* На телефоне стрелки (90px + gap) оставляли заголовку 244px — «Участники
+     оценивают качество материала» ломался по слову в строке. Стрелки уходят
+     отдельной строкой под заголовок, к правому краю (ревью 08.10.2026) */
+  @media (max-width: 640px) {
+    .carousel__head { flex-wrap: wrap; row-gap: 20px; }
+    .carousel__head .section__head { flex: 1 1 100%; }
+    .carousel__arrows { margin-left: auto; }
+  }
   .carousel__arrows { display: flex; gap: 10px; flex-shrink: 0; }
   .carousel__arrow {
     all: unset; box-sizing: border-box; cursor: pointer; flex-shrink: 0;
@@ -2101,7 +2201,22 @@
      сценарий «на 1440 контейнер шире» не проверен и не исключён — ширина/
      кегль здесь не трогались, раз параметры и так совпадают с оригиналом
      (640px и ~42/44px), чтобы не выдумывать несовпадение без замера. */
-  .reviews__head { max-width: 640px; }
+  /* max-width снят: на 1440 при 640px «материала» оставался один во второй
+     строке, хотя справа до стрелок свободно ~400px (ревью 08.10.2026) */
+  .reviews__head { max-width: none; }
+  /* Отзывы, видеоотзывы и истории — одна тема «доказательства», а стояли через
+     те же 192px, что и разные секции. Внутри группы стыки 112px, на границах
+     с «Автором» и BigTech остаются 192px (ревью 08.10.2026) */
+  @media (min-width: 641px) {
+    .section.reviews { padding-bottom: 56px; }
+    .section.video-reviews { padding-top: 56px; padding-bottom: 56px; }
+    .section.stories { padding-top: 56px; }
+  }
+  @media (max-width: 640px) {
+    .section.reviews { padding-bottom: 40px; }
+    .section.video-reviews { padding-top: 40px; padding-bottom: 40px; }
+    .section.stories { padding-top: 40px; }
+  }
   .reviews__rating { color: var(--accent); }
   /* Правка 06.10.2026 (B4): карточки отзывов были слишком рослыми — 765px,
      в экран помещалось меньше трёх. Резать скриншот не стали: в переписке
@@ -2280,6 +2395,9 @@
      поэтому bleed отключён, чтобы не плодить непроверенное поведение. */
   .stories__grid { gap: 20px; margin-bottom: 28px; }
   .stories__grid.carousel__track { margin-right: calc(-1 * (max(0px, (100vw - 1240px)) / 2 + 60px)); }
+  /* у отзывов тот же выход за край: срезанная по краю контейнера карточка
+     с пустыми 160px справа читалась как ошибка (ревью 08.10.2026) */
+  .reviews__grid.carousel__track { margin-right: calc(-1 * (max(0px, (100vw - 1240px)) / 2 + 60px)); }
   /* Правка (заход 10, п.1): деление ширины растянутой (bled) дорожки на 3
      давало 413px при 1440 — на 15% больше исходных 360px, но всё ещё
      заметно мельче оригинала: карточка/окно у оригинала 380/1440 ≈ 26.4%
@@ -2434,7 +2552,9 @@
      применён на этой странице для карточек-исключений. Целевые паддинги
      подобраны так, чтобы при неизменном 14.5px тексте выйти на те же доли
      от ширины сетки (1120px здесь): ≈308×63px. */
-  .bigtech__cta .btn { padding: 24px 78px; }
+  /* Ревью 08.10.2026: 307×65 при тексте 14.5px — надпись терялась в плашке,
+     рядом кнопки 53 и 62px. Приведена к размеру .btn--lg. */
+  .bigtech__cta .btn { padding: 21px 46px; font-size: 16px; }
 
   @media (max-width: 960px) {
     .author__grid { grid-template-columns: 1fr; gap: 38px; }
@@ -2451,7 +2571,9 @@
     /* bleed за контейнер — только для десктопной раскладки «3 в ряд» выше
        (см. правку п.2б), на ≤960px формула карточек другая и не отмечена
        как проблемная, поэтому trek возвращается в границы контейнера. */
-    .stories__grid.carousel__track { margin-right: 0; }
+    /* до края экрана, а не до поля контейнера: «подглядывающая» соседняя
+       карточка обрезалась ровной вертикалью по полю (ревью 08.10.2026) */
+    .stories__grid.carousel__track, .reviews__grid.carousel__track { margin-right: calc(50% - 50vw); }
     /* Правка (заход 21, п.3): деление контейнера на 2 давало ту же болезнь,
        что и 26.39vw на десктопе — ширина карточки плавала вместе с окном,
        заголовок при 24px перескакивал с 3 строк на 4, и светлые плашки
@@ -2466,7 +2588,7 @@
     .stats-row { grid-template-columns: 1fr; }
     .stats-row > :first-child { grid-column: auto; }
     .yt__grid--7 .yt__card { flex-basis: calc((100% - 16px) / 2); }
-    .stories__grid > .stories__card { flex-basis: 100%; }
+    .stories__grid > .stories__card { flex-basis: 86%; } /* край следующей карточки виден — понятно, что дальше есть ещё (ревью 08.10.2026) */
     .modal--story .modal__dialog { padding: 28px 22px; }
     .modal__story-head { gap: 12px; }
     .bigtech__grid { grid-template-columns: repeat(2, 1fr); }
@@ -2655,9 +2777,11 @@
      мелкую капс-метку, и поэтому поднимаем цвет до основного (--text-h /
      --light-ink), как у прочих заголовков карточек на странице. */
   /* Правка (заход 8, п.4): «Стандарт»/«С проверкой» на оригинале — 500-е
-     начертание с трекингом -1.4px при 26px (≈ -0.054em), не 600/-0.02em. */
+     начертание с трекингом -1.4px при 26px (≈ -0.054em), не 600/-0.02em.
+     Ревью 08.10.2026: при 20px -0.054em съедал пробелы («Спроверкой»),
+     трекинг ослаблен до -0.02em, начертание 500 оставлено. */
   .tier__label {
-    font-family: var(--display); font-size: 20px; font-weight: 500; letter-spacing: -0.054em; line-height: 1.3;
+    font-family: var(--display); font-size: 20px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.3;
     margin-bottom: 22px; color: var(--text-h);
   }
   .tier--light .tier__label { color: var(--light-ink); }
@@ -2695,6 +2819,8 @@
   /* margin-top: auto — см. комментарий у .pricing__tiers: цена+кнопка
      прижаты к низу карточки как единая группа, а не сама кнопка отдельно. */
   .tier__price-block { margin-top: auto; padding-top: 22px; border-top: 1px solid var(--border-acc); }
+  /* линия над ценой прилипала к списку (8px) — минимум 24px, как и под ней (ревью 08.10.2026) */
+  .tier > :has(+ .tier__price-block) { margin-bottom: 24px; }
   .tier--light .tier__price-block { border-top-color: rgba(16,23,26,.12); }
   /* На оригинале «Ориентировочная стоимость:» набрана жирным (700) без
      разрядки — держим приглушённый цвет карточки (--text-faint/--light-meta),
@@ -2714,7 +2840,15 @@
      держит все три на одной линии независимо от длины текста. */
   .tier__pay { font-family: var(--mono); font-size: 12.5px; line-height: 1.55; color: var(--text-faint); min-height: 2.5em; }
   .tier--light .tier__pay { color: var(--light-meta); }
+  /* сумма рассрочки переносится целиком: &nbsp; не помогал — Chrome рвёт
+     строку после «/», и «мес × 12» уезжал один (ревью 08.10.2026) */
+  .tier__pay-sum { white-space: nowrap; }
   .tier__cta { margin-top: 28px; }
+  /* на 1181–1300 «Заполнить анкету предзаписи» не влезала в 286px и
+     переносилась — кнопки разной высоты, цены вразнобой (ревью 08.10.2026) */
+  @media (min-width: 1181px) and (max-width: 1300px) {
+    .pricing .tier__cta .btn { padding-left: 20px; padding-right: 20px; white-space: nowrap; }
+  }
   .tier--light .btn--primary { background: var(--light-ink); color: var(--accent); }
   .tier--light .btn--primary:hover { background: #05090b; box-shadow: 0 16px 34px -18px rgba(0,0,0,.8); }
 
@@ -2777,6 +2911,10 @@
      строку. Первые два тарифа встают в ряд, «Лично со мной» уходит под них
      на всю ширину — порядок чтения (дешевле → дороже) сохраняется. */
   @media (max-width: 1180px) {
+  }
+  /* нижняя граница 961px: без неё правило действовало и в одну колонку,
+     и кнопка VIP была уже соседних (ревью 08.10.2026) */
+  @media (min-width: 961px) and (max-width: 1180px) {
     /* Карточка растянута на две колонки — .btn--block (width: 100%) растянул бы
        за ней и кнопку через всю страницу. Она возвращается к своей нормальной
        ширине, как у остальных кнопок-пилюль на странице. На ≤960px карточка
@@ -2807,12 +2945,15 @@
        .ytch__cat, у .pricing__cat с оригинала нет нахлёста на облачко, см.
        десктопные top/right выше), с небольшим отрицательным right вместо
        положительного — минимальный, безопасный выход за край. */
-    .pricing__mascot-bubble { width: 140px; }
+    /* было 140/120px — текст в облачке мельче 9px; 210px даёт ~11px (ревью 08.10.2026) */
+    .pricing__mascot-bubble { width: 210px; }
     .pricing__cat-wrap { --cat-w: 70px; }
   }
   @media (max-width: 400px) {
-    .pricing__mascot-bubble { width: 120px; }
     .pricing__cat-wrap { --cat-w: 60px; }
+    /* бейдж «3 места» стоит выше строки с именем — резерв 76px справа не нужен,
+       а без него «Лично со мной» не рвётся на две строки (ревью 08.10.2026) */
+    .tier__who { padding-right: 0; }
   }
 
   /* ===== МОДАЛКА ПРЕДЗАПИСИ — СВОЯ ФОРМА (заход 24) =====
@@ -2942,14 +3083,18 @@
      без трекинга (getComputedStyle на «Почему 87% Go Roadmap…»), не 500/-0.01em. */
   .ytch__name { padding: 16px 18px 20px; font-family: var(--display); font-size: 15px; font-weight: 400; line-height: 1.35; color: var(--text-h); letter-spacing: normal; }
   .ytch__actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  /* три ролика в ряд и на планшете: в две колонки третий висел один
+     с пустотой 366×283 справа (ревью 08.10.2026) */
   @media (max-width: 960px) {
-    .ytch__grid { grid-template-columns: 1fr 1fr; gap: 18px; }
+    .ytch__grid { gap: 14px; }
+    .ytch__name { padding: 12px 14px 16px; font-size: 14px; }
     .ytch__mascot-group { width: 250px; }
     .ytch__mascot-bubble { width: 170px; }
     .ytch__cat { width: 88px; right: 0; top: 4px; }
   }
   @media (max-width: 640px) {
     .ytch__grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 32px; }
+    .ytch__name { padding: 16px 18px 20px; font-size: 15px; }
     .ytch__actions { flex-direction: column; align-items: stretch; }
     /* Правка (заход 9): та же логика, что у .steps__mascot-group выше —
        кот не прячется, а остаётся виден под заголовком (столбик вместо
@@ -2978,6 +3123,16 @@
     padding: 24px 26px; display: flex; align-items: center; justify-content: space-between; gap: 20px;
     border-radius: var(--r-lg);
   }
+  /* Высота вопроса — минимум под две строки (на 961–1100 под три): в ряду
+     карточки с вопросом в одну и в две строки расходились по высоте.
+     Растягивать через stretch нельзя — при открытии растянется и сосед.
+     На ≤960 вопросы в 3–4 строки, ряд не выровнять — там одна колонка.
+     Ревью 08.10.2026. */
+  @media (min-width: 961px) { .faq__qbtn { min-height: 96px; } }
+  @media (min-width: 961px) and (max-width: 1100px) { .faq__qbtn { min-height: 120px; } }
+  @media (max-width: 960px) { .faq { grid-template-columns: 1fr; } }
+  /* на 861–960 одна колонка в 912px: «+» стоял в ~250px от конца вопроса */
+  @media (min-width: 641px) and (max-width: 960px) { .faq { max-width: 760px; } }
   .faq__qbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-md); }
   .faq__qbtn:active .faq__toggle { transform: scale(.94); }
   .faq__qtext { font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); line-height: 1.4; letter-spacing: normal; text-wrap: pretty; }
@@ -3031,7 +3186,7 @@
   }
   /* Правка (заход 8, п.4): «Есть вопрос?» на оригинале — -2px при 40px
      (getComputedStyle) = -0.05em, не -0.02em. */
-  .final__title { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); font-weight: 500; letter-spacing: -0.05em; color: var(--text-h); margin: 0; }
+  .final__title { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.15; color: var(--text-h); margin: 0; }
   /* Тонкая линия-разделитель над репликой — на оригинале это отдельная
      полоса между заголовком и текстом, а не просто отступ; border-top
      прямо на ссылке экономит один пустой div.
@@ -3042,7 +3197,7 @@
      дополнительная точка входа в Telegram, а не разметка 1:1 с оригиналом,
      трогать её (снимать тег) — отдельная задача, не про наведение. */
   .final__link {
-    display: block; max-width: 40ch; padding-top: 24px; border-top: 1px solid var(--border-card);
+    display: block; padding-top: 24px; border-top: 1px solid var(--border-card); /* без max-width: 40ch — иначе линия обрывалась посреди панели (ревью 08.10.2026) */
     font-size: 16px; line-height: 1.5; color: var(--text-h);
   }
   /* Светлый остров — фон и фокус-кольцо берём из уже готовой пары токенов
@@ -3236,13 +3391,15 @@
   /* ===== ВИДЕООТЗЫВЫ (vt) — правка 02.10.2026, см. секцию #video-reviews ===== */
   .vt__lead { margin: 14px 0 0; color: var(--text-mute); font-size: 15px; max-width: 60ch; }
   .vt__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-  @media (max-width: 860px) { .vt__grid { grid-template-columns: 1fr; } }
+  /* одна колонка — только на телефоне: на 641–860 четыре ролика в столбец
+     растягивали секцию до ~1800px, двух экранов (ревью 08.10.2026) */
+  @media (max-width: 640px) { .vt__grid { grid-template-columns: 1fr; } }
   .vt__card { display: block; width: 100%; text-align: left; padding: 0; cursor: pointer;
     background: var(--bg-card); border: 1px solid var(--border-card);
     border-radius: var(--r-lg); overflow: hidden; transition: transform .25s ease, border-color .25s ease; }
   .vt__card:hover { transform: translateY(-3px); border-color: var(--border-acc); }
   .vt__card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .vt__thumb { position: relative; display: block; aspect-ratio: 1920/810; overflow: hidden; background: #0f1417; }
+  .vt__thumb { position: relative; display: block; aspect-ratio: 8/3; /* 1920/810 показывал вшитые в превью чёрные полосы ~23px сверху и снизу; 8/3 + cover срезает их (ревью 08.10.2026) */ overflow: hidden; background: #0f1417; }
   .vt__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .vt__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     background: rgba(16,23,26,.22); transition: background .25s ease; }
@@ -3255,7 +3412,7 @@
     color: #fff; font-family: var(--mono); font-size: 12px; padding: 4px 9px; border-radius: 6px; }
   .vt__meta { display: block; padding: 18px 20px 20px; }
   .vt__name { display: block; font-family: var(--display); font-size: 17px; font-weight: 500; color: var(--text-h); }
-  .vt__sub { display: block; margin-top: 6px; font-size: 14px; color: var(--text-mute); line-height: 1.45; }
+  .vt__sub { display: block; margin-top: 6px; font-size: 14px; color: var(--text-mute); line-height: 1.45; text-wrap: balance; }
   /* overflow: auto (не hidden!) — иначе при высоком плеере тайм-коды уходят за
      границу диалога и до них не доскроллить. max-height чуть меньше экрана,
      overscroll-behavior не даёт прокрутке «протекать» на страницу под модалкой. */
@@ -3430,7 +3587,7 @@
     <div class="container">
       <div class="prog-head fade-up">
         <span class="prog-head__pill"><span class="prog-head__dot" aria-hidden="true"></span>программа</span>
-        <h2 class="prog-head__title">8 недель. 5 микросервисов. Production-ready стек.</h2>
+        <h2 class="prog-head__title">8 недель. 5&nbsp;микросервисов. Production-ready стек.</h2>
       </div>
 
       <div class="program">
@@ -3584,7 +3741,7 @@
             <button class="program__headbtn" type="button" id="week-4-head" aria-expanded="false" aria-controls="week-4-body">
               <span class="program__headtext">
                 <span class="program__step">Неделя 4</span>
-                <span class="program__name">Конфигурация, DI-контейнер, jsonb в PostgreSQL и Domain-Driven Design</span>
+                <span class="program__name">Конфигурация, DI&#8209;контейнер, jsonb в PostgreSQL и Domain&#8209;Driven Design</span>
               </span>
               <span class="program__toggle" aria-hidden="true">+</span>
             </button>
@@ -3600,7 +3757,7 @@
             </div>
             <div class="program__block">
               <span class="program__label">Блок 10</span>
-              <h4 class="program__block-title">DI-контейнер — управление зависимостями без магии</h4>
+              <h4 class="program__block-title">DI&#8209;контейнер — управление зависимостями без магии</h4>
               <ul class="program__list">
                 <li>Ручной DI на Go — создаём зависимости лениво: только когда понадобятся</li>
                 <li>Корректное завершение работы — ресурсы закрываются в обратном порядке: что открыли последним — закрываем первым</li>
@@ -3617,7 +3774,7 @@
             </div>
             <div class="program__block">
               <span class="program__label">Блок 12</span>
-              <h4 class="program__block-title">Domain-Driven Design — бизнес-логика, которая сама себя защищает</h4>
+              <h4 class="program__block-title">Domain&#8209;Driven Design — бизнес-логика, которая сама себя защищает</h4>
               <ul class="program__list">
                 <li>Сущности с поведением — объекты сами знают свои правила, а не просто хранят данные</li>
                 <li>Value Objects — типизированные значения (например, «прочность корпуса»), которые нельзя создать в невалидном состоянии</li>
@@ -3628,11 +3785,11 @@
             </div>
             <div class="program__block">
               <span class="program__label">Практическое задание</span>
-              <p class="program__task">Внедрить конфигурацию и DI-контейнер во все сервисы. Создать платформенную библиотеку. Реализовать DDD: сущность Part с методами Reserve/Release, Value Objects для свойств компонентов в JSONB, сервис проверки совместимости при заказе</p>
+              <p class="program__task">Внедрить конфигурацию и DI&#8209;контейнер во все сервисы. Создать платформенную библиотеку. Реализовать DDD: сущность Part с методами Reserve/Release, Value Objects для свойств компонентов в JSONB, сервис проверки совместимости при заказе</p>
             </div>
             <div class="program__block">
               <span class="program__label program__label--result">Результат недели</span>
-              <p class="program__result">Сервисы конфигурируются через YAML и переменные окружения, зависимости собираются через DI-контейнер, ресурсы корректно освобождаются при завершении. Бизнес-логика защищена доменной моделью — невалидное состояние невозможно создать в принципе. На выходе не просто набор сервисов, а <b>платформа</b> — как это делают в BigTech-компаниях</p>
+              <p class="program__result">Сервисы конфигурируются через YAML и переменные окружения, зависимости собираются через DI&#8209;контейнер, ресурсы корректно освобождаются при завершении. Бизнес-логика защищена доменной моделью — невалидное состояние невозможно создать в принципе. На выходе не просто набор сервисов, а <b>платформа</b> — как это делают в BigTech-компаниях</p>
             </div>
           </div>
         </div>
@@ -3962,7 +4119,7 @@
             </button>
           </h3>
           <div class="homework__a" id="hw-4-body" role="region" aria-labelledby="hw-4-head" hidden>
-            <p>Внедрить конфигурацию и DI-контейнер во все сервисы. Создать платформенную библиотеку. Реализовать DDD: сущность Part с методами Reserve/Release, Value Objects для свойств компонентов в JSONB, сервис проверки совместимости при заказе</p>
+            <p>Внедрить конфигурацию и DI&#8209;контейнер во все сервисы. Создать платформенную библиотеку. Реализовать DDD: сущность Part с методами Reserve/Release, Value Objects для свойств компонентов в JSONB, сервис проверки совместимости при заказе</p>
           </div>
         </div>
         <div class="homework__item" id="hw-5">
@@ -4340,7 +4497,7 @@
           </div>
         </div>
         <div class="project__plate-row">
-          <p class="project__plate-text">Все, как на работе — контрактное программирование, DI, тесты, docker-compose, observability. Это сложный проект, где придётся много писать руками, разбираться в зависимостях и реально прокачиваться как инженер</p>
+          <p class="project__plate-text">Все, как на работе — контрактное программирование, DI, тесты, docker&#8209;compose, observability. Это сложный проект, где придётся много писать руками, разбираться в зависимостях и реально прокачиваться как инженер</p>
           <a class="btn btn--primary project__cta btn--rated" href="#tariffs" data-goal="project-result">
             <span>Обсудить обучение команды</span>
             <img class="btn__badge" src="icons/rating_badge.svg" alt="Рейтинг курса 4,94 из 5" width="93" height="33" loading="lazy">
