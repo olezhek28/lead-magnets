@@ -3263,6 +3263,18 @@
     }
   }
 
+  /* Основной текст крупнее: серые описания были 14–16px и читались тяжело.
+     +2px на планшете и десктопе, +1,5px на телефоне (ревью 09.10.2026) */
+  .who__desc, .steps__desc, .project__subtitle, .author__desc, .vt__lead, .modal__body { font-size: 17px; }
+  .community__lead, .jobs__lead, .ytch__sub { font-size: 18px; }
+  .get__lead { font-size: 17px; }
+  .get__desc, .vt__sub, .stories__excerpt { font-size: 16px; }
+  .program__task, .program__result { font-size: 16.5px; }
+  @media (max-width: 640px) {
+    .who__desc, .steps__desc, .project__subtitle, .author__desc, .vt__lead, .modal__body,
+    .community__lead, .jobs__lead, .ytch__sub { font-size: 16.5px; }
+    .get__desc, .vt__sub, .stories__excerpt { font-size: 15.5px; }
+  }
 </style>
 </head>
 <body>
@@ -3444,7 +3456,7 @@
           </div>          <div class="who__card">
             <img class="who__step" src="../microservices/steps/step_4.svg" alt="" width="88" height="13">
             <h3 class="who__title">Пишу с нейронкой&nbsp;— код работает, но объяснить его не могу</h3>
-            <p class="who__desc">Напишешь проект своими руками и разберёшься, почему он устроен именно так, чтобы сразу видеть, где нейронка накрутила лишнего или ошиблась, чтобы ставить ей точные задачи и получать рабочий код быстрее, без переделок по кругу.</p>
+            <p class="who__desc">Сделаешь проект своими руками и разберёшься, почему он устроен именно так, чтобы сразу видеть, где нейронка накрутила лишнего или ошиблась, чтобы ставить ей точные задачи и получать рабочий код быстрее, без переделок по кругу.</p>
           </div>
 
         </div>
@@ -4286,7 +4298,7 @@
            стала третьей колонкой грида. -->
       <div class="project__top fade-up">
         <h2 class="section__title">Результат курса — микросервисная ракета, как на проде</h2>
-        <p class="project__subtitle">API на HTTP и gRPC, PostgreSQL, Kafka и Redis, логирование, метрики, трассировка, алерты, авторизация, Ngix. Все через код, в одной архитектуре без теории ради теории</p>
+        <p class="project__subtitle">API на HTTP и gRPC, PostgreSQL, Kafka и Redis, логирование, метрики, трассировка, алерты, авторизация, Ngix.</p>
         <div class="project__video-row">
           <button type="button" class="project__play" data-modal-open="video-modal" aria-haspopup="dialog">
             <img src="../microservices/icons/play.svg" alt="" width="57" height="56" aria-hidden="true">
@@ -4614,8 +4626,8 @@
           <figcaption class="reviews__caption" id="review-cap-5">Курс, на который записываются снова</figcaption>
         </figure>
         <figure class="reviews__card fade-up" tabindex="0" aria-labelledby="review-cap-6">
-          <img class="reviews__img" src="../microservices/reviews/review_6.png" alt="Скриншот отзыва: «Полный фарш для старта микросервиса»" width="591" height="1279" loading="lazy">
-          <figcaption class="reviews__caption" id="review-cap-6">Полный фарш для старта микросервиса</figcaption>
+          <img class="reviews__img" src="../microservices/reviews/review_6.png" alt="Скриншот отзыва: «Готовый шаблон для нового микросервиса»" width="591" height="1279" loading="lazy">
+          <figcaption class="reviews__caption" id="review-cap-6">Готовый шаблон для нового микросервиса</figcaption>
         </figure>
       </div>
     </div>
