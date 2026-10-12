@@ -93,7 +93,7 @@
           "offers": {
             "@type": "AggregateOffer",
             "priceCurrency": "RUB",
-            "lowPrice": "75990",
+            "lowPrice": "79990",
             "highPrice": "299990",
             "offerCount": "3",
             "availability": "https://schema.org/PreOrder",
@@ -101,19 +101,19 @@
               {
                 "@type": "Offer",
                 "name": "Стандарт",
-                "price": "75990",
+                "price": "79990",
                 "priceCurrency": "RUB",
                 "availability": "https://schema.org/PreOrder",
-                "description": "60 практических уроков, доступ к курсу на 1 год, практические задания после лекций, итоговый проект, еженедельные встречи с ответами на вопросы по курсу и заданиям, доступ к общему чатику. Цена предзаписи (основная — 79 990 ₽); в рассрочку 6 332 ₽/месяц в течение 12 месяцев.",
+                "description": "60 практических уроков, доступ к курсу на 1 год, практические задания после лекций, итоговый проект, еженедельные встречи с ответами на вопросы по курсу и заданиям, доступ к общему чатику. Основная цена — 89 990 ₽; в рассрочку 6 666 ₽/месяц в течение 12 месяцев.",
                 "url": "https://guide.olezhek28.courses/microservices/#tariffs"
               },
               {
                 "@type": "Offer",
                 "name": "С проверкой",
-                "price": "113990",
+                "price": "119990",
                 "priceCurrency": "RUB",
                 "availability": "https://schema.org/PreOrder",
-                "description": "Всё, что есть в тарифе «Стандарт», плюс код-ревью практических заданий и обратная связь, возможность сдать задания в течение 1 месяца после окончания курса, эталонное решение от Олега с видео-разборами, возможность взять «академ». Бонусный модуль по прохождению собесов: разбор 60 golang-задач и 30 алгоритмических задач с реальных собесов. Цена предзаписи (основная — 119 990 ₽); в рассрочку 9 499 ₽/месяц в течение 12 месяцев.",
+                "description": "Всё, что есть в тарифе «Стандарт», плюс код-ревью практических заданий и обратная связь, возможность сдать задания в течение 1 месяца после окончания курса, эталонное решение от Олега с видео-разборами, возможность взять «академ». Бонусный модуль по прохождению собесов: разбор 60 golang-задач и 30 алгоритмических задач с реальных собесов. Основная цена — 129 990 ₽; в рассрочку 9 999 ₽/месяц в течение 12 месяцев.",
                 "url": "https://guide.olezhek28.courses/microservices/#tariffs"
               },
               {
@@ -292,6 +292,11 @@
   .btn--dark:hover { background: #22282D; border-color: rgba(255,255,255,.28); transform: translateY(-2px); }
   .btn--lg { padding: 21px 46px; font-size: 16px; }
   .btn--block { display: flex; width: 100%; }
+  /* До старта продаж: на месте кнопок тарифов — неактивная плашка с датой.
+     Выглядит как кнопка, но без hover и курсора-руки. */
+  .btn--soon, .btn--soon:hover, .btn--soon:active { cursor: default; transform: none; box-shadow: none; }
+  .btn--primary.btn--soon:hover { background: var(--accent); }
+  .tier--light .btn--primary.btn--soon:hover { background: var(--light-ink); }
   /* Правка 1 (визуальный заход №1): бейдж рейтинга «★ 4.94 / 5» — тёмная пилюля
      93×33 (icons/rating_badge.svg, переименован из вводившего в заблуждение
      cta_arrow.svg). Раньше файл был сплющен до 14×14 в кнопке и выглядел
@@ -5556,13 +5561,19 @@
     <div class="container">
       <div class="section__head section__head--mascot fade-up">
         <h2 class="section__title" id="tariffs-title">Старт 26 октября</h2>
-        <img class="pricing__mascot-bubble" src="mascot/speech_bubble_3.svg" alt="В предзапись не записался — без микросервисов остался" width="265" height="79" loading="lazy">
+        <!-- ДО СТАРТА ПРОДАЖ: облачко про предзапись спрятано вместе с анкетой.
+             Вернуть, когда снова откроем предзапись:
+             <img class="pricing__mascot-bubble" src="mascot/speech_bubble_3.svg" alt="В предзапись не записался — без микросервисов остался" width="265" height="79" loading="lazy">
+        -->
       </div>
 
       <div class="pricing__tiers">
+        <!-- ДО СТАРТА ПРОДАЖ: кот спрятан вместе с облачком про предзапись.
+             Вернуть, когда снова откроем предзапись:
         <div class="pricing__cat-wrap fade-up">
           <img class="pricing__cat" src="mascot/kotkins.png" alt="" width="607" height="1201" aria-hidden="true" loading="lazy">
         </div>
+        -->
         <div class="tier tier--dark fade-up">
           <div class="tier__label">Стандарт</div>
           <ul class="tier__list">
@@ -5575,11 +5586,11 @@
           </ul>
           <div class="tier__price-block">
             <div class="tier__price-label">Ориентировочная стоимость:</div>
-            <div class="tier__price-row" aria-label="75 990 рублей по предзаписи вместо 79 990 рублей">
-              <div class="tier__price"><b>75 990 ₽</b></div>
-              <s class="tier__price-old" aria-hidden="true">79 990 ₽</s>
+            <div class="tier__price-row" aria-label="79 990 рублей вместо 89 990 рублей">
+              <div class="tier__price"><b>79 990 ₽</b></div>
+              <s class="tier__price-old" aria-hidden="true">89 990 ₽</s>
             </div>
-            <div class="tier__pay">Цена предзаписи. Можно в рассрочку — <span class="tier__pay-sum">6 332 ₽/мес × 12</span></div>
+            <div class="tier__pay">Можно в рассрочку — <span class="tier__pay-sum">6 666 ₽/мес × 12</span></div>
           </div>
           <!-- Кнопка открывает нашу модалку с формой предзаписи (см.
                .gc-modal в конце файла): поля те же, что в анкете GetCourse,
@@ -5588,8 +5599,14 @@
                клик (open() зовёт preventDefault) и показывает свою форму, а
                без JS ссылка открывает анкету GetCourse отдельной страницей —
                записаться можно в любом случае. -->
+          <!-- ДО СТАРТА ПРОДАЖ: вместо кнопки — неактивная плашка с датой.
+               Анкета предзаписи (модалка .gc-modal и её JS) осталась в файле
+               как есть, просто без триггера. Вернуть кнопку — заменить <span>
+               ниже на эту строку:
+               <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1603640" data-gc-open data-goal="tariffs">Заполнить анкету предзаписи</a>
+          -->
           <div class="tier__cta">
-            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1603640" data-gc-open data-goal="tariffs">Заполнить анкету предзаписи</a>
+            <span class="btn btn--primary btn--block btn--soon" aria-disabled="true">Старт продаж 15&nbsp;октября</span>
           </div>
         </div>
 
@@ -5615,15 +5632,21 @@
           </div>
           <div class="tier__price-block">
             <div class="tier__price-label">Ориентировочная стоимость:</div>
-            <div class="tier__price-row" aria-label="113 990 рублей по предзаписи вместо 119 990 рублей">
-              <div class="tier__price"><b>113 990 ₽</b></div>
-              <s class="tier__price-old" aria-hidden="true">119 990 ₽</s>
+            <div class="tier__price-row" aria-label="119 990 рублей вместо 129 990 рублей">
+              <div class="tier__price"><b>119 990 ₽</b></div>
+              <s class="tier__price-old" aria-hidden="true">129 990 ₽</s>
             </div>
-            <div class="tier__pay">Цена предзаписи. Можно в рассрочку — <span class="tier__pay-sum">9 499 ₽/мес × 12</span></div>
+            <div class="tier__pay">Можно в рассрочку — <span class="tier__pay-sum">9 999 ₽/мес × 12</span></div>
           </div>
           <!-- см. комментарий у кнопки тарифа «Стандарт» выше -->
+          <!-- ДО СТАРТА ПРОДАЖ: вместо кнопки — неактивная плашка с датой.
+               Анкета предзаписи (модалка .gc-modal и её JS) осталась в файле
+               как есть, просто без триггера. Вернуть кнопку — заменить <span>
+               ниже на эту строку:
+               <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1603640" data-gc-open data-goal="tariffs">Заполнить анкету предзаписи</a>
+          -->
           <div class="tier__cta">
-            <a class="btn btn--primary btn--block" href="https://school.olezhek28.courses/pl/lite/widget/widget?id=1603640" data-gc-open data-goal="tariffs">Заполнить анкету предзаписи</a>
+            <span class="btn btn--primary btn--block btn--soon" aria-disabled="true">Старт продаж 15&nbsp;октября</span>
           </div>
         </div>
 
@@ -5666,8 +5689,14 @@
             </div>
             <div class="tier__pay">Можно взять во внутреннюю рассрочку на два платежа</div>
           </div>
+          <!-- ДО СТАРТА ПРОДАЖ: вместо кнопки — неактивная плашка с датой.
+               Анкета предзаписи (модалка .gc-modal и её JS) осталась в файле
+               как есть, просто без триггера. Вернуть кнопку — заменить <span>
+               ниже на эту строку:
+               <a class="btn btn--primary btn--block" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener" data-goal="tariffs-vip">Забронировать место</a>
+          -->
           <div class="tier__cta">
-            <a class="btn btn--primary btn--block" href="https://telegram.me/olezhek28_support" target="_blank" rel="noopener" data-goal="tariffs-vip">Забронировать место</a>
+            <span class="btn btn--primary btn--block btn--soon" aria-disabled="true">Старт продаж 15&nbsp;октября</span>
           </div>
         </div>
       </div>
